@@ -1,0 +1,136 @@
+{
+  "research_design": {
+    "type": "factorial_experiment",
+    "randomization": "blocked_by_domain",
+    "replication": "3_runs_per_condition",
+    "significance_level": 0.05,
+    "power": 0.8,
+    "effect_size": "medium_to_large"
+  },
+  "hypotheses": {
+    "H1_quality": {
+      "statement": "Hybrid retrieval outperforms baselines on information retrieval quality metrics",
+      "primary_metrics": ["ndcg_at_10", "recall_at_10", "mrr_at_10"],
+      "baselines": ["window", "bm25_only", "vector_only", "bm25_vector_simple", "cross_encoder", "faiss_ivf", "mmr_baseline"],
+      "expected_direction": "higher_is_better",
+      "min_effect_size": 0.05,
+      "statistical_tests": ["wilcoxon_signed_rank", "bootstrap_ci"],
+      "success_criteria": "lethe > best_baseline with p < 0.05 and CI excludes 0"
+    },
+    "H2_efficiency": {
+      "statement": "Lethe maintains <3s P95 latency and <1.5GB memory under realistic load",
+      "primary_metrics": ["latency_p95_ms", "memory_peak_gb", "throughput_qps"],
+      "load_conditions": ["1_qps", "5_qps", "10_qps", "burst_20_qps"],
+      "success_criteria": {
+        "latency_p95_ms": 3000,
+        "memory_peak_gb": 1.5,
+        "throughput_qps": 5
+      },
+      "measurement_duration": "300s",
+      "warmup_period": "60s"
+    },
+    "H3_robustness": {
+      "statement": "Diversification increases entity coverage and reduces information gaps",
+      "primary_metrics": ["coverage_at_n", "entity_diversity", "topic_coverage"],
+      "diversification_methods": ["lethe_diversify", "mmr_alternative", "none"],
+      "coverage_thresholds": [10, 20, 50],
+      "expected_direction": "higher_is_better",
+      "statistical_tests": ["paired_t_test", "effect_size_cohens_d"]
+    },
+    "H4_adaptivity": {
+      "statement": "Adaptive planning reduces hallucination and contradiction rates",
+      "primary_metrics": ["contradiction_rate", "hallucination_score", "consistency_index"],
+      "planning_strategies": ["adaptive", "exploit_only", "explore_only", "random"],
+      "evaluation_method": "human_annotation_subset",
+      "expected_direction": "lower_is_better_contradictions",
+      "minimum_samples": 200,
+      "inter_annotator_agreement": "krippendorff_alpha > 0.7"
+    }
+  },
+  "grid_parameters": {
+    "alpha": {
+      "values": [0.1, 0.3, 0.5, 0.7, 0.9],
+      "default": 0.7,
+      "description": "BM25 vs vector weighting"
+    },
+    "beta": {
+      "values": [0.1, 0.3, 0.5, 0.7, 0.9],
+      "default": 0.5,
+      "description": "Reranking influence"
+    },
+    "chunk_size": {
+      "values": [128, 256, 320, 512],
+      "default": 320,
+      "description": "Target tokens per chunk"
+    },
+    "overlap": {
+      "values": [16, 32, 64, 128],
+      "default": 64,
+      "description": "Overlap tokens between chunks"
+    },
+    "k_initial": {
+      "values": [10, 20, 50, 100],
+      "default": 30,
+      "description": "Initial retrieval candidates"
+    },
+    "k_final": {
+      "values": [5, 10, 15, 20],
+      "default": 10,
+      "description": "Final reranked results"
+    },
+    "diversify_pack_size": {
+      "values": [5, 10, 15, 25],
+      "default": 10,
+      "description": "Diversification result size"
+    },
+    "rerank_threshold": {
+      "values": [0.1, 0.3, 0.5, 0.7],
+      "default": 0.3,
+      "description": "Minimum score for reranking"
+    },
+    "hyde_k": {
+      "values": [1, 2, 3, 5],
+      "default": 3,
+      "description": "Number of HyDE queries"
+    },
+    "planning_strategy": {
+      "values": ["adaptive", "exploit", "explore", "random"],
+      "default": "adaptive",
+      "description": "Plan selection strategy"
+    }
+  },
+  "evaluation_conditions": {
+    "domains": ["code_heavy", "chatty_prose", "tool_results", "mixed"],
+    "query_types": ["factual", "analytical", "comparative", "exploratory"],
+    "session_lengths": ["short_5_turns", "medium_15_turns", "long_50_turns"],
+    "complexity_levels": ["simple", "medium", "complex"]
+  },
+  "quality_gates": {
+    "sanity_checks": [
+      "lethe_beats_random",
+      "vector_beats_lexical_on_semantic",
+      "lexical_beats_vector_on_exact_match",
+      "larger_k_increases_recall",
+      "diversification_reduces_redundancy"
+    ],
+    "performance_bounds": {
+      "max_latency_per_query": "30s",
+      "max_memory_per_session": "5GB",
+      "min_retrieval_candidates": 1,
+      "max_retrieval_candidates": 1000
+    },
+    "data_integrity": [
+      "no_duplicate_results",
+      "scores_in_valid_range",
+      "consistent_document_ids",
+      "temporal_ordering_preserved"
+    ]
+  },
+  "reporting": {
+    "confidence_intervals": "bootstrap_percentile_95",
+    "effect_sizes": ["cohens_d", "hedges_g", "cliff_delta"],
+    "multiple_comparisons": "bonferroni_correction",
+    "visualization": ["box_plots", "violin_plots", "heatmaps", "radar_charts"],
+    "statistical_significance": "alpha_0_05"
+  }
+}

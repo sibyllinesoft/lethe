@@ -1,0 +1,41 @@
+{
+  "research_version": "1.0",
+  "timestamp": "2025-08-23T19:15:00Z",
+  "git": {
+    "sha": "5cda28fac941cf9795ae944e20d185ba8037e348",
+    "branch": "master",
+    "tag": "research-freeze-v1",
+    "status": "clean"
+  },
+  "environment": {
+    "node_version": "v20.18.1",
+    "npm_version": "9.2.0",
+    "platform": "linux",
+    "arch": "x64",
+    "sqlite_vec_available": false,
+    "vector_backend": "wasm",
+    "ollama_available": true,
+    "ollama_models": ["gemma3:270m", "gemma3:4b", "gpt-oss:20b"],
+    "packages": {
+      "lerna": "^8.1.2",
+      "typescript": "^5.5.2"
+    }
+  },
+  "baseline_configuration": {
+    "retrieval": {
+      "alpha": 0.7,
+      "beta": 0.5,
+      "gamma_kind_boost": { "code": 0.1, "text": 0.0 }
+    },
+    "chunking": {
+      "target_tokens": 320,
+      "overlap": 64
+    },
+    "timeouts": {
+      "hyde_ms": 10000,
+      "summarize_ms": 10000,
+      "ollama_connect_ms": 500
+    }
+  },
+  "research_purpose": "Academic paper baseline for NeurIPS submission: Lethe hybrid retrieval system evaluation"
+}
