@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "composite": true,
+    "declarationMap": true,
+    "sourceMap": true
+  },
+  "references": [
+    { "path": "packages/cli" },
+    { "path": "packages/sqlite" },
+    { "path": "packages/core" },
+    { "path": "packages/embeddings" },
+    { "path": "packages/wasm" },
+    { "path": "packages/devserver" }
+  ]
+}

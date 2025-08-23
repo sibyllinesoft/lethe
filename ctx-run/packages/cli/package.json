@@ -1,0 +1,25 @@
+{
+  "name": "@lethe/cli",
+  "version": "0.0.1",
+  "private": true,
+  "bin": {
+    "ctx-run": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "@lethe/sqlite": "file:../sqlite",
+    "@lethe/core": "file:../core", 
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/yargs": "^17.0.32",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.2"
+  }
+}

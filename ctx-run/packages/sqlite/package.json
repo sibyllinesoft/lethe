@@ -1,0 +1,18 @@
+{
+  "name": "@lethe/sqlite",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "@lethe/wasm": "file:../wasm"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.10",
+    "typescript": "^5.5.2"
+  }
+}

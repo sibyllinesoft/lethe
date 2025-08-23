@@ -1,0 +1,23 @@
+{
+  "name": "@ctx-run/embeddings",
+  "version": "1.0.0",
+  "description": "Embeddings providers using Transformers.js and Ollama for ctx-run",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint src/",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@xenova/transformers": "^2.17.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}

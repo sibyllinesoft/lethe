@@ -1,0 +1,1 @@
+{"version":3,"file":"chunk-types.d.ts","sourceRoot":"","sources":["../src/chunk-types.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,KAAK;IAClB,EAAE,EAAE,MAAM,CAAC;IACX,UAAU,EAAE,MAAM,CAAC;IACnB,YAAY,EAAE,MAAM,CAAC;IACrB,UAAU,EAAE,MAAM,CAAC;IACnB,IAAI,EAAE,OAAO,GAAG,MAAM,CAAC;IACvB,IAAI,EAAE,MAAM,CAAC;IACb,MAAM,EAAE,MAAM,CAAC;CAClB"}

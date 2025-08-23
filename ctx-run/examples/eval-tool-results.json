@@ -1,0 +1,77 @@
+{
+  "name": "Tool Results Conversation Evaluation", 
+  "description": "Evaluation suite for conversations containing tool outputs, data analysis, and system interactions",
+  "sessionId": "tool-results-session",
+  "queries": [
+    {
+      "id": "api-response-analysis",
+      "query": "What was the structure of the API response from the user authentication endpoint?",
+      "relevantChunks": ["chunk-auth-response", "chunk-json-structure", "chunk-status-codes"],
+      "expectedSummary": "Authentication API response structure and status code meanings",
+      "tags": ["api", "response", "json", "authentication", "http-status"]
+    },
+    {
+      "id": "database-query-results",
+      "query": "Show me the results of the user analytics query we ran yesterday",
+      "relevantChunks": ["chunk-sql-results", "chunk-user-metrics", "chunk-query-output"],
+      "expectedSummary": "User analytics query results showing key metrics and trends",
+      "tags": ["database", "analytics", "sql", "metrics", "query-results"]
+    },
+    {
+      "id": "performance-metrics",
+      "query": "What were the performance benchmarks for the new algorithm implementation?",
+      "relevantChunks": ["chunk-benchmark-results", "chunk-perf-comparison", "chunk-timing-data"],
+      "expectedSummary": "Performance benchmark results comparing old and new algorithm implementations",
+      "tags": ["performance", "benchmarks", "algorithms", "optimization", "timing"]
+    },
+    {
+      "id": "log-analysis",
+      "query": "What errors appeared in the application logs during the deployment?",
+      "relevantChunks": ["chunk-error-logs", "chunk-deployment-logs", "chunk-stack-traces"],
+      "expectedSummary": "Deployment error analysis from application logs and stack traces",
+      "tags": ["logs", "errors", "deployment", "debugging", "troubleshooting"]
+    },
+    {
+      "id": "test-execution",
+      "query": "What was the outcome of the integration test suite run?",
+      "relevantChunks": ["chunk-test-results", "chunk-coverage-report", "chunk-failed-tests"],
+      "expectedSummary": "Integration test suite results including coverage and failed test analysis",
+      "tags": ["testing", "integration-tests", "coverage", "test-results", "ci-cd"]
+    },
+    {
+      "id": "system-monitoring",
+      "query": "How has CPU and memory usage changed after the optimization?",
+      "relevantChunks": ["chunk-system-metrics", "chunk-resource-usage", "chunk-monitoring-data"],
+      "expectedSummary": "System resource utilization changes following performance optimization",
+      "tags": ["monitoring", "system-metrics", "cpu", "memory", "optimization"]
+    },
+    {
+      "id": "data-migration",
+      "query": "What was the status of the customer data migration process?",
+      "relevantChunks": ["chunk-migration-status", "chunk-data-validation", "chunk-migration-logs"],
+      "expectedSummary": "Customer data migration status with validation results and any issues",
+      "tags": ["migration", "data", "validation", "customers", "database"]
+    },
+    {
+      "id": "security-scan",
+      "query": "What vulnerabilities were found in the latest security scan?",
+      "relevantChunks": ["chunk-vuln-report", "chunk-security-scan", "chunk-risk-assessment"],
+      "expectedSummary": "Security vulnerability scan results with risk assessment and recommendations",
+      "tags": ["security", "vulnerabilities", "scanning", "risk", "compliance"]
+    },
+    {
+      "id": "build-pipeline",
+      "query": "Why did the CI/CD pipeline fail on the last deployment attempt?",
+      "relevantChunks": ["chunk-build-logs", "chunk-pipeline-error", "chunk-deployment-failure"],
+      "expectedSummary": "CI/CD pipeline failure analysis with build logs and error diagnostics",
+      "tags": ["ci-cd", "pipeline", "build", "deployment", "failure-analysis"]
+    },
+    {
+      "id": "user-feedback",
+      "query": "What themes emerged from the latest customer feedback survey?",
+      "relevantChunks": ["chunk-survey-results", "chunk-sentiment-analysis", "chunk-user-comments"],
+      "expectedSummary": "Customer feedback survey analysis with sentiment and key themes",
+      "tags": ["feedback", "surveys", "customers", "sentiment", "analysis"]
+    }
+  ]
+}

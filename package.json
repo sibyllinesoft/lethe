@@ -1,0 +1,40 @@
+{
+  "name": "ctx-run",
+  "version": "1.0.0",
+  "description": "Sophisticated NPX context manager for AI-powered conversation history search and retrieval",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "clean": "turbo clean && rm -rf node_modules",
+    "type-check": "turbo type-check"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "turbo": "^1.13.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  },
+  "packageManager": "npm@10.0.0",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ai",
+    "context",
+    "search",
+    "conversation",
+    "claude",
+    "npx",
+    "embeddings",
+    "vector-search"
+  ],
+  "author": "Nathan Rice",
+  "license": "MIT"
+}

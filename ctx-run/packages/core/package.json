@@ -1,0 +1,18 @@
+{
+  "name": "@lethe/core",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@lethe/sqlite": "file:../sqlite",
+    "@lethe/embeddings": "file:../embeddings",
+    "@types/node": "^24.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.2"
+  }
+}

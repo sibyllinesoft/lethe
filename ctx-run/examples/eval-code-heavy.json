@@ -1,0 +1,77 @@
+{
+  "name": "Code-Heavy Conversation Evaluation",
+  "description": "Evaluation suite for technical discussions with code examples, API design, and debugging scenarios",
+  "sessionId": "code-discussion-session",
+  "queries": [
+    {
+      "id": "auth-jwt",
+      "query": "How do I implement JWT authentication with refresh tokens?",
+      "relevantChunks": ["chunk-jwt-impl", "chunk-refresh-logic", "chunk-auth-middleware"],
+      "expectedSummary": "JWT authentication implementation using access and refresh tokens",
+      "tags": ["authentication", "security", "jwt", "tokens"]
+    },
+    {
+      "id": "async-patterns",
+      "query": "What are the best practices for handling async operations in Node.js?",
+      "relevantChunks": ["chunk-async-await", "chunk-promise-patterns", "chunk-error-handling"],
+      "expectedSummary": "Best practices for async/await patterns and error handling",
+      "tags": ["nodejs", "async", "promises", "patterns"]
+    },
+    {
+      "id": "database-optimization",
+      "query": "How can I optimize my database queries for better performance?",
+      "relevantChunks": ["chunk-db-indexes", "chunk-query-optimization", "chunk-n-plus-one"],
+      "expectedSummary": "Database optimization techniques including indexing and query patterns",
+      "tags": ["database", "performance", "optimization", "sql"]
+    },
+    {
+      "id": "api-design",
+      "query": "What are the principles of good REST API design?",
+      "relevantChunks": ["chunk-rest-principles", "chunk-http-methods", "chunk-api-versioning"],
+      "expectedSummary": "REST API design principles and HTTP method usage",
+      "tags": ["api", "rest", "design", "http"]
+    },
+    {
+      "id": "error-handling",
+      "query": "How should I structure error handling in a web application?",
+      "relevantChunks": ["chunk-error-middleware", "chunk-custom-errors", "chunk-logging"],
+      "expectedSummary": "Error handling strategies and middleware implementation",
+      "tags": ["errors", "middleware", "logging", "debugging"]
+    },
+    {
+      "id": "testing-strategies",
+      "query": "What's the difference between unit tests and integration tests?",
+      "relevantChunks": ["chunk-unit-testing", "chunk-integration-testing", "chunk-test-pyramid"],
+      "expectedSummary": "Testing strategies and the testing pyramid concept",
+      "tags": ["testing", "unit-tests", "integration-tests", "tdd"]
+    },
+    {
+      "id": "microservices-communication",
+      "query": "How do microservices communicate with each other effectively?",
+      "relevantChunks": ["chunk-service-mesh", "chunk-event-driven", "chunk-api-gateway"],
+      "expectedSummary": "Microservices communication patterns and service mesh",
+      "tags": ["microservices", "architecture", "communication", "distributed-systems"]
+    },
+    {
+      "id": "caching-strategies",
+      "query": "When and how should I implement caching in my application?",
+      "relevantChunks": ["chunk-redis-cache", "chunk-cache-patterns", "chunk-invalidation"],
+      "expectedSummary": "Caching strategies and cache invalidation patterns",
+      "tags": ["caching", "redis", "performance", "optimization"]
+    },
+    {
+      "id": "security-headers",
+      "query": "What security headers should I set for my web application?",
+      "relevantChunks": ["chunk-security-headers", "chunk-csp", "chunk-cors"],
+      "expectedSummary": "Essential security headers including CSP and CORS configuration",
+      "tags": ["security", "headers", "csp", "cors", "web-security"]
+    },
+    {
+      "id": "debugging-production",
+      "query": "How do I debug issues in a production environment?",
+      "relevantChunks": ["chunk-logging-strategies", "chunk-monitoring", "chunk-tracing"],
+      "expectedSummary": "Production debugging techniques and monitoring strategies",
+      "tags": ["debugging", "production", "monitoring", "logging", "tracing"]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "name": "Chatty Prose Conversation Evaluation",
+  "description": "Evaluation suite for conversational, prose-heavy discussions about concepts, strategies, and explanations",
+  "sessionId": "prose-discussion-session",
+  "queries": [
+    {
+      "id": "project-management",
+      "query": "What are the key principles of effective project management?",
+      "relevantChunks": ["chunk-pm-principles", "chunk-agile-methodology", "chunk-stakeholder-mgmt"],
+      "expectedSummary": "Project management principles including agile methodologies and stakeholder communication",
+      "tags": ["project-management", "agile", "leadership", "planning"]
+    },
+    {
+      "id": "team-collaboration",
+      "query": "How can remote teams collaborate more effectively?",
+      "relevantChunks": ["chunk-remote-work", "chunk-communication-tools", "chunk-team-dynamics"],
+      "expectedSummary": "Remote team collaboration strategies and communication best practices",
+      "tags": ["remote-work", "collaboration", "communication", "team-building"]
+    },
+    {
+      "id": "user-experience",
+      "query": "What makes a good user experience in web applications?",
+      "relevantChunks": ["chunk-ux-principles", "chunk-usability", "chunk-accessibility"],
+      "expectedSummary": "User experience design principles and usability considerations",
+      "tags": ["ux", "design", "usability", "user-centered-design"]
+    },
+    {
+      "id": "business-strategy",
+      "query": "How do you develop a successful go-to-market strategy?",
+      "relevantChunks": ["chunk-market-analysis", "chunk-positioning", "chunk-launch-planning"],
+      "expectedSummary": "Go-to-market strategy development including market analysis and positioning",
+      "tags": ["strategy", "marketing", "business", "product-launch"]
+    },
+    {
+      "id": "learning-development",
+      "query": "What are effective approaches to continuous learning and skill development?",
+      "relevantChunks": ["chunk-learning-methods", "chunk-skill-gaps", "chunk-career-growth"],
+      "expectedSummary": "Continuous learning strategies and professional development approaches",
+      "tags": ["learning", "development", "career", "skills", "growth"]
+    },
+    {
+      "id": "decision-making",
+      "query": "How do you make good decisions under uncertainty?",
+      "relevantChunks": ["chunk-decision-frameworks", "chunk-risk-assessment", "chunk-data-driven"],
+      "expectedSummary": "Decision-making frameworks and risk assessment methodologies",
+      "tags": ["decision-making", "uncertainty", "risk", "frameworks"]
+    },
+    {
+      "id": "innovation-culture",
+      "query": "How can organizations foster a culture of innovation?",
+      "relevantChunks": ["chunk-innovation-practices", "chunk-creative-thinking", "chunk-org-culture"],
+      "expectedSummary": "Innovation culture development and creative thinking practices",
+      "tags": ["innovation", "culture", "creativity", "organizational-change"]
+    },
+    {
+      "id": "customer-research",
+      "query": "What are the best methods for understanding customer needs?",
+      "relevantChunks": ["chunk-customer-interviews", "chunk-surveys", "chunk-user-research"],
+      "expectedSummary": "Customer research methodologies and user insight gathering",
+      "tags": ["research", "customers", "interviews", "user-insights"]
+    },
+    {
+      "id": "change-management",
+      "query": "How do you successfully manage organizational change?",
+      "relevantChunks": ["chunk-change-models", "chunk-resistance", "chunk-communication-change"],
+      "expectedSummary": "Change management models and overcoming resistance to change",
+      "tags": ["change-management", "organizational-change", "leadership", "transformation"]
+    },
+    {
+      "id": "product-strategy",
+      "query": "What factors should influence product roadmap decisions?",
+      "relevantChunks": ["chunk-roadmap-planning", "chunk-feature-prioritization", "chunk-market-feedback"],
+      "expectedSummary": "Product roadmap planning and feature prioritization strategies",
+      "tags": ["product", "roadmap", "prioritization", "strategy", "planning"]
+    }
+  ]
+}

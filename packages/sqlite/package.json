@@ -1,0 +1,24 @@
+{
+  "name": "@ctx-run/sqlite",
+  "version": "1.0.0",
+  "description": "SQLite database layer with vector extensions for ctx-run",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint src/",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.4.0",
+    "sqlite-vec": "^0.0.1-alpha.10"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.9",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}

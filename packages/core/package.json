@@ -1,0 +1,29 @@
+{
+  "name": "@ctx-run/core",
+  "version": "1.0.0",
+  "description": "Core retrieval pipelines and processing logic for ctx-run",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint src/",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ctx-run/sqlite": "workspace:*",
+    "@ctx-run/embeddings": "workspace:*",
+    "@ctx-run/reranker": "workspace:*",
+    "axios": "^1.6.0",
+    "natural": "^6.5.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/natural": "^5.1.5",
+    "@types/uuid": "^9.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}

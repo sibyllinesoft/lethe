@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "strict": true,
+    "noEmit": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ctx-run/cli": ["./packages/cli/src"],
+      "@ctx-run/core": ["./packages/core/src"],  
+      "@ctx-run/sqlite": ["./packages/sqlite/src"],
+      "@ctx-run/embeddings": ["./packages/embeddings/src"],
+      "@ctx-run/reranker": ["./packages/reranker/src"],
+      "@ctx-run/devserver": ["./packages/devserver/src"]
+    }
+  },
+  "include": ["packages/**/*"],
+  "exclude": ["node_modules", "**/node_modules", "dist", "**/dist"]
+}

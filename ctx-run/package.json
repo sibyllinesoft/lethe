@@ -1,0 +1,16 @@
+{
+  "name": "lethe",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "packages/devserver"
+  ],
+  "scripts": {
+    "build": "lerna run build",
+    "start": "lerna run start --scope devserver"
+  },
+  "devDependencies": {
+    "lerna": "^8.1.2",
+    "typescript": "^5.5.2"
+  }
+}
