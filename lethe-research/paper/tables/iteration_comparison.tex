@@ -1,0 +1,22 @@
+\begin{table*}[htbp]
+\centering
+\caption{Iteration-by-Iteration Feature Implementation and Performance}
+\label{tab:iteration-comparison}
+\begin{tabular}{lllccccc}
+\toprule
+Iteration & Key Features & Focus Area & NDCG@10 & Latency (ms) & Quality Gain & Latency Cost & Efficiency \\
+\midrule
+Baseline & BM25 + Vector Hybrid & Simple Retrieval & 0.525 & 114 & — & — & — \\
+Iter.1 & Semantic Diversification & Coverage Enhancement & 0.737 & 908 & +40.3\% & +793ms & 0.81 \\
+Iter.2 & Query Understanding & Query Processing & 0.793 & 1159 & +51.0\% & +1044ms & 0.68 \\
+Iter.3 & Dynamic ML Fusion & Adaptive Parameters & 0.853 & 1319 & +62.3\% & +1204ms & 0.65 \\
+Iter.4 & LLM Reranking & Quality Refinement & 0.916 & 1483 & +74.4\% & +1368ms & 0.62 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item Quality Gain: Improvement in NDCG@10 relative to baseline.
+\item Latency Cost: Additional latency relative to baseline.  
+\item Efficiency: NDCG@10 per second (higher is better).
+\end{tablenotes}
+\end{table*}

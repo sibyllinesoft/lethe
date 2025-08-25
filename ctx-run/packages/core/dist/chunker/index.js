@@ -2,17 +2,61 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.chunkMessage = chunkMessage;
 const crypto_1 = require("crypto");
-// Simple BPE-style token counter approximation
+// Enhanced BPE-style token counter with better accuracy
 function countTokens(text) {
-    // Rough approximation: 1 token ≈ 4 characters as fallback
-    // Could be enhanced with gpt-tokenizer for better accuracy
-    return Math.ceil(text.length / 4);
+    // More accurate GPT tokenization approximation
+    // Based on analysis of typical tokenization patterns
+    if (!text.length)
+        return 0;
+    // Count different types of tokens
+    let tokenCount = 0;
+    // Handle whitespace - each sequence of whitespace is typically 1 token
+    const whitespaceMatches = text.match(/\s+/g);
+    const whitespaceTokens = whitespaceMatches ? whitespaceMatches.length : 0;
+    // Remove whitespace for word analysis
+    const nonWhitespaceText = text.replace(/\s+/g, '');
+    if (!nonWhitespaceText)
+        return whitespaceTokens;
+    // Split into alphanumeric and non-alphanumeric segments
+    const segments = nonWhitespaceText.split(/([a-zA-Z0-9]+)/);
+    for (const segment of segments) {
+        if (!segment)
+            continue;
+        if (/^[a-zA-Z0-9]+$/.test(segment)) {
+            // Alphanumeric words
+            if (segment.length <= 4) {
+                tokenCount += 1; // Short words are typically 1 token
+            }
+            else if (segment.length <= 8) {
+                tokenCount += Math.ceil(segment.length / 4); // Medium words ~4 chars per token
+            }
+            else {
+                tokenCount += Math.ceil(segment.length / 3); // Long words ~3 chars per token
+            }
+        }
+        else {
+            // Special characters and punctuation
+            // Each character or small group is typically 1 token
+            const specialChars = segment.length;
+            tokenCount += Math.max(1, Math.ceil(specialChars / 2));
+        }
+    }
+    // Add whitespace tokens
+    tokenCount += whitespaceTokens;
+    // Apply realistic bounds - minimum 1 token for non-empty text
+    return Math.max(1, tokenCount);
 }
-// Unicode-aware sentence splitter
+// Unicode-aware sentence splitter with fallback to word splitting
 function splitSentences(text) {
     // Simple regex-based sentence splitting
     const sentences = text.split(/(?<=[.!?])\s+/);
-    return sentences.filter(s => s.trim().length > 0);
+    const filtered = sentences.filter(s => s.trim().length > 0);
+    // If no sentences found (no punctuation), fall back to word splitting
+    if (filtered.length === 1 && !text.match(/[.!?]/)) {
+        const words = text.split(/\s+/);
+        return words.filter(w => w.trim().length > 0);
+    }
+    return filtered;
 }
 // Detect code fences
 function extractCodeFences(text) {
@@ -112,7 +156,7 @@ function createChunks(messageId, sessionId, parts, targetTokens = 320, overlap =
                     }
                     else {
                         currentChunk += (currentChunk ? ' ' : '') + sentence;
-                        currentTokens += sentenceTokens;
+                        currentTokens = currentTokens + sentenceTokens;
                     }
                 }
                 // Add final chunk
@@ -214,4 +258,3 @@ function chunkMessage(msg) {
     // Create chunks from parts
     return createChunks(msg.id, msg.session_id, parts);
 }
-//# sourceMappingURL=index.js.map

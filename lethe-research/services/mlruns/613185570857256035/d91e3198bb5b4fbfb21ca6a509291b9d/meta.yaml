@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/613185570857256035/d91e3198bb5b4fbfb21ca6a509291b9d/artifacts
+end_time: 1755979198208
+entry_point_name: ''
+experiment_id: '613185570857256035'
+lifecycle_stage: active
+run_id: d91e3198bb5b4fbfb21ca6a509291b9d
+run_name: zealous-skunk-336
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755979196611
+status: 3
+tags: []
+user_id: nathan

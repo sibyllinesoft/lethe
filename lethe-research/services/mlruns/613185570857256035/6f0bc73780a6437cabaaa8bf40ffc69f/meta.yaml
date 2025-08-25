@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/613185570857256035/6f0bc73780a6437cabaaa8bf40ffc69f/artifacts
+end_time: 1755979153973
+entry_point_name: ''
+experiment_id: '613185570857256035'
+lifecycle_stage: active
+run_id: 6f0bc73780a6437cabaaa8bf40ffc69f
+run_name: rambunctious-doe-598
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755979152395
+status: 3
+tags: []
+user_id: nathan

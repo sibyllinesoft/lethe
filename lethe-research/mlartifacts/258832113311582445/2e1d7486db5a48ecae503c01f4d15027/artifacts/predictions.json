@@ -1,0 +1,42 @@
+[
+  {
+    "query": "How to implement async functions in Python?",
+    "alpha": 0.85,
+    "beta": 0.5,
+    "plan": "exploit",
+    "prediction_time_ms": 0.08153915405273438,
+    "total_latency_ms": 2.270221710205078
+  },
+  {
+    "query": "FastAPI validation error handling",
+    "alpha": 0.6,
+    "beta": 0.65,
+    "plan": "verify",
+    "prediction_time_ms": 0.03504753112792969,
+    "total_latency_ms": 1.4734268188476562
+  },
+  {
+    "query": "TypeScript interface best practices",
+    "alpha": 0.7,
+    "beta": 0.5,
+    "plan": "explore",
+    "prediction_time_ms": 0.04029273986816406,
+    "total_latency_ms": 1.3165473937988281
+  },
+  {
+    "query": "React component optimization techniques",
+    "alpha": 0.7,
+    "beta": 0.5,
+    "plan": "exploit",
+    "prediction_time_ms": 0.041484832763671875,
+    "total_latency_ms": 1.4085769653320312
+  },
+  {
+    "query": "Node.js memory leak debugging",
+    "alpha": 0.6,
+    "beta": 0.65,
+    "plan": "verify",
+    "prediction_time_ms": 0.0247955322265625,
+    "total_latency_ms": 1.2919902801513672
+  }
+]

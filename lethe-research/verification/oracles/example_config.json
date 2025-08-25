@@ -1,0 +1,85 @@
+{
+  "verifications": [
+    {
+      "oracle": "retrieval_ground_truth",
+      "params": {
+        "query": "python async programming",
+        "ground_truth": [
+          {"document_id": "doc_1", "relevance_score": 1.0},
+          {"document_id": "doc_2", "relevance_score": 0.8},
+          {"document_id": "doc_3", "relevance_score": 0.6},
+          {"document_id": "doc_4", "relevance_score": 0.4},
+          {"document_id": "doc_5", "relevance_score": 0.2}
+        ],
+        "actual_results": [
+          {"document_id": "doc_1", "score": 0.95},
+          {"document_id": "doc_2", "score": 0.87},
+          {"document_id": "doc_3", "score": 0.72}
+        ]
+      }
+    },
+    {
+      "oracle": "differential_testing",
+      "params": {
+        "input_data": "test query for comparison",
+        "baseline_result": [
+          {"id": "doc_1", "score": 0.9},
+          {"id": "doc_2", "score": 0.8}
+        ],
+        "test_result": [
+          {"id": "doc_1", "score": 0.91},
+          {"id": "doc_2", "score": 0.79}
+        ]
+      }
+    },
+    {
+      "oracle": "statistical_validation",
+      "params": {
+        "experiment_data": {
+          "samples": [0.82, 0.85, 0.79, 0.88, 0.81, 0.84, 0.86, 0.83, 0.87, 0.80],
+          "p_value": 0.03,
+          "effect_size": 0.65,
+          "confidence_interval": [0.78, 0.89]
+        },
+        "expected_properties": {
+          "distribution": {"type": "normal"},
+          "significance": {"significant": true},
+          "effect_size": {"min_effect_size": 0.5},
+          "confidence_intervals": {"excludes_zero": true}
+        }
+      }
+    },
+    {
+      "oracle": "performance_validation",
+      "params": {
+        "performance_data": {
+          "latency": 0.15,
+          "memory_usage": 1200000000,
+          "throughput": 150
+        },
+        "bounds": {
+          "max_latency": 3.0,
+          "max_memory": 1500000000,
+          "min_throughput": 100
+        }
+      }
+    },
+    {
+      "oracle": "metamorphic_validation",
+      "params": {
+        "original_input": "machine learning",
+        "transformed_input": "machine learning AI artificial intelligence",
+        "original_output": [
+          {"id": "doc_1", "score": 0.9},
+          {"id": "doc_2", "score": 0.8}
+        ],
+        "transformed_output": [
+          {"id": "doc_1", "score": 0.9},
+          {"id": "doc_2", "score": 0.8},
+          {"id": "doc_3", "score": 0.7}
+        ],
+        "relation": "query_expansion"
+      }
+    }
+  ]
+}

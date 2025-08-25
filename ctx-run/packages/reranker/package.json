@@ -1,0 +1,26 @@
+{
+  "name": "@lethe/reranker",
+  "version": "0.1.0",
+  "description": "LLM-based reranking with contradiction awareness for Lethe",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@lethe/sqlite": "workspace:*",
+    "@lethe/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.0"
+  },
+  "keywords": [
+    "llm",
+    "reranking",
+    "contradiction",
+    "retrieval"
+  ],
+  "license": "MIT"
+}

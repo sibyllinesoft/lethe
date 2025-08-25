@@ -26,4 +26,8 @@ __exportStar(require("./hyde"), exports);
 __exportStar(require("./summarize"), exports);
 __exportStar(require("./state"), exports);
 __exportStar(require("./pipeline"), exports);
+// Iteration 2 components
+__exportStar(require("./query-understanding"), exports);
+// Configuration management (externalized)
+__exportStar(require("./config"), exports);
 //# sourceMappingURL=index.js.map

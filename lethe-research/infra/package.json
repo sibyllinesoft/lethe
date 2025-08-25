@@ -1,0 +1,42 @@
+{
+  "name": "lethe-research-infra",
+  "version": "1.0.0",
+  "description": "Infrastructure dependencies for Lethe Research Project",
+  "private": true,
+  "engines": {
+    "node": ">=20.10.0",
+    "npm": ">=10.2.3"
+  },
+  "dependencies": {
+    "jsonwebtoken": "9.0.2",
+    "helmet": "7.1.0",
+    "express-rate-limit": "7.1.5",
+    "cors": "2.8.5",
+    "compression": "1.7.4"
+  },
+  "devDependencies": {
+    "@types/node": "20.10.4",
+    "typescript": "5.3.3",
+    "eslint": "8.55.0",
+    "@typescript-eslint/parser": "6.13.2",
+    "@typescript-eslint/eslint-plugin": "6.13.2",
+    "prettier": "3.1.0"
+  },
+  "scripts": {
+    "lint": "eslint . --ext .ts,.js",
+    "format": "prettier --write .",
+    "type-check": "tsc --noEmit",
+    "security-audit": "npm audit --audit-level high",
+    "license-check": "npm ls --depth=0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lethe-research/lethe-research.git"
+  },
+  "author": "Lethe Research Team",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/lethe-research/lethe-research/issues"
+  },
+  "homepage": "https://github.com/lethe-research/lethe-research#readme"
+}

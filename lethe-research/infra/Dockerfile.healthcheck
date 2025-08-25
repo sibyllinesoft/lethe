@@ -1,0 +1,33 @@
+# Health Check Service Dockerfile
+# Lightweight monitoring container for service health validation
+
+FROM python:3.11-alpine AS healthcheck
+
+# Install minimal dependencies
+RUN apk add --no-cache \
+    curl=8.5.0-r0 \
+    jq=1.7-r4 \
+    && rm -rf /var/cache/apk/*
+
+# Create non-root user
+RUN addgroup -g 1001 monitor && adduser -D -u 1001 -G monitor monitor
+
+# Install Python health check dependencies
+RUN pip install --no-cache-dir \
+    requests==2.31.0 \
+    prometheus-client==0.19.0 \
+    psutil==5.9.6
+
+WORKDIR /app
+
+# Copy health check scripts
+COPY --chown=monitor:monitor scripts/health_check.py .
+COPY --chown=monitor:monitor monitoring/ ./monitoring/
+
+USER monitor
+
+# Health check command
+HEALTHCHECK --interval=60s --timeout=15s --start-period=10s --retries=3 \
+    CMD python -m monitoring.health_check
+
+CMD ["python", "-u", "monitoring/continuous_monitor.py"]

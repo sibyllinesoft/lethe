@@ -1,0 +1,455 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
+// Mock fs for testing
+vi.mock('fs', () => ({
+  readFileSync: vi.fn(),
+  existsSync: vi.fn(),
+  writeFileSync: vi.fn()
+}));
+
+describe('Config Comprehensive Tests', () => {
+  let fs: any;
+  
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    // Set up fs mocks
+    fs = await import('fs');
+  });
+
+  describe('DEFAULT_CONFIG', () => {
+    it('should have valid default configuration structure', async () => {
+      const { DEFAULT_CONFIG } = await import('./index.js');
+      
+      expect(DEFAULT_CONFIG).toBeDefined();
+      expect(DEFAULT_CONFIG.version).toBe('1.0.0');
+      expect(DEFAULT_CONFIG.retrieval).toBeDefined();
+      expect(DEFAULT_CONFIG.retrieval.alpha).toBe(0.7);
+      expect(DEFAULT_CONFIG.retrieval.beta).toBe(0.5);
+      expect(DEFAULT_CONFIG.chunking).toBeDefined();
+      expect(DEFAULT_CONFIG.timeouts).toBeDefined();
+      expect(DEFAULT_CONFIG.features).toBeDefined();
+    });
+
+    it('should have valid timeout defaults', async () => {
+      const { DEFAULT_CONFIG } = await import('./index.js');
+      
+      expect(DEFAULT_CONFIG.timeouts.hyde_ms).toBeGreaterThan(0);
+      expect(DEFAULT_CONFIG.timeouts.summarize_ms).toBeGreaterThan(0);
+      expect(DEFAULT_CONFIG.timeouts.ollama_connect_ms).toBeGreaterThan(0);
+    });
+
+    it('should have valid retrieval defaults', async () => {
+      const { DEFAULT_CONFIG } = await import('./index.js');
+      
+      expect(DEFAULT_CONFIG.retrieval.gamma_kind_boost).toBeDefined();
+      expect(DEFAULT_CONFIG.retrieval.gamma_kind_boost.code).toBeGreaterThanOrEqual(0);
+      expect(DEFAULT_CONFIG.retrieval.gamma_kind_boost.text).toBeGreaterThanOrEqual(0);
+      
+      expect(DEFAULT_CONFIG.retrieval.fusion).toBeDefined();
+      expect(typeof DEFAULT_CONFIG.retrieval.fusion.dynamic).toBe('boolean');
+      
+      expect(DEFAULT_CONFIG.retrieval.llm_rerank).toBeDefined();
+      expect(typeof DEFAULT_CONFIG.retrieval.llm_rerank.use_llm).toBe('boolean');
+    });
+  });
+
+  describe('loadConfig function', () => {
+    it('should load default config when no config file exists', async () => {
+      // Mock fs.existsSync to return false for all paths
+      vi.mocked(fs.existsSync).mockReturnValue(false);
+      
+      const { loadConfig, DEFAULT_CONFIG } = await import('./index.js');
+      const config = loadConfig();
+      
+      expect(config.version).toBe(DEFAULT_CONFIG.version);
+      expect(config.retrieval.alpha).toBe(DEFAULT_CONFIG.retrieval.alpha);
+    });
+
+    it('should load and parse valid config file', async () => {
+      const customConfig = {
+        version: '2.0.0',
+        description: 'Custom config',
+        retrieval: {
+          alpha: 0.8,
+          beta: 0.6
+        },
+        chunking: {
+          target_tokens: 500,
+          overlap: 100
+        }
+      };
+
+      // Mock fs to return our test config
+      vi.mocked(fs.existsSync).mockImplementation((path: string) => 
+        path.toString().endsWith('ctx.config.json')
+      );
+      vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify(customConfig));
+
+      const { loadConfig } = await import('./index.js');
+      const config = loadConfig();
+      
+      expect(config.version).toBe('2.0.0');
+      expect(config.description).toBe('Custom config');
+      expect(config.retrieval.alpha).toBe(0.8);
+      expect(config.retrieval.beta).toBe(0.6);
+      expect(config.chunking.target_tokens).toBe(500);
+      expect(config.chunking.overlap).toBe(100);
+      
+      // Should still have defaults for unspecified fields
+      expect(config.features).toBeDefined();
+      expect(config.timeouts).toBeDefined();
+    });
+
+    it('should handle invalid JSON gracefully', async () => {
+      vol.fromJSON({
+        'ctx.config.json': 'invalid json content'
+      });
+
+      const { loadConfig, DEFAULT_CONFIG } = await import('./index.js');
+      const config = loadConfig();
+      
+      // Should fallback to defaults
+      expect(config.version).toBe(DEFAULT_CONFIG.version);
+    });
+
+    it('should try multiple config paths in order', async () => {
+      // Create config in ctx-run subdirectory
+      vol.fromJSON({
+        'ctx-run/ctx.config.json': JSON.stringify({ version: '3.0.0' })
+      });
+
+      const { loadConfig } = await import('./index.js');
+      const config = loadConfig();
+      
+      expect(config.version).toBe('3.0.0');
+    });
+
+    it('should use custom base path when provided', async () => {
+      vol.fromJSON({
+        'custom/path/ctx.config.json': JSON.stringify({ version: '4.0.0' })
+      });
+
+      const { loadConfig } = await import('./index.js');
+      const config = loadConfig('custom/path');
+      
+      expect(config.version).toBe('4.0.0');
+    });
+
+    it('should handle partial configurations', async () => {
+      const partialConfig = {
+        retrieval: {
+          alpha: 0.9
+          // beta missing - should use default
+        }
+      };
+
+      vol.fromJSON({
+        'ctx.config.json': JSON.stringify(partialConfig)
+      });
+
+      const { loadConfig, DEFAULT_CONFIG } = await import('./index.js');
+      const config = loadConfig();
+      
+      expect(config.retrieval.alpha).toBe(0.9);
+      expect(config.retrieval.beta).toBe(DEFAULT_CONFIG.retrieval.beta);
+      expect(config.version).toBe(DEFAULT_CONFIG.version);
+    });
+  });
+
+  describe('reloadConfig function', () => {
+    it('should reload config and clear cache', async () => {
+      // First load with one config
+      vol.fromJSON({
+        'ctx.config.json': JSON.stringify({ version: '1.0.0' })
+      });
+
+      const { loadConfig, reloadConfig } = await import('./index.js');
+      const config1 = loadConfig();
+      expect(config1.version).toBe('1.0.0');
+
+      // Update config file
+      vol.fromJSON({
+        'ctx.config.json': JSON.stringify({ version: '2.0.0' })
+      });
+
+      // Reload should pick up new version
+      const config2 = reloadConfig();
+      expect(config2.version).toBe('2.0.0');
+    });
+  });
+
+  describe('getConfig function', () => {
+    it('should return cached config if available', async () => {
+      vol.fromJSON({
+        'ctx.config.json': JSON.stringify({ version: '1.0.0' })
+      });
+
+      const { loadConfig, getConfig } = await import('./index.js');
+      
+      // Load config first
+      const config1 = loadConfig();
+      
+      // getConfig should return same instance
+      const config2 = getConfig();
+      expect(config2.version).toBe(config1.version);
+    });
+
+    it('should load config if not cached', async () => {
+      vol.fromJSON({
+        'ctx.config.json': JSON.stringify({ version: '1.0.0' })
+      });
+
+      const { getConfig } = await import('./index.js');
+      const config = getConfig();
+      
+      expect(config.version).toBe('1.0.0');
+    });
+  });
+
+  describe('validateConfig function', () => {
+    it('should pass validation for valid default config', async () => {
+      const { validateConfig, DEFAULT_CONFIG } = await import('./index.js');
+      
+      expect(() => validateConfig(DEFAULT_CONFIG)).not.toThrow();
+    });
+
+    it('should throw error for missing version', async () => {
+      const { validateConfig, DEFAULT_CONFIG } = await import('./index.js');
+      const invalidConfig = { ...DEFAULT_CONFIG, version: '' };
+      
+      expect(() => validateConfig(invalidConfig)).toThrow('Configuration missing required "version" field');
+    });
+
+    it('should throw error for invalid alpha values', async () => {
+      const { validateConfig, DEFAULT_CONFIG } = await import('./index.js');
+      
+      const invalidConfig1 = { 
+        ...DEFAULT_CONFIG, 
+        retrieval: { ...DEFAULT_CONFIG.retrieval, alpha: -0.1 }
+      };
+      expect(() => validateConfig(invalidConfig1)).toThrow('retrieval.alpha must be between 0 and 1');
+
+      const invalidConfig2 = { 
+        ...DEFAULT_CONFIG, 
+        retrieval: { ...DEFAULT_CONFIG.retrieval, alpha: 1.1 }
+      };
+      expect(() => validateConfig(invalidConfig2)).toThrow('retrieval.alpha must be between 0 and 1');
+    });
+
+    it('should throw error for invalid beta values', async () => {
+      const { validateConfig, DEFAULT_CONFIG } = await import('./index.js');
+      
+      const invalidConfig = { 
+        ...DEFAULT_CONFIG, 
+        retrieval: { ...DEFAULT_CONFIG.retrieval, beta: -0.1 }
+      };
+      expect(() => validateConfig(invalidConfig)).toThrow('retrieval.beta must be between 0 and 1');
+    });
+
+    it('should throw error for invalid chunking values', async () => {
+      const { validateConfig, DEFAULT_CONFIG } = await import('./index.js');
+      
+      const invalidConfig1 = { 
+        ...DEFAULT_CONFIG, 
+        chunking: { ...DEFAULT_CONFIG.chunking, target_tokens: 0 }
+      };
+      expect(() => validateConfig(invalidConfig1)).toThrow('chunking.target_tokens must be positive');
+
+      const invalidConfig2 = { 
+        ...DEFAULT_CONFIG, 
+        chunking: { ...DEFAULT_CONFIG.chunking, overlap: -1 }
+      };
+      expect(() => validateConfig(invalidConfig2)).toThrow('chunking.overlap must be non-negative and less than target_tokens');
+    });
+
+    it('should throw error for invalid timeout values', async () => {
+      const { validateConfig, DEFAULT_CONFIG } = await import('./index.js');
+      
+      const invalidConfig = { 
+        ...DEFAULT_CONFIG, 
+        timeouts: { ...DEFAULT_CONFIG.timeouts, hyde_ms: 0 }
+      };
+      expect(() => validateConfig(invalidConfig)).toThrow('timeouts.hyde_ms must be positive');
+    });
+
+    it('should validate ML service configuration', async () => {
+      const { validateConfig, DEFAULT_CONFIG } = await import('./index.js');
+      
+      const invalidConfig1 = { 
+        ...DEFAULT_CONFIG, 
+        ml: {
+          ...DEFAULT_CONFIG.ml,
+          prediction_service: {
+            ...DEFAULT_CONFIG.ml!.prediction_service!,
+            enabled: true,
+            port: 0
+          }
+        }
+      };
+      expect(() => validateConfig(invalidConfig1)).toThrow('ml.prediction_service.port must be a valid port number');
+
+      const invalidConfig2 = { 
+        ...DEFAULT_CONFIG, 
+        ml: {
+          ...DEFAULT_CONFIG.ml,
+          prediction_service: {
+            ...DEFAULT_CONFIG.ml!.prediction_service!,
+            enabled: true,
+            timeout_ms: 0
+          }
+        }
+      };
+      expect(() => validateConfig(invalidConfig2)).toThrow('ml.prediction_service.timeout_ms must be positive');
+    });
+  });
+
+  describe('createDefaultConfigFile function', () => {
+    it('should create default config file at specified path', async () => {
+      const { createDefaultConfigFile } = await import('./index.js');
+      
+      expect(() => createDefaultConfigFile('test-config.json')).not.toThrow();
+    });
+
+    it('should handle file creation errors', async () => {
+      const { createDefaultConfigFile } = await import('./index.js');
+      
+      // Mock writeFileSync to throw an error
+      const fs = await import('fs');
+      vi.mocked(fs.writeFileSync).mockImplementationOnce(() => {
+        throw new Error('Permission denied');
+      });
+      
+      expect(() => createDefaultConfigFile('/invalid/path.json'))
+        .toThrow('Failed to create config file');
+    });
+  });
+
+  describe('Complex configuration scenarios', () => {
+    it('should handle deeply nested partial configurations', async () => {
+      const partialConfig = {
+        retrieval: {
+          gamma_kind_boost: {
+            code: 0.2
+            // text missing
+          },
+          fusion: {
+            dynamic: true
+          }
+          // llm_rerank missing entirely
+        }
+      };
+
+      vol.fromJSON({
+        'ctx.config.json': JSON.stringify(partialConfig)
+      });
+
+      const { loadConfig, DEFAULT_CONFIG } = await import('./index.js');
+      const config = loadConfig();
+      
+      expect(config.retrieval.gamma_kind_boost.code).toBe(0.2);
+      expect(config.retrieval.gamma_kind_boost.text).toBe(DEFAULT_CONFIG.retrieval.gamma_kind_boost.text);
+      expect(config.retrieval.fusion.dynamic).toBe(true);
+      expect(config.retrieval.llm_rerank).toEqual(DEFAULT_CONFIG.retrieval.llm_rerank);
+    });
+
+    it('should handle configuration with all optional sections missing', async () => {
+      const minimalConfig = {
+        version: '1.0.0',
+        retrieval: {
+          alpha: 0.5,
+          beta: 0.5,
+          gamma_kind_boost: {
+            code: 0.1,
+            text: 0.0
+          }
+        },
+        chunking: {
+          target_tokens: 300,
+          overlap: 50
+        },
+        timeouts: {
+          hyde_ms: 5000,
+          summarize_ms: 5000,
+          ollama_connect_ms: 300
+        }
+      };
+
+      vol.fromJSON({
+        'ctx.config.json': JSON.stringify(minimalConfig)
+      });
+
+      const { loadConfig, DEFAULT_CONFIG } = await import('./index.js');
+      const config = loadConfig();
+      
+      expect(config.features).toEqual(DEFAULT_CONFIG.features);
+      expect(config.query_understanding).toEqual(DEFAULT_CONFIG.query_understanding);
+      expect(config.ml).toEqual(DEFAULT_CONFIG.ml);
+      expect(config.development).toEqual(DEFAULT_CONFIG.development);
+    });
+
+    it('should handle edge case values in validation', async () => {
+      const { validateConfig, DEFAULT_CONFIG } = await import('./index.js');
+      
+      // Edge case: exactly at boundaries
+      const edgeConfig = {
+        ...DEFAULT_CONFIG,
+        retrieval: {
+          ...DEFAULT_CONFIG.retrieval,
+          alpha: 0, // Minimum valid
+          beta: 1   // Maximum valid
+        },
+        chunking: {
+          ...DEFAULT_CONFIG.chunking,
+          target_tokens: 1,
+          overlap: 0
+        }
+      };
+      
+      expect(() => validateConfig(edgeConfig)).not.toThrow();
+    });
+  });
+
+  describe('Error handling and edge cases', () => {
+    it('should handle undefined config sections gracefully', async () => {
+      const configWithUndefined = {
+        version: '1.0.0',
+        retrieval: undefined,
+        chunking: undefined,
+        timeouts: undefined
+      };
+
+      vol.fromJSON({
+        'ctx.config.json': JSON.stringify(configWithUndefined)
+      });
+
+      const { loadConfig, DEFAULT_CONFIG } = await import('./index.js');
+      const config = loadConfig();
+      
+      expect(config.retrieval).toEqual(DEFAULT_CONFIG.retrieval);
+      expect(config.chunking).toEqual(DEFAULT_CONFIG.chunking);
+      expect(config.timeouts).toEqual(DEFAULT_CONFIG.timeouts);
+    });
+
+    it('should handle config file with only primitive values', async () => {
+      const primitiveConfig = {
+        version: '1.0.0',
+        description: 'Test config'
+      };
+
+      vol.fromJSON({
+        'ctx.config.json': JSON.stringify(primitiveConfig)
+      });
+
+      const { loadConfig, DEFAULT_CONFIG } = await import('./index.js');
+      const config = loadConfig();
+      
+      expect(config.version).toBe('1.0.0');
+      expect(config.description).toBe('Test config');
+      expect(config.retrieval).toEqual(DEFAULT_CONFIG.retrieval);
+    });
+  });
+});

@@ -1,4 +1,115 @@
-# Add patterns to ignore here, one per line
-# Example:
-# *.log
-# tmp/
+# ============================================================================
+# REPOMIXIGNORE - Optimized for LLM Code Analysis
+# Focus on core architecture, algorithms, and methodology
+# ============================================================================
+
+# === ARTIFACT BUNDLES AND DUPLICATES ===
+# Exclude redundant copies and compressed archives
+*.tar.gz*
+*.zip
+lethe-neurips2025-artifact/
+lethe-neurips2025-artifact-*/
+lethe-research/lethe-neurips2025-artifact-*/
+
+# === EXPERIMENTAL DATA AND RESULTS ===
+# Exclude large datasets and experimental outputs
+artifacts/
+*/artifacts/
+lethe-research/artifacts/
+data/
+*/data/
+datasets/code/
+datasets/prose/
+datasets/tool/
+lethe-research/datasets/code/
+lethe-research/datasets/prose/
+lethe-research/datasets/tool/
+mlruns/
+*/mlruns/
+
+# === GENERATED AND BINARY FILES ===
+# Exclude compiled, generated, and binary content
+dist/
+build/
+.next/
+.turbo/
+node_modules/
+*.tsbuildinfo
+*.map
+*.joblib
+*.pkl
+*.pickle
+*.pdf
+*.png
+*.jpg
+*.jpeg
+
+# Exclude large tokenizer data files and temp directories
+temp_gpt_tokenizer/
+*/temp_gpt_tokenizer/
+bpeRanks/
+*/bpeRanks/
+*.js.map
+coverage/
+*/coverage/
+__snapshots__/
+*/__snapshots__/
+
+# === LATEX AND DOCUMENTATION ARTIFACTS ===
+# Exclude LaTeX compilation artifacts
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# === TEST AND DEBUG FILES ===
+# Exclude test artifacts and debug outputs (keep test source code)
+test-env/
+logs/
+debug_*.js
+validate_*.py
+*_integration_test_*.json
+*_validation_*.json
+*_training_results_*.json
+*.log
+
+# === LARGE JSON DATA FILES ===
+# Exclude large data files but keep essential configs
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!lerna.json
+!turbo.json
+!vitest.config.json
+!ctx.config.json
+!repomix.config.json
+
+# === GENERATED DOCUMENTATION ===
+# Exclude large generated documentation (keep core docs)
+LATENCY_ANALYSIS_SUMMARY.md
+RESEARCH_STATUS.md
+ITERATION_ROADMAP.md
+*_IMPLEMENTATION_COMPLETE.md
+*_COMPLETE.md
+HARDENING_COMPLETION_SUMMARY.md
+PHASE_*.md
+
+# === PREVIOUS OUTPUTS ===
+repo-analysis*.txt
+repo-clean.txt
+
+# ============================================================================
+# INCLUDE PRIORITY: Files most useful for LLM analysis
+# ============================================================================
+# ✅ Core TypeScript source code (packages/*/src/**/*.ts)
+# ✅ Python research algorithms (experiments/*.py, scripts/*.py)
+# ✅ Configuration files (*.json configs, Makefile, etc.)
+# ✅ Documentation (README.md, TODO.md, core docs)
+# ✅ Package manifests and build configs
+# ✅ Test source code (*.test.ts, but not test outputs)
+# ✅ LaTeX source files (*.tex, *.sty) 
+# ✅ Core shell scripts (*.sh for build/deploy)
+# ============================================================================

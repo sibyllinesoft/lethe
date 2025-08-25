@@ -1,0 +1,52 @@
+# Pinned Python dependencies with hash verification
+# Generated for Lethe Research Infrastructure - Production Build
+
+# Core framework dependencies
+fastapi==0.104.1 \
+    --hash=sha256:17ea427674467486e997206a5ab25760f6b09e069f099b96f5b55a32fb6f1631
+uvicorn[standard]==0.24.0 \
+    --hash=sha256:09c8e5a79dc466bdf28dead50093957db184de356fcdc48697bad3bde4c2588e
+pydantic==2.5.1 \
+    --hash=sha256:0b8be5413c06aadfbe56f6dc1d45c9ed25fd43264414c571135c97dd77c2bedb
+
+# Security and validation
+cryptography==41.0.7 \
+    --hash=sha256:13f93ce9bea8016c253b34afc6bd6a75993e5c40672ed5405a9c832f0d4a00bc
+python-jose[cryptography]==3.3.0 \
+    --hash=sha256:9b1376b023f8b298536eedd47ae1089bcdb848f1535ab30555cd92002d78923a
+passlib[bcrypt]==1.7.4 \
+    --hash=sha256:defd50f72b65c5402ab2c573830a6978e5f202ad0d984793c8dde2c4152ebe04
+
+# Data processing and validation
+jsonschema==4.20.0 \
+    --hash=sha256:ed6231f0429ecf966f5bc8dfef245998220549cbbcf140f913b7464c52c3b6b3
+requests==2.31.0 \
+    --hash=sha256:58cd2187c01e70e6e26505bca751777aa9f2ee0b7f4300988b709f44e013003f
+httpx==0.25.2 \
+    --hash=sha256:8b8fcaa0c8ea7b05edd69a094e63a2094c4efcb48129fb757361bc423c0ad9e8
+
+# Testing framework
+pytest==7.4.3 \
+    --hash=sha256:d989d136982de4e3b29dabcc838ad581c64e8ed52c11fbe86ddebd9da0818cd5
+pytest-asyncio==0.21.1 \
+    --hash=sha256:40a7eae6dded22c7b604986855ea48400ab15b069ae38116e8c01238e9eeb64d
+pytest-cov==4.1.0 \
+    --hash=sha256:3904b13dfbfec47f003b8e77fd5b589cd11904a21ddc8a1ce5f8b318ba9cf5c1
+
+# Performance and monitoring
+prometheus-client==0.19.0 \
+    --hash=sha256:c88b1e6ecf6b41cd8fb5731c7ae919bf66df6ec6fafa555cd6c0e16ca169ae92
+psutil==5.9.6 \
+    --hash=sha256:e2cf13f0b4d4ef1b06e95efb00c5ec9b18d6196e3b0ee4d1dfd6e17a1d3c23b2
+
+# Development and debugging (dev/test only)
+black==23.11.0 \
+    --hash=sha256:bf6201a6dd613d2067b41b2b6b78d4b4e4f9fb19ff94c4b9dd6630bb8b9c6e38
+isort==5.12.0 \
+    --hash=sha256:8bef7dde241278824a6d83f44a544709b065191b95b6e50894bdc722fcba0504
+mypy==1.7.1 \
+    --hash=sha256:fcb6d9afb1b6208b4c712af0dafdc650f518836065df0d4fb1d800f5d6773db2
+
+# Hash integrity verification
+pip-tools==7.3.0 \
+    --hash=sha256:8717693288720a8c6ebd07149c93ab0be1fced0b5191df9e9decd3263e20d85e

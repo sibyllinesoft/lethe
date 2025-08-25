@@ -11,3 +11,9 @@ export * from './hyde';
 export * from './summarize';
 export * from './state';
 export * from './pipeline';
+
+// Iteration 2 components
+export * from './query-understanding';
+
+// Configuration management (externalized)
+export * from './config';

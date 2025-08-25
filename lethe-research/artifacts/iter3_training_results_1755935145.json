@@ -1,0 +1,40 @@
+{
+  "training_results": {
+    "fusion_model": {
+      "alpha_mse": 0.031735571054317464,
+      "beta_mse": 0.025990112271330544,
+      "alpha_cv_mean": 0.029244336782847723,
+      "alpha_cv_std": 0.002072475560539421,
+      "beta_cv_mean": 0.021441716543215583,
+      "beta_cv_std": 0.0021103641403704544,
+      "training_samples": 1000,
+      "model_type": "ridge"
+    },
+    "plan_selector": {
+      "accuracy": 0.47,
+      "cv_mean": 0.5025,
+      "cv_std": 0.021866069605669888,
+      "best_params": {
+        "C": 0.1,
+        "penalty": "l2",
+        "solver": "liblinear"
+      },
+      "training_samples": 1000,
+      "class_distribution": "[0.288 0.383 0.329]"
+    },
+    "training_data_size": 1000,
+    "timestamp": 1755935145.1294303
+  },
+  "model_paths": {
+    "fusion_model": "models/dynamic_fusion_model.joblib",
+    "plan_selector": "models/learned_plan_selector.joblib",
+    "feature_extractor": "models/feature_extractor.json"
+  },
+  "validation": {
+    "load_success": true,
+    "avg_prediction_time_ms": 0.4364490509033203,
+    "max_prediction_time_ms": 0.5881786346435547,
+    "speed_requirement_met": "True"
+  },
+  "timestamp": 1755935145.1354256
+}

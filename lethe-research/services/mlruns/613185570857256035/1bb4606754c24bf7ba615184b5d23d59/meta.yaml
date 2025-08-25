@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/613185570857256035/1bb4606754c24bf7ba615184b5d23d59/artifacts
+end_time: 1755979193094
+entry_point_name: ''
+experiment_id: '613185570857256035'
+lifecycle_stage: active
+run_id: 1bb4606754c24bf7ba615184b5d23d59
+run_name: melodic-sheep-733
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755979191481
+status: 3
+tags: []
+user_id: nathan

@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/613185570857256035/8f95e0e08bbb455ca5a5627b07ad3bcd/artifacts
+end_time: 1755979150589
+entry_point_name: ''
+experiment_id: '613185570857256035'
+lifecycle_stage: active
+run_id: 8f95e0e08bbb455ca5a5627b07ad3bcd
+run_name: caring-rat-424
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755979148948
+status: 3
+tags: []
+user_id: nathan

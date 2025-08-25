@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../src/chunker/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,KAAK,EAAE,MAAM,eAAe,CAAC;AAiO/C,wBAAgB,YAAY,CAAC,GAAG,EAAE,OAAO,GAAG,KAAK,EAAE,CAmBlD"}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../src/chunker/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,KAAK,EAAE,MAAM,eAAe,CAAC;AAmR/C,wBAAgB,YAAY,CAAC,GAAG,EAAE,OAAO,GAAG,KAAK,EAAE,CAmBlD"}

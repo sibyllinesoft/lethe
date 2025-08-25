@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/613185570857256035/0065208b957a482fa8d8b9dfd3bb661f/artifacts
+end_time: 1755979199888
+entry_point_name: ''
+experiment_id: '613185570857256035'
+lifecycle_stage: active
+run_id: 0065208b957a482fa8d8b9dfd3bb661f
+run_name: masked-cat-123
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755979198306
+status: 3
+tags: []
+user_id: nathan

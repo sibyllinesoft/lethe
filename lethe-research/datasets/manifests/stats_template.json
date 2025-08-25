@@ -1,0 +1,486 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lethe-research.com/schemas/statistical-summary.json",
+  "title": "Statistical Summary Report",
+  "description": "Comprehensive statistical summary and validation for LetheBench dataset",
+  "type": "object",
+  "required": [
+    "report_id",
+    "generation_timestamp",
+    "dataset_id", 
+    "statistical_validity",
+    "descriptive_statistics",
+    "distribution_analysis"
+  ],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "description": "Unique identifier for this statistical report"
+    },
+    "generation_timestamp": {
+      "type": "string", 
+      "format": "date-time",
+      "description": "When this report was generated"
+    },
+    "dataset_id": {
+      "type": "string",
+      "description": "Associated dataset identifier"
+    },
+    "statistical_validity": {
+      "$ref": "#/$defs/statistical_validity",
+      "description": "Statistical validity assessment"
+    },
+    "descriptive_statistics": {
+      "$ref": "#/$defs/descriptive_statistics", 
+      "description": "Descriptive statistics for the dataset"
+    },
+    "distribution_analysis": {
+      "$ref": "#/$defs/distribution_analysis",
+      "description": "Analysis of data distributions"
+    },
+    "balance_analysis": {
+      "$ref": "#/$defs/balance_analysis",
+      "description": "Dataset balance analysis across dimensions"
+    },
+    "quality_analysis": {
+      "$ref": "#/$defs/quality_analysis",
+      "description": "Quality metrics analysis"
+    },
+    "power_analysis": {
+      "$ref": "#/$defs/power_analysis", 
+      "description": "Statistical power analysis for research validity"
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Statistical recommendations"
+    },
+    "validation_warnings": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Validation warnings"
+    }
+  },
+  "$defs": {
+    "statistical_validity": {
+      "type": "object",
+      "required": ["overall_valid", "validity_checks"],
+      "properties": {
+        "overall_valid": {
+          "type": "boolean",
+          "description": "Overall statistical validity status"
+        },
+        "validity_checks": {
+          "type": "object",
+          "properties": {
+            "sufficient_sample_size": {
+              "type": "boolean",
+              "description": "Sufficient total sample size (≥500)"
+            },
+            "domain_balance": {
+              "type": "boolean", 
+              "description": "Balanced representation across domains"
+            },
+            "complexity_coverage": {
+              "type": "boolean",
+              "description": "Adequate coverage of complexity levels"
+            },
+            "quality_threshold": {
+              "type": "boolean",
+              "description": "Meets quality threshold requirements"
+            },
+            "split_sizes": {
+              "type": "boolean",
+              "description": "Adequate split sizes for evaluation"
+            },
+            "statistical_power": {
+              "type": "boolean",
+              "description": "Sufficient statistical power for analysis"
+            }
+          }
+        },
+        "power_calculation": {
+          "type": "object",
+          "properties": {
+            "effect_size": {"type": "number"},
+            "alpha_level": {"type": "number", "default": 0.05},
+            "power": {"type": "number"},
+            "required_sample_size": {"type": "integer"},
+            "actual_sample_size": {"type": "integer"}
+          }
+        }
+      }
+    },
+    "descriptive_statistics": {
+      "type": "object",
+      "required": ["total_queries", "domain_statistics", "complexity_statistics"],
+      "properties": {
+        "total_queries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "domain_statistics": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/domain_stats"
+          }
+        },
+        "complexity_statistics": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/complexity_stats"
+          }
+        },
+        "query_length_statistics": {
+          "$ref": "#/$defs/numeric_statistics",
+          "description": "Statistics for query text length"
+        },
+        "ground_truth_count_statistics": {
+          "$ref": "#/$defs/numeric_statistics",
+          "description": "Statistics for ground truth document counts"
+        },
+        "quality_score_statistics": {
+          "$ref": "#/$defs/numeric_statistics",
+          "description": "Statistics for quality scores"
+        }
+      }
+    },
+    "domain_stats": {
+      "type": "object",
+      "required": ["count", "percentage"],
+      "properties": {
+        "count": {"type": "integer", "minimum": 0},
+        "percentage": {"type": "number", "minimum": 0.0, "maximum": 100.0},
+        "avg_query_length": {"type": "number", "minimum": 0.0},
+        "avg_quality_score": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+        "complexity_breakdown": {
+          "type": "object",
+          "properties": {
+            "simple": {"type": "integer", "minimum": 0},
+            "medium": {"type": "integer", "minimum": 0},
+            "complex": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    },
+    "complexity_stats": {
+      "type": "object", 
+      "required": ["count", "percentage"],
+      "properties": {
+        "count": {"type": "integer", "minimum": 0},
+        "percentage": {"type": "number", "minimum": 0.0, "maximum": 100.0},
+        "avg_query_length": {"type": "number", "minimum": 0.0},
+        "avg_quality_score": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+        "domain_breakdown": {
+          "type": "object",
+          "properties": {
+            "code_heavy": {"type": "integer", "minimum": 0},
+            "chatty_prose": {"type": "integer", "minimum": 0}, 
+            "tool_results": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    },
+    "numeric_statistics": {
+      "type": "object",
+      "required": ["count", "mean", "std", "min", "max"],
+      "properties": {
+        "count": {"type": "integer", "minimum": 0},
+        "mean": {"type": "number"},
+        "std": {"type": "number", "minimum": 0.0},
+        "min": {"type": "number"},
+        "max": {"type": "number"},
+        "median": {"type": "number"},
+        "percentiles": {
+          "type": "object",
+          "properties": {
+            "p25": {"type": "number"},
+            "p50": {"type": "number"},
+            "p75": {"type": "number"}, 
+            "p90": {"type": "number"},
+            "p95": {"type": "number"},
+            "p99": {"type": "number"}
+          }
+        },
+        "skewness": {"type": "number"},
+        "kurtosis": {"type": "number"}
+      }
+    },
+    "distribution_analysis": {
+      "type": "object",
+      "required": ["normality_tests", "distribution_fits"],
+      "properties": {
+        "normality_tests": {
+          "type": "object",
+          "description": "Normality test results for key metrics",
+          "properties": {
+            "quality_scores": {
+              "$ref": "#/$defs/normality_test_result"
+            },
+            "query_lengths": {
+              "$ref": "#/$defs/normality_test_result"
+            }
+          }
+        },
+        "distribution_fits": {
+          "type": "object",
+          "description": "Best-fitting distributions for metrics",
+          "additionalProperties": {
+            "$ref": "#/$defs/distribution_fit"
+          }
+        },
+        "outlier_analysis": {
+          "type": "object",
+          "properties": {
+            "quality_score_outliers": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Query IDs with outlier quality scores"
+            },
+            "length_outliers": {
+              "type": "array", 
+              "items": {"type": "string"},
+              "description": "Query IDs with outlier lengths"
+            },
+            "outlier_threshold_method": {
+              "type": "string",
+              "enum": ["IQR", "Z_SCORE", "MODIFIED_Z_SCORE", "ISOLATION_FOREST"]
+            }
+          }
+        }
+      }
+    },
+    "normality_test_result": {
+      "type": "object",
+      "required": ["test_statistic", "p_value", "is_normal"],
+      "properties": {
+        "test_name": {
+          "type": "string",
+          "enum": ["shapiro_wilk", "kolmogorov_smirnov", "anderson_darling"]
+        },
+        "test_statistic": {"type": "number"},
+        "p_value": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+        "critical_value": {"type": "number"},
+        "is_normal": {"type": "boolean"},
+        "alpha": {"type": "number", "default": 0.05}
+      }
+    },
+    "distribution_fit": {
+      "type": "object",
+      "required": ["distribution_name", "parameters", "goodness_of_fit"],
+      "properties": {
+        "distribution_name": {
+          "type": "string",
+          "enum": ["normal", "beta", "gamma", "exponential", "uniform", "logistic"]
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Distribution parameters"
+        },
+        "goodness_of_fit": {
+          "type": "object",
+          "properties": {
+            "aic": {"type": "number"},
+            "bic": {"type": "number"},
+            "log_likelihood": {"type": "number"},
+            "ks_statistic": {"type": "number"},
+            "ks_p_value": {"type": "number"}
+          }
+        }
+      }
+    },
+    "balance_analysis": {
+      "type": "object",
+      "required": ["domain_balance", "complexity_balance"],
+      "properties": {
+        "domain_balance": {
+          "$ref": "#/$defs/balance_metric",
+          "description": "Balance across domains"
+        },
+        "complexity_balance": {
+          "$ref": "#/$defs/balance_metric", 
+          "description": "Balance across complexity levels"
+        },
+        "cross_balance": {
+          "type": "object",
+          "description": "Cross-dimensional balance analysis",
+          "properties": {
+            "domain_complexity_matrix": {
+              "type": "object",
+              "description": "Count matrix of domain x complexity"
+            },
+            "chi_square_test": {
+              "type": "object",
+              "properties": {
+                "test_statistic": {"type": "number"},
+                "p_value": {"type": "number"},
+                "degrees_of_freedom": {"type": "integer"},
+                "is_independent": {"type": "boolean"}
+              }
+            }
+          }
+        },
+        "imbalance_severity": {
+          "type": "string",
+          "enum": ["NONE", "MINOR", "MODERATE", "SEVERE"],
+          "description": "Overall imbalance severity"
+        }
+      }
+    },
+    "balance_metric": {
+      "type": "object",
+      "required": ["gini_coefficient", "entropy", "is_balanced"],
+      "properties": {
+        "gini_coefficient": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Gini coefficient (0 = perfect balance)"
+        },
+        "entropy": {
+          "type": "number",
+          "minimum": 0.0,
+          "description": "Information entropy"
+        },
+        "max_entropy": {
+          "type": "number",
+          "minimum": 0.0,
+          "description": "Maximum possible entropy"
+        },
+        "entropy_ratio": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Entropy ratio (1 = perfect balance)"
+        },
+        "is_balanced": {
+          "type": "boolean",
+          "description": "Whether distribution is considered balanced"
+        },
+        "balance_threshold": {
+          "type": "number",
+          "description": "Threshold used for balance assessment"
+        }
+      }
+    },
+    "quality_analysis": {
+      "type": "object",
+      "required": ["overall_quality", "domain_quality", "complexity_quality"],
+      "properties": {
+        "overall_quality": {
+          "$ref": "#/$defs/quality_metrics"
+        },
+        "domain_quality": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/quality_metrics"
+          }
+        },
+        "complexity_quality": {
+          "type": "object", 
+          "additionalProperties": {
+            "$ref": "#/$defs/quality_metrics"
+          }
+        },
+        "quality_correlation_analysis": {
+          "type": "object",
+          "properties": {
+            "length_quality_correlation": {"type": "number", "minimum": -1.0, "maximum": 1.0},
+            "complexity_quality_correlation": {"type": "number", "minimum": -1.0, "maximum": 1.0},
+            "ground_truth_quality_correlation": {"type": "number", "minimum": -1.0, "maximum": 1.0}
+          }
+        }
+      }
+    },
+    "quality_metrics": {
+      "type": "object",
+      "required": ["mean", "std", "min", "max"],
+      "properties": {
+        "mean": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+        "std": {"type": "number", "minimum": 0.0},
+        "min": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+        "max": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+        "below_threshold_count": {"type": "integer", "minimum": 0},
+        "below_threshold_percentage": {"type": "number", "minimum": 0.0, "maximum": 100.0},
+        "quality_threshold": {"type": "number", "minimum": 0.0, "maximum": 1.0}
+      }
+    },
+    "power_analysis": {
+      "type": "object",
+      "required": ["hypothesis_tests", "effect_size_estimates"],
+      "properties": {
+        "hypothesis_tests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/hypothesis_test"
+          },
+          "description": "Power analysis for planned hypothesis tests"
+        },
+        "effect_size_estimates": {
+          "type": "object",
+          "properties": {
+            "domain_differences": {"type": "number"},
+            "complexity_effects": {"type": "number"},
+            "method_improvements": {"type": "number"}
+          }
+        },
+        "minimum_detectable_effect": {
+          "type": "number",
+          "description": "Minimum effect size detectable with 80% power"
+        },
+        "recommended_sample_sizes": {
+          "type": "object",
+          "properties": {
+            "current_power": {"type": "number"},
+            "for_80_percent_power": {"type": "integer"},
+            "for_90_percent_power": {"type": "integer"},
+            "for_95_percent_power": {"type": "integer"}
+          }
+        }
+      }
+    },
+    "hypothesis_test": {
+      "type": "object",
+      "required": ["test_name", "effect_size", "alpha", "power", "sample_size"],
+      "properties": {
+        "test_name": {"type": "string"},
+        "description": {"type": "string"},
+        "effect_size": {"type": "number"},
+        "alpha": {"type": "number", "default": 0.05},
+        "power": {"type": "number"},
+        "sample_size": {"type": "integer"},
+        "degrees_of_freedom": {"type": "integer"},
+        "critical_value": {"type": "number"}
+      }
+    }
+  },
+  "examples": [
+    {
+      "report_id": "stats-report-20240115-001",
+      "generation_timestamp": "2024-01-15T14:30:22.123Z",
+      "dataset_id": "lethebench_deterministic_42",
+      "statistical_validity": {
+        "overall_valid": true,
+        "validity_checks": {
+          "sufficient_sample_size": true,
+          "domain_balance": true,
+          "complexity_coverage": true,
+          "quality_threshold": true,
+          "split_sizes": true,
+          "statistical_power": true
+        }
+      },
+      "descriptive_statistics": {
+        "total_queries": 600,
+        "domain_statistics": {
+          "code_heavy": {
+            "count": 200,
+            "percentage": 33.3,
+            "avg_query_length": 145.2,
+            "avg_quality_score": 0.82
+          }
+        }
+      }
+    }
+  ]
+}

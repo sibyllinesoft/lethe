@@ -1,0 +1,142 @@
+# Iteration 4: LLM Rerank & Contradiction-Aware Configuration
+iteration: 4
+name: "LLM Reranking with Contradiction Awareness"
+
+# Test configurations
+configurations:
+  - name: "iter4-llm-enabled"
+    description: "LLM reranking with contradiction awareness enabled"
+    settings:
+      # Core pipeline settings
+      enableHyde: true
+      enableSummarization: true
+      enablePlanSelection: true
+      enableQueryUnderstanding: true
+      enableMLPrediction: true
+      
+      # ML Configuration (from Iteration 3)
+      mlConfig:
+        fusion_dynamic: true
+        plan_learned: true
+        
+      # Iteration 4: LLM Reranking Configuration
+      llmRerankConfig:
+        use_llm: true
+        llm_budget_ms: 1200  # 1.2 second timeout budget
+        llm_model: "llama3.2:1b"  # Fast local model
+        contradiction_enabled: true
+        contradiction_penalty: 0.15  # 15% score reduction for contradictions
+        
+  - name: "iter4-contradiction-only"
+    description: "Cross-encoder with contradiction awareness"
+    settings:
+      enableHyde: true
+      enableSummarization: true
+      enablePlanSelection: true
+      enableQueryUnderstanding: true
+      enableMLPrediction: true
+      
+      mlConfig:
+        fusion_dynamic: true
+        plan_learned: true
+        
+      # LLM disabled, but use contradiction checking with cross-encoder
+      llmRerankConfig:
+        use_llm: false
+        contradiction_enabled: true
+        contradiction_penalty: 0.15
+        
+  - name: "iter4-baseline"
+    description: "Iteration 3 baseline without LLM enhancements"
+    settings:
+      enableHyde: true
+      enableSummarization: true
+      enablePlanSelection: true
+      enableQueryUnderstanding: true
+      enableMLPrediction: true
+      
+      mlConfig:
+        fusion_dynamic: true
+        plan_learned: true
+        
+      # No LLM reranking
+      llmRerankConfig:
+        use_llm: false
+        contradiction_enabled: false
+
+# Quality gates and success criteria
+quality_gates:
+  # Performance requirements
+  latency_p50_ms: 4000  # Maximum median latency
+  latency_p90_ms: 7000  # Maximum 90th percentile latency
+  timeout_rate: 0.20    # Maximum 20% timeout rate
+  
+  # Quality improvements (vs Iteration 3 baseline)
+  ndcg_improvement_target: 0.03  # +3% nDCG@10
+  hallucination_reduction_target: 0.15  # -15% hallucination rate
+  
+  # Statistical significance
+  confidence_level: 0.95
+  min_effect_size: 0.10
+  
+# Rollback conditions
+rollback_conditions:
+  timeout_rate_limit: 0.20  # If timeout rate > 20%
+  latency_p90_limit: 7000   # If p90 latency > 7000ms
+  
+  # Rollback strategy: disable use_llm, keep contradiction_enabled
+  fallback_config:
+    use_llm: false
+    contradiction_enabled: true
+
+# Test scenarios
+test_scenarios:
+  # Primary quality scenarios  
+  - name: "complex_technical_queries"
+    description: "Multi-faceted technical questions requiring accurate ranking"
+    query_types: ["technical", "debugging", "implementation"]
+    expected_improvement: "ndcg"
+    
+  - name: "contradictory_information"
+    description: "Queries where multiple sources might contradict"
+    query_types: ["comparison", "version_differences", "conflicting_advice"]
+    expected_improvement: "hallucination_reduction"
+    
+  # Performance scenarios
+  - name: "timeout_stress_test"
+    description: "Large candidate sets to test timeout handling"
+    candidate_count_range: [50, 100]
+    expected_behavior: "graceful_fallback"
+    
+  - name: "model_availability_test"  
+    description: "Test behavior when LLM model is unavailable"
+    simulate_conditions: ["ollama_down", "model_not_loaded"]
+    expected_behavior: "cross_encoder_fallback"
+
+# Metrics to track
+metrics:
+  quality:
+    - ndcg_at_10
+    - recall_at_10
+    - mrr_at_10
+    - hallucination_rate
+    - contradiction_detection_rate
+    
+  performance:
+    - latency_p50
+    - latency_p90
+    - latency_p95
+    - timeout_rate
+    - llm_call_count
+    - fallback_rate
+    
+  operational:
+    - model_load_success_rate
+    - contradiction_check_accuracy
+    - cost_per_query_estimate
+
+# Expected outcomes
+expected_outcomes:
+  primary: "Measurable quality improvement with controlled latency impact"
+  secondary: "Robust handling of LLM timeouts and failures"
+  tertiary: "Reduced hallucination through contradiction detection"

@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/613185570857256035/9ea02f05dbd84922bf0d63a2dce60c41/artifacts
+end_time: 1755979145194
+entry_point_name: ''
+experiment_id: '613185570857256035'
+lifecycle_stage: active
+run_id: 9ea02f05dbd84922bf0d63a2dce60c41
+run_name: redolent-flea-91
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755979143465
+status: 3
+tags: []
+user_id: nathan

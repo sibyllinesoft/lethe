@@ -1,0 +1,422 @@
+[
+  {
+    "query_id": "query_000",
+    "session_id": "session_0",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_000",
+      "doc_001",
+      "doc_002",
+      "doc_003",
+      "doc_004"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.3123283386230469,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2155893,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_001",
+    "session_id": "session_0",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_005",
+      "doc_006",
+      "doc_007",
+      "doc_008",
+      "doc_009"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.2930164337158203,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2159214,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_002",
+    "session_id": "session_0",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_010",
+      "doc_011",
+      "doc_012",
+      "doc_013",
+      "doc_014"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.2951622009277344,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.216256,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_003",
+    "session_id": "session_0",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_015",
+      "doc_016",
+      "doc_017",
+      "doc_018",
+      "doc_019"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.28514862060546875,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2165778,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_004",
+    "session_id": "session_0",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_020",
+      "doc_021",
+      "doc_022",
+      "doc_023",
+      "doc_024"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.28061866760253906,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.216894,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_005",
+    "session_id": "session_1",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_025",
+      "doc_026",
+      "doc_027",
+      "doc_028",
+      "doc_029"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.29659271240234375,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2172322,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_006",
+    "session_id": "session_1",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_030",
+      "doc_031",
+      "doc_032",
+      "doc_033",
+      "doc_034"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.28514862060546875,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2175531,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_007",
+    "session_id": "session_1",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_035",
+      "doc_036",
+      "doc_037",
+      "doc_038",
+      "doc_039"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.2837181091308594,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2178721,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_008",
+    "session_id": "session_1",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_040",
+      "doc_041",
+      "doc_042",
+      "doc_043",
+      "doc_044"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.2970695495605469,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2182086,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_009",
+    "session_id": "session_1",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_045",
+      "doc_046",
+      "doc_047",
+      "doc_048",
+      "doc_049"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.2827644348144531,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.218529,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_010",
+    "session_id": "session_2",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_050",
+      "doc_051",
+      "doc_052",
+      "doc_053",
+      "doc_054"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.2791881561279297,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2188435,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_011",
+    "session_id": "session_2",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_055",
+      "doc_056",
+      "doc_057",
+      "doc_058",
+      "doc_059"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.28586387634277344,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2191682,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_012",
+    "session_id": "session_2",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_060",
+      "doc_061",
+      "doc_062",
+      "doc_063",
+      "doc_064"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.27871131896972656,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.219483,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_013",
+    "session_id": "session_2",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_065",
+      "doc_066",
+      "doc_067",
+      "doc_068",
+      "doc_069"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.2779960632324219,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2197964,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_014",
+    "session_id": "session_2",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_070",
+      "doc_071",
+      "doc_072",
+      "doc_073",
+      "doc_074"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.3521442413330078,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2202234,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_015",
+    "session_id": "session_3",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_075",
+      "doc_076",
+      "doc_077",
+      "doc_078",
+      "doc_079"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.3693103790283203,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2206435,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_016",
+    "session_id": "session_3",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_080",
+      "doc_081",
+      "doc_082",
+      "doc_083",
+      "doc_084"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.36644935607910156,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2210603,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_017",
+    "session_id": "session_3",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_085",
+      "doc_086",
+      "doc_087",
+      "doc_088",
+      "doc_089"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.32711029052734375,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2214303,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_018",
+    "session_id": "session_3",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_090",
+      "doc_091",
+      "doc_092",
+      "doc_093",
+      "doc_094"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.32591819763183594,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.2217994,
+    "baseline_name": "cross_encoder"
+  },
+  {
+    "query_id": "query_019",
+    "session_id": "session_3",
+    "domain": "mixed",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "doc_095",
+      "doc_096",
+      "doc_097",
+      "doc_098",
+      "doc_099"
+    ],
+    "retrieved_docs": [],
+    "relevance_scores": [],
+    "latency_ms": 0.32711029052734375,
+    "memory_mb": 38.9921875,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1755930467.22219,
+    "baseline_name": "cross_encoder"
+  }
+]

@@ -1,0 +1,25 @@
+\begin{table*}[htbp]
+\centering
+\caption{Statistical Significance Matrix (NDCG@10) with Multiple Comparison Corrections}
+\label{tab:significance-matrix}
+\begin{tabular}{lccccccccccc}
+\toprule
+Method & BM25-only & BM25+Vector & Cross-encoder & FAISS-IVF & MMR & Vector-only & Window-based & Lethe v1.0 & Lethe v2.0 & Lethe v3.0 & Lethe v4.0 (Final) \\
+\midrule
+BM25-only & — & *** & *** & *** & *** & *** & *** & *** & *** & *** & *** \\
+BM25+Vector & M & — & *** & *** & *** & *** & *** & *** & *** & *** & *** \\
+Cross-encoder & L & L & — & ns & ns & *** & ns & *** & *** & *** & *** \\
+FAISS-IVF & L & L & L & — & ns & *** & ns & *** & *** & *** & *** \\
+MMR & L & L & L & N & — & *** & ns & *** & *** & *** & *** \\
+Vector-only & S & S & L & L & L & — & *** & *** & *** & *** & *** \\
+Window-based & L & L & M & M & S & L & — & *** & *** & *** & *** \\
+Lethe v1.0 & L & L & L & L & L & L & L & — & *** & *** & *** \\
+Lethe v2.0 & L & L & L & L & L & L & L & L & — & *** & *** \\
+Lethe v3.0 & L & L & L & L & L & L & L & L & L & — & *** \\
+Lethe v4.0 (Final) & L & L & L & L & L & L & L & L & L & L & — \\
+\bottomrule
+\multicolumn{12}{l}{\small Upper triangle: significance (*** p < 0.001, ** p < 0.01, * p < 0.05, ns = not significant)} \\
+\multicolumn{12}{l}{\small Lower triangle: effect size (L = large, M = medium, S = small, N = negligible)} \\
+\multicolumn{12}{l}{\small All p-values Bonferroni-corrected for multiple comparisons} \\
+\end{tabular}
+\end{table*}

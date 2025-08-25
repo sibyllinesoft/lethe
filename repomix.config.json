@@ -13,7 +13,7 @@
     "removeComments": false,
     "removeEmptyLines": false,
     "compress": false,
-    "topFilesLength": 5,
+    "topFilesLength": 20,
     "showLineNumbers": false,
     "truncateBase64": false,
     "copyToClipboard": false,
@@ -31,7 +31,7 @@
     "customPatterns": []
   },
   "security": {
-    "enableSecurityCheck": true
+    "enableSecurityCheck": false
   },
   "tokenCount": {
     "encoding": "o200k_base"

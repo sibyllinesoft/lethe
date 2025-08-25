@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/613185570857256035/e4e99591795c43b3bb21092b042c765a/artifacts
+end_time: 1755979155667
+entry_point_name: ''
+experiment_id: '613185570857256035'
+lifecycle_stage: active
+run_id: e4e99591795c43b3bb21092b042c765a
+run_name: casual-hare-163
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755979154073
+status: 3
+tags: []
+user_id: nathan

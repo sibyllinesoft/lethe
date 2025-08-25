@@ -1,0 +1,171 @@
+# Iteration 1: Core Hybrid Retrieval
+# Parameter optimization for fundamental hybrid BM25+vector approach
+# Focus: Finding optimal weighting and retrieval parameters
+
+experiment:
+  name: "lethe_iter1_hybrid_core"
+  description: "Core hybrid retrieval parameter optimization"
+  version: "1.0.0"
+  replications: 5
+  seed: 42
+  phase: "iteration_1"
+
+# Primary parameter grid for hybrid retrieval
+parameters:
+  # Core hybrid weighting (primary parameter)
+  alpha:
+    type: float
+    values: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    default: 0.7
+    description: "BM25 vs vector weight (0=vector only, 1=BM25 only)"
+    priority: "high"
+    
+  # Retrieval scope parameters
+  k_initial:
+    type: int
+    values: [20, 30, 50, 100]
+    default: 50
+    description: "Initial candidate pool size"
+    
+  k_final:
+    type: int
+    values: [10, 15, 20]
+    default: 10
+    description: "Final result set size"
+    
+  # Document preprocessing
+  chunk_size:
+    type: int
+    values: [256, 320, 512]
+    default: 320
+    description: "Target tokens per chunk"
+    
+  chunk_overlap:
+    type: int
+    values: [32, 64, 128]
+    default: 64
+    description: "Overlap between adjacent chunks"
+
+# Fixed parameters for this iteration
+fixed_parameters:
+  rerank: false           # No reranking in iteration 1
+  diversify: false        # No diversification in iteration 1
+  planning_strategy: "static"  # Simple static planning
+  embedding_model: "all-mpnet-base-v2"
+  bm25_implementation: "bm25s"
+
+# Expected configuration count: 9 * 4 * 3 * 3 * 3 = 972 configurations
+# With 5 replications = 4,860 total runs
+
+# Focused evaluation for parameter sweep
+evaluation:
+  domains:
+    - code_heavy: 0.30    # Emphasize technical content
+    - chatty_prose: 0.30  # Balance with conversational
+    - tool_results: 0.20
+    - mixed: 0.20
+    
+  queries_per_config: 200  # Sufficient for parameter optimization
+  
+  session_lengths:
+    - short: 0.6    # Focus on shorter sessions for speed
+    - medium: 0.3
+    - long: 0.1
+
+# Metrics focused on core retrieval quality
+metrics:
+  optimization_target: "ndcg_at_10"  # Primary optimization metric
+  
+  primary:
+    - ndcg_at_10
+    - ndcg_at_5
+    - recall_at_10
+    - recall_at_20
+    - mrr_at_10
+    
+  efficiency:
+    - latency_p50_ms
+    - latency_p95_ms
+    - memory_peak_mb
+    
+  analysis:
+    - precision_at_10
+    - coverage_at_10
+
+# Statistical analysis configuration
+statistical_analysis:
+  hypothesis: "H1_hybrid_optimal"
+  statement: "Optimal hybrid weighting (α*) significantly outperforms pure methods"
+  success_criteria:
+    - "Best α* achieves nDCG@10 > max(BM25_only, Vector_only) + 0.05"
+    - "95% CI lower bound for improvement > 0"
+    - "Effect size (Cohen's d) > 0.2"
+    
+  comparison_baselines:
+    - bm25_only     # α = 1.0
+    - vector_only   # α = 0.0
+    - simple_hybrid # α = 0.5
+    
+  correction_method: "fdr_bh"
+  bootstrap_samples: 5000  # Reduced for parameter sweep
+  
+# Analysis objectives
+analysis_goals:
+  primary:
+    - "Identify optimal α parameter for hybrid retrieval"
+    - "Quantify improvement over pure BM25 and vector methods"
+    - "Assess parameter sensitivity and robustness"
+    
+  secondary:
+    - "Understand chunk size impact on quality"
+    - "Evaluate latency vs quality trade-offs"
+    - "Domain-specific parameter preferences"
+    
+# Parameter sensitivity analysis
+sensitivity_analysis:
+  primary_parameter: "alpha"
+  interaction_effects:
+    - ["alpha", "k_initial"]    # Does optimal α depend on candidate pool size?
+    - ["alpha", "chunk_size"]   # Does optimal α depend on chunking?
+    
+  robustness_tests:
+    - domain_consistency: "Does optimal α work across domains?"
+    - query_complexity: "Does optimal α handle complex queries?"
+    
+# Resource management
+resources:
+  max_concurrent_runs: 8
+  timeout_per_query: "45s"
+  timeout_per_session: "8min"
+  early_stopping:
+    enabled: true
+    patience: 50  # Stop if no improvement in 50 configs
+    metric: "ndcg_at_10"
+    threshold: 0.01
+    
+# Output and checkpointing
+output:
+  checkpoint_every: 100  # Save progress every 100 configs
+  save_top_k: 20        # Keep top 20 configurations
+  generate_heatmaps: true  # Parameter interaction visualizations
+  export_pareto_frontier: true  # Quality vs latency Pareto front
+  
+# Quality gates
+quality_gates:
+  minimum_improvement: 0.03  # At least 3% nDCG improvement over best baseline
+  maximum_latency_p95: 1000  # Must stay under 1s P95 latency
+  parameter_stability: 0.1   # Optimal α should be stable across domains (±0.1)
+
+# Hypothesis framework integration
+hypotheses:
+  H1_1: "Hybrid retrieval outperforms BM25-only on semantic queries"
+  H1_2: "Hybrid retrieval outperforms vector-only on exact match queries" 
+  H1_3: "Optimal α is domain-dependent but stable within domains"
+  H1_4: "Quality improvements are achieved without significant latency penalty"
+
+# Success criteria for iteration advancement
+advancement_criteria:
+  quality_gate: "Best configuration achieves nDCG@10 > 0.55"
+  efficiency_gate: "Best configuration maintains latency P95 < 800ms"
+  robustness_gate: "Optimal parameters consistent across ≥3 domains"
+  statistical_gate: "Improvements statistically significant (p < 0.05, d > 0.2)"

@@ -1,0 +1,29 @@
+{
+  "session_id": "code_session_001",
+  "messages": [
+    {
+      "role": "user",
+      "text": "I need help creating a React component for a user profile card with avatar, name, and bio.",
+      "timestamp": 1703097600,
+      "turn": 1
+    },
+    {
+      "role": "assistant", 
+      "text": "I'll help you create a React user profile card component. Here's a clean implementation:\n\n```jsx\nimport React from 'react';\nimport './UserProfile.css';\n\nconst UserProfile = ({ user }) => {\n  const { avatar, name, bio } = user;\n\n  return (\n    <div className=\"user-profile-card\">\n      <img \n        src={avatar} \n        alt={`${name}'s avatar`}\n        className=\"avatar\"\n      />\n      <h2 className=\"name\">{name}</h2>\n      <p className=\"bio\">{bio}</p>\n    </div>\n  );\n};\n\nexport default UserProfile;\n```\n\nAnd here's the accompanying CSS:\n\n```css\n.user-profile-card {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  padding: 20px;\n  border-radius: 8px;\n  box-shadow: 0 2px 8px rgba(0,0,0,0.1);\n  max-width: 300px;\n  background: white;\n}\n\n.avatar {\n  width: 80px;\n  height: 80px;\n  border-radius: 50%;\n  object-fit: cover;\n  margin-bottom: 16px;\n}\n\n.name {\n  margin: 0 0 8px 0;\n  font-size: 1.2em;\n  color: #333;\n}\n\n.bio {\n  margin: 0;\n  text-align: center;\n  color: #666;\n  line-height: 1.4;\n}\n```",
+      "timestamp": 1703097660,
+      "turn": 2
+    },
+    {
+      "role": "user",
+      "text": "This looks great! How can I make it responsive for mobile devices?",
+      "timestamp": 1703097720,
+      "turn": 3
+    },
+    {
+      "role": "assistant",
+      "text": "Great question! Here are some responsive improvements you can add to the CSS:\n\n```css\n.user-profile-card {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  padding: 20px;\n  border-radius: 8px;\n  box-shadow: 0 2px 8px rgba(0,0,0,0.1);\n  max-width: 300px;\n  width: 100%;\n  background: white;\n  box-sizing: border-box;\n}\n\n/* Mobile responsive styles */\n@media (max-width: 768px) {\n  .user-profile-card {\n    max-width: 100%;\n    margin: 0 16px;\n    padding: 16px;\n  }\n  \n  .avatar {\n    width: 60px;\n    height: 60px;\n  }\n  \n  .name {\n    font-size: 1.1em;\n  }\n  \n  .bio {\n    font-size: 0.9em;\n  }\n}\n```\n\nKey responsive improvements:\n1. Added `width: 100%` and `box-sizing: border-box`\n2. Mobile media query for screens under 768px\n3. Smaller avatar and text sizes on mobile\n4. Reduced padding and margins for better mobile UX",
+      "timestamp": 1703097780,
+      "turn": 4
+    }
+  ]
+}

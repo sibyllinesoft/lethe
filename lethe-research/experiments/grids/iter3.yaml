@@ -1,0 +1,337 @@
+# Iteration 3: Dynamic Planning & ML Prediction
+# Intelligent plan selection using ML prediction models
+# Focus: Adaptive query processing based on learned patterns
+
+experiment:
+  name: "lethe_iter3_dynamic_planning"
+  description: "ML-driven dynamic planning and adaptive query processing"
+  version: "3.0.0"
+  replications: 5
+  seed: 44
+  phase: "iteration_3"
+
+# Inherit best parameters from iteration 2
+inherited_parameters:
+  alpha: 0.7      # From iter1
+  beta: 0.5       # From iter2 (example)
+  k_initial: 50
+  k_rerank: 20
+  chunk_size: 320
+  chunk_overlap: 64
+  query_rewrite: "expand"  # Best from iter2
+
+# New parameters for dynamic planning
+parameters:
+  # Planning strategy (core innovation)
+  planning_strategy:
+    type: categorical
+    values: ["static", "rule_based", "ml_predict", "adaptive_thompson", "adaptive_ucb"]
+    default: "ml_predict"
+    description: "Method for selecting query processing plan"
+    priority: "high"
+    
+  # ML model configuration
+  ml_model_type:
+    type: categorical
+    values: ["gradient_boosting", "random_forest", "neural_network", "ensemble"]
+    default: "gradient_boosting"
+    description: "ML model for plan prediction"
+    conditional_on: {planning_strategy: ["ml_predict", "adaptive_thompson", "adaptive_ucb"]}
+    
+  # Feature engineering
+  feature_set:
+    type: categorical
+    values: ["basic", "extended", "nlp_features", "comprehensive"]
+    default: "extended"
+    description: "Feature set for ML prediction"
+    conditional_on: {planning_strategy: ["ml_predict", "adaptive_thompson", "adaptive_ucb"]}
+    
+  # Adaptation parameters
+  adaptation_window:
+    type: int
+    values: [10, 25, 50, 100]
+    default: 25
+    description: "Number of recent queries for adaptation"
+    conditional_on: {planning_strategy: ["adaptive_thompson", "adaptive_ucb"]}
+    
+  # Exploration vs exploitation
+  exploration_rate:
+    type: float
+    values: [0.0, 0.05, 0.1, 0.15, 0.2]
+    default: 0.1
+    description: "Exploration rate for adaptive methods"
+    conditional_on: {planning_strategy: ["adaptive_thompson", "adaptive_ucb"]}
+    
+  # Plan diversity
+  plan_ensemble_size:
+    type: int
+    values: [3, 5, 7]
+    default: 5
+    description: "Number of candidate plans to consider"
+    
+  # Performance prediction
+  quality_threshold:
+    type: float
+    values: [0.5, 0.6, 0.7, 0.8]
+    default: 0.7
+    description: "Minimum predicted quality threshold"
+
+# Plan library definition
+plan_library:
+  # Fast plan (optimized for latency)
+  fast_plan:
+    name: "Fast Retrieval"
+    config: {alpha: 0.8, beta: 0.1, k_initial: 30, k_rerank: 10}
+    expected_latency: "50-150ms"
+    expected_quality: "medium"
+    use_cases: ["simple_queries", "time_sensitive"]
+    
+  # Balanced plan (default quality-latency tradeoff)
+  balanced_plan:
+    name: "Balanced Quality-Speed"
+    config: {alpha: 0.7, beta: 0.3, k_initial: 50, k_rerank: 20}
+    expected_latency: "150-300ms"
+    expected_quality: "high"
+    use_cases: ["general_queries", "mixed_complexity"]
+    
+  # Quality plan (optimized for best results)
+  quality_plan:
+    name: "High Quality"
+    config: {alpha: 0.6, beta: 0.7, k_initial: 100, k_rerank: 50}
+    expected_latency: "300-800ms"
+    expected_quality: "very_high"
+    use_cases: ["complex_queries", "critical_information"]
+    
+  # Semantic plan (vector-heavy for semantic matching)
+  semantic_plan:
+    name: "Semantic Focus"
+    config: {alpha: 0.3, beta: 0.5, k_initial: 80, k_rerank: 30}
+    expected_latency: "200-400ms"
+    expected_quality: "high_semantic"
+    use_cases: ["conceptual_queries", "abstract_topics"]
+    
+  # Precision plan (optimized for exact matches)
+  precision_plan:
+    name: "High Precision"
+    config: {alpha: 0.9, beta: 0.8, k_initial: 40, k_rerank: 25}
+    expected_latency: "250-500ms"  
+    expected_quality: "high_precision"
+    use_cases: ["fact_checking", "specific_details"]
+
+# ML model training configuration
+ml_training:
+  features:
+    query_features:
+      - query_length
+      - token_count
+      - entity_count
+      - complexity_score
+      - semantic_density
+      - question_type
+      
+    context_features:
+      - session_length
+      - recent_query_performance
+      - domain_distribution
+      - user_interaction_patterns
+      
+    system_features:
+      - current_load
+      - cache_hit_rate
+      - recent_latency_trend
+      - resource_availability
+      
+  target_metrics:
+    primary: "ndcg_at_10"
+    secondary: ["mrr_at_10", "latency_ms"]
+    
+  training_protocol:
+    cross_validation: 5
+    test_split: 0.2
+    validation_split: 0.1
+    bootstrap_samples: 1000
+    
+  model_selection:
+    metric: "ndcg_at_10"
+    optimization: "maximize"
+    early_stopping_patience: 10
+    
+# Expected configuration count: 5 * 4 * 4 * 4 * 5 * 3 * 4 ≈ 3,840 configurations
+# With conditional parameters and 5 replications ≈ 6,000-8,000 runs
+
+# Evaluation protocol
+evaluation:
+  domains:
+    - code_heavy: 0.25
+    - chatty_prose: 0.25
+    - tool_results: 0.25
+    - mixed: 0.25
+    
+  session_simulation:
+    # Simulate realistic user sessions for adaptation
+    session_lengths: [5, 10, 15, 25, 40]
+    query_patterns: ["exploratory", "focused", "comparative", "troubleshooting"]
+    adaptation_points: [5, 10, 15]  # When to evaluate adaptation
+    
+  queries_per_config: 200
+
+# Metrics focusing on adaptive performance
+metrics:
+  optimization_target: "session_quality"  # Quality over entire sessions
+  
+  adaptation_metrics:
+    - session_ndcg_improvement    # Quality improvement within session
+    - adaptation_speed           # How quickly system adapts
+    - plan_selection_accuracy    # Correct plan choice rate
+    - regret_minimization       # Cumulative regret vs oracle
+    
+  primary:
+    - ndcg_at_10
+    - session_ndcg_at_10        # Session-level quality
+    - mrr_at_10
+    - precision_at_5
+    - recall_at_10
+    
+  efficiency: 
+    - latency_p50_ms
+    - latency_p95_ms
+    - plan_selection_ms         # Overhead of plan selection
+    - ml_prediction_ms          # ML model inference time
+    - memory_peak_mb
+    
+  planning_quality:
+    - plan_diversity_score      # How well plans cover different needs
+    - exploration_efficiency    # Quality/exploration trade-off
+    - cold_start_performance    # Performance with no history
+
+# Ablation studies
+ablation_studies:
+  planning_strategy_impact:
+    name: "Planning Strategy Comparison"
+    compare:
+      - {planning_strategy: "static"}
+      - {planning_strategy: "rule_based"}
+      - {planning_strategy: "ml_predict"}
+      - {planning_strategy: "adaptive_thompson"}
+    metrics: ["session_ndcg_at_10", "adaptation_speed", "latency_p95_ms"]
+    
+  ml_model_comparison:
+    name: "ML Model Architecture Impact"
+    compare:
+      - {ml_model_type: "gradient_boosting"}
+      - {ml_model_type: "random_forest"}
+      - {ml_model_type: "neural_network"}
+      - {ml_model_type: "ensemble"}
+    metrics: ["plan_selection_accuracy", "ml_prediction_ms", "session_quality"]
+    
+  feature_set_impact:
+    name: "Feature Engineering Analysis"
+    compare:
+      - {feature_set: "basic"}
+      - {feature_set: "extended"}
+      - {feature_set: "comprehensive"}
+    metrics: ["plan_selection_accuracy", "adaptation_speed", "cold_start_performance"]
+
+# Statistical analysis for iteration 3
+statistical_analysis:
+  hypotheses:
+    H3_1: "ML-driven planning outperforms static strategies"
+    H3_2: "Adaptive methods improve performance over time"
+    H3_3: "Plan diversity reduces performance variance"
+    H3_4: "Dynamic planning maintains efficiency while improving quality"
+    
+  success_criteria:
+    adaptive_improvement: "Session quality improves by >10% from start to end"
+    planning_accuracy: "ML models achieve >75% plan selection accuracy"
+    efficiency_maintenance: "Dynamic planning adds <50ms overhead"
+    robustness: "Performance stable across domains and query types"
+    
+  comparison_baselines:
+    - iter2_best       # Best static config from iteration 2
+    - oracle_planning  # Perfect plan selection (upper bound)
+    - random_planning  # Random plan selection (lower bound)
+    
+  correction_method: "fdr_bh"
+  bootstrap_samples: 8000
+
+# Advanced analysis
+analysis_goals:
+  primary:
+    - "Evaluate ML model effectiveness for plan selection"
+    - "Quantify adaptation benefits in realistic sessions"
+    - "Assess computational overhead vs quality gains"
+    
+  secondary:
+    - "Identify optimal exploration strategies"
+    - "Understand feature importance for plan selection"
+    - "Evaluate robustness to distribution shift"
+    
+  ML_specific:
+    - "Feature importance analysis for plan prediction"
+    - "Model interpretability and decision explanations"
+    - "Online learning vs batch learning comparison"
+
+# Session simulation protocols
+session_simulation:
+  realistic_patterns:
+    exploratory_session:
+      pattern: "broad → specific → validation"
+      query_progression: ["general_topic", "specific_aspect", "fact_check"]
+      expected_plan_evolution: "quality → balanced → precision"
+      
+    focused_session:
+      pattern: "specific → detailed → comprehensive"
+      query_progression: ["targeted_query", "follow_up", "comprehensive"]
+      expected_plan_evolution: "precision → quality → semantic"
+      
+  adaptation_evaluation:
+    metrics: ["plan_selection_accuracy", "cumulative_quality", "regret"]
+    evaluation_points: [1, 5, 10, 15, 20]  # Queries into session
+    
+# Resource management
+resources:
+  max_concurrent_runs: 4  # Reduced due to ML overhead
+  timeout_per_query: "120s"  # Increased for ML inference
+  timeout_per_session: "20min"
+  
+  ml_resources:
+    training_gpus: 1
+    inference_gpus: 1
+    model_memory: "2GB"
+    feature_cache: "500MB"
+    
+  model_persistence:
+    save_trained_models: true
+    model_versioning: true
+    feature_importance_logs: true
+
+# Quality gates
+quality_gates:
+  ml_effectiveness: "ML planning shows >8% session quality improvement"
+  adaptation_speed: "Significant improvement within 10 queries"  
+  efficiency_constraint: "Planning overhead < 10% of total latency"
+  robustness: "Performance consistent across query patterns and domains"
+
+# Output configuration
+output:
+  save_ml_models: true
+  save_feature_importance: true
+  save_plan_selections: true
+  save_session_trajectories: true
+  
+  visualizations:
+    - "Session quality progression curves"
+    - "Plan selection accuracy over time"
+    - "Feature importance heatmaps"
+    - "Exploration vs exploitation analysis"
+    - "Regret minimization curves"
+    - "Plan usage distribution analysis"
+
+# Advancement criteria  
+advancement_criteria:
+  quality_gate: "Best configuration achieves session nDCG@10 > 0.72"
+  adaptation_gate: "Adaptive methods show >12% improvement over static"
+  efficiency_gate: "Best configuration maintains latency P95 < 1500ms"
+  ml_gate: "ML models achieve >80% plan selection accuracy"
+  robustness_gate: "Performance consistent across all session patterns"
+  statistical_gate: "All improvements highly significant (p < 0.001)"

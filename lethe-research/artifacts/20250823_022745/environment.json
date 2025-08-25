@@ -1,0 +1,12 @@
+{
+    "timestamp": "2025-08-23T02:27:47-04:00",
+    "hostname": "exnihilo",
+    "pwd": "/tmp/tmp.xTXuVE0BAE",
+    "git_sha": "unknown",
+    "git_branch": "unknown",
+    "node_version": "v20.18.1",
+    "python_version": "Python 3.13.3",
+    "config_path": "/home/nathan/Projects/lethe/lethe-research/experiments/grid_config.yaml",
+    "output_dir": "/home/nathan/Projects/lethe/lethe-research/artifacts/20250823_022745",
+    "max_parallel": "4"
+}

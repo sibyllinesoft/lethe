@@ -1,0 +1,1 @@
+{"version":3,"file":"P50KBase.js","sourceRoot":"","sources":["../../src/encodingParams/P50KBase.ts"],"names":[],"mappings":";;AAKA,4BASC;AAZD,sDAAwE;AACxE,0DAA+C;AAE/C,SAAgB,QAAQ,CACtB,sBAAwC;IAExC,OAAO;QACL,sBAAsB,EAAE,MAAM;QAC9B,eAAe,EAAf,gCAAe;QACf,sBAAsB;QACtB,mBAAmB,EAAE,IAAI,GAAG,CAAiB,CAAC,CAAC,4BAAS,EAAE,MAAM,CAAC,CAAC,CAAC;KACpE,CAAA;AACH,CAAC"}

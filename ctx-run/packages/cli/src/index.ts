@@ -3,9 +3,9 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { openDb, migrate, loadVectorExtension, Message, upsertConfig } from '@lethe/sqlite';
-import { upsertMessagesWithDb, ensureEmbeddingsWithDb } from '@lethe/core';
+import { upsertMessagesWithDb, ensureEmbeddingsWithDb, loadConfig, createDefaultConfigFile } from '@lethe/core';
 import { join } from 'path';
-import { mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'fs';
 
 yargs(hideBin(process.argv))
   .command('init <path>', 'Initialize the Lethe context', (yargs) => {
@@ -19,6 +19,7 @@ yargs(hideBin(process.argv))
     const ctxPath = join(argv.path, '.ctx');
     mkdirSync(ctxPath, { recursive: true });
     const dbPath = join(ctxPath, 'lethe.db');
+    const configPath = join(argv.path, 'ctx.config.json');
     
     console.log(`Initializing Lethe context at ${argv.path}`);
     
@@ -40,30 +41,38 @@ yargs(hideBin(process.argv))
       arch: process.arch,
       vector_backend: vectorBackend,
       database_path: dbPath,
+      config_path: configPath
     };
     
     writeFileSync(join(ctxPath, 'lock.json'), JSON.stringify(lockInfo, null, 2));
     console.log('Lock file created with environment status.');
     
-    // Initialize default config
-    upsertConfig(db, 'retrieval', {
-      alpha: 0.7,
-      beta: 0.5,
-      gamma_kind_boost: { code: 0.1, text: 0.0 },
-    });
+    // Create external configuration file (replaces database config)
+    if (!existsSync(configPath)) {
+      createDefaultConfigFile(configPath);
+      console.log('✅ External configuration created - edit ctx.config.json to customize settings');
+    } else {
+      console.log('📋 Using existing ctx.config.json configuration');
+    }
     
-    upsertConfig(db, 'chunking', {
-      target_tokens: 320,
-      overlap: 64,
-    });
+    // Load and validate configuration
+    try {
+      const config = loadConfig(argv.path);
+      console.log('✅ Configuration loaded and validated');
+      
+      // Keep backward compatibility by also storing in database for legacy code
+      upsertConfig(db, 'retrieval', config.retrieval);
+      upsertConfig(db, 'chunking', config.chunking);
+      upsertConfig(db, 'timeouts', config.timeouts);
+      console.log('📊 Configuration synchronized to database for compatibility');
+      
+    } catch (error) {
+      console.error('❌ Configuration validation failed:', error);
+      process.exit(1);
+    }
     
-    upsertConfig(db, 'timeouts', {
-      hyde_ms: 10000,
-      summarize_ms: 10000,
-      ollama_connect_ms: 500,
-    });
-    
-    console.log('Context initialization complete.');
+    console.log('🎉 Context initialization complete.');
+    console.log('📝 Edit ctx.config.json to customize retrieval, chunking, and other settings.');
     db.close();
   })
   .command('ingest', 'Ingest messages from a file or stdin', (yargs) => {

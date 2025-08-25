@@ -1,0 +1,183 @@
+# Iteration 3: Dynamic Fusion & Learned Planning - Configuration
+name: iter3-ml-enhanced
+description: "ML-driven dynamic parameter prediction and learned plan selection"
+seed: 3003
+
+# Build on best configuration from Iteration 2
+base_config:
+  # Best params from Iteration 2 (use actual best results when available)
+  query_rewrite: true
+  query_decompose: true
+  hyde_enabled: true
+  llm_model: "gpt-4o-mini"
+  max_subqueries: 3
+  rewrite_strategy: "both"
+
+# New Iteration 3: ML-enhanced parameters
+parameters:
+  # Dynamic Fusion Settings
+  fusion_dynamic:
+    values: [true, false]
+    description: "Enable ML-predicted alpha/beta parameters"
+    
+  # Learned Plan Selection  
+  plan_learned:
+    values: [true, false]
+    description: "Enable ML-driven plan selection"
+    
+  # Model Configuration
+  models_dir:
+    values: ["models", "lethe-research/models"]
+    description: "Directory containing trained ML models"
+    
+  # Fallback Parameters (when ML fails)
+  fallback_alpha:
+    values: [0.6, 0.7, 0.8]
+    description: "Static alpha when ML unavailable"
+    condition: "fusion_dynamic == false"
+    
+  fallback_beta:
+    values: [0.4, 0.5, 0.6] 
+    description: "Static beta when ML unavailable"
+    condition: "fusion_dynamic == false"
+    
+  fallback_plan:
+    values: ["explore", "exploit", "verify"]
+    description: "Static plan when ML unavailable"
+    condition: "plan_learned == false"
+
+# Performance constraints for ML components
+constraints:
+  latency_p50_ms: 3500         # Maintain Iteration 2 budget 
+  model_load_time_ms: 200      # Fast model loading requirement
+  prediction_time_ms: 50       # Individual prediction speed
+  memory_mb: 1500              # Same memory constraint
+  ml_timeout_ms: 200           # ML prediction timeout
+
+# Success criteria vs Iteration 2 baseline
+metrics:
+  primary: "nDCG@10"
+  secondary: ["Recall@50", "latency_p50_ms", "contradiction_rate"]
+
+# Quality gates for Iteration 3
+quality_gates:
+  improvement_over_iter2: 0.05      # 5% minimum nDCG@10 improvement
+  contradiction_reduction: 0.10     # 10% reduction in contradiction rate
+  latency_degradation_limit: 0.05   # Max 5% latency increase acceptable
+  overfitting_threshold: 0.05       # Max 5% dev-test performance gap
+  
+# Experimental design
+design:
+  factorial: true                   # Full factorial design
+  blocked_randomization: "by_genre" # Code, Prose, Tool blocks
+  minimum_samples_per_cell: 25      # Statistical power
+  statistical_power: 0.8
+  significance_level: 0.05
+  
+# ML-specific validation  
+ml_validation:
+  cross_validation: 5               # 5-fold CV for model training
+  model_comparison: true            # Compare ridge vs random forest
+  feature_importance: true          # Analyze feature contributions
+  prediction_stability: true       # Test prediction consistency
+  
+# Rollback conditions
+rollback_triggers:
+  - name: "overfitting_detected"
+    condition: "dev_test_gap > 0.05"
+    action: "disable fusion.dynamic, keep plan.learned only"
+    
+  - name: "performance_regression" 
+    condition: "nDCG@10 < iter2_baseline * 0.95"
+    action: "disable both ML features"
+    
+  - name: "latency_budget_exceeded"
+    condition: "p95_latency_ms > 3675"  # 5% over budget
+    action: "optimize ML prediction or disable"
+
+# Integration testing for ML components
+integration_tests:
+  - name: "dynamic_fusion_quality"
+    description: "ML-predicted alpha/beta improve retrieval over static"
+    metric: "nDCG@10 improvement > 0.03"
+    
+  - name: "learned_plan_effectiveness"
+    description: "ML plans reduce contradictions vs heuristic"
+    metric: "contradiction_rate reduction > 0.10"
+    
+  - name: "model_loading_speed"
+    description: "Models load within performance budget"
+    metric: "load_time_ms < 200"
+    
+  - name: "prediction_latency"
+    description: "Individual predictions are fast enough"
+    metric: "prediction_time_ms < 50"
+    
+  - name: "end_to_end_latency"
+    description: "Full pipeline with ML stays within budget"
+    metric: "p95_latency_ms < 3500"
+
+# Advanced evaluation scenarios  
+evaluation_scenarios:
+  - name: "code_heavy_queries"
+    description: "Queries with function calls, imports, code symbols"
+    expected_behavior: "Higher alpha predicted, 'exploit' plan preferred"
+    
+  - name: "error_debugging_queries" 
+    description: "Exception messages, stack traces, error codes"
+    expected_behavior: "Balanced alpha/beta, 'verify' plan preferred"
+    
+  - name: "exploratory_queries"
+    description: "How-to, best practices, open-ended questions"  
+    expected_behavior: "Higher beta predicted, 'explore' plan preferred"
+    
+  - name: "domain_transition_queries"
+    description: "Queries spanning multiple technical domains"
+    expected_behavior: "Adaptive parameters, plan based on complexity"
+
+# Configuration variations for ablation study
+ablation_study:
+  - name: "fusion_only"
+    config: { fusion_dynamic: true, plan_learned: false }
+    purpose: "Isolate dynamic fusion impact"
+    
+  - name: "plan_only" 
+    config: { fusion_dynamic: false, plan_learned: true }
+    purpose: "Isolate learned planning impact"
+    
+  - name: "full_ml"
+    config: { fusion_dynamic: true, plan_learned: true }
+    purpose: "Combined ML enhancement"
+    
+  - name: "baseline_iter2"
+    config: { fusion_dynamic: false, plan_learned: false }
+    purpose: "Iteration 2 baseline comparison"
+
+# Model training and validation parameters
+ml_training:
+  training_samples: 1000           # Synthetic training data size
+  validation_split: 0.2            # Hold out 20% for validation  
+  test_split: 0.2                  # Hold out 20% for final test
+  random_seed: 3003                # Reproducible results
+  
+  # Feature engineering
+  feature_extraction:
+    query_length: true
+    code_symbols: true  
+    error_tokens: true
+    path_patterns: true
+    numeric_ids: true
+    complexity_score: true
+    retrieval_overlap: true
+    
+  # Model hyperparameters
+  fusion_model:
+    type: "ridge"                  # Ridge regression for stability
+    alpha_regularization: [0.1, 1.0, 10.0]
+    cross_validation_folds: 5
+    
+  plan_selector:
+    type: "logistic_regression"    # Multi-class classification
+    regularization: [0.1, 1.0, 10.0] 
+    solver: "lbfgs"                # Avoid deprecated liblinear
+    max_iterations: 1000

@@ -9,4 +9,6 @@ export * from './hyde';
 export * from './summarize';
 export * from './state';
 export * from './pipeline';
+export * from './query-understanding';
+export * from './config';
 //# sourceMappingURL=index.d.ts.map

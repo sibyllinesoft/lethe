@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/613185570857256035/a0d19c200f05469b8eccd0fb87fc9711/artifacts
+end_time: 1755979174346
+entry_point_name: ''
+experiment_id: '613185570857256035'
+lifecycle_stage: active
+run_id: a0d19c200f05469b8eccd0fb87fc9711
+run_name: enchanting-cub-120
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755979172749
+status: 3
+tags: []
+user_id: nathan

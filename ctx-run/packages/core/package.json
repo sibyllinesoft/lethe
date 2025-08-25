@@ -5,7 +5,11 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest --watch"
   },
   "dependencies": {
     "@lethe/sqlite": "file:../sqlite",
@@ -13,6 +17,9 @@
     "@types/node": "^24.3.0"
   },
   "devDependencies": {
-    "typescript": "^5.5.2"
+    "typescript": "^5.5.2",
+    "vitest": "^2.0.0",
+    "@vitest/coverage-v8": "^2.0.0",
+    "@types/fs-extra": "^11.0.4"
   }
 }

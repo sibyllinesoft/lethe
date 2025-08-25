@@ -1,4 +1,5 @@
 import { DB } from '@lethe/sqlite';
+import { type RerankerConfig } from '../reranker/index.js';
 import type { Embeddings } from '@lethe/embeddings';
 export interface Candidate {
     docId: string;
@@ -34,7 +35,7 @@ export declare function hybridScore(lexical: {
     gamma_kind_boost: {
         [kind: string]: number;
     };
-}): Candidate[];
+}, query?: string, candidateKinds?: Map<string, string>): Candidate[];
 export interface HybridConfig {
     alpha: number;
     beta: number;
@@ -43,8 +44,13 @@ export interface HybridConfig {
     };
     rerank: boolean;
     diversify: boolean;
+    diversify_method?: string;
     k_initial: number;
     k_final: number;
+    fusion?: {
+        dynamic: boolean;
+    };
+    llm_rerank?: RerankerConfig;
 }
 export declare const DEFAULT_HYBRID_CONFIG: HybridConfig;
 export interface HybridRetrievalOptions {

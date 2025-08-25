@@ -1,0 +1,75 @@
+{
+  "$schema": "./ctx-config-schema.json",
+  "version": "1.0.0",
+  "description": "Lethe ctx-run configuration file - externalized from database for easier management",
+  
+  "retrieval": {
+    "alpha": 0.7,
+    "beta": 0.5,
+    "gamma_kind_boost": {
+      "code": 0.1,
+      "text": 0.0
+    },
+    "fusion": {
+      "dynamic": false
+    },
+    "llm_rerank": {
+      "use_llm": false,
+      "llm_budget_ms": 1200,
+      "llm_model": "llama3.2:1b",
+      "contradiction_enabled": false,
+      "contradiction_penalty": 0.15
+    }
+  },
+  
+  "chunking": {
+    "target_tokens": 320,
+    "overlap": 64,
+    "method": "semantic"
+  },
+  
+  "timeouts": {
+    "hyde_ms": 10000,
+    "summarize_ms": 10000,
+    "ollama_connect_ms": 500,
+    "ml_prediction_ms": 2000
+  },
+  
+  "features": {
+    "enable_hyde": true,
+    "enable_summarization": true,
+    "enable_plan_selection": true,
+    "enable_query_understanding": true,
+    "enable_ml_prediction": false,
+    "enable_state_tracking": true
+  },
+  
+  "query_understanding": {
+    "rewrite_enabled": true,
+    "decompose_enabled": true,
+    "max_subqueries": 3,
+    "llm_model": "llama3.2:1b",
+    "temperature": 0.1
+  },
+  
+  "ml": {
+    "prediction_service": {
+      "enabled": false,
+      "host": "127.0.0.1",
+      "port": 8080,
+      "timeout_ms": 2000,
+      "fallback_to_static": true
+    },
+    "models": {
+      "plan_selector": "learned_plan_selector.joblib",
+      "fusion_weights": "dynamic_fusion_model.joblib", 
+      "feature_extractor": "feature_extractor.json"
+    }
+  },
+  
+  "development": {
+    "debug_enabled": false,
+    "profiling_enabled": false,
+    "log_level": "info"
+  }
+}

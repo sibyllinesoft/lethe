@@ -1,0 +1,8 @@
+{
+  "created_at": "2025-08-23T07:15:07.643Z",
+  "node_version": "v20.18.1",
+  "platform": "linux",
+  "arch": "x64",
+  "vector_backend": "wasm",
+  "database_path": ".ctx/lethe.db"
+}

@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lethe-research.com/schemas/license-report.json",
+  "title": "License Compliance Report",
+  "description": "Comprehensive license compliance report for LetheBench dataset",
+  "type": "object",
+  "required": [
+    "report_id",
+    "generation_timestamp", 
+    "dataset_id",
+    "overall_compliance_status",
+    "scanned_components",
+    "license_summary"
+  ],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "description": "Unique identifier for this license report"
+    },
+    "generation_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this report was generated"
+    },
+    "dataset_id": {
+      "type": "string",
+      "description": "Associated dataset identifier"
+    },
+    "overall_compliance_status": {
+      "type": "string",
+      "enum": ["COMPLIANT", "NON_COMPLIANT", "NEEDS_REVIEW", "UNKNOWN"],
+      "description": "Overall compliance status"
+    },
+    "scanned_components": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/scanned_component"
+      },
+      "description": "All scanned components with their license information"
+    },
+    "license_summary": {
+      "$ref": "#/$defs/license_summary",
+      "description": "Summary of all licenses found"
+    },
+    "compliance_issues": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/compliance_issue"
+      },
+      "description": "Identified compliance issues"
+    },
+    "attribution_requirements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/attribution_requirement"
+      },
+      "description": "Required attributions"
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Compliance recommendations"
+    },
+    "scan_metadata": {
+      "$ref": "#/$defs/scan_metadata",
+      "description": "Metadata about the scanning process"
+    }
+  },
+  "$defs": {
+    "scanned_component": {
+      "type": "object",
+      "required": ["component_id", "component_type", "license_info", "compliance_status"],
+      "properties": {
+        "component_id": {
+          "type": "string",
+          "description": "Unique identifier for the component"
+        },
+        "component_type": {
+          "type": "string",
+          "enum": ["QUERY", "DOCUMENT", "CODE_SNIPPET", "TEMPLATE", "EXTERNAL_SOURCE"],
+          "description": "Type of component"
+        },
+        "source_info": {
+          "type": "object",
+          "properties": {
+            "origin": {"type": "string"},
+            "url": {"type": "string", "format": "uri"},
+            "author": {"type": "string"},
+            "creation_date": {"type": "string", "format": "date"}
+          }
+        },
+        "license_info": {
+          "$ref": "#/$defs/detected_license"
+        },
+        "compliance_status": {
+          "type": "string", 
+          "enum": ["COMPLIANT", "NON_COMPLIANT", "NEEDS_REVIEW", "UNKNOWN"]
+        },
+        "issues": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "detected_license": {
+      "type": "object",
+      "properties": {
+        "license_type": {
+          "type": "string",
+          "enum": ["MIT", "Apache-2.0", "GPL-2.0", "GPL-3.0", "BSD-2-Clause", "BSD-3-Clause", "CC-BY-4.0", "CC-BY-SA-4.0", "CC0-1.0", "PROPRIETARY", "UNKNOWN", "MULTIPLE"]
+        },
+        "confidence_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Confidence in license detection"
+        },
+        "license_text": {
+          "type": "string",
+          "description": "Full or partial license text found"
+        },
+        "license_file_path": {
+          "type": "string",
+          "description": "Path to license file if found"
+        },
+        "copyright_notices": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Copyright notices found"
+        },
+        "attribution_text": {
+          "type": "string",
+          "description": "Required attribution text"
+        }
+      }
+    },
+    "license_summary": {
+      "type": "object",
+      "required": ["license_counts", "compatibility_matrix"],
+      "properties": {
+        "license_counts": {
+          "type": "object",
+          "description": "Count of each license type found",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "compatibility_matrix": {
+          "type": "object",
+          "description": "License compatibility analysis",
+          "properties": {
+            "permissive_licenses": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "copyleft_licenses": {
+              "type": "array", 
+              "items": {"type": "string"}
+            },
+            "proprietary_licenses": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "conflicts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "license1": {"type": "string"},
+                  "license2": {"type": "string"},
+                  "conflict_reason": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "commercial_use_allowed": {
+          "type": "boolean",
+          "description": "Whether commercial use is allowed for all components"
+        },
+        "derivative_works_allowed": {
+          "type": "boolean",
+          "description": "Whether derivative works are allowed for all components"
+        },
+        "attribution_required": {
+          "type": "boolean", 
+          "description": "Whether attribution is required for any component"
+        }
+      }
+    },
+    "compliance_issue": {
+      "type": "object",
+      "required": ["issue_id", "severity", "description", "affected_components"],
+      "properties": {
+        "issue_id": {
+          "type": "string",
+          "description": "Unique identifier for the issue"
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"],
+          "description": "Issue severity level"
+        },
+        "issue_type": {
+          "type": "string",
+          "enum": ["LICENSE_CONFLICT", "MISSING_LICENSE", "MISSING_ATTRIBUTION", "COPYRIGHT_VIOLATION", "INCOMPATIBLE_USAGE", "OTHER"]
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the issue"
+        },
+        "affected_components": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "List of component IDs affected by this issue"
+        },
+        "remediation_steps": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Steps to resolve the issue"
+        },
+        "legal_risk": {
+          "type": "string",
+          "enum": ["HIGH", "MEDIUM", "LOW", "NEGLIGIBLE"],
+          "description": "Assessed legal risk level"
+        }
+      }
+    },
+    "attribution_requirement": {
+      "type": "object",
+      "required": ["component_id", "attribution_text"],
+      "properties": {
+        "component_id": {
+          "type": "string",
+          "description": "Component requiring attribution"
+        },
+        "attribution_text": {
+          "type": "string",
+          "description": "Required attribution text"
+        },
+        "license_type": {
+          "type": "string",
+          "description": "License requiring the attribution"
+        },
+        "copyright_holder": {
+          "type": "string",
+          "description": "Copyright holder to be attributed"
+        },
+        "copyright_year": {
+          "type": "string",
+          "description": "Copyright year"
+        },
+        "source_url": {
+          "type": "string",
+          "format": "uri", 
+          "description": "Source URL if applicable"
+        }
+      }
+    },
+    "scan_metadata": {
+      "type": "object",
+      "required": ["scan_timestamp", "scanner_version", "scan_duration"],
+      "properties": {
+        "scan_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the scan was performed"
+        },
+        "scanner_version": {
+          "type": "string",
+          "description": "Version of the license scanner used"
+        },
+        "scan_duration": {
+          "type": "number",
+          "description": "Scan duration in seconds"
+        },
+        "files_scanned": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of files scanned"
+        },
+        "components_analyzed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of components analyzed"
+        },
+        "scan_parameters": {
+          "type": "object",
+          "description": "Parameters used during the scan"
+        },
+        "excluded_patterns": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "File patterns excluded from scanning"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "report_id": "license-report-20240115-001",
+      "generation_timestamp": "2024-01-15T14:30:22.123Z",
+      "dataset_id": "lethebench_deterministic_42",
+      "overall_compliance_status": "COMPLIANT",
+      "scanned_components": [
+        {
+          "component_id": "code_heavy_query_000001",
+          "component_type": "QUERY",
+          "license_info": {
+            "license_type": "CC-BY-4.0",
+            "confidence_score": 0.95
+          },
+          "compliance_status": "COMPLIANT"
+        }
+      ],
+      "license_summary": {
+        "license_counts": {
+          "CC-BY-4.0": 600
+        },
+        "compatibility_matrix": {
+          "permissive_licenses": ["CC-BY-4.0"],
+          "conflicts": []
+        },
+        "commercial_use_allowed": true,
+        "derivative_works_allowed": true,
+        "attribution_required": true
+      }
+    }
+  ]
+}

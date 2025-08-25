@@ -1,0 +1,241 @@
+# Docker Compose Orchestration for Lethe Research Infrastructure
+# Hermetic environment with health-gated dependencies
+
+version: '3.9'
+
+networks:
+  lethe-internal:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+  lethe-external:
+    driver: bridge
+    
+volumes:
+  lethe-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data
+  lethe-artifacts:
+    driver: local
+  lethe-logs:
+    driver: local
+
+services:
+  # Core Application Service
+  lethe-api:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+      target: runtime
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    image: lethe-research:latest
+    container_name: lethe-api
+    restart: unless-stopped
+    networks:
+      - lethe-internal
+      - lethe-external
+    ports:
+      - "8080:8080"
+    volumes:
+      - lethe-artifacts:/app/artifacts:rw
+      - lethe-logs:/app/logs:rw
+      - ./config:/app/config:ro
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+      - SECURITY_MODE=strict
+      - NETWORK_MODE=isolated
+      - PYTHONPATH=/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/tmp
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+
+  # Redis Cache Service  
+  redis:
+    image: redis:7.2.3-alpine
+    container_name: lethe-redis
+    restart: unless-stopped
+    networks:
+      - lethe-internal
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+
+  # PostgreSQL Database Service
+  postgres:
+    image: postgres:16.1-alpine
+    container_name: lethe-postgres
+    restart: unless-stopped
+    networks:
+      - lethe-internal
+    volumes:
+      - lethe-data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+    environment:
+      - POSTGRES_DB=lethe_research
+      - POSTGRES_USER=lethe
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lethe -d lethe_research"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETUID
+      - SETGID
+      - DAC_OVERRIDE
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  # Monitoring and Health Check Service
+  healthcheck:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.healthcheck
+    image: lethe-healthcheck:latest
+    container_name: lethe-healthcheck
+    restart: unless-stopped
+    networks:
+      - lethe-internal
+    volumes:
+      - lethe-logs:/app/logs:rw
+      - ./monitoring:/app/monitoring:ro
+    environment:
+      - ENVIRONMENT=production
+      - CHECK_INTERVAL=30
+      - ALERT_THRESHOLD=3
+    healthcheck:
+      test: ["CMD", "python", "-m", "monitoring.health_check"]
+      interval: 60s
+      timeout: 15s
+      retries: 2
+      start_period: 30s
+    depends_on:
+      lethe-api:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # SAST Security Scanner Service
+  security-scanner:
+    image: securecodewarrior/semgrep:latest
+    container_name: lethe-security-scanner
+    networks:
+      - lethe-internal
+    volumes:
+      - ../:/app:ro
+      - lethe-logs:/app/security-logs:rw
+      - ./security/semgrep-rules:/rules:ro
+    environment:
+      - SEMGREP_RULES=/rules
+      - SEMGREP_OUTPUT_FORMAT=json
+    command: ["semgrep", "--config=/rules", "--json", "/app"]
+    profiles:
+      - security-scan
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp
+
+# Secrets Management
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+
+# Profiles for Different Environments
+x-development-overrides: &development-overrides
+  environment:
+    - ENVIRONMENT=development
+    - LOG_LEVEL=DEBUG
+    - SECURITY_MODE=relaxed
+  volumes:
+    - ../:/app:rw
+
+x-testing-overrides: &testing-overrides
+  environment:
+    - ENVIRONMENT=testing
+    - LOG_LEVEL=DEBUG
+    - PYTEST_CURRENT_TEST=1
+  depends_on: []

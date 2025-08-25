@@ -1,0 +1,50 @@
+{
+  "code_heavy": {
+    "count": 3,
+    "avg_quality_score": 0.8833333333333333,
+    "std_quality_score": 0.06236095644623232,
+    "min_quality_score": 0.8,
+    "max_quality_score": 0.95,
+    "avg_text_length": 113.66666666666667,
+    "std_text_length": 56.369810675179274,
+    "avg_ground_truth_docs": 4.333333333333333,
+    "complexity_distribution": {
+      "simple": 1,
+      "medium": 1,
+      "complex": 1
+    },
+    "unique_templates": 3
+  },
+  "chatty_prose": {
+    "count": 10,
+    "avg_quality_score": 0.9249999999999998,
+    "std_quality_score": 0.025000000000000022,
+    "min_quality_score": 0.8999999999999999,
+    "max_quality_score": 0.95,
+    "avg_text_length": 97.1,
+    "std_text_length": 60.969582580168606,
+    "avg_ground_truth_docs": 4.1,
+    "complexity_distribution": {
+      "simple": 5,
+      "medium": 0,
+      "complex": 5
+    },
+    "unique_templates": 6
+  },
+  "tool_results": {
+    "count": 4,
+    "avg_quality_score": 1.0,
+    "std_quality_score": 0.0,
+    "min_quality_score": 1.0,
+    "max_quality_score": 1.0,
+    "avg_text_length": 226.5,
+    "std_text_length": 5.678908345800274,
+    "avg_ground_truth_docs": 3.5,
+    "complexity_distribution": {
+      "simple": 0,
+      "medium": 4,
+      "complex": 0
+    },
+    "unique_templates": 3
+  }
+}

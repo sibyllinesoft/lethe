@@ -1,0 +1,326 @@
+# Chunking Strategy Optimization (V5)
+# Comprehensive evaluation of document chunking approaches
+# Focus: Optimal text segmentation for hybrid retrieval
+
+experiment:
+  name: "lethe_v5_chunking_optimization"
+  description: "Advanced chunking strategies for improved retrieval quality"
+  version: "5.0.0"
+  replications: 5
+  seed: 46
+  phase: "chunking_optimization"
+
+# Fixed core parameters from previous iterations
+fixed_parameters:
+  alpha: 0.7
+  beta: 0.5
+  k_initial: 50
+  k_rerank: 20
+  planning_strategy: "ml_predict"
+  query_rewrite: "expand"
+
+# Chunking strategy parameters
+parameters:
+  # Primary chunking method
+  chunking_strategy:
+    type: categorical
+    values: ["fixed_size", "sentence_aware", "semantic_boundary", "hierarchical", "adaptive", "hybrid"]
+    default: "sentence_aware"
+    description: "Document chunking approach"
+    priority: "high"
+    
+  # Base chunk size (tokens)
+  base_chunk_size:
+    type: int
+    values: [128, 192, 256, 320, 512, 640, 768]
+    default: 320
+    description: "Target tokens per chunk"
+    
+  # Overlap strategy
+  overlap_strategy:
+    type: categorical
+    values: ["fixed_tokens", "fixed_percentage", "sentence_boundary", "semantic_overlap"]
+    default: "sentence_boundary"
+    description: "How to handle chunk overlaps"
+    
+  # Overlap amount
+  overlap_amount:
+    type: float
+    values: [0.1, 0.15, 0.2, 0.25, 0.3]
+    default: 0.2
+    description: "Overlap as percentage of chunk size"
+    conditional_on: {overlap_strategy: ["fixed_percentage"]}
+    
+  overlap_tokens:
+    type: int
+    values: [16, 32, 48, 64, 96, 128]
+    default: 64
+    description: "Fixed overlap in tokens"
+    conditional_on: {overlap_strategy: ["fixed_tokens"]}
+    
+  # Hierarchical chunking parameters
+  hierarchy_levels:
+    type: int
+    values: [2, 3, 4]
+    default: 3
+    description: "Number of hierarchy levels"
+    conditional_on: {chunking_strategy: ["hierarchical", "hybrid"]}
+    
+  parent_child_ratio:
+    type: float
+    values: [2.0, 3.0, 4.0, 5.0]
+    default: 3.0
+    description: "Ratio of parent to child chunk size"
+    conditional_on: {chunking_strategy: ["hierarchical", "hybrid"]}
+    
+  # Semantic chunking parameters
+  semantic_threshold:
+    type: float
+    values: [0.3, 0.4, 0.5, 0.6, 0.7]
+    default: 0.5
+    description: "Semantic similarity threshold for boundaries"
+    conditional_on: {chunking_strategy: ["semantic_boundary", "adaptive", "hybrid"]}
+    
+  # Adaptive chunking parameters
+  min_chunk_size:
+    type: int
+    values: [64, 96, 128, 160]
+    default: 128
+    description: "Minimum chunk size for adaptive chunking"
+    conditional_on: {chunking_strategy: ["adaptive", "hybrid"]}
+    
+  max_chunk_size:
+    type: int
+    values: [512, 640, 768, 1024]
+    default: 640
+    description: "Maximum chunk size for adaptive chunking"
+    conditional_on: {chunking_strategy: ["adaptive", "hybrid"]}
+    
+  # Content-aware parameters
+  preserve_code_blocks:
+    type: boolean
+    values: [true, false]
+    default: true
+    description: "Whether to avoid splitting code blocks"
+    
+  preserve_tables:
+    type: boolean
+    values: [true, false]
+    default: true
+    description: "Whether to keep tables intact"
+    
+  preserve_lists:
+    type: boolean
+    values: [true, false]
+    default: true
+    description: "Whether to avoid splitting lists"
+
+# Chunking method definitions
+chunking_methods:
+  fixed_size:
+    description: "Simple token-count based chunking"
+    parameters: ["base_chunk_size", "overlap_strategy"]
+    complexity: "low"
+    speed: "fast"
+    
+  sentence_aware:
+    description: "Respect sentence boundaries in chunking"
+    parameters: ["base_chunk_size", "overlap_strategy"]
+    complexity: "medium"
+    speed: "medium"
+    
+  semantic_boundary:
+    description: "Use semantic similarity to find chunk boundaries"
+    parameters: ["base_chunk_size", "semantic_threshold", "overlap_strategy"]
+    complexity: "high"
+    speed: "slow"
+    dependencies: ["sentence_transformer_model"]
+    
+  hierarchical:
+    description: "Multi-level chunk hierarchy (parent-child)"
+    parameters: ["base_chunk_size", "hierarchy_levels", "parent_child_ratio"]
+    complexity: "high"
+    speed: "medium"
+    
+  adaptive:
+    description: "Variable chunk sizes based on content density"
+    parameters: ["min_chunk_size", "max_chunk_size", "semantic_threshold"]
+    complexity: "very_high"
+    speed: "slow"
+    dependencies: ["content_analyzer"]
+    
+  hybrid:
+    description: "Combination of multiple chunking strategies"
+    parameters: ["base_chunk_size", "hierarchy_levels", "semantic_threshold"]
+    complexity: "very_high"
+    speed: "slow"
+
+# Evaluation focused on chunk quality impact
+evaluation:
+  document_types:
+    - code_documentation: 0.3  # Technical docs with code
+    - conversational_text: 0.3 # Natural dialog
+    - structured_data: 0.2     # Tables, lists, forms  
+    - mixed_content: 0.2       # Combined content types
+    
+  query_types:
+    - specific_fact: 0.2       # Benefits from precise chunking
+    - code_snippet: 0.2        # Code boundary awareness critical
+    - conceptual: 0.3          # Benefits from semantic chunking
+    - cross_reference: 0.3     # Benefits from hierarchical
+    
+  content_complexity:
+    - simple: 0.3              # Basic text
+    - medium: 0.4              # Mixed content
+    - complex: 0.3             # Highly structured
+
+# Metrics emphasizing chunking impact
+metrics:
+  primary:
+    - ndcg_at_10
+    - precision_at_5
+    - recall_at_10
+    - answer_completeness      # How well chunks capture complete answers
+    
+  chunking_specific:
+    - chunk_relevance_score    # Relevance of retrieved chunks
+    - chunk_coherence          # Internal consistency of chunks
+    - boundary_quality         # How well boundaries preserve meaning
+    - redundancy_rate          # Overlap effectiveness
+    - fragmentation_score      # How often answers span chunks
+    
+  efficiency:
+    - chunking_time_ms         # Time to process documents
+    - index_size_mb           # Storage efficiency
+    - retrieval_latency_ms    # Impact on retrieval speed
+    - memory_usage_mb         # Memory footprint
+    
+  content_preservation:
+    - code_block_integrity    # Code blocks preserved intact
+    - table_preservation      # Tables kept together
+    - list_coherence         # Lists not fragmented
+    - context_continuity     # Logical flow maintained
+
+# Specialized analysis for chunking
+analysis_protocols:
+  chunk_size_analysis:
+    # Analyze optimal chunk sizes per content type
+    content_types: ["code", "prose", "structured", "mixed"]
+    size_ranges: [[128, 256], [256, 512], [512, 768], [768, 1024]]
+    metrics: ["ndcg_at_10", "fragmentation_score"]
+    
+  overlap_effectiveness:
+    # Evaluate overlap strategies
+    strategies: ["fixed_tokens", "fixed_percentage", "semantic_overlap"]
+    overlap_amounts: [0.1, 0.2, 0.3]
+    metrics: ["redundancy_rate", "answer_completeness"]
+    
+  boundary_quality_analysis:
+    # Assess chunk boundary decisions
+    boundary_types: ["sentence", "paragraph", "semantic", "structural"]
+    quality_metrics: ["boundary_quality", "context_continuity"]
+    content_types: ["technical", "conversational", "mixed"]
+
+# Statistical analysis
+statistical_analysis:
+  hypotheses:
+    H5_1: "Semantic chunking outperforms fixed-size for conceptual queries"
+    H5_2: "Hierarchical chunking improves complex cross-reference queries"
+    H5_3: "Content-aware chunking preserves code and table integrity"
+    H5_4: "Adaptive chunking reduces answer fragmentation"
+    
+  success_criteria:
+    semantic_improvement: "Semantic chunking shows >8% nDCG improvement on conceptual queries"
+    hierarchical_benefit: "Hierarchical chunking improves cross-reference queries >10%"
+    integrity_preservation: "Content-aware chunking achieves >95% code/table preservation"
+    fragmentation_reduction: "Adaptive chunking reduces fragmentation by >15%"
+    
+  comparison_baselines:
+    - fixed_320_64          # Fixed 320 token chunks, 64 token overlap
+    - sentence_aware_basic  # Basic sentence boundary chunking
+    - current_best         # Best configuration from previous iterations
+
+# Expected configuration analysis
+configuration_analysis:
+  # Base configurations: 6 strategies × 7 sizes = 42 base configs
+  # With conditional parameters: ~150-200 unique configurations
+  # With 5 replications: ~750-1000 runs
+  
+  strategy_coverage:
+    simple_methods: ["fixed_size", "sentence_aware"]  # ~50 configs
+    moderate_methods: ["hierarchical"]                # ~30 configs  
+    complex_methods: ["semantic_boundary", "adaptive", "hybrid"]  # ~80 configs
+    
+  computational_complexity:
+    fast: ["fixed_size", "sentence_aware"]
+    medium: ["hierarchical", "sentence_aware_advanced"]
+    slow: ["semantic_boundary", "adaptive", "hybrid"]
+
+# Resource management
+resources:
+  max_concurrent_runs: 6
+  timeout_per_query: "90s"
+  timeout_per_session: "15min"
+  
+  chunking_resources:
+    semantic_model_memory: "1GB"
+    content_analyzer_memory: "512MB"
+    chunk_cache_size: "2GB"
+    
+  specialized_requirements:
+    semantic_chunking: 
+      gpu: "Optional (faster processing)"
+      memory: "2GB"
+    adaptive_chunking:
+      cpu: "4+ cores (content analysis)"
+      memory: "3GB"
+
+# Quality gates
+quality_gates:
+  chunking_effectiveness: "Best chunking strategy shows >5% nDCG improvement"
+  efficiency_constraint: "Chunking overhead < 20% of total processing time"
+  content_preservation: "Structural elements preserved with >90% integrity"
+  scalability: "Chunking time scales linearly with document size"
+
+# Output configuration
+output:
+  save_chunk_statistics: true
+  save_boundary_analysis: true
+  save_fragmentation_reports: true
+  save_content_preservation_metrics: true
+  
+  visualizations:
+    - "Chunk size distribution by content type"
+    - "Boundary quality heatmaps"
+    - "Fragmentation analysis per strategy"
+    - "Processing time vs quality tradeoffs"
+    - "Content preservation scores by method"
+    - "Overlap effectiveness analysis"
+
+# Advanced evaluation protocols
+advanced_evaluation:
+  content_type_specialization:
+    code_heavy_docs:
+      optimal_strategy: "hierarchical_with_code_awareness"
+      key_metrics: ["code_block_integrity", "api_reference_completeness"]
+      
+    conversational_text:
+      optimal_strategy: "semantic_boundary"
+      key_metrics: ["context_continuity", "turn_coherence"]
+      
+    technical_documentation:
+      optimal_strategy: "adaptive_hierarchical"
+      key_metrics: ["section_completeness", "cross_reference_accuracy"]
+      
+  query_complexity_matching:
+    simple_factual: "Fast chunking acceptable (fixed_size, sentence_aware)"
+    complex_analytical: "Advanced chunking required (semantic, adaptive)"
+    cross_document: "Hierarchical chunking beneficial"
+
+# Success criteria for chunking optimization
+success_criteria:
+  primary_improvement: "Best chunking achieves >7% nDCG@10 improvement over baseline"
+  efficiency_balance: "Quality gains with <50% processing time increase"
+  robustness: "Performance consistent across document and query types"  
+  content_preservation: "Critical content elements preserved >95% of time"
+  scalability: "Method works effectively on documents 100-10,000 tokens"

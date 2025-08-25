@@ -1,0 +1,19 @@
+\begin{table}[htbp]
+\centering
+\caption{Baseline Methods Validation Summary}
+\label{tab:baseline-validation}
+\begin{tabular}{lcc}
+\toprule
+Baseline Method & Sample Size & NDCG@10 Mean \\
+\midrule
+BM25-only & 100 & 0.444 \\
+Vector-only & 100 & 0.468 \\
+Cross-encoder & 20 & 0.317 \\
+FAISS-IVF & 20 & 0.244 \\
+MMR & 20 & 0.250 \\
+Window-based & 20 & 0.278 \\
+BM25+Vector & 100 & 0.516 \\
+\bottomrule
+\multicolumn{3}{l}{\small All baselines evaluated on consistent query set} \\
+\end{tabular}
+\end{table}

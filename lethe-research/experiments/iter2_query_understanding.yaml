@@ -1,0 +1,82 @@
+# Iteration 2: Query Understanding - Development Grid Search
+name: iter2-query-understanding
+description: "LLM-based query rewriting, decomposition, and enhanced HyDE"
+seed: 2024
+
+# Build on Iteration 1 best configuration
+base_config:
+  # Best params from Iteration 1 (to be determined from grid search results)
+  diversify_method: "semantic"  # placeholder - use actual best result
+  retrieval_alpha: 0.7
+  retrieval_beta: 0.9
+  diversify_pack_chunks: 24
+
+# New Iteration 2 parameters
+parameters:
+  query_rewrite:
+    values: [true, false]
+    description: "Enable LLM-based query refinement and expansion"
+  
+  query_decompose:
+    values: [true, false] 
+    description: "Break complex queries into focused sub-queries"
+    
+  hyde_enabled:
+    values: [true, false]
+    description: "Generate hypothetical documents for enhanced retrieval"
+    
+  llm_model:
+    values: ["gpt-4o-mini", "claude-3-haiku"]
+    description: "LLM for query processing"
+    
+  max_subqueries:
+    values: [2, 3, 5]
+    description: "Maximum number of decomposed sub-queries"
+    condition: "query_decompose == true"
+    
+  rewrite_strategy:
+    values: ["expand", "clarify", "both"]
+    description: "Query rewriting approach"
+    condition: "query_rewrite == true"
+
+# Updated constraints for LLM processing
+constraints:
+  latency_p50_ms: 3500  # Increased budget for LLM calls
+  memory_mb: 1500       # Same memory constraint
+  llm_timeout_ms: 5000  # Individual LLM call timeout
+
+# Success criteria
+metrics:
+  primary: "nDCG@10"
+  secondary: ["Recall@50", "Coverage@N", "latency_p50_ms"]
+  
+# Quality gates
+quality_gates:
+  improvement_over_iter1: 0.05  # 5% minimum improvement in nDCG@10
+  latency_degradation_limit: 0.15  # Max 15% latency increase acceptable
+  
+# Experimental design  
+design:
+  factorial: true
+  blocked_randomization: "by_domain"
+  minimum_samples_per_cell: 20
+  statistical_power: 0.8
+  significance_level: 0.05
+
+# Integration testing
+integration_tests:
+  - name: "query_rewrite_quality"
+    description: "Verify rewritten queries improve retrieval"
+    metric: "improvement_ratio > 1.1"
+    
+  - name: "decomposition_coverage"  
+    description: "Sub-queries increase entity coverage"
+    metric: "coverage_improvement > 0.1"
+    
+  - name: "hyde_relevance"
+    description: "Generated documents boost semantic match"
+    metric: "semantic_similarity_gain > 0.05"
+    
+  - name: "end_to_end_latency"
+    description: "Full pipeline stays within budget" 
+    metric: "p95_latency_ms < 3500"

@@ -1,0 +1,33 @@
+# LetheBench Dataset Construction Pipeline Requirements
+
+# Core dependencies
+requests>=2.31.0
+numpy>=1.24.0
+python-dateutil>=2.8.2
+
+# NLP and text processing  
+spacy>=3.7.0
+# Run: python -m spacy download en_core_web_sm
+
+# Data processing
+pandas>=2.0.0
+jsonschema>=4.19.0
+
+# Web scraping (optional, for enhanced data collection)
+beautifulsoup4>=4.12.0
+wikipediaapi>=0.6.0
+
+# Development and testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+
+# Code quality
+black>=23.9.0
+isort>=5.12.0
+flake8>=6.0.0
+mypy>=1.5.0
+
+# Documentation
+mkdocs>=1.5.0
+mkdocs-material>=9.4.0

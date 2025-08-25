@@ -1,0 +1,54 @@
+% NeurIPS 2025 style file (minimal version for compilation)
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{neurips_2025}[2024/01/01 NeurIPS 2025 style]
+
+% Page layout
+\usepackage[letterpaper]{geometry}
+\geometry{
+  top=1in,
+  bottom=1in,
+  left=1in,
+  right=1in,
+  marginparwidth=0.75in,
+  marginparsep=0.1in
+}
+
+% Typography
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{courier}
+
+% Title formatting
+\renewcommand{\maketitle}{%
+  \begin{center}%
+    {\Large\bfseries \@title \par}%
+    \vskip 1.5em%
+    {\large \@author \par}%
+    \vskip 1em%
+    {\large \@date \par}%
+  \end{center}%
+  \par%
+  \vskip 1.5em%
+}
+
+% Abstract environment
+\renewenvironment{abstract}{%
+  \small%
+  \begin{center}%
+    \bfseries Abstract%
+  \end{center}%
+  \quotation%
+}{%
+  \endquotation%
+}
+
+% Section formatting
+\renewcommand{\section}{\@startsection{section}{1}{\z@}%
+  {-3.5ex \@plus -1ex \@minus -.2ex}%
+  {2.3ex \@plus.2ex}%
+  {\normalfont\Large\bfseries}}
+
+% Bibliography style
+\bibliographystyle{plain}
+
+\endinput

@@ -1,0 +1,29 @@
+{
+  "session_id": "tool_session_001", 
+  "messages": [
+    {
+      "role": "user",
+      "text": "I need to set up automated deployment for my Node.js application using GitHub Actions.",
+      "timestamp": 1703184000,
+      "turn": 1
+    },
+    {
+      "role": "assistant",
+      "text": "I'll help you set up GitHub Actions for automated Node.js deployment. Here's a comprehensive workflow:\n\nCreate `.github/workflows/deploy.yml`:\n\n```yaml\nname: Deploy to Production\n\non:\n  push:\n    branches: [ main ]\n  pull_request:\n    branches: [ main ]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    \n    strategy:\n      matrix:\n        node-version: [16.x, 18.x]\n    \n    steps:\n    - uses: actions/checkout@v3\n    \n    - name: Use Node.js ${{ matrix.node-version }}\n      uses: actions/setup-node@v3\n      with:\n        node-version: ${{ matrix.node-version }}\n        cache: 'npm'\n    \n    - run: npm ci\n    - run: npm run build --if-present\n    - run: npm test\n\n  deploy:\n    needs: test\n    runs-on: ubuntu-latest\n    if: github.ref == 'refs/heads/main'\n    \n    steps:\n    - uses: actions/checkout@v3\n    \n    - name: Setup Node.js\n      uses: actions/setup-node@v3\n      with:\n        node-version: '18'\n        cache: 'npm'\n    \n    - run: npm ci\n    - run: npm run build\n    \n    - name: Deploy to server\n      uses: appleboy/ssh-action@v0.1.5\n      with:\n        host: ${{ secrets.HOST }}\n        username: ${{ secrets.USERNAME }}\n        key: ${{ secrets.KEY }}\n        script: |\n          cd /var/www/your-app\n          git pull origin main\n          npm install --production\n          npm run build\n          pm2 restart your-app\n```",
+      "timestamp": 1703184120,
+      "turn": 2
+    },
+    {
+      "role": "user", 
+      "text": "What secrets do I need to configure in GitHub?",
+      "timestamp": 1703184180,
+      "turn": 3
+    },
+    {
+      "role": "assistant",
+      "text": "You'll need to configure these secrets in your GitHub repository settings (Settings > Secrets and variables > Actions):\n\n**Required Secrets:**\n\n1. **HOST** - Your server's IP address or domain\n   - Example: `192.168.1.100` or `your-domain.com`\n\n2. **USERNAME** - SSH username for your server\n   - Example: `ubuntu`, `deploy`, or your server username\n\n3. **KEY** - Your private SSH key\n   - Generate with: `ssh-keygen -t rsa -b 4096 -C \"your-email@example.com\"`\n   - Copy the **private key** content (usually `~/.ssh/id_rsa`)\n   - Add the **public key** to your server's `~/.ssh/authorized_keys`\n\n**Steps to set up secrets:**\n\n1. Go to your GitHub repo\n2. Click Settings > Secrets and variables > Actions\n3. Click \"New repository secret\" for each:\n   - Name: `HOST`, Value: your server IP/domain\n   - Name: `USERNAME`, Value: your SSH username  \n   - Name: `KEY`, Value: your private SSH key content\n\n**Security Tips:**\n- Create a dedicated deploy user on your server\n- Limit SSH key permissions to deployment directories only\n- Consider using GitHub's environment protection rules for production deployments\n- Use separate secrets for staging vs production environments",
+      "timestamp": 1703184240,
+      "turn": 4
+    }
+  ]
+}

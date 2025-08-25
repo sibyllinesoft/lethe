@@ -1,6 +1,39 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NoOpDiversifier = exports.EntityCoverageDiversifier = void 0;
+exports.NoOpDiversifier = exports.SemanticDiversifier = exports.EntityCoverageDiversifier = void 0;
 exports.getDiversifier = getDiversifier;
 class EntityCoverageDiversifier {
     name = "entity-coverage";
@@ -173,6 +206,166 @@ class EntityCoverageDiversifier {
     }
 }
 exports.EntityCoverageDiversifier = EntityCoverageDiversifier;
+class SemanticDiversifier {
+    embeddings;
+    seed;
+    name = "semantic";
+    constructor(embeddings, seed = 11) {
+        this.embeddings = embeddings;
+        this.seed = seed;
+    }
+    async diversify(candidates, k) {
+        if (candidates.length <= k) {
+            return candidates; // No need to diversify
+        }
+        console.log(`Semantic diversifying ${candidates.length} candidates to top ${k}`);
+        // Extract texts for embedding
+        const texts = candidates.map(c => c.text || '').filter(t => t.length > 0);
+        if (texts.length === 0) {
+            return candidates.slice(0, k); // Fallback to top-k
+        }
+        try {
+            // Get embeddings for all candidate texts
+            const embeddings = this.embeddings || (await Promise.resolve().then(() => __importStar(require('@lethe/embeddings')))).getProvider();
+            const vectors = await embeddings.embed(texts);
+            if (vectors.length !== texts.length) {
+                console.warn('Embedding length mismatch, falling back to entity-based diversification');
+                return candidates.slice(0, k);
+            }
+            // Perform k-means clustering
+            const K = this.autoK(k, vectors.length);
+            const { clusters, medoids } = this.kmeansFast(vectors, K, this.seed);
+            // Score clusters by max candidate score
+            const clusterScores = clusters.map((cluster, idx) => {
+                const maxScore = Math.max(...cluster.map(candidateIdx => candidates[candidateIdx].score));
+                return { clusterIdx: idx, maxScore, cluster };
+            });
+            // Sort clusters by score descending
+            clusterScores.sort((a, b) => b.maxScore - a.maxScore);
+            // Greedily pick medoids from clusters until we reach k candidates
+            const selected = new Set();
+            const result = [];
+            for (const { clusterIdx, cluster } of clusterScores) {
+                if (result.length >= k)
+                    break;
+                const medoidIdx = medoids[clusterIdx];
+                if (!selected.has(medoidIdx)) {
+                    selected.add(medoidIdx);
+                    result.push(candidates[medoidIdx]);
+                }
+            }
+            // Fill remaining slots with highest-scoring candidates not yet selected
+            for (let i = 0; i < candidates.length && result.length < k; i++) {
+                if (!selected.has(i)) {
+                    result.push(candidates[i]);
+                    selected.add(i);
+                }
+            }
+            console.log(`Semantic diversification complete - selected ${result.length} candidates from ${K} clusters`);
+            return result;
+        }
+        catch (error) {
+            console.warn(`Semantic diversification failed: ${error}, falling back to top-k`);
+            return candidates.slice(0, k);
+        }
+    }
+    autoK(targetK, n) {
+        // Auto-determine number of clusters
+        if (targetK === 0) {
+            return Math.min(Math.ceil(n / 3), 24);
+        }
+        return Math.min(targetK * 2, Math.max(8, Math.ceil(n / 3)));
+    }
+    kmeansFast(vectors, k, seed) {
+        // Simple k-means implementation with seeded random initialization
+        const n = vectors.length;
+        if (n <= k) {
+            return {
+                clusters: vectors.map((_, i) => [i]),
+                medoids: vectors.map((_, i) => i)
+            };
+        }
+        // Seed random number generator
+        let seedState = seed;
+        const random = () => {
+            seedState = (seedState * 9301 + 49297) % 233280;
+            return seedState / 233280;
+        };
+        // Initialize centroids randomly
+        const centroids = [];
+        const chosenIndices = new Set();
+        for (let i = 0; i < k; i++) {
+            let idx;
+            do {
+                idx = Math.floor(random() * n);
+            } while (chosenIndices.has(idx));
+            chosenIndices.add(idx);
+            centroids.push(new Float32Array(vectors[idx]));
+        }
+        // Run k-means for a few iterations
+        let clusters = [];
+        for (let iter = 0; iter < 10; iter++) {
+            // Assign points to clusters
+            clusters = Array.from({ length: k }, () => []);
+            for (let i = 0; i < n; i++) {
+                let bestCluster = 0;
+                let bestDist = this.cosineDistance(vectors[i], centroids[0]);
+                for (let j = 1; j < k; j++) {
+                    const dist = this.cosineDistance(vectors[i], centroids[j]);
+                    if (dist < bestDist) {
+                        bestDist = dist;
+                        bestCluster = j;
+                    }
+                }
+                clusters[bestCluster].push(i);
+            }
+            // Update centroids
+            for (let j = 0; j < k; j++) {
+                if (clusters[j].length === 0)
+                    continue;
+                const newCentroid = new Float32Array(vectors[0].length);
+                for (const idx of clusters[j]) {
+                    for (let d = 0; d < newCentroid.length; d++) {
+                        newCentroid[d] += vectors[idx][d];
+                    }
+                }
+                for (let d = 0; d < newCentroid.length; d++) {
+                    newCentroid[d] /= clusters[j].length;
+                }
+                centroids[j] = newCentroid;
+            }
+        }
+        // Find medoids (closest point to centroid in each cluster)
+        const medoids = clusters.map((cluster, clusterIdx) => {
+            if (cluster.length === 0)
+                return 0;
+            let bestIdx = cluster[0];
+            let bestDist = this.cosineDistance(vectors[bestIdx], centroids[clusterIdx]);
+            for (const idx of cluster.slice(1)) {
+                const dist = this.cosineDistance(vectors[idx], centroids[clusterIdx]);
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    bestIdx = idx;
+                }
+            }
+            return bestIdx;
+        });
+        return { clusters, medoids };
+    }
+    cosineDistance(a, b) {
+        let dotProduct = 0;
+        let normA = 0;
+        let normB = 0;
+        for (let i = 0; i < a.length; i++) {
+            dotProduct += a[i] * b[i];
+            normA += a[i] * a[i];
+            normB += b[i] * b[i];
+        }
+        const similarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+        return 1 - similarity; // Convert similarity to distance
+    }
+}
+exports.SemanticDiversifier = SemanticDiversifier;
 class NoOpDiversifier {
     name = "noop";
     async diversify(candidates, k) {
@@ -180,9 +373,12 @@ class NoOpDiversifier {
     }
 }
 exports.NoOpDiversifier = NoOpDiversifier;
-async function getDiversifier(enabled = true) {
+async function getDiversifier(enabled = true, method = 'entity') {
     if (!enabled) {
         return new NoOpDiversifier();
+    }
+    if (method === 'semantic') {
+        return new SemanticDiversifier();
     }
     return new EntityCoverageDiversifier();
 }

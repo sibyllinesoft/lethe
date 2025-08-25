@@ -1,0 +1,339 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lethe-research.com/schemas/dataset-manifest.json",
+  "title": "LetheBench Dataset Manifest",
+  "description": "Comprehensive manifest for LetheBench dataset with full provenance tracking",
+  "type": "object",
+  "required": [
+    "dataset_id",
+    "version", 
+    "title",
+    "description",
+    "total_queries",
+    "domains",
+    "quality_metrics",
+    "provenance",
+    "license_info",
+    "content_hash",
+    "metadata_hash"
+  ],
+  "properties": {
+    "dataset_id": {
+      "type": "string",
+      "pattern": "^lethebench_.+$",
+      "description": "Unique identifier for the dataset"
+    },
+    "version": {
+      "type": "string", 
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of the dataset"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "description": "Human-readable dataset title"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 50,
+      "description": "Detailed dataset description"
+    },
+    "total_queries": {
+      "type": "integer",
+      "minimum": 300,
+      "description": "Total number of queries in the dataset"
+    },
+    "domains": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "code_heavy": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "chatty_prose": {
+          "type": "integer", 
+          "minimum": 0
+        },
+        "tool_results": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": ["code_heavy", "chatty_prose", "tool_results"],
+      "description": "Query count by domain"
+    },
+    "domain_statistics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/domain_statistics"
+      },
+      "minItems": 1,
+      "description": "Detailed statistics per domain"
+    },
+    "quality_metrics": {
+      "$ref": "#/$defs/quality_metrics",
+      "description": "Comprehensive quality metrics"
+    },
+    "verification_status": {
+      "type": "object",
+      "description": "Results of verification checks",
+      "additionalProperties": {
+        "type": "boolean"
+      }
+    },
+    "dataset_splits": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/dataset_split_info"
+      },
+      "description": "Information about train/dev/test splits"
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance_info",
+      "description": "Complete provenance tracking"
+    },
+    "license_info": {
+      "$ref": "#/$defs/license_info",
+      "description": "License and legal information"
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA256 hash of all dataset content"
+    },
+    "metadata_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA256 hash of metadata"
+    },
+    "manifest_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA256 hash of this manifest"
+    },
+    "ethical_review_completed": {
+      "type": "boolean",
+      "description": "Whether ethical review has been completed"
+    },
+    "privacy_review_completed": {
+      "type": "boolean", 
+      "description": "Whether privacy review has been completed"
+    },
+    "copyright_cleared": {
+      "type": "boolean",
+      "description": "Whether copyright has been cleared"
+    }
+  },
+  "$defs": {
+    "domain_statistics": {
+      "type": "object",
+      "required": ["domain", "count", "avg_quality_score", "complexity_distribution"],
+      "properties": {
+        "domain": {
+          "type": "string",
+          "enum": ["code_heavy", "chatty_prose", "tool_results"]
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "avg_quality_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "avg_text_length": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "avg_ground_truth_docs": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "complexity_distribution": {
+          "type": "object",
+          "required": ["simple", "medium", "complex"],
+          "properties": {
+            "simple": {"type": "integer", "minimum": 0},
+            "medium": {"type": "integer", "minimum": 0}, 
+            "complex": {"type": "integer", "minimum": 0}
+          }
+        },
+        "quality_percentiles": {
+          "type": "object",
+          "properties": {
+            "p25": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+            "p50": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+            "p75": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+            "p90": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+            "p95": {"type": "number", "minimum": 0.0, "maximum": 1.0}
+          }
+        },
+        "unique_templates": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "quality_metrics": {
+      "type": "object",
+      "required": ["avg_quality_score", "min_quality_score", "max_quality_score"],
+      "properties": {
+        "avg_quality_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "min_quality_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "max_quality_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "quality_std": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "inter_annotator_agreement": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Cohen's kappa coefficient"
+        },
+        "validation_errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duplicate_queries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "license_compliance": {
+          "type": "boolean"
+        }
+      }
+    },
+    "dataset_split_info": {
+      "type": "object",
+      "required": ["split", "count", "domain_distribution", "complexity_distribution"],
+      "properties": {
+        "split": {
+          "type": "string",
+          "enum": ["train", "dev", "test"]
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "domain_distribution": {
+          "type": "object",
+          "properties": {
+            "code_heavy": {"type": "integer", "minimum": 0},
+            "chatty_prose": {"type": "integer", "minimum": 0},
+            "tool_results": {"type": "integer", "minimum": 0}
+          }
+        },
+        "complexity_distribution": {
+          "type": "object",
+          "properties": {
+            "simple": {"type": "integer", "minimum": 0},
+            "medium": {"type": "integer", "minimum": 0},
+            "complex": {"type": "integer", "minimum": 0}
+          }
+        },
+        "quality_stats": {
+          "type": "object",
+          "properties": {
+            "avg_quality": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+            "min_quality": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+            "max_quality": {"type": "number", "minimum": 0.0, "maximum": 1.0}
+          }
+        }
+      }
+    },
+    "provenance_info": {
+      "type": "object",
+      "required": ["builder_version", "creation_timestamp", "seed"],
+      "properties": {
+        "builder_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "creation_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "seed": {
+          "type": "integer",
+          "description": "Random seed for reproducibility"
+        },
+        "source_files": {
+          "type": "object",
+          "description": "Source files with their SHA256 hashes",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "construction_parameters": {
+          "type": "object",
+          "description": "Parameters used during construction"
+        },
+        "environment_info": {
+          "type": "object",
+          "properties": {
+            "python_version": {"type": "string"},
+            "platform": {"type": "string"},
+            "hostname": {"type": "string"},
+            "user": {"type": "string"}
+          }
+        },
+        "git_commit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$",
+          "description": "Git commit hash of builder code"
+        },
+        "reproducibility_verified": {
+          "type": "boolean",
+          "description": "Whether reproducibility has been verified"
+        }
+      }
+    },
+    "license_info": {
+      "type": "object",
+      "required": ["license_type", "attribution_required", "commercial_use_allowed", "derivative_works_allowed"],
+      "properties": {
+        "license_type": {
+          "type": "string",
+          "enum": ["MIT", "Apache-2.0", "BSD-3-Clause", "CC-BY-4.0", "CC-BY-SA-4.0", "PROPRIETARY", "UNKNOWN"]
+        },
+        "license_text": {
+          "type": "string",
+          "description": "Full license text"
+        },
+        "attribution_required": {
+          "type": "boolean"
+        },
+        "commercial_use_allowed": {
+          "type": "boolean"
+        },
+        "derivative_works_allowed": {
+          "type": "boolean"
+        },
+        "source_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Source URL if applicable"
+        },
+        "compliance_verified": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

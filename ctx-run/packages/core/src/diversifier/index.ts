@@ -214,6 +214,196 @@ export class EntityCoverageDiversifier implements Diversifier {
   }
 }
 
+export class SemanticDiversifier implements Diversifier {
+  name = "semantic";
+
+  constructor(private embeddings?: any, private seed: number = 11) {}
+
+  async diversify(candidates: Candidate[], k: number): Promise<Candidate[]> {
+    if (candidates.length <= k) {
+      return candidates; // No need to diversify
+    }
+
+    console.log(`Semantic diversifying ${candidates.length} candidates to top ${k}`);
+
+    // Extract texts for embedding
+    const texts = candidates.map(c => c.text || '').filter(t => t.length > 0);
+    if (texts.length === 0) {
+      return candidates.slice(0, k); // Fallback to top-k
+    }
+
+    try {
+      // Get embeddings for all candidate texts
+      const embeddings = this.embeddings || (await import('@lethe/embeddings')).getProvider();
+      const vectors = await embeddings.embed(texts);
+      
+      if (vectors.length !== texts.length) {
+        console.warn('Embedding length mismatch, falling back to entity-based diversification');
+        return candidates.slice(0, k);
+      }
+
+      // Perform k-means clustering
+      const K = this.autoK(k, vectors.length);
+      const { clusters, medoids } = this.kmeansFast(vectors, K, this.seed);
+
+      // Score clusters by max candidate score
+      const clusterScores = clusters.map((cluster, idx) => {
+        const maxScore = Math.max(...cluster.map(candidateIdx => candidates[candidateIdx].score));
+        return { clusterIdx: idx, maxScore, cluster };
+      });
+
+      // Sort clusters by score descending
+      clusterScores.sort((a, b) => b.maxScore - a.maxScore);
+
+      // Greedily pick medoids from clusters until we reach k candidates
+      const selected = new Set<number>();
+      const result: Candidate[] = [];
+
+      for (const { clusterIdx, cluster } of clusterScores) {
+        if (result.length >= k) break;
+
+        const medoidIdx = medoids[clusterIdx];
+        if (!selected.has(medoidIdx)) {
+          selected.add(medoidIdx);
+          result.push(candidates[medoidIdx]);
+        }
+      }
+
+      // Fill remaining slots with highest-scoring candidates not yet selected
+      for (let i = 0; i < candidates.length && result.length < k; i++) {
+        if (!selected.has(i)) {
+          result.push(candidates[i]);
+          selected.add(i);
+        }
+      }
+
+      console.log(`Semantic diversification complete - selected ${result.length} candidates from ${K} clusters`);
+      return result;
+
+    } catch (error) {
+      console.warn(`Semantic diversification failed: ${error}, falling back to top-k`);
+      return candidates.slice(0, k);
+    }
+  }
+
+  private autoK(targetK: number, n: number): number {
+    // Auto-determine number of clusters
+    if (targetK === 0) {
+      return Math.min(Math.ceil(n / 3), 24);
+    }
+    return Math.min(targetK * 2, Math.max(8, Math.ceil(n / 3)));
+  }
+
+  private kmeansFast(vectors: Float32Array[], k: number, seed: number): {
+    clusters: number[][];
+    medoids: number[];
+  } {
+    // Simple k-means implementation with seeded random initialization
+    const n = vectors.length;
+    if (n <= k) {
+      return {
+        clusters: vectors.map((_, i) => [i]),
+        medoids: vectors.map((_, i) => i)
+      };
+    }
+
+    // Seed random number generator
+    let seedState = seed;
+    const random = () => {
+      seedState = (seedState * 9301 + 49297) % 233280;
+      return seedState / 233280;
+    };
+
+    // Initialize centroids randomly
+    const centroids: Float32Array[] = [];
+    const chosenIndices = new Set<number>();
+    
+    for (let i = 0; i < k; i++) {
+      let idx: number;
+      do {
+        idx = Math.floor(random() * n);
+      } while (chosenIndices.has(idx));
+      
+      chosenIndices.add(idx);
+      centroids.push(new Float32Array(vectors[idx]));
+    }
+
+    // Run k-means for a few iterations
+    let clusters: number[][] = [];
+    
+    for (let iter = 0; iter < 10; iter++) {
+      // Assign points to clusters
+      clusters = Array.from({ length: k }, () => []);
+      
+      for (let i = 0; i < n; i++) {
+        let bestCluster = 0;
+        let bestDist = this.cosineDistance(vectors[i], centroids[0]);
+        
+        for (let j = 1; j < k; j++) {
+          const dist = this.cosineDistance(vectors[i], centroids[j]);
+          if (dist < bestDist) {
+            bestDist = dist;
+            bestCluster = j;
+          }
+        }
+        
+        clusters[bestCluster].push(i);
+      }
+
+      // Update centroids
+      for (let j = 0; j < k; j++) {
+        if (clusters[j].length === 0) continue;
+        
+        const newCentroid = new Float32Array(vectors[0].length);
+        for (const idx of clusters[j]) {
+          for (let d = 0; d < newCentroid.length; d++) {
+            newCentroid[d] += vectors[idx][d];
+          }
+        }
+        for (let d = 0; d < newCentroid.length; d++) {
+          newCentroid[d] /= clusters[j].length;
+        }
+        centroids[j] = newCentroid;
+      }
+    }
+
+    // Find medoids (closest point to centroid in each cluster)
+    const medoids = clusters.map((cluster, clusterIdx) => {
+      if (cluster.length === 0) return 0;
+      
+      let bestIdx = cluster[0];
+      let bestDist = this.cosineDistance(vectors[bestIdx], centroids[clusterIdx]);
+      
+      for (const idx of cluster.slice(1)) {
+        const dist = this.cosineDistance(vectors[idx], centroids[clusterIdx]);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestIdx = idx;
+        }
+      }
+      
+      return bestIdx;
+    });
+
+    return { clusters, medoids };
+  }
+
+  private cosineDistance(a: Float32Array, b: Float32Array): number {
+    let dotProduct = 0;
+    let normA = 0;
+    let normB = 0;
+    
+    for (let i = 0; i < a.length; i++) {
+      dotProduct += a[i] * b[i];
+      normA += a[i] * a[i];
+      normB += b[i] * b[i];
+    }
+    
+    const similarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+    return 1 - similarity; // Convert similarity to distance
+  }
+}
+
 export class NoOpDiversifier implements Diversifier {
   name = "noop";
 
@@ -222,9 +412,13 @@ export class NoOpDiversifier implements Diversifier {
   }
 }
 
-export async function getDiversifier(enabled: boolean = true): Promise<Diversifier> {
+export async function getDiversifier(enabled: boolean = true, method: string = 'entity'): Promise<Diversifier> {
   if (!enabled) {
     return new NoOpDiversifier();
+  }
+
+  if (method === 'semantic') {
+    return new SemanticDiversifier();
   }
 
   return new EntityCoverageDiversifier();

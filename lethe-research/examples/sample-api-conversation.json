@@ -1,0 +1,29 @@
+{
+  "session_id": "api_session_001",
+  "messages": [
+    {
+      "role": "user", 
+      "text": "I need to create a REST API for managing user authentication with JWT tokens.",
+      "timestamp": 1703270400,
+      "turn": 1
+    },
+    {
+      "role": "assistant",
+      "text": "I'll help you create a secure JWT authentication API. Here's a complete implementation using Express.js:\n\n**1. Install dependencies:**\n```bash\nnpm install express bcryptjs jsonwebtoken dotenv\nnpm install -D nodemon\n```\n\n**2. Environment setup (.env):**\n```env\nJWT_SECRET=your-super-secret-jwt-key-here\nJWT_EXPIRE=24h\nPORT=3000\n```\n\n**3. Auth API (auth.js):**\n```javascript\nconst express = require('express');\nconst bcrypt = require('bcryptjs');\nconst jwt = require('jsonwebtoken');\nconst router = express.Router();\n\n// Mock user database (replace with real database)\nconst users = [];\n\n// Register endpoint\nrouter.post('/register', async (req, res) => {\n  try {\n    const { email, password } = req.body;\n    \n    // Check if user exists\n    const existingUser = users.find(u => u.email === email);\n    if (existingUser) {\n      return res.status(400).json({ error: 'User already exists' });\n    }\n    \n    // Hash password\n    const salt = await bcrypt.genSalt(10);\n    const hashedPassword = await bcrypt.hash(password, salt);\n    \n    // Create user\n    const user = {\n      id: users.length + 1,\n      email,\n      password: hashedPassword\n    };\n    users.push(user);\n    \n    // Generate JWT\n    const token = jwt.sign(\n      { userId: user.id, email: user.email },\n      process.env.JWT_SECRET,\n      { expiresIn: process.env.JWT_EXPIRE }\n    );\n    \n    res.status(201).json({\n      message: 'User registered successfully',\n      token,\n      user: { id: user.id, email: user.email }\n    });\n    \n  } catch (error) {\n    res.status(500).json({ error: 'Server error' });\n  }\n});\n\n// Login endpoint\nrouter.post('/login', async (req, res) => {\n  try {\n    const { email, password } = req.body;\n    \n    // Find user\n    const user = users.find(u => u.email === email);\n    if (!user) {\n      return res.status(401).json({ error: 'Invalid credentials' });\n    }\n    \n    // Check password\n    const isMatch = await bcrypt.compare(password, user.password);\n    if (!isMatch) {\n      return res.status(401).json({ error: 'Invalid credentials' });\n    }\n    \n    // Generate JWT\n    const token = jwt.sign(\n      { userId: user.id, email: user.email },\n      process.env.JWT_SECRET,\n      { expiresIn: process.env.JWT_EXPIRE }\n    );\n    \n    res.json({\n      message: 'Login successful',\n      token,\n      user: { id: user.id, email: user.email }\n    });\n    \n  } catch (error) {\n    res.status(500).json({ error: 'Server error' });\n  }\n});\n\nmodule.exports = router;\n```",
+      "timestamp": 1703270520,
+      "turn": 2
+    },
+    {
+      "role": "user",
+      "text": "How do I create middleware to protect routes that require authentication?",
+      "timestamp": 1703270580,
+      "turn": 3
+    },
+    {
+      "role": "assistant", 
+      "text": "Here's how to create authentication middleware to protect your routes:\n\n**1. Create auth middleware (middleware/auth.js):**\n```javascript\nconst jwt = require('jsonwebtoken');\n\nconst authMiddleware = (req, res, next) => {\n  try {\n    // Get token from header\n    const token = req.header('Authorization')?.replace('Bearer ', '');\n    \n    if (!token) {\n      return res.status(401).json({ error: 'No token provided' });\n    }\n    \n    // Verify token\n    const decoded = jwt.verify(token, process.env.JWT_SECRET);\n    \n    // Add user info to request\n    req.user = decoded;\n    next();\n    \n  } catch (error) {\n    if (error.name === 'TokenExpiredError') {\n      return res.status(401).json({ error: 'Token expired' });\n    }\n    if (error.name === 'JsonWebTokenError') {\n      return res.status(401).json({ error: 'Invalid token' });\n    }\n    res.status(500).json({ error: 'Server error' });\n  }\n};\n\nmodule.exports = authMiddleware;\n```\n\n**2. Use middleware in your main app (app.js):**\n```javascript\nconst express = require('express');\nconst authRoutes = require('./routes/auth');\nconst authMiddleware = require('./middleware/auth');\nrequire('dotenv').config();\n\nconst app = express();\n\n// Middleware\napp.use(express.json());\n\n// Public routes\napp.use('/api/auth', authRoutes);\n\n// Protected routes\napp.get('/api/profile', authMiddleware, (req, res) => {\n  res.json({\n    message: 'Protected profile data',\n    user: req.user\n  });\n});\n\napp.get('/api/dashboard', authMiddleware, (req, res) => {\n  res.json({\n    message: `Welcome to dashboard, ${req.user.email}!`,\n    userId: req.user.userId\n  });\n});\n\n// Start server\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n  console.log(`Server running on port ${PORT}`);\n});\n```\n\n**3. Usage examples:**\n\n**Register:**\n```bash\ncurl -X POST http://localhost:3000/api/auth/register \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"email\":\"user@example.com\",\"password\":\"password123\"}'\n```\n\n**Login:**\n```bash\ncurl -X POST http://localhost:3000/api/auth/login \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"email\":\"user@example.com\",\"password\":\"password123\"}'\n```\n\n**Access protected route:**\n```bash\ncurl -X GET http://localhost:3000/api/profile \\\n  -H \"Authorization: Bearer YOUR_JWT_TOKEN_HERE\"\n```\n\nThe middleware automatically:\n- Extracts JWT from Authorization header\n- Verifies token signature and expiration\n- Adds decoded user info to `req.user`\n- Returns appropriate error responses for invalid/expired tokens",
+      "timestamp": 1703270640,
+      "turn": 4
+    }
+  ]
+}

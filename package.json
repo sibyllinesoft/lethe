@@ -1,8 +1,8 @@
 {
-  "name": "ctx-run",
+  "name": "lethe",
   "version": "1.0.0",
-  "description": "Sophisticated NPX context manager for AI-powered conversation history search and retrieval",
-  "private": true,
+  "description": "AI-powered context manager with sophisticated NPX integration for conversation history search and retrieval",
+  "private": false,
   "workspaces": [
     "packages/*"
   ],
@@ -33,8 +33,35 @@
     "claude",
     "npx",
     "embeddings",
-    "vector-search"
+    "vector-search",
+    "retrieval",
+    "semantic-search",
+    "developer-tools",
+    "typescript",
+    "nodejs"
   ],
-  "author": "Nathan Rice",
-  "license": "MIT"
+  "author": "Nathan Rice <nathan.alexander.rice@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sibyllinesoft/lethe.git"
+  },
+  "homepage": "https://github.com/sibyllinesoft/lethe",
+  "bugs": {
+    "url": "https://github.com/sibyllinesoft/lethe/issues"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ]
 }

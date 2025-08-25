@@ -1,0 +1,252 @@
+# Iteration 2: Query Understanding & Reranking
+# Advanced query processing with cross-encoder reranking and query decomposition
+# Focus: Understanding query intent and improving precision through reranking
+
+experiment:
+  name: "lethe_iter2_query_understanding"
+  description: "Query understanding and cross-encoder reranking optimization"
+  version: "2.0.0"
+  replications: 5
+  seed: 43
+  phase: "iteration_2"
+
+# Inherit best parameters from iteration 1
+inherited_parameters:
+  alpha: 0.7  # Best value from iter1 (example)
+  k_initial: 50
+  chunk_size: 320
+  chunk_overlap: 64
+
+# New parameters for query understanding and reranking
+parameters:
+  # Cross-encoder reranking influence
+  beta:
+    type: float
+    values: [0.0, 0.1, 0.2, 0.3, 0.5, 0.7, 0.9]
+    default: 0.5
+    description: "Cross-encoder reranking weight (0=no rerank, 1=rerank only)"
+    priority: "high"
+    
+  # Reranking scope
+  k_rerank:
+    type: int
+    values: [10, 20, 30, 50]
+    default: 20
+    description: "Number of candidates to rerank"
+    
+  # Query processing strategy
+  query_rewrite:
+    type: categorical
+    values: ["none", "expand", "decompose", "hyde"]
+    default: "none"
+    description: "Query preprocessing strategy"
+    
+  # HyDE parameters (when query_rewrite = "hyde")
+  hyde_num_docs:
+    type: int
+    values: [1, 2, 3, 5]
+    default: 3
+    description: "Number of hypothetical documents to generate"
+    conditional_on: {query_rewrite: "hyde"}
+    
+  # Query decomposition parameters
+  decompose_max_subqueries:
+    type: int
+    values: [2, 3, 4]
+    default: 3
+    description: "Maximum subqueries for decomposition"
+    conditional_on: {query_rewrite: "decompose"}
+    
+  # Multi-stage retrieval
+  retrieval_stages:
+    type: categorical
+    values: ["single", "cascade", "parallel"]
+    default: "single"
+    description: "Multi-stage retrieval strategy"
+
+# Model configurations
+models:
+  cross_encoder:
+    model_name: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    batch_size: 32
+    max_length: 512
+    
+  query_rewriter:
+    model_name: "t5-base"
+    max_new_tokens: 50
+    
+  hyde_generator:
+    model_name: "gpt-3.5-turbo-instruct"
+    max_tokens: 150
+    temperature: 0.7
+
+# Expected configuration count: 7 * 4 * 4 * 4 * 3 * 3 = 4,032 configurations
+# With conditional parameters and 5 replications ≈ 8,000-12,000 runs
+
+# Evaluation focused on precision and understanding
+evaluation:
+  domains:
+    - code_heavy: 0.25
+    - chatty_prose: 0.25
+    - tool_results: 0.25
+    - mixed: 0.25
+    
+  query_types:
+    # Emphasize complex queries where reranking helps
+    - factual: 0.2
+    - analytical: 0.4      # Should benefit from reranking
+    - synthesis: 0.3       # Should benefit from decomposition
+    - clarification: 0.1
+    
+  queries_per_config: 150  # Balanced for reranking evaluation
+
+# Metrics emphasizing precision and understanding  
+metrics:
+  optimization_target: "mrr_at_10"  # Mean Reciprocal Rank for precision
+  
+  primary:
+    - ndcg_at_10
+    - mrr_at_10
+    - precision_at_5   # High precision focus
+    - precision_at_10
+    - recall_at_10
+    - recall_at_20
+    
+  query_understanding:
+    - query_clarity_score      # How well query intent is captured
+    - subquery_relevance      # For decomposed queries
+    - rerank_agreement        # Cross-encoder vs initial ranking
+    
+  efficiency:
+    - latency_p50_ms
+    - latency_p95_ms
+    - reranking_latency_ms    # Isolated reranking cost
+    - query_processing_ms     # Query understanding overhead
+    - memory_peak_mb
+    
+  quality:
+    - top_1_accuracy         # Perfect match rate
+    - top_5_accuracy
+    - answer_completeness    # Coverage of query aspects
+
+# Ablation studies
+ablation_studies:
+  reranking_impact:
+    name: "Cross-encoder Reranking Impact"
+    compare: 
+      - {beta: 0.0}  # No reranking
+      - {beta: 0.3}  # Light reranking  
+      - {beta: 0.7}  # Heavy reranking
+    metrics: ["ndcg_at_10", "precision_at_5", "latency_p95_ms"]
+    
+  query_processing_impact:
+    name: "Query Understanding Methods"
+    compare:
+      - {query_rewrite: "none"}
+      - {query_rewrite: "expand"}
+      - {query_rewrite: "decompose"}
+      - {query_rewrite: "hyde"}
+    metrics: ["mrr_at_10", "query_processing_ms", "answer_completeness"]
+
+# Statistical analysis for iteration 2
+statistical_analysis:
+  hypotheses:
+    H2_1: "Cross-encoder reranking improves precision (MRR@10)"
+    H2_2: "Query decomposition improves complex query handling" 
+    H2_3: "HyDE improves semantic matching for underspecified queries"
+    H2_4: "Multi-stage retrieval balances quality and efficiency"
+    
+  success_criteria:
+    reranking_improvement: "MRR@10 improvement > 0.05 with β > 0"
+    precision_improvement: "P@5 improvement > 0.08"
+    complex_query_improvement: "Complex query nDCG@10 > +0.10"
+    efficiency_constraint: "Latency increase < 200ms for 0.05+ quality gain"
+    
+  comparison_baselines:
+    - iter1_best        # Best config from iteration 1
+    - cross_encoder_only # β = 1.0, α = 0
+    - no_reranking      # β = 0.0
+    
+  correction_method: "fdr_bh"
+  bootstrap_samples: 7500
+
+# Analysis objectives
+analysis_goals:
+  primary:
+    - "Quantify cross-encoder reranking benefits vs costs"
+    - "Identify optimal β parameter for reranking influence"
+    - "Evaluate query understanding methods effectiveness"
+    
+  secondary:
+    - "Understand query complexity vs method interactions"
+    - "Assess computational overhead vs quality gains"
+    - "Domain-specific reranking preferences"
+    
+  interactions:
+    - "α-β parameter interaction effects"
+    - "Query type vs reranking method performance"
+    - "Retrieval stage strategy optimization"
+
+# Advanced evaluation protocols
+evaluation_protocols:
+  query_complexity_stratification:
+    simple_queries: 
+      characteristics: ["single_entity", "direct_fact"]
+      expected_best_method: "bm25_heavy"  # High α, low β
+      
+    complex_queries:
+      characteristics: ["multi_aspect", "synthesis", "comparison"]  
+      expected_best_method: "reranking_heavy"  # Lower α, high β
+      
+  latency_sensitivity_analysis:
+    targets: [100, 200, 500, 1000]  # ms
+    constraints: "Quality degradation < 5% within latency budget"
+    
+  precision_recall_tradeoffs:
+    optimize_for: ["precision", "recall", "balanced"]
+    analyze: "Pareto frontier for P@5 vs R@20"
+
+# Resource management
+resources:
+  max_concurrent_runs: 6  # Reduced due to reranking overhead
+  timeout_per_query: "90s"  # Increased for reranking
+  timeout_per_session: "15min"
+  
+  model_caching:
+    cross_encoder: true
+    query_rewriter: true
+    embedding_model: true
+    
+  gpu_requirements:
+    cross_encoder: "1 GPU"
+    query_processing: "Shared GPU"
+
+# Quality gates
+quality_gates:
+  reranking_effectiveness: "β > 0 configs show MRR@10 > β = 0 + 0.03"
+  efficiency_constraint: "Best configs maintain P95 latency < 1.5s" 
+  robustness: "Top configs perform well across all domains"
+  query_understanding: "Complex queries show >5% improvement"
+
+# Output configuration
+output:
+  save_reranking_scores: true
+  save_query_processing_logs: true
+  save_model_predictions: true
+  generate_reranking_analysis: true
+  export_precision_recall_curves: true
+  
+  visualizations:
+    - "α-β parameter heatmaps"
+    - "Query complexity vs method performance"
+    - "Precision-recall curves by method"
+    - "Latency breakdown waterfall charts"
+    - "Reranking score distribution analysis"
+
+# Advancement criteria
+advancement_criteria:
+  quality_gate: "Best configuration achieves MRR@10 > 0.65"
+  precision_gate: "Best configuration achieves P@5 > 0.75"
+  efficiency_gate: "Best configuration maintains latency P95 < 1200ms"
+  understanding_gate: "Complex queries show consistent >8% improvement"
+  statistical_gate: "All improvements statistically significant (p < 0.01)"

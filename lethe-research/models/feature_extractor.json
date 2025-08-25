@@ -1,0 +1,20 @@
+{
+  "code_patterns": [
+    "[_a-zA-Z][\\w]*\\(",
+    "\\b[A-Z][A-Za-z0-9]+::[A-Za-z0-9]+\\b",
+    "\\b(class|function|def|var|let|const|import|export)\\b",
+    "\\{[^}]*\\}",
+    "\\[[^\\]]*\\]"
+  ],
+  "error_patterns": [
+    "(Exception|Error|stack trace|errno)",
+    "\\bE\\d{2,}\\b",
+    "(failed|crashed|broken|bug)",
+    "(undefined|null|NaN)"
+  ],
+  "file_patterns": [
+    "\\/[^\\s]+\\.[a-zA-Z0-9]+",
+    "[A-Za-z]:\\\\[^\\s]+\\.[a-zA-Z0-9]+",
+    "\\b\\w+\\.(js|py|ts|java|cpp|h|css|html)\\b"
+  ]
+}

@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/613185570857256035/50aaa790a12945b9b6fe4225711d5d2d/artifacts
+end_time: 1755979164137
+entry_point_name: ''
+experiment_id: '613185570857256035'
+lifecycle_stage: active
+run_id: 50aaa790a12945b9b6fe4225711d5d2d
+run_name: bold-rook-431
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755979162546
+status: 3
+tags: []
+user_id: nathan

@@ -1,7 +1,8 @@
 import { DB, getDFIdf, getChunksBySession } from '@lethe/sqlite';
-import { getReranker } from '../reranker/index.js';
+import { getReranker, type RerankerConfig } from '../reranker/index.js';
 import { getDiversifier } from '../diversifier/index.js';
 import type { Embeddings } from '@lethe/embeddings';
+import { getMLPredictor, type MLPrediction } from '../ml-prediction/index.js';
 
 export interface Candidate {
   docId: string;
@@ -140,10 +141,36 @@ function normalizeCosineScores(candidates: { docId: string; score: number }[]): 
   }));
 }
 
+// Feature extraction from query text
+function featureFlags(query: string): {
+  has_code_symbol: boolean;
+  has_error_token: boolean;
+  has_path_or_file: boolean;
+  has_numeric_id: boolean;
+} {
+  return {
+    has_code_symbol: /[_a-zA-Z][\w]*\(|\b[A-Z][A-Za-z0-9]+::[A-Za-z0-9]+\b/.test(query),
+    has_error_token: /(Exception|Error|stack trace|errno|\bE\d{2,}\b)/.test(query),
+    has_path_or_file: /\/[^\s]+\.[a-zA-Z0-9]+|[A-Za-z]:\\[^\s]+\.[a-zA-Z0-9]+/.test(query),
+    has_numeric_id: /\b\d{3,}\b/.test(query)
+  };
+}
+
+// Dynamic gamma boost based on query features
+function gammaBoost(kind: string, queryFeatures: ReturnType<typeof featureFlags>): number {
+  let g = 0;
+  if (queryFeatures.has_code_symbol && (kind === 'code' || kind === 'user_code')) g += 0.10;
+  if (queryFeatures.has_error_token && kind === 'tool_result') g += 0.08;
+  if (queryFeatures.has_path_or_file && kind === 'code') g += 0.04;
+  return g;
+}
+
 export function hybridScore(
   lexical: { docId: string; score: number }[],
   vector: { docId: string; score: number }[],
-  config: { alpha: number; beta: number; gamma_kind_boost: { [kind: string]: number } }
+  config: { alpha: number; beta: number; gamma_kind_boost: { [kind: string]: number } },
+  query?: string,
+  candidateKinds?: Map<string, string>
 ): Candidate[] {
   // Normalize scores
   const lexicalNorm = normalizeBM25Scores(lexical);
@@ -156,14 +183,26 @@ export function hybridScore(
   // Get all unique document IDs
   const allDocIds = new Set([...lexicalMap.keys(), ...vectorMap.keys()]);
   
+  // Extract query features for dynamic gamma boosting
+  const qf = query ? featureFlags(query) : null;
+  
   const candidates: Candidate[] = [];
   
   for (const docId of allDocIds) {
     const lexScore = lexicalMap.get(docId) || 0;
     const vecScore = vectorMap.get(docId) || 0;
     
-    // Basic hybrid score (gamma boost will be added when we have chunk metadata)
-    const hybridScore = config.alpha * lexScore + config.beta * vecScore;
+    // Calculate base hybrid score
+    let hybridScore = config.alpha * lexScore + config.beta * vecScore;
+    
+    // Apply dynamic gamma boost based on query features and content kind
+    if (qf && candidateKinds) {
+      const kind = candidateKinds.get(docId) || 'text';
+      const dynamicBoost = gammaBoost(kind, qf);
+      const staticBoost = config.gamma_kind_boost[kind] || 0;
+      const totalBoost = 1 + dynamicBoost + staticBoost;
+      hybridScore *= totalBoost;
+    }
     
     candidates.push({
       docId,
@@ -182,10 +221,17 @@ export interface HybridConfig {
   alpha: number; // Weight for lexical (BM25) score
   beta: number;  // Weight for vector score
   gamma_kind_boost: { [kind: string]: number }; // Boost for specific content types
-  rerank: boolean; // Enable cross-encoder reranking
+  rerank: boolean; // Enable reranking
   diversify: boolean; // Enable diversification
+  diversify_method?: string; // Diversification method ('entity' | 'semantic')
   k_initial: number; // Initial retrieval size before reranking/diversification
   k_final: number; // Final result size
+  // Iteration 3: ML-enhanced parameters
+  fusion?: {
+    dynamic: boolean; // Enable ML-predicted alpha/beta
+  };
+  // Iteration 4: LLM reranking parameters
+  llm_rerank?: RerankerConfig;
 }
 
 // Default configuration optimized for code retrieval
@@ -200,8 +246,21 @@ export const DEFAULT_HYBRID_CONFIG: HybridConfig = {
   },
   rerank: true,
   diversify: true,
+  diversify_method: 'entity', // Default to entity-based diversification
   k_initial: 50,   // Retrieve more initially
-  k_final: 20      // Return top 20 after processing
+  k_final: 20,     // Return top 20 after processing
+  // Iteration 3: ML features disabled by default for backward compatibility
+  fusion: {
+    dynamic: false
+  },
+  // Iteration 4: LLM reranking disabled by default for backward compatibility
+  llm_rerank: {
+    use_llm: false,
+    llm_budget_ms: 1200,
+    llm_model: 'llama3.2:1b',
+    contradiction_enabled: false,
+    contradiction_penalty: 0.15
+  }
 };
 
 export interface HybridRetrievalOptions {
@@ -223,50 +282,105 @@ export async function hybridRetrieval(
   console.time('hybrid-retrieval');
   
   try {
-    // Step 1: BM25 lexical search
-    console.log('Step 1: BM25 lexical search...');
-    const lexicalResults = await bm25SearchWithDb(db, queries, sessionId, config.k_initial);
+    // Steps 1-2: Parallel BM25 lexical search and Vector embedding
+    console.log('Steps 1-2: Parallel BM25 and Vector search...');
+    
+    const combinedQueryText = queries.join(' ');
+    
+    // Run lexical search, vector embedding, and vector search in parallel
+    const [lexicalResults, queryEmbeddings] = await Promise.all([
+      bm25SearchWithDb(db, queries, sessionId, config.k_initial),
+      embeddings.embed([combinedQueryText]).catch(error => {
+        console.warn(`Embedding failed: ${error}`);
+        return [];
+      })
+    ]);
+    
     console.log(`BM25 found ${lexicalResults.length} candidates`);
     
-    // Step 2: Vector semantic search
-    console.log('Step 2: Vector semantic search...');
+    // Step 2b: Vector search (depends on embedding)
     let vectorResults: { docId: string; score: number }[] = [];
-    
-    try {
-      // Embed the combined query
-      const queryText = queries.join(' ');
-      const queryEmbeddings = await embeddings.embed([queryText]);
-      
-      if (queryEmbeddings.length > 0) {
+    if (queryEmbeddings.length > 0) {
+      try {
         vectorResults = await vectorSearchWithDb(db, queryEmbeddings[0], config.k_initial);
         console.log(`Vector search found ${vectorResults.length} candidates`);
+      } catch (error) {
+        console.warn(`Vector search failed: ${error}, continuing with lexical only`);
       }
-    } catch (error) {
-      console.warn(`Vector search failed: ${error}, continuing with lexical only`);
     }
     
-    // Step 3: Hybrid scoring
-    console.log('Step 3: Hybrid scoring...');
-    let candidates = hybridScore(lexicalResults, vectorResults, config);
+    // Step 3: Dynamic Parameter Prediction (Iteration 3)
+    let effectiveConfig = { ...config };
+    
+    if (config.fusion?.dynamic) {
+      console.log('Step 3a: ML parameter prediction...');
+      try {
+        const mlPredictor = getMLPredictor({
+          fusion_dynamic: true,
+          plan_learned: false // Only fusion for retrieval
+        });
+        
+        // Prepare context for ML prediction
+        const mlContext = {
+          bm25_top1: lexicalResults.length > 0 ? lexicalResults[0].score : 0,
+          ann_top1: vectorResults.length > 0 ? vectorResults[0].score : 0,
+          overlap_ratio: calculateOverlapRatio(lexicalResults, vectorResults),
+          hyde_k: config.k_initial / 10 // Approximate hyde k from initial k
+        };
+        
+        const mlPrediction = await mlPredictor.predictParameters(combinedQueryText, mlContext);
+        
+        if (mlPrediction.model_loaded) {
+          effectiveConfig.alpha = mlPrediction.alpha;
+          effectiveConfig.beta = mlPrediction.beta;
+          console.log(`ML predicted alpha=${mlPrediction.alpha.toFixed(3)}, beta=${mlPrediction.beta.toFixed(3)} (${mlPrediction.prediction_time_ms.toFixed(1)}ms)`);
+        } else {
+          console.log('ML models not loaded, using static parameters');
+        }
+      } catch (error) {
+        console.warn(`ML prediction failed: ${error}, using static parameters`);
+      }
+    }
+    
+    // Step 3b: Hybrid scoring with effective parameters
+    console.log('Step 3b: Hybrid scoring...');
+    
+    // Prepare candidate kinds map for dynamic gamma boosting
+    const candidateKinds = new Map<string, string>();
+    
+    let candidates = hybridScore(lexicalResults, vectorResults, effectiveConfig, combinedQueryText, candidateKinds);
     console.log(`Hybrid scoring produced ${candidates.length} candidates`);
     
     // Step 4: Add text and metadata to candidates
     console.log('Step 4: Enriching candidates with text...');
     candidates = await enrichCandidatesWithText(db, candidates);
     
-    // Step 5: Cross-encoder reranking (optional)
+    // Populate candidate kinds map after enrichment for future gamma boosting
+    for (const candidate of candidates) {
+      if (candidate.kind) {
+        candidateKinds.set(candidate.docId, candidate.kind);
+      }
+    }
+    
+    // Step 5: Reranking (LLM or Cross-encoder, optional)
     if (config.rerank && candidates.length > 0) {
-      console.log('Step 5: Cross-encoder reranking...');
-      const reranker = await getReranker(true);
-      const queryText = queries.join(' ');
-      candidates = await reranker.rerank(queryText, candidates);
-      console.log(`Reranking complete`);
+      if (config.llm_rerank?.use_llm) {
+        console.log('Step 5: LLM reranking...');
+        const reranker = await getReranker(true, config.llm_rerank, db);
+        candidates = await reranker.rerank(combinedQueryText, candidates);
+        console.log(`LLM reranking complete`);
+      } else {
+        console.log('Step 5: Cross-encoder reranking...');
+        const reranker = await getReranker(true);
+        candidates = await reranker.rerank(combinedQueryText, candidates);
+        console.log(`Cross-encoder reranking complete`);
+      }
     }
     
     // Step 6: Diversification (optional)
     if (config.diversify && candidates.length > config.k_final) {
-      console.log('Step 6: Diversification...');
-      const diversifier = await getDiversifier(true);
+      console.log(`Step 6: Diversification using ${config.diversify_method || 'entity'} method...`);
+      const diversifier = await getDiversifier(true, config.diversify_method || 'entity');
       candidates = await diversifier.diversify(candidates, config.k_final);
       console.log(`Diversification complete`);
     } else {
@@ -284,6 +398,24 @@ export async function hybridRetrieval(
     console.error(`Hybrid retrieval failed: ${error}`);
     throw error;
   }
+}
+
+// Calculate overlap ratio between lexical and vector results for ML context
+function calculateOverlapRatio(
+  lexicalResults: { docId: string; score: number }[],
+  vectorResults: { docId: string; score: number }[]
+): number {
+  if (lexicalResults.length === 0 || vectorResults.length === 0) {
+    return 0;
+  }
+
+  const lexicalIds = new Set(lexicalResults.map(r => r.docId));
+  const vectorIds = new Set(vectorResults.map(r => r.docId));
+  
+  const intersection = new Set([...lexicalIds].filter(id => vectorIds.has(id)));
+  const union = new Set([...lexicalIds, ...vectorIds]);
+  
+  return intersection.size / union.size;
 }
 
 // Enrich candidates with text content and metadata

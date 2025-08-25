@@ -1,0 +1,29 @@
+# Iteration 1: Cheap Wins - Development Grid Search
+name: iter1-dev
+description: "Metadata boosting, semantic diversification, and parallelization"
+seed: 1337
+
+parameters:
+  diversify_method:
+    values: ['entity', 'semantic']
+    description: "Diversification algorithm"
+  
+  retrieval_alpha:
+    values: [0.7, 1.0, 1.3]
+    description: "Lexical search weight"
+  
+  retrieval_beta:
+    values: [0.5, 0.9, 1.2]
+    description: "Vector search weight"
+  
+  diversify_pack_chunks:
+    values: [12, 24, 36]
+    description: "Final number of chunks after diversification"
+
+constraints:
+  latency_p50_ms: 3000
+  memory_mb: 1500
+
+metrics:
+  primary: "nDCG@10"
+  secondary: ["Recall@50", "Coverage@N", "latency_p50_ms"]

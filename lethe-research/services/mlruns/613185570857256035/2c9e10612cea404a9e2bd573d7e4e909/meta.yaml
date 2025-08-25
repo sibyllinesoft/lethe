@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/613185570857256035/2c9e10612cea404a9e2bd573d7e4e909/artifacts
+end_time: 1755979181160
+entry_point_name: ''
+experiment_id: '613185570857256035'
+lifecycle_stage: active
+run_id: 2c9e10612cea404a9e2bd573d7e4e909
+run_name: placid-pig-18
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755979179541
+status: 3
+tags: []
+user_id: nathan

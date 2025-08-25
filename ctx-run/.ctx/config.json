@@ -1,0 +1,33 @@
+{
+  "plan": {
+    "query_rewrite": true,
+    "query_decompose": true
+  },
+  "timeouts": {
+    "rewrite_ms": 1500,
+    "decompose_ms": 2000
+  },
+  "query_understanding": {
+    "enabled": true,
+    "llm_model": "xgen-small:4b",
+    "max_tokens": 512,
+    "temperature": 0.1,
+    "max_subqueries": 5,
+    "similarity_threshold": 0.8
+  },
+  "iteration2": {
+    "enable_query_preprocessing": true,
+    "enable_conversation_context": true,
+    "max_context_turns": 6,
+    "quality_gates": {
+      "latency_p50_ms": 3500,
+      "rewrite_failure_rate_max": 0.05,
+      "json_parse_error_rate_max": 0.01,
+      "hyde_skip_rate_max": 0.10
+    },
+    "rollback_conditions": {
+      "rewrite_failure_rate_threshold": 0.05,
+      "json_parse_error_rate_threshold": 0.01
+    }
+  }
+}
