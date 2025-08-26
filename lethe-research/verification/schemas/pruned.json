@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lethe-research.local/schemas/pruned.json",
+  "title": "Sentence Pruning Result Schema",
+  "description": "JSON schema for sentence_prune() function output - defines structure for query-conditioned sentence masking results with cross-encoder scoring",
+  "type": "object",
+  "required": ["chunk_id", "kept", "chunk_score", "metadata"],
+  "properties": {
+    "chunk_id": {
+      "type": "string",
+      "description": "Unique identifier for the chunk being pruned",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "kept": {
+      "type": "array",
+      "description": "Array of sentences kept after pruning with their scores and spans",
+      "minItems": 0,
+      "maxItems": 1000,
+      "items": {
+        "type": "object",
+        "required": ["sid", "span", "tokens", "score", "content"],
+        "properties": {
+          "sid": {
+            "type": "string",
+            "description": "Sentence identifier within the chunk",
+            "pattern": "^[a-zA-Z0-9_-]+\\.[0-9]+$"
+          },
+          "span": {
+            "type": "array",
+            "description": "Character span [start, end) within original chunk",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "tokens": {
+            "type": "integer",
+            "description": "Token count for this sentence",
+            "minimum": 0,
+            "maximum": 10000
+          },
+          "score": {
+            "type": "number",
+            "description": "Cross-encoder relevance score for query-sentence pair",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "content": {
+            "type": "string",
+            "description": "The actual sentence text content",
+            "minLength": 1,
+            "maxLength": 10000
+          },
+          "group_kept": {
+            "type": "boolean",
+            "description": "Whether sentence was kept due to group-keep rules vs score threshold",
+            "default": false
+          },
+          "co_entailing": {
+            "type": "array",
+            "description": "List of sentence IDs that co-entail with this sentence",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "code_fence": {
+            "type": "boolean",
+            "description": "Whether sentence is within code fence boundaries",
+            "default": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "chunk_score": {
+      "type": "number",
+      "description": "Recomputed chunk score as max/avg of kept sentences",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["original_token_count", "pruned_token_count", "pruning_ratio", "query_hash"],
+      "properties": {
+        "original_token_count": {
+          "type": "integer",
+          "description": "Total tokens in original chunk before pruning",
+          "minimum": 0
+        },
+        "pruned_token_count": {
+          "type": "integer", 
+          "description": "Total tokens in kept sentences after pruning",
+          "minimum": 0
+        },
+        "pruning_ratio": {
+          "type": "number",
+          "description": "Percentage of tokens pruned (1.0 - pruned/original)",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "query_hash": {
+          "type": "string",
+          "description": "SHA-256 hash of the query used for conditioning",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "threshold_used": {
+          "type": "number",
+          "description": "Score threshold applied for sentence selection",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "fallback_unpruned": {
+          "type": "boolean",
+          "description": "Whether fallback to unpruned chunk was triggered",
+          "default": false
+        },
+        "processing_time_ms": {
+          "type": "number",
+          "description": "Time taken for pruning operation in milliseconds",
+          "minimum": 0
+        },
+        "cross_encoder_model": {
+          "type": "string",
+          "description": "Model identifier used for scoring"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$comment": "Invariants: spans within original bounds; sum(tokens)>0 unless fallback; chunk_score computed from kept sentences"
+}

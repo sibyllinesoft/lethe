@@ -1,27 +1,307 @@
 #!/bin/bash
 # Lethe Research Artifact Bundling Script
-# Creates complete reproducible research artifact for submission
+# Creates complete reproducible research artifact with security validation
 
 set -euo pipefail
 
+# Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-BUNDLE_NAME="lethe-neurips2025-artifact-${TIMESTAMP}"
+BUNDLE_NAME="lethe-research-artifact-${TIMESTAMP}"
 BUNDLE_PATH="${PROJECT_ROOT}/${BUNDLE_NAME}"
 
-echo "🔬 Creating Lethe Research Artifact Bundle"
-echo "================================================="
-echo "Project root: ${PROJECT_ROOT}"
-echo "Bundle path: ${BUNDLE_PATH}"
-echo "Timestamp: ${TIMESTAMP}"
-echo
+# Default configuration
+INCLUDE_TESTS=true
+VERIFY_SIGNATURES=true
+VERIFY_HASHES=true
+VERSION="dev"
+OUTPUT_FILE=""
+STRICT_MODE=false
+QUALITY_GATES=true
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Logging functions
+log_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Usage function
+usage() {
+    cat << EOF
+Usage: $0 [OPTIONS]
+
+Creates a complete, verified research artifact bundle with security validation.
+
+OPTIONS:
+    --version VERSION          Set bundle version (default: dev)
+    --include-tests BOOL       Include test data (default: true)
+    --verify-signatures BOOL   Verify cryptographic signatures (default: true)
+    --verify-hashes BOOL       Verify file integrity hashes (default: true)
+    --output FILE              Output file path for bundle
+    --strict                   Enable strict validation mode
+    --no-quality-gates         Skip quality gate validation
+    --help, -h                 Show this help message
+
+EXAMPLES:
+    $0                                    # Basic bundle with defaults
+    $0 --version=1.0.0 --strict          # Production bundle with strict validation
+    $0 --no-quality-gates --output=dev.tar.gz  # Development bundle
+
+EOF
+}
+
+# Parse command line arguments
+parse_args() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --version)
+                VERSION="$2"
+                shift 2
+                ;;
+            --include-tests)
+                INCLUDE_TESTS="$2"
+                shift 2
+                ;;
+            --verify-signatures)
+                VERIFY_SIGNATURES="$2"
+                shift 2
+                ;;
+            --verify-hashes)
+                VERIFY_HASHES="$2"
+                shift 2
+                ;;
+            --output)
+                OUTPUT_FILE="$2"
+                shift 2
+                ;;
+            --strict)
+                STRICT_MODE=true
+                shift
+                ;;
+            --no-quality-gates)
+                QUALITY_GATES=false
+                shift
+                ;;
+            --help|-h)
+                usage
+                exit 0
+                ;;
+            *)
+                log_error "Unknown option: $1"
+                usage
+                exit 1
+                ;;
+        esac
+    done
+}
+
+# Update bundle name with version
+update_bundle_name() {
+    if [[ "$VERSION" != "dev" ]]; then
+        BUNDLE_NAME="lethe-research-artifact-v${VERSION}-${TIMESTAMP}"
+    else
+        BUNDLE_NAME="lethe-research-artifact-${TIMESTAMP}"
+    fi
+    BUNDLE_PATH="${PROJECT_ROOT}/${BUNDLE_NAME}"
+    
+    if [[ -n "$OUTPUT_FILE" ]]; then
+        BUNDLE_NAME=$(basename "$OUTPUT_FILE" .tar.gz)
+        BUNDLE_PATH="${PROJECT_ROOT}/${BUNDLE_NAME}"
+    fi
+}
+
+log_info "🔬 Creating Lethe Research Artifact Bundle"
+log_info "================================================="
+log_info "Project root: ${PROJECT_ROOT}"
+log_info "Bundle path: ${BUNDLE_PATH}"
+log_info "Timestamp: ${TIMESTAMP}"
+log_info "Version: ${VERSION}"
+log_info ""
+
+# Quality gate validation
+validate_quality_gates() {
+    if [[ "$QUALITY_GATES" != true ]]; then
+        log_warning "Skipping quality gate validation"
+        return 0
+    fi
+    
+    log_info "🔍 Validating quality gates..."
+    
+    local validation_errors=0
+    
+    # Check for environment manifest
+    if [[ ! -f "build-manifest.json" ]]; then
+        log_error "Environment manifest not found: build-manifest.json"
+        validation_errors=$((validation_errors + 1))
+    else
+        # Validate hermetic build requirements
+        local is_hermetic=$(jq -r '.validation.is_hermetic // false' build-manifest.json)
+        if [[ "$is_hermetic" != "true" ]]; then
+            log_error "Build does not meet hermetic requirements"
+            validation_errors=$((validation_errors + 1))
+        fi
+    fi
+    
+    # Check for security scan results
+    if [[ ! -f "trivy-results.json" ]] && [[ ! -f "semgrep-results.json" ]]; then
+        log_warning "No security scan results found"
+        if [[ "$STRICT_MODE" == true ]]; then
+            validation_errors=$((validation_errors + 1))
+        fi
+    fi
+    
+    # Check for boot transcript
+    if [[ ! -f "boot-transcript.json" ]]; then
+        log_warning "Boot transcript not found"
+        if [[ "$STRICT_MODE" == true ]]; then
+            validation_errors=$((validation_errors + 1))
+        fi
+    fi
+    
+    # Check git status
+    if [[ -d ".git" ]]; then
+        local git_status=$(git status --porcelain)
+        if [[ -n "$git_status" ]]; then
+            log_warning "Repository has uncommitted changes"
+            if [[ "$STRICT_MODE" == true ]]; then
+                validation_errors=$((validation_errors + 1))
+            fi
+        fi
+    fi
+    
+    if [[ $validation_errors -gt 0 ]]; then
+        log_error "Quality gate validation failed with $validation_errors errors"
+        if [[ "$STRICT_MODE" == true ]]; then
+            exit 1
+        fi
+    else
+        log_success "Quality gates passed"
+    fi
+}
+
+# Verify file integrity
+verify_file_integrity() {
+    if [[ "$VERIFY_HASHES" != true ]]; then
+        log_info "Skipping file integrity verification"
+        return 0
+    fi
+    
+    log_info "🔐 Verifying file integrity..."
+    
+    # Create integrity manifest
+    local integrity_file="${BUNDLE_PATH}/INTEGRITY.json"
+    echo '{' > "$integrity_file"
+    echo '  "version": "1.0.0",' >> "$integrity_file"
+    echo '  "created_at": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",' >> "$integrity_file"
+    echo '  "files": {' >> "$integrity_file"
+    
+    local first_file=true
+    find "$BUNDLE_PATH" -type f ! -name "INTEGRITY.json" ! -name "*.sig" | while read -r file; do
+        local rel_path=${file#$BUNDLE_PATH/}
+        local sha256_hash=$(sha256sum "$file" | cut -d' ' -f1)
+        local file_size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file")
+        
+        if [[ "$first_file" != true ]]; then
+            echo ',' >> "$integrity_file"
+        fi
+        
+        echo "    \"$rel_path\": {" >> "$integrity_file"
+        echo "      \"sha256\": \"$sha256_hash\"," >> "$integrity_file"
+        echo "      \"size_bytes\": $file_size" >> "$integrity_file"
+        echo -n "    }" >> "$integrity_file"
+        
+        first_file=false
+    done
+    
+    echo '' >> "$integrity_file"
+    echo '  },' >> "$integrity_file"
+    echo '  "total_files": '$(find "$BUNDLE_PATH" -type f ! -name "INTEGRITY.json" ! -name "*.sig" | wc -l)',' >> "$integrity_file"
+    echo '  "verification_method": "SHA256"' >> "$integrity_file"
+    echo '}' >> "$integrity_file"
+    
+    log_success "File integrity manifest created"
+}
+
+# Create cryptographic signatures
+create_signatures() {
+    if [[ "$VERIFY_SIGNATURES" != true ]]; then
+        log_info "Skipping signature creation"
+        return 0
+    fi
+    
+    log_info "✍️ Creating cryptographic signatures..."
+    
+    # Sign the integrity manifest if it exists
+    if [[ -f "${BUNDLE_PATH}/INTEGRITY.json" ]]; then
+        local signing_key=${LETHE_SIGNING_KEY:-$(echo "${HOSTNAME}${USER}$(pwd)" | sha256sum | cut -d' ' -f1)}
+        
+        # Create HMAC signature
+        local signature=$(echo -n "$(cat "${BUNDLE_PATH}/INTEGRITY.json")" | openssl dgst -sha256 -hmac "$signing_key" -hex | cut -d' ' -f2)
+        
+        cat > "${BUNDLE_PATH}/INTEGRITY.json.sig" << EOF
+{
+  "signature_algorithm": "HMAC-SHA256",
+  "signature": "$signature",
+  "signed_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "key_fingerprint": "$(echo -n "$signing_key" | sha256sum | cut -c1-16)",
+  "signed_file": "INTEGRITY.json"
+}
+EOF
+        
+        log_success "Integrity manifest signed"
+    fi
+    
+    # Sign the bundle manifest
+    if [[ -f "${BUNDLE_PATH}/MANIFEST.txt" ]]; then
+        local signing_key=${LETHE_SIGNING_KEY:-$(echo "${HOSTNAME}${USER}$(pwd)" | sha256sum | cut -d' ' -f1)}
+        local signature=$(echo -n "$(cat "${BUNDLE_PATH}/MANIFEST.txt")" | openssl dgst -sha256 -hmac "$signing_key" -hex | cut -d' ' -f2)
+        
+        cat > "${BUNDLE_PATH}/MANIFEST.txt.sig" << EOF
+{
+  "signature_algorithm": "HMAC-SHA256",
+  "signature": "$signature",
+  "signed_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "key_fingerprint": "$(echo -n "$signing_key" | sha256sum | cut -c1-16)",
+  "signed_file": "MANIFEST.txt"
+}
+EOF
+        
+        log_success "Bundle manifest signed"
+    fi
+}
+
+# Parse arguments and update configuration
+parse_args "$@"
+update_bundle_name
+
+# Validate quality gates before proceeding
+validate_quality_gates
 
 # Create bundle directory
+log_info "📁 Creating bundle directory..."
 mkdir -p "${BUNDLE_PATH}"
 
 # Copy source code
-echo "📂 Copying source code..."
+log_info "📂 Copying source code..."
 cp -r "${PROJECT_ROOT}/datasets" "${BUNDLE_PATH}/"
 cp -r "${PROJECT_ROOT}/experiments" "${BUNDLE_PATH}/"
 cp -r "${PROJECT_ROOT}/scripts" "${BUNDLE_PATH}/"
@@ -29,31 +309,52 @@ cp -r "${PROJECT_ROOT}/analysis" "${BUNDLE_PATH}/"
 
 # Copy models if they exist
 if [ -d "${PROJECT_ROOT}/models" ]; then
-    echo "🧠 Copying trained models..."
+    log_info "🧠 Copying trained models..."
     cp -r "${PROJECT_ROOT}/models" "${BUNDLE_PATH}/"
 fi
 
 # Copy artifacts and results
-echo "📊 Copying experimental data..."
+log_info "📊 Copying experimental data..."
 mkdir -p "${BUNDLE_PATH}/artifacts"
 cp -r "${PROJECT_ROOT}/artifacts"/* "${BUNDLE_PATH}/artifacts/"
 
 # Copy paper and figures
-echo "📄 Copying paper and figures..."
+log_info "📄 Copying paper and figures..."
 if [ -d "${PROJECT_ROOT}/paper" ]; then
     cp -r "${PROJECT_ROOT}/paper" "${BUNDLE_PATH}/"
 fi
 
 # Copy configuration files
-echo "⚙️ Copying configuration..."
-for file in README.md Makefile requirements.txt pyproject.toml setup.py; do
+log_info "⚙️ Copying configuration..."
+for file in README.md Makefile requirements*.txt pyproject.toml setup.py; do
     if [ -f "${PROJECT_ROOT}/${file}" ]; then
         cp "${PROJECT_ROOT}/${file}" "${BUNDLE_PATH}/"
     fi
 done
 
+# Copy infrastructure files
+log_info "🏗️ Copying infrastructure..."
+if [ -d "${PROJECT_ROOT}/infra" ]; then
+    cp -r "${PROJECT_ROOT}/infra" "${BUNDLE_PATH}/"
+fi
+
+# Copy CI/CD configuration
+log_info "🔄 Copying CI/CD configuration..."
+if [ -d "${PROJECT_ROOT}/.github" ]; then
+    cp -r "${PROJECT_ROOT}/.github" "${BUNDLE_PATH}/"
+fi
+
+# Copy security and validation artifacts
+log_info "🔒 Copying security artifacts..."
+for artifact in build-manifest.json boot-transcript.json trivy-results.json semgrep-results.json; do
+    if [ -f "${PROJECT_ROOT}/${artifact}" ]; then
+        cp "${PROJECT_ROOT}/${artifact}" "${BUNDLE_PATH}/"
+        log_info "  ✓ Copied ${artifact}"
+    fi
+done
+
 # Create comprehensive README
-echo "📖 Creating comprehensive README..."
+log_info "📖 Creating comprehensive README..."
 cat > "${BUNDLE_PATH}/README.md" << 'EOF'
 # Lethe: Iterative Quality Enhancement for Retrieval-Augmented Generation
 
@@ -308,7 +609,7 @@ This research artifact is provided under MIT License for academic use.
 EOF
 
 # Create requirements.txt
-echo "📦 Creating requirements.txt..."
+log_info "📦 Creating requirements.txt..."
 cat > "${BUNDLE_PATH}/requirements.txt" << 'EOF'
 # Lethe Research Requirements
 # Core dependencies for reproduction
@@ -342,7 +643,7 @@ isort>=5.12.0
 EOF
 
 # Create validation script
-echo "✅ Creating validation script..."
+log_info "✅ Creating validation script..."
 cat > "${BUNDLE_PATH}/validate_artifact.py" << 'EOF'
 #!/usr/bin/env python3
 """
@@ -472,7 +773,7 @@ EOF
 chmod +x "${BUNDLE_PATH}/validate_artifact.py"
 
 # Create run script for complete reproduction
-echo "🏃 Creating reproduction script..."
+log_info "🏃 Creating reproduction script..."
 cat > "${BUNDLE_PATH}/reproduce_results.sh" << 'EOF'
 #!/bin/bash
 # Complete Lethe Results Reproduction Script
@@ -529,53 +830,143 @@ EOF
 chmod +x "${BUNDLE_PATH}/reproduce_results.sh"
 
 # Copy version information
-echo "📋 Adding version information..."
+log_info "📋 Adding version information..."
 cat > "${BUNDLE_PATH}/VERSION.txt" << EOF
 Lethe Research Artifact
 Bundle created: ${TIMESTAMP}
+Bundle version: ${VERSION}
+Include tests: ${INCLUDE_TESTS}
+Verify signatures: ${VERIFY_SIGNATURES}
+Verify hashes: ${VERIFY_HASHES}
+Strict mode: ${STRICT_MODE}
 Git commit: $(cd "${PROJECT_ROOT}" && git rev-parse HEAD 2>/dev/null || echo "Not available")
 Git branch: $(cd "${PROJECT_ROOT}" && git branch --show-current 2>/dev/null || echo "Not available")
 Python version: $(python --version)
 System: $(uname -a)
 EOF
 
+# Verify file integrity and create signatures
+verify_file_integrity
+create_signatures
+
 # Create manifest
-echo "📜 Creating artifact manifest..."
+log_info "📜 Creating artifact manifest..."
 find "${BUNDLE_PATH}" -type f | sort > "${BUNDLE_PATH}/MANIFEST.txt"
-echo "Total files: $(wc -l < "${BUNDLE_PATH}/MANIFEST.txt")"
+log_info "Total files: $(wc -l < "${BUNDLE_PATH}/MANIFEST.txt")"
 
 # Calculate bundle size
 BUNDLE_SIZE=$(du -sh "${BUNDLE_PATH}" | cut -f1)
-echo "Bundle size: ${BUNDLE_SIZE}"
+log_info "Bundle size: ${BUNDLE_SIZE}"
 
 # Create tarball
-echo "📦 Creating compressed archive..."
+log_info "📦 Creating compressed archive..."
 cd "${PROJECT_ROOT}"
-tar -czf "${BUNDLE_NAME}.tar.gz" "${BUNDLE_NAME}/"
+
+# Determine final output name
+if [[ -n "$OUTPUT_FILE" ]]; then
+    OUTPUT_NAME="$OUTPUT_FILE"
+else
+    OUTPUT_NAME="${BUNDLE_NAME}.tar.gz"
+fi
+
+tar -czf "${OUTPUT_NAME}" "${BUNDLE_NAME}/"
 
 # Calculate checksums
-echo "🔐 Generating checksums..."
-sha256sum "${BUNDLE_NAME}.tar.gz" > "${BUNDLE_NAME}.tar.gz.sha256"
-md5sum "${BUNDLE_NAME}.tar.gz" > "${BUNDLE_NAME}.tar.gz.md5"
+log_info "🔐 Generating checksums..."
+sha256sum "${OUTPUT_NAME}" > "${OUTPUT_NAME}.sha256"
+md5sum "${OUTPUT_NAME}" > "${OUTPUT_NAME}.md5"
 
-echo
-echo "✅ Artifact bundle creation complete!"
-echo "================================================="
-echo "Bundle directory: ${BUNDLE_PATH}"
-echo "Compressed archive: ${BUNDLE_NAME}.tar.gz"
-echo "Size: ${BUNDLE_SIZE}"
-echo "SHA256: $(cat "${BUNDLE_NAME}.tar.gz.sha256")"
-echo "MD5: $(cat "${BUNDLE_NAME}.tar.gz.md5")"
-echo
-echo "🚀 Ready for distribution!"
-echo
-echo "To validate the artifact:"
-echo "  tar -xzf ${BUNDLE_NAME}.tar.gz"
-echo "  cd ${BUNDLE_NAME}"
-echo "  python validate_artifact.py"
-echo
-echo "To reproduce results:"
-echo "  ./reproduce_results.sh"
+# Create bundle signature
+if [[ "$VERIFY_SIGNATURES" == true ]]; then
+    log_info "✍️ Signing bundle..."
+    local signing_key=${LETHE_SIGNING_KEY:-$(echo "${HOSTNAME}${USER}$(pwd)" | sha256sum | cut -d' ' -f1)}
+    local bundle_hash=$(sha256sum "${OUTPUT_NAME}" | cut -d' ' -f1)
+    local signature=$(echo -n "$bundle_hash" | openssl dgst -sha256 -hmac "$signing_key" -hex | cut -d' ' -f2)
+    
+    cat > "${OUTPUT_NAME}.sig" << EOF
+{
+  "signature_algorithm": "HMAC-SHA256",
+  "signature": "$signature",
+  "signed_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "key_fingerprint": "$(echo -n "$signing_key" | sha256sum | cut -c1-16)",
+  "signed_file": "$(basename "$OUTPUT_NAME")",
+  "file_sha256": "$bundle_hash",
+  "bundle_version": "$VERSION"
+}
+EOF
+    
+    log_success "Bundle signed with key fingerprint: $(echo -n "$signing_key" | sha256sum | cut -c1-16)"
+fi
+
+# Final validation
+log_info "🔍 Performing final validation..."
+local validation_status="PASSED"
+local validation_warnings=()
+
+# Verify bundle integrity
+if [[ "$VERIFY_HASHES" == true ]] && [[ -f "${OUTPUT_NAME}.sha256" ]]; then
+    if sha256sum -c "${OUTPUT_NAME}.sha256" >/dev/null 2>&1; then
+        log_success "Bundle integrity verified"
+    else
+        log_error "Bundle integrity verification failed"
+        validation_status="FAILED"
+    fi
+fi
+
+# Check if we're in a clean git state
+if [[ -d ".git" ]] && [[ -n "$(git status --porcelain)" ]]; then
+    validation_warnings+=("Repository has uncommitted changes")
+fi
+
+# Check for security artifacts
+if [[ ! -f "${BUNDLE_PATH}/build-manifest.json" ]]; then
+    validation_warnings+=("No environment manifest included")
+fi
+
+if [[ ! -f "${BUNDLE_PATH}/boot-transcript.json" ]]; then
+    validation_warnings+=("No boot transcript included")
+fi
+
+log_info ""
+log_success "✅ Artifact bundle creation complete!"
+log_info "================================================="
+log_info "Bundle directory: ${BUNDLE_PATH}"
+log_info "Compressed archive: ${OUTPUT_NAME}"
+log_info "Size: ${BUNDLE_SIZE}"
+log_info "Version: ${VERSION}"
+log_info "SHA256: $(cat "${OUTPUT_NAME}.sha256")"
+log_info "MD5: $(cat "${OUTPUT_NAME}.md5")"
+
+if [[ "$VERIFY_SIGNATURES" == true ]] && [[ -f "${OUTPUT_NAME}.sig" ]]; then
+    local key_fingerprint=$(jq -r '.key_fingerprint' "${OUTPUT_NAME}.sig")
+    log_info "Signature: ${key_fingerprint}..."
+fi
+
+log_info ""
+log_info "Validation Status: $validation_status"
+
+if [[ ${#validation_warnings[@]} -gt 0 ]]; then
+    log_warning "Warnings:"
+    for warning in "${validation_warnings[@]}"; do
+        log_warning "  - $warning"
+    done
+fi
+
+log_info ""
+log_success "🚀 Ready for distribution!"
+log_info ""
+log_info "To validate the artifact:"
+log_info "  tar -xzf ${OUTPUT_NAME}"
+log_info "  cd ${BUNDLE_NAME}"
+log_info "  python validate_artifact.py"
+log_info ""
+log_info "To reproduce results:"
+log_info "  ./reproduce_results.sh"
+
+if [[ "$validation_status" != "PASSED" ]]; then
+    log_error "Bundle validation failed!"
+    exit 1
+fi
 EOF
 
 chmod +x "${PROJECT_ROOT}/scripts/bundle_artifact.sh"

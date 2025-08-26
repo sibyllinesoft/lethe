@@ -1,0 +1,258 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lethe.dev/schemas/structure-aware-chunking.json",
+  "title": "Structure-Aware Chunking Result",
+  "description": "Schema for validating structure-aware chunking output with AST and log parsing",
+  "type": "object",
+  "properties": {
+    "chunks": {
+      "type": "array",
+      "description": "Array of structured chunks with semantic metadata",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the chunk"
+          },
+          "text": {
+            "type": "string",
+            "description": "Chunk content text"
+          },
+          "tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Estimated token count"
+          },
+          "start_byte": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Starting byte position in source file"
+          },
+          "end_byte": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Ending byte position in source file"
+          },
+          "start_line": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Starting line number (1-indexed)"
+          },
+          "end_line": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Ending line number (1-indexed)"
+          },
+          "structure_type": {
+            "type": "string",
+            "enum": ["function", "class", "module", "import", "log_entry", "stack_trace", "header", "code_block", "paragraph", "list", "config_section", "unknown"],
+            "description": "Type of structural element this chunk represents"
+          },
+          "language": {
+            "type": "string",
+            "description": "Detected programming language or file type"
+          },
+          "anchor_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 0,
+            "description": "Importance score for anchor detection [0,1]"
+          },
+          "is_head_anchor": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this chunk serves as a head anchor"
+          },
+          "is_tail_anchor": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this chunk serves as a tail anchor"
+          },
+          "parent_structure": {
+            "type": "string",
+            "description": "ID of parent structural element"
+          },
+          "child_structures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "IDs of child structural elements"
+          },
+          "semantic_metadata": {
+            "type": "object",
+            "properties": {
+              "function_name": {
+                "type": "string",
+                "description": "Name of function (for function chunks)"
+              },
+              "class_name": {
+                "type": "string",
+                "description": "Name of class (for class chunks)"
+              },
+              "imports": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": [],
+                "description": "Import statements found in chunk"
+              },
+              "log_level": {
+                "type": "string",
+                "description": "Log level (ERROR, WARN, INFO, DEBUG, TRACE)"
+              },
+              "timestamp": {
+                "type": "string",
+                "description": "Timestamp from log entry"
+              },
+              "error_type": {
+                "type": "string",
+                "description": "Type of error/exception in log"
+              },
+              "stack_depth": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Depth of stack trace"
+              }
+            },
+            "default": {},
+            "additionalProperties": false
+          }
+        },
+        "required": ["id", "text", "tokens", "start_byte", "end_byte", "start_line", "end_line", "structure_type", "anchor_score"],
+        "additionalProperties": false
+      }
+    },
+    "total_chunks": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of chunks created"
+    },
+    "total_tokens": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Sum of all chunk token counts"
+    },
+    "detected_language": {
+      "type": "string",
+      "description": "Auto-detected language or file type"
+    },
+    "structure_analysis": {
+      "type": "object",
+      "properties": {
+        "functions_found": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Number of function definitions found"
+        },
+        "classes_found": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Number of class definitions found"
+        },
+        "imports_found": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Number of import statements found"
+        },
+        "log_entries_found": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Number of log entries found"
+        },
+        "headers_found": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Number of headers found (markdown/docs)"
+        },
+        "code_blocks_found": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Number of code blocks found"
+        }
+      },
+      "default": {},
+      "additionalProperties": false
+    },
+    "processing_time_ms": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Time taken for chunking in milliseconds"
+    },
+    "chunking_strategy": {
+      "type": "string",
+      "enum": ["ast_based", "log_based", "markdown_based", "fallback_sliding"],
+      "description": "Strategy used for chunking"
+    }
+  },
+  "required": [
+    "chunks",
+    "total_chunks", 
+    "total_tokens",
+    "structure_analysis",
+    "processing_time_ms",
+    "chunking_strategy"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "validation_rules": {
+      "chunk_consistency": {
+        "description": "total_chunks must equal chunks.length"
+      },
+      "token_consistency": {
+        "description": "total_tokens must equal sum of chunks[].tokens"
+      },
+      "byte_ordering": {
+        "description": "For each chunk: start_byte < end_byte"
+      },
+      "line_ordering": {
+        "description": "For each chunk: start_line <= end_line"
+      },
+      "structure_analysis_consistency": {
+        "description": "structure_analysis counts must match actual chunk types"
+      },
+      "anchor_logic": {
+        "description": "Anchor scores should correlate with is_head_anchor and is_tail_anchor flags"
+      },
+      "semantic_metadata_consistency": {
+        "description": "semantic_metadata fields should match structure_type requirements"
+      }
+    },
+    "performance_targets": {
+      "ast_parsing": {
+        "target": "< 500ms for files ≤10k lines",
+        "accuracy": "≥95% function/class detection for supported languages"
+      },
+      "log_parsing": {
+        "target": "< 200ms for log files ≤1M lines", 
+        "accuracy": "≥90% log entry boundary detection"
+      },
+      "language_detection": {
+        "target": "< 10ms per file",
+        "accuracy": "≥95% for common languages and file types"
+      },
+      "chunk_quality": {
+        "semantic_coherence": "Chunks should respect structural boundaries",
+        "anchor_identification": "≥80% of important structures identified as anchors",
+        "token_distribution": "Chunks should be within 10-90% of target token range"
+      }
+    },
+    "supported_languages": {
+      "ast_parsing": ["typescript", "javascript", "python", "rust", "go", "java", "cpp", "c", "csharp", "php", "ruby"],
+      "log_parsing": ["log", "text"],
+      "document_parsing": ["markdown", "html", "xml"],
+      "config_parsing": ["json", "yaml", "toml", "ini"],
+      "fallback": "All other file types use sliding window chunking"
+    }
+  }
+}

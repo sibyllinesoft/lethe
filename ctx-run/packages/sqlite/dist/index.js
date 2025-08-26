@@ -15,6 +15,9 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 var __importStar = (this && this.__importStar) || (function () {
     var ownKeys = function(o) {
         ownKeys = Object.getOwnPropertyNames || function (o) {
@@ -54,6 +57,14 @@ exports.getChunkById = getChunkById;
 const better_sqlite3_1 = __importDefault(require("better-sqlite3"));
 const fs_1 = require("fs");
 const path_1 = require("path");
+// Milestone 2: Adaptive Planning Policy - New Exports
+__exportStar(require("./atoms-types.js"), exports);
+__exportStar(require("./adaptive-planning.js"), exports);
+__exportStar(require("./adaptive-atoms-db.js"), exports);
+__exportStar(require("./grid-search.js"), exports);
+__exportStar(require("./atoms-db.js"), exports);
+__exportStar(require("./entity-extraction.js"), exports);
+__exportStar(require("./session-idf.js"), exports);
 // Core functions as per package contract
 function openDb(path) {
     return new better_sqlite3_1.default(path);

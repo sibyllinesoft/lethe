@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lethe.dev/schemas/knapsack-result.json",
+  "title": "Knapsack Optimization Result",
+  "description": "Schema for validating knapsack_pack() function output with bookend packing",
+  "type": "object",
+  "properties": {
+    "selected_items": {
+      "type": "array",
+      "description": "Items selected by the knapsack optimizer",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the knapsack item"
+          },
+          "tokens": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Token count for this item"
+          },
+          "importance": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Importance score [0,1] for this item"
+          },
+          "group_id": {
+            "type": "string",
+            "description": "Optional group identifier for constraint enforcement"
+          },
+          "chunk_id": {
+            "type": "string",
+            "description": "Source chunk identifier"
+          },
+          "sentence_index": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Sentence index within the chunk"
+          },
+          "is_head_anchor": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this item is a head anchor"
+          },
+          "is_tail_anchor": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this item is a tail anchor"
+          },
+          "co_entailing_group": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IDs of co-entailing sentences"
+          },
+          "text": {
+            "type": "string",
+            "description": "Actual sentence text"
+          }
+        },
+        "required": ["id", "tokens", "importance", "chunk_id", "sentence_index", "text"],
+        "additionalProperties": false
+      }
+    },
+    "total_tokens": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total tokens in selected items"
+    },
+    "total_importance": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Sum of importance scores for selected items"
+    },
+    "utilization_ratio": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Ratio of used tokens to maximum budget"
+    },
+    "head_anchors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs of head anchor items in selection"
+    },
+    "tail_anchors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs of tail anchor items in selection"
+    },
+    "placement_order": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Optimal placement order of selected items (bookend linearization)"
+    },
+    "groups_selected": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Group IDs that were selected (for constraint validation)"
+    },
+    "algorithm_used": {
+      "type": "string",
+      "enum": ["exact_dp", "greedy_approx", "bookend_priority"],
+      "description": "Algorithm used for optimization"
+    },
+    "computation_time_ms": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Time taken for optimization in milliseconds"
+    }
+  },
+  "required": [
+    "selected_items",
+    "total_tokens", 
+    "total_importance",
+    "utilization_ratio",
+    "head_anchors",
+    "tail_anchors", 
+    "placement_order",
+    "groups_selected",
+    "algorithm_used",
+    "computation_time_ms"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "constraints": {
+      "total_tokens_consistent": {
+        "description": "total_tokens must equal sum of selected_items[].tokens"
+      },
+      "total_importance_consistent": {
+        "description": "total_importance must equal sum of selected_items[].importance"
+      },
+      "utilization_within_budget": {
+        "description": "utilization_ratio must not exceed 1.0 (100%)"
+      },
+      "anchor_consistency": {
+        "description": "head_anchors and tail_anchors must reference items in selected_items"
+      },
+      "placement_order_complete": {
+        "description": "placement_order must contain exactly all selected_items IDs"
+      },
+      "group_constraint_satisfaction": {
+        "description": "All items from same group_id must be selected together"
+      },
+      "bookend_ordering": {
+        "description": "When zigzag_placement=true, head anchors should appear early, tail anchors late"
+      }
+    },
+    "performance_targets": {
+      "computation_time": {
+        "exact_dp": "< 1000ms for problems with ≤100 items",
+        "greedy_approx": "< 100ms for any problem size",
+        "bookend_priority": "< 500ms for any problem size"
+      },
+      "quality_guarantees": {
+        "exact_dp": "Optimal solution guaranteed",
+        "greedy_approx": "≥50% of optimal value",
+        "bookend_priority": "Anchors preserved, ≥70% of optimal value"
+      }
+    }
+  }
+}

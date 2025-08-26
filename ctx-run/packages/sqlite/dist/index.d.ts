@@ -1,5 +1,12 @@
 import Database from 'better-sqlite3';
 export type DB = Database.Database;
+export * from './atoms-types.js';
+export * from './adaptive-planning.js';
+export * from './adaptive-atoms-db.js';
+export * from './grid-search.js';
+export * from './atoms-db.js';
+export * from './entity-extraction.js';
+export * from './session-idf.js';
 export interface Message {
     id: string;
     session_id: string;

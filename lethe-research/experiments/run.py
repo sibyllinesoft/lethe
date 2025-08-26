@@ -43,7 +43,8 @@ from mlflow.tracking import MlflowClient
 
 # Add project modules to path
 sys.path.append(str(Path(__file__).parent.parent))
-from scripts.baseline_implementations import BaselineEvaluator, Document, Query, QueryResult
+from scripts.baseline_implementations import BaselineEvaluator, Document, Query, RetrievalResult
+from scripts.baseline_implementations import QueryResult as BaselineQueryResult  
 from analysis.metrics import MetricsCalculator, EvaluationMetrics
 
 @dataclass
@@ -83,7 +84,7 @@ class RunResult:
     parameters: Dict[str, Any]
     domain: str
     status: str  # 'completed', 'timeout', 'error', 'skipped'
-    query_results: List[QueryResult]
+    query_results: List[BaselineQueryResult]
     metrics: Optional[EvaluationMetrics]
     runtime_seconds: float
     peak_memory_mb: float
@@ -629,7 +630,7 @@ class ExperimentController:
                     self.logger.warning(f"Failed to end MLflow run for {run.run_id}: {e}")
     
     def _execute_baseline_run(self, run: ExperimentRun, documents: List[Document], 
-                             queries: List[Query], artifacts_dir: Path) -> List[QueryResult]:
+                             queries: List[Query], artifacts_dir: Path) -> List[BaselineQueryResult]:
         """Execute a baseline configuration run"""
         baseline_name = run.config_name.replace('baseline_', '')
         self.logger.debug(f"Executing baseline: {baseline_name}")
@@ -641,7 +642,7 @@ class ExperimentController:
         # Convert to QueryResult format  
         query_results = []
         for result_data in baseline_results:
-            query_result = QueryResult(
+            query_result = BaselineQueryResult(
                 query_id=result_data["query_id"],
                 session_id=result_data["session_id"],
                 domain=result_data["domain"], 
@@ -660,7 +661,7 @@ class ExperimentController:
         return query_results
         
     def _execute_lethe_run(self, run: ExperimentRun, documents: List[Document], 
-                          queries: List[Query], artifacts_dir: Path) -> List[QueryResult]:
+                          queries: List[Query], artifacts_dir: Path) -> List[BaselineQueryResult]:
         """Execute a Lethe configuration run using ctx-run system"""
         self.logger.debug(f"Executing Lethe configuration with parameters: {run.parameters}")
         
@@ -713,7 +714,7 @@ class ExperimentController:
             with open(results_file, 'r') as f:
                 for line in f:
                     data = json.loads(line.strip())
-                    query_result = QueryResult(
+                    query_result = BaselineQueryResult(
                         query_id=data["query_id"],
                         session_id=data["session_id"],
                         domain=data["domain"],
@@ -735,7 +736,7 @@ class ExperimentController:
         return query_results
         
     def _simulate_lethe_run(self, run: ExperimentRun, documents: List[Document], 
-                           queries: List[Query]) -> List[QueryResult]:
+                           queries: List[Query]) -> List[BaselineQueryResult]:
         """Simulate Lethe results as improved baselines (fallback when ctx-run unavailable)"""
         self.logger.info("Simulating Lethe results using baseline combination")
         
@@ -767,7 +768,7 @@ class ExperimentController:
             contradiction_prob = max(0.01, 0.1 - (alpha * 0.05) - (beta * 0.03))
             contradictions = ["contradiction_1"] if np.random.random() < contradiction_prob else []
             
-            query_result = QueryResult(
+            query_result = BaselineQueryResult(
                 query_id=result_data["query_id"],
                 session_id=result_data["session_id"],
                 domain=result_data["domain"],

@@ -1,0 +1,294 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lethe-research.local/schemas/boot_transcript.json",
+  "title": "Signed Boot Transcript Schema",
+  "description": "JSON schema for hermetic boot transcripts with cryptographic signatures for reproducibility verification",
+  "type": "object",
+  "required": ["transcript_id", "timestamp", "environment", "smoke_tests", "signatures", "verification"],
+  "properties": {
+    "transcript_id": {
+      "type": "string",
+      "pattern": "^boot_[0-9]{8}_[0-9]{6}_[a-f0-9]{8}$",
+      "description": "Unique transcript identifier: boot_YYYYMMDD_HHMMSS_hash"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when transcript was generated"
+    },
+    "environment": {
+      "type": "object",
+      "required": ["container_digest", "python_packages", "node_packages", "system_info"],
+      "properties": {
+        "container_digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "description": "SHA-256 digest of the container image used"
+        },
+        "python_packages": {
+          "type": "object",
+          "patternProperties": {
+            "^[a-zA-Z0-9_-]+$": {
+              "type": "object",
+              "required": ["version", "hash"],
+              "properties": {
+                "version": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+.*$"
+                },
+                "hash": {
+                  "type": "string",
+                  "pattern": "^sha256:[a-f0-9]{64}$"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "node_packages": {
+          "type": "object",
+          "patternProperties": {
+            "^[a-zA-Z0-9_@/-]+$": {
+              "type": "string",
+              "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+.*$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "system_info": {
+          "type": "object",
+          "required": ["os", "architecture", "kernel", "python_version", "node_version"],
+          "properties": {
+            "os": {"type": "string"},
+            "architecture": {"type": "string"},
+            "kernel": {"type": "string"},
+            "python_version": {"type": "string"},
+            "node_version": {"type": "string"},
+            "sqlite_version": {"type": "string"},
+            "build_date": {"type": "string", "format": "date-time"}
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "smoke_tests": {
+      "type": "object",
+      "required": ["status", "tests_run", "golden_hashes", "performance_metrics"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["PASS", "FAIL", "PARTIAL"],
+          "description": "Overall smoke test status"
+        },
+        "tests_run": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["test_name", "status", "duration_ms"],
+            "properties": {
+              "test_name": {
+                "type": "string",
+                "enum": [
+                  "database_init",
+                  "index_creation", 
+                  "query_processing",
+                  "golden_ingest",
+                  "golden_retrieval",
+                  "api_endpoints",
+                  "memory_usage",
+                  "network_isolation"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": ["PASS", "FAIL", "SKIP"]
+              },
+              "duration_ms": {
+                "type": "number",
+                "minimum": 0
+              },
+              "details": {
+                "type": "string",
+                "maxLength": 1000
+              },
+              "error": {
+                "type": "string",
+                "maxLength": 2000
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "golden_hashes": {
+          "type": "object",
+          "description": "SHA-256 hashes of golden test results for comparison",
+          "patternProperties": {
+            "^[a-zA-Z0-9_-]+$": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "performance_metrics": {
+          "type": "object",
+          "properties": {
+            "memory_peak_mb": {
+              "type": "number",
+              "minimum": 0
+            },
+            "cpu_usage_percent": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "disk_io_mb": {
+              "type": "number",
+              "minimum": 0
+            },
+            "network_requests": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 0,
+              "description": "Should be 0 for hermetic mode"
+            },
+            "startup_time_ms": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "signatures": {
+      "type": "object",
+      "required": ["transcript_hash", "signature", "public_key_id", "algorithm"],
+      "properties": {
+        "transcript_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA-256 hash of the transcript content (excluding signatures section)"
+        },
+        "signature": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/=]+$",
+          "description": "Base64-encoded cryptographic signature"
+        },
+        "public_key_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{16}$",
+          "description": "Identifier for the public key used for verification"
+        },
+        "algorithm": {
+          "type": "string",
+          "enum": ["RS256", "ES256", "EdDSA"],
+          "description": "Cryptographic algorithm used for signing"
+        },
+        "signing_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "verification": {
+      "type": "object",
+      "required": ["reproducible", "hermetic", "network_isolated"],
+      "properties": {
+        "reproducible": {
+          "type": "boolean",
+          "description": "Whether this build is cryptographically reproducible"
+        },
+        "hermetic": {
+          "type": "boolean", 
+          "description": "Whether this build was performed in hermetic isolation"
+        },
+        "network_isolated": {
+          "type": "boolean",
+          "description": "Whether network access was properly isolated"
+        },
+        "deterministic_seeds": {
+          "type": "boolean",
+          "description": "Whether deterministic random seeds were used"
+        },
+        "lockfiles_validated": {
+          "type": "boolean",
+          "description": "Whether all lockfiles were validated against hashes"
+        },
+        "golden_matches": {
+          "type": "boolean",
+          "description": "Whether all golden test results matched expected hashes"
+        },
+        "compliance_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Overall compliance score for reproducibility requirements"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Non-fatal warnings during verification"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Fatal errors that compromise reproducibility"
+        }
+      },
+      "additionalProperties": false
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "manifest_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Hash of the complete artifact manifest"
+        },
+        "dataset_hashes": {
+          "type": "object",
+          "patternProperties": {
+            "^[a-zA-Z0-9_-]+\\.json$": {
+              "type": "string", 
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "config_hashes": {
+          "type": "object",
+          "patternProperties": {
+            "^[a-zA-Z0-9_-]+\\.(json|yaml)$": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "generated_files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "hash", "size"],
+            "properties": {
+              "path": {"type": "string"},
+              "hash": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "size": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$comment": "Boot transcript must be cryptographically signed for reproducibility verification. All hashes must be SHA-256. Network requests must be 0 for hermetic mode."
+}

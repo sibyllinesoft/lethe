@@ -54,6 +54,22 @@ class RetrievalResult:
     content: str
     kind: str
 
+@dataclass  
+class QueryResult:
+    """Complete evaluation result for a query"""
+    query_id: str
+    session_id: str
+    domain: str
+    complexity: str
+    ground_truth_docs: List[str]
+    retrieved_docs: List[str]
+    relevance_scores: List[float]
+    latency_ms: float
+    memory_mb: float
+    entities_covered: List[str]
+    contradictions: List[str]
+    timestamp: str
+
 class BaselineRetriever(ABC):
     """Abstract base class for all baseline implementations"""
     

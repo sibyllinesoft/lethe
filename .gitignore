@@ -336,3 +336,13 @@ performance-data/
 .serena/
 .mcp/
 .claude/
+
+# MLflow artifacts
+mlruns/
+mlartifacts/
+
+# Virtual environment stats
+venv_stats/
+
+# Research specific artifacts
+smoke-test-results/

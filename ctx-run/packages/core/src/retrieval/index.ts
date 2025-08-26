@@ -3,6 +3,8 @@ import { getReranker, type RerankerConfig } from '../reranker/index.js';
 import { getDiversifier } from '../diversifier/index.js';
 import type { Embeddings } from '@lethe/embeddings';
 import { getMLPredictor, type MLPrediction } from '../ml-prediction/index.js';
+import { sentencePrune, type PrunedChunkResult, type SentencePruningConfig } from './sentence_pruning.js';
+import { knapsackPack, bookendLinearize, type KnapsackItem, type KnapsackConfig, type PackedResult } from './knapsack_optimizer.js';
 
 export interface Candidate {
   docId: string;
@@ -444,4 +446,292 @@ async function enrichCandidatesWithText(db: DB, candidates: Candidate[]): Promis
   }
   
   return enrichedCandidates;
+}
+
+// Enhanced candidate interface for Lethe vNext with sentence-level granularity
+export interface EnhancedCandidate extends Candidate {
+  sentences?: Array<{
+    id: string;
+    text: string;
+    tokens: number;
+    importance: number;
+    sentence_index: number;
+    is_head_anchor: boolean;
+    is_tail_anchor: boolean;
+    co_entailing_group?: string[];
+  }>;
+  pruned_result?: PrunedChunkResult;
+}
+
+// Lethe vNext orchestration configuration
+export interface LetHeVNextConfig extends HybridConfig {
+  // Sentence pruning settings
+  pruning: Partial<SentencePruningConfig>;
+  
+  // Knapsack optimization settings  
+  knapsack: Partial<KnapsackConfig>;
+  
+  // Token budget enforcement
+  global_token_budget: number;
+  budget_allocation: {
+    retrieval_ratio: number; // Portion of budget for initial retrieval
+    pruning_ratio: number;   // Portion for post-pruning content
+  };
+  
+  // Quality targets
+  answer_span_kept_threshold: number; // Minimum % of answer spans to preserve
+  ndcg_improvement_target: number;    // Target nDCG@10 improvement
+  
+  // Processing flags
+  enable_sentence_pruning: boolean;
+  enable_knapsack_optimization: boolean;
+  enable_bookend_packing: boolean;
+  preserve_code_fences: boolean;
+}
+
+export const DEFAULT_LETHE_VNEXT_CONFIG: LetHeVNextConfig = {
+  ...DEFAULT_HYBRID_CONFIG,
+  
+  // Sentence pruning configuration
+  pruning: {
+    cross_encoder_threshold: 0.6,
+    preserve_code_fences: true,
+    min_sentence_tokens: 5,
+    max_sentence_tokens: 100,
+    co_entailment_threshold: 0.8
+  },
+  
+  // Knapsack optimization
+  knapsack: {
+    max_tokens: 8192,
+    safety_margin: 0.05,
+    head_anchor_weight: 2.0,
+    tail_anchor_weight: 1.5,
+    group_bonus: 0.1,
+    diminishing_returns_factor: 0.8,
+    zigzag_placement: true,
+    preserve_chunk_order: true
+  },
+  
+  // Global token budget
+  global_token_budget: 8192,
+  budget_allocation: {
+    retrieval_ratio: 0.7,  // 70% for retrieval candidates
+    pruning_ratio: 0.3     // 30% for pruned content
+  },
+  
+  // Quality targets per TODO.md requirements
+  answer_span_kept_threshold: 0.98,  // ≥98% answer span preservation
+  ndcg_improvement_target: 0.10,     // ≥+10% nDCG@10 improvement
+  
+  // Processing toggles
+  enable_sentence_pruning: true,
+  enable_knapsack_optimization: true,
+  enable_bookend_packing: true,
+  preserve_code_fences: true
+};
+
+/**
+ * Main orchestration function for Lethe vNext retrieval pipeline
+ * 
+ * Pipeline stages:
+ * 1. Standard hybrid retrieval (BM25 + Vector + Reranking)
+ * 2. Sentence-level pruning with cross-encoder scoring
+ * 3. Global knapsack optimization with bookend packing
+ * 4. Final linearization and assembly
+ */
+export async function orchestrateLetheVNext(
+  queries: string[],
+  options: HybridRetrievalOptions & { 
+    config?: Partial<LetHeVNextConfig> 
+  }
+): Promise<{
+  final_candidates: EnhancedCandidate[];
+  knapsack_result: PackedResult;
+  processing_stats: {
+    initial_candidates: number;
+    pruned_sentences: number;
+    final_tokens: number;
+    token_reduction_ratio: number;
+    processing_time_ms: number;
+  };
+}> {
+  const startTime = performance.now();
+  const config = { ...DEFAULT_LETHE_VNEXT_CONFIG, ...options.config };
+  
+  console.log('🚀 Starting Lethe vNext orchestration...');
+  console.time('lethe-vnext-orchestration');
+  
+  try {
+    // Stage 1: Standard hybrid retrieval 
+    console.log('Stage 1: Hybrid retrieval...');
+    const initialCandidates = await hybridRetrieval(queries, {
+      ...options,
+      config: {
+        ...config,
+        k_final: Math.floor(config.k_final * 1.5) // Get more for pruning
+      }
+    });
+    
+    console.log(`Hybrid retrieval found ${initialCandidates.length} candidates`);
+    
+    // Stage 2: Sentence-level pruning
+    const enhancedCandidates: EnhancedCandidate[] = [];
+    let totalPrunedSentences = 0;
+    
+    if (config.enable_sentence_pruning) {
+      console.log('Stage 2: Sentence pruning...');
+      
+      for (const candidate of initialCandidates) {
+        if (!candidate.text) continue;
+        
+        try {
+          const combinedQueryText = queries.join(' ');
+          const prunedResult = await sentencePrune(
+            combinedQueryText, 
+            {
+              id: candidate.docId,
+              text: candidate.text,
+              kind: candidate.kind
+            },
+            config.pruning
+          );
+          
+          // Convert pruned sentences to enhanced format
+          const sentences = prunedResult.pruned_sentences.map(sentence => ({
+            id: sentence.sentence_id,
+            text: sentence.text,
+            tokens: sentence.tokens,
+            importance: sentence.relevance_score,
+            sentence_index: sentence.original_index,
+            is_head_anchor: sentence.is_code_fence || sentence.original_index === 0,
+            is_tail_anchor: sentence.is_code_fence || sentence.original_index === prunedResult.total_sentences - 1,
+            co_entailing_group: sentence.co_entailing_ids
+          }));
+          
+          enhancedCandidates.push({
+            ...candidate,
+            sentences,
+            pruned_result: prunedResult
+          });
+          
+          totalPrunedSentences += prunedResult.pruned_sentences.length;
+          
+        } catch (error) {
+          console.warn(`Sentence pruning failed for candidate ${candidate.docId}: ${error}`);
+          // Fallback to original candidate
+          enhancedCandidates.push(candidate);
+        }
+      }
+    } else {
+      // Skip pruning, convert candidates as-is
+      enhancedCandidates.push(...initialCandidates);
+    }
+    
+    console.log(`Sentence pruning produced ${totalPrunedSentences} sentences`);
+    
+    // Stage 3: Global knapsack optimization
+    let knapsackResult: PackedResult;
+    let finalCandidates = enhancedCandidates;
+    
+    if (config.enable_knapsack_optimization) {
+      console.log('Stage 3: Knapsack optimization...');
+      
+      // Convert enhanced candidates to knapsack items
+      const knapsackItems: KnapsackItem[] = [];
+      
+      for (const candidate of enhancedCandidates) {
+        if (candidate.sentences) {
+          for (const sentence of candidate.sentences) {
+            knapsackItems.push({
+              id: sentence.id,
+              tokens: sentence.tokens,
+              importance: sentence.importance,
+              chunk_id: candidate.docId,
+              sentence_index: sentence.sentence_index,
+              is_head_anchor: sentence.is_head_anchor,
+              is_tail_anchor: sentence.is_tail_anchor,
+              co_entailing_group: sentence.co_entailing_group,
+              text: sentence.text
+            });
+          }
+        } else if (candidate.text) {
+          // Fallback for non-pruned candidates
+          const estimatedTokens = Math.ceil(candidate.text.length / 4); // Rough estimate
+          knapsackItems.push({
+            id: `${candidate.docId}_full`,
+            tokens: estimatedTokens,
+            importance: candidate.score,
+            chunk_id: candidate.docId,
+            sentence_index: 0,
+            is_head_anchor: false,
+            is_tail_anchor: false,
+            text: candidate.text
+          });
+        }
+      }
+      
+      // Run knapsack optimization
+      knapsackResult = await knapsackPack(knapsackItems, {
+        ...config.knapsack,
+        max_tokens: config.global_token_budget
+      });
+      
+      // Filter candidates to match knapsack selection
+      const selectedItemIds = new Set(knapsackResult.selected_items.map(item => item.id));
+      finalCandidates = enhancedCandidates.filter(candidate => {
+        if (candidate.sentences) {
+          // Keep candidate if any of its sentences were selected
+          return candidate.sentences.some(sentence => selectedItemIds.has(sentence.id));
+        } else {
+          return selectedItemIds.has(`${candidate.docId}_full`);
+        }
+      });
+      
+      console.log(`Knapsack selected ${knapsackResult.selected_items.length} items, ${finalCandidates.length} candidates`);
+      
+    } else {
+      // Create dummy knapsack result
+      const totalTokens = enhancedCandidates.reduce((sum, candidate) => {
+        return sum + (candidate.text ? Math.ceil(candidate.text.length / 4) : 0);
+      }, 0);
+      
+      knapsackResult = {
+        selected_items: [],
+        total_tokens: totalTokens,
+        total_importance: enhancedCandidates.reduce((sum, c) => sum + c.score, 0),
+        utilization_ratio: Math.min(1.0, totalTokens / config.global_token_budget),
+        head_anchors: [],
+        tail_anchors: [],
+        placement_order: enhancedCandidates.map(c => c.docId),
+        groups_selected: [],
+        algorithm_used: 'greedy_approx',
+        computation_time_ms: 0
+      };
+    }
+    
+    const processingTime = performance.now() - startTime;
+    const initialTokens = initialCandidates.reduce((sum, c) => sum + (c.text ? Math.ceil(c.text.length / 4) : 0), 0);
+    const tokenReductionRatio = initialTokens > 0 ? 1 - (knapsackResult.total_tokens / initialTokens) : 0;
+    
+    console.timeEnd('lethe-vnext-orchestration');
+    console.log(`🎯 Lethe vNext orchestration complete: ${finalCandidates.length} candidates, ${knapsackResult.total_tokens} tokens (${(tokenReductionRatio * 100).toFixed(1)}% reduction)`);
+    
+    return {
+      final_candidates: finalCandidates,
+      knapsack_result: knapsackResult,
+      processing_stats: {
+        initial_candidates: initialCandidates.length,
+        pruned_sentences: totalPrunedSentences,
+        final_tokens: knapsackResult.total_tokens,
+        token_reduction_ratio: tokenReductionRatio,
+        processing_time_ms: processingTime
+      }
+    };
+    
+  } catch (error) {
+    console.timeEnd('lethe-vnext-orchestration');
+    console.error(`Lethe vNext orchestration failed: ${error}`);
+    throw error;
+  }
 }

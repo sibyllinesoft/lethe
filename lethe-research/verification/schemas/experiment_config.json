@@ -1,0 +1,265 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lethe-research.local/schemas/experiment_config.json",
+  "title": "Experiment Configuration Schema",
+  "description": "JSON schema for experiment configuration files (V0-V8 variants) with validation for research parameters and constraints",
+  "type": "object",
+  "required": ["variant", "method", "budget", "inputs", "expected_gain", "promotion_criteria"],
+  "properties": {
+    "variant": {
+      "type": "string",
+      "pattern": "^V[0-8]$",
+      "description": "Experiment variant identifier (V0-V8)"
+    },
+    "method": {
+      "type": "string",
+      "description": "Method/variant description",
+      "minLength": 10,
+      "maxLength": 500
+    },
+    "budget": {
+      "type": "string",
+      "enum": ["Parity", "Systems budget", "Declared LLM budget"],
+      "description": "Budget allocation type for this variant"
+    },
+    "inputs": {
+      "type": "string", 
+      "description": "Input configuration and dependencies",
+      "minLength": 5,
+      "maxLength": 200
+    },
+    "expected_gain": {
+      "type": "string",
+      "description": "Expected performance improvement description",
+      "minLength": 10,
+      "maxLength": 200
+    },
+    "promotion_criteria": {
+      "type": "object",
+      "required": ["gates"],
+      "properties": {
+        "gates": {
+          "type": "array",
+          "description": "List of promotion gates that must pass",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["metric", "threshold", "comparison"],
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "ndcg_at_10",
+                  "answer_span_kept", 
+                  "latency_p50",
+                  "latency_p95",
+                  "memory_rss",
+                  "token_reduction",
+                  "contradiction_rate",
+                  "mrr_at_10_code",
+                  "recall_at_50_tool",
+                  "coverage_at_n"
+                ]
+              },
+              "threshold": {
+                "type": "number",
+                "description": "Threshold value for the metric"
+              },
+              "comparison": {
+                "type": "string", 
+                "enum": [">=", "<=", ">", "<", "=="],
+                "description": "Comparison operator for threshold check"
+              },
+              "confidence_interval_required": {
+                "type": "boolean",
+                "default": true,
+                "description": "Whether BCa 95% CI lower bound must be > 0"
+              },
+              "slice_specific": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": ["Full", "Focused", "Code", "Tool"]
+                },
+                "description": "Dataset slices where gate must pass"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "model_settings": {
+          "type": "object",
+          "properties": {
+            "embedding_model": {
+              "type": "string",
+              "default": "{{MODEL_NAME}}"
+            },
+            "rerank_model": {
+              "type": "string", 
+              "default": "{{RERANK_NAME}}"
+            },
+            "llm_model": {
+              "type": "string",
+              "default": "{{LLM_NAME}}"
+            }
+          }
+        },
+        "hyperparameters": {
+          "type": "object",
+          "properties": {
+            "sentence_pruning": {
+              "type": "object",
+              "properties": {
+                "enabled": {"type": "boolean"},
+                "threshold": {"type": "number", "minimum": 0, "maximum": 1},
+                "preserve_code_fences": {"type": "boolean", "default": true},
+                "group_keep_rules": {"type": "boolean", "default": true}
+              }
+            },
+            "knapsack_optimization": {
+              "type": "object", 
+              "properties": {
+                "enabled": {"type": "boolean"},
+                "algorithm": {
+                  "type": "string",
+                  "enum": ["greedy", "dynamic_programming", "greedy_plus_swaps"]
+                },
+                "bookend_packing": {"type": "boolean", "default": true},
+                "head_anchors": {"type": "integer", "minimum": 0, "maximum": 5, "default": 1},
+                "tail_anchors": {"type": "integer", "minimum": 0, "maximum": 5, "default": 1}
+              }
+            },
+            "structure_aware_chunking": {
+              "type": "object",
+              "properties": {
+                "enabled": {"type": "boolean"},
+                "tree_sitter_languages": {
+                  "type": "array",
+                  "items": {"type": "string"}
+                },
+                "log_parsing": {"type": "boolean"},
+                "function_boundaries": {"type": "boolean", "default": true},
+                "class_boundaries": {"type": "boolean", "default": true}
+              }
+            },
+            "dynamic_fusion": {
+              "type": "object",
+              "properties": {
+                "enabled": {"type": "boolean"},
+                "alpha_range": {
+                  "type": "array",
+                  "items": {"type": "number"},
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "default": [0.3, 1.5]
+                },
+                "beta_range": {
+                  "type": "array", 
+                  "items": {"type": "number"},
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "default": [0.3, 1.5] 
+                },
+                "model_type": {
+                  "type": "string",
+                  "enum": ["ridge", "lightgbm", "linear"]
+                },
+                "metadata_boosts": {"type": "boolean", "default": true}
+              }
+            },
+            "entity_graph": {
+              "type": "object",
+              "properties": {
+                "enabled": {"type": "boolean"},
+                "pagerank_alpha": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "default": 0.85
+                },
+                "co_occurrence_window": {
+                  "type": "integer", 
+                  "minimum": 1,
+                  "maximum": 100,
+                  "default": 10
+                }
+              }
+            },
+            "active_retrieval": {
+              "type": "object",
+              "properties": {
+                "enabled": {"type": "boolean"},
+                "confidence_threshold": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "max_probes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              }
+            },
+            "quantization": {
+              "type": "object",
+              "properties": {
+                "enabled": {"type": "boolean"},
+                "type": {
+                  "type": "string", 
+                  "enum": ["int8", "int16", "float16"]
+                },
+                "scale_per_vector": {"type": "boolean", "default": true}
+              }
+            }
+          }
+        },
+        "token_budget": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 100000,
+          "description": "Maximum token budget for this experiment"
+        },
+        "random_seed": {
+          "type": "integer",
+          "description": "Random seed for reproducibility"
+        }
+      },
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": "object", 
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "created_by": {
+          "type": "string"
+        },
+        "config_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA-256 hash of this configuration"
+        },
+        "parent_variant": {
+          "type": "string",
+          "pattern": "^V[0-7]$",
+          "description": "Parent variant this extends from"
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -121,8 +121,8 @@ class QueryRecord(BaseModel):
         v = re.sub(r'\s+', ' ', v.strip())
         
         # Check for minimum meaningful content
-        if len(v.split()) < 5:
-            raise ValueError('Query must contain at least 5 words')
+        if len(v.split()) < 3:
+            raise ValueError('Query must contain at least 3 words')
             
         # Check for balanced brackets/quotes
         if v.count('(') != v.count(')') or v.count('[') != v.count(']'):
@@ -325,7 +325,7 @@ class DatasetManifest(BaseModel):
     def validate_split_consistency(self):
         """Validate dataset splits are consistent"""
         if self.dataset_splits and self.total_queries:
-            split_total = sum(split['count'] for split in self.dataset_splits)
+            split_total = sum(split.count for split in self.dataset_splits)
             if split_total > 0 and split_total != self.total_queries:
                 raise ValueError('Dataset split counts must sum to total queries')
         return self

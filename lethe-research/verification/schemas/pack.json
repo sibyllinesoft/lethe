@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lethe-research.local/schemas/pack.json",
+  "title": "Knapsack Pack Result Schema", 
+  "description": "JSON schema for knapsack_pack() and bookend_linearize() function outputs - defines structure for global token-budget optimization with bookend packing",
+  "type": "object",
+  "required": ["ordered_ids", "metadata"],
+  "properties": {
+    "ordered_ids": {
+      "type": "array",
+      "description": "Ordered list of sentence IDs selected by knapsack optimization and arranged with bookend packing",
+      "minItems": 0,
+      "maxItems": 10000,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9_-]+\\.[0-9]+$",
+        "description": "Sentence identifier in format chunk_id.sentence_number"
+      },
+      "uniqueItems": true
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["total_tokens", "token_budget", "budget_utilization", "selection_stats", "bookend_info"],
+      "properties": {
+        "total_tokens": {
+          "type": "integer",
+          "description": "Total tokens in the selected and ordered sentences",
+          "minimum": 0
+        },
+        "token_budget": {
+          "type": "integer", 
+          "description": "Maximum token budget constraint",
+          "minimum": 1
+        },
+        "budget_utilization": {
+          "type": "number",
+          "description": "Percentage of budget used (total_tokens / token_budget)",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "selection_stats": {
+          "type": "object",
+          "required": ["total_candidates", "selected_count", "rejected_count"],
+          "properties": {
+            "total_candidates": {
+              "type": "integer",
+              "description": "Total number of sentences available for selection",
+              "minimum": 0
+            },
+            "selected_count": {
+              "type": "integer",
+              "description": "Number of sentences selected by knapsack",
+              "minimum": 0
+            },
+            "rejected_count": {
+              "type": "integer", 
+              "description": "Number of sentences rejected due to budget constraints",
+              "minimum": 0
+            },
+            "group_kept_count": {
+              "type": "integer",
+              "description": "Number of sentences kept due to group-keep constraints",
+              "minimum": 0
+            },
+            "code_fence_preserved": {
+              "type": "integer",
+              "description": "Number of code fence blocks preserved intact",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "bookend_info": {
+          "type": "object", 
+          "required": ["head_count", "tail_count", "middle_count", "head_indices", "tail_indices"],
+          "properties": {
+            "head_count": {
+              "type": "integer",
+              "description": "Number of sentences placed at head position",
+              "minimum": 0,
+              "default": 1
+            },
+            "tail_count": {
+              "type": "integer",
+              "description": "Number of sentences placed at tail position", 
+              "minimum": 0,
+              "default": 1
+            },
+            "middle_count": {
+              "type": "integer",
+              "description": "Number of sentences in middle section",
+              "minimum": 0
+            },
+            "head_indices": {
+              "type": "array",
+              "description": "Indices in ordered_ids array for head anchor sentences",
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "tail_indices": {
+              "type": "array", 
+              "description": "Indices in ordered_ids array for tail anchor sentences",
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "zig_zag_pattern": {
+              "type": "boolean",
+              "description": "Whether zig-zag ordering was applied to middle section",
+              "default": true
+            },
+            "code_blocks_preserved": {
+              "type": "array",
+              "description": "List of code block ranges preserved during linearization",
+              "items": {
+                "type": "object",
+                "required": ["start_index", "end_index", "block_type"],
+                "properties": {
+                  "start_index": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "end_index": {
+                    "type": "integer", 
+                    "minimum": 0
+                  },
+                  "block_type": {
+                    "type": "string",
+                    "enum": ["code", "fenced_code", "log_output", "json", "yaml"]
+                  }
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "optimization_info": {
+          "type": "object",
+          "properties": {
+            "algorithm": {
+              "type": "string",
+              "enum": ["greedy", "dynamic_programming", "greedy_plus_swaps"],
+              "description": "Knapsack algorithm used for optimization"
+            },
+            "iterations": {
+              "type": "integer", 
+              "description": "Number of optimization iterations performed",
+              "minimum": 1
+            },
+            "convergence_time_ms": {
+              "type": "number",
+              "description": "Time taken for knapsack optimization in milliseconds",
+              "minimum": 0
+            },
+            "final_value": {
+              "type": "number",
+              "description": "Final objective value achieved by knapsack optimization",
+              "minimum": 0
+            },
+            "swap_improvements": {
+              "type": "integer",
+              "description": "Number of beneficial swaps made during local optimization",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "constraint_validation": {
+          "type": "object",
+          "required": ["budget_satisfied", "group_constraints_satisfied", "spans_preserved"],
+          "properties": {
+            "budget_satisfied": {
+              "type": "boolean",
+              "description": "Whether final selection satisfies token budget constraint"
+            },
+            "group_constraints_satisfied": {
+              "type": "boolean", 
+              "description": "Whether all group-keep constraints are satisfied"
+            },
+            "spans_preserved": {
+              "type": "boolean",
+              "description": "Whether all cited spans are included in kept sentences"  
+            },
+            "code_integrity_maintained": {
+              "type": "boolean",
+              "description": "Whether code blocks remain syntactically intact"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$comment": "Invariants: sum(tokens) <= budget; all cited spans in kept; group-keep constraints satisfied; code fences preserved"
+}
