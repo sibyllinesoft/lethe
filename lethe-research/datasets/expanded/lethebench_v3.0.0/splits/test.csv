@@ -1,0 +1,91 @@
+query_id,domain,complexity,query_text,quality_score
+code_heavy_query_000085,code_heavy,simple,Show me how to define a async function in Rust,0.8999999999999999
+code_heavy_query_000140,code_heavy,medium,What's the best approach for file I/O using async/await in C#? Please provide working examples.,0.8
+code_heavy_query_000160,code_heavy,medium,How should I design a singleton class in Java that supports caching? Please provide working examples...,0.8
+code_heavy_query_000181,code_heavy,medium,What's an efficient way to implement BFS for sorted arrays in Java? Please provide working examples.,1.0
+code_heavy_query_000189,code_heavy,medium,How can I efficiently group binary data in JavaScript? Please provide working examples.,0.8
+code_heavy_query_000098,code_heavy,simple,Show me how to define a decorator function in JavaScript,0.8999999999999999
+code_heavy_query_000080,code_heavy,medium,How can I efficiently sort time-series data in Python? Please provide working examples.,0.8
+code_heavy_query_000110,code_heavy,medium,How should I design a builder class in Java that supports caching? What are the common pitfalls to a...,0.8
+code_heavy_query_000052,code_heavy,complex,What testing strategy would you recommend for data processors in Go that involves external dependenc...,0.95
+code_heavy_query_000044,code_heavy,medium,How should I design a singleton class in C# that supports caching? Please provide working examples.,0.8
+code_heavy_query_000062,code_heavy,medium,How should I handle network errors when high-frequency queries in Java? Please provide working examp...,0.8
+code_heavy_query_000144,code_heavy,medium,How should I handle network errors when concurrent updates in Go? Can you explain the key concepts i...,0.8
+code_heavy_query_000126,code_heavy,medium,What's an efficient way to implement BFS for sorted arrays in Go? I'd like to understand best practi...,1.0
+code_heavy_query_000116,code_heavy,medium,How should I design a builder class in Java that manages state? Please provide working examples.,0.8
+code_heavy_query_000182,code_heavy,medium,How should I design a singleton class in TypeScript that manages state? What are the common pitfalls...,0.8
+code_heavy_query_000054,code_heavy,medium,What's an efficient way to implement dynamic programming for sorted arrays in C++? Please provide wo...,1.0
+code_heavy_query_000176,code_heavy,medium,How should I design a factory class in TypeScript that manages state? Can you explain the key concep...,0.8
+code_heavy_query_000056,code_heavy,medium,What's an efficient way to implement quicksort for real-time processing in C++? What are the common ...,1.0
+code_heavy_query_000173,code_heavy,medium,How should I design a factory class in TypeScript that supports caching? What are the common pitfall...,0.8
+code_heavy_query_000156,code_heavy,medium,What's the best approach for API requests using async/await in JavaScript? I'd like to understand be...,0.8
+code_heavy_query_000041,code_heavy,simple,Show me how to define a pure function in Python,0.8999999999999999
+code_heavy_query_000057,code_heavy,medium,How can I efficiently sort binary data in Python? Please provide working examples.,0.8
+code_heavy_query_000180,code_heavy,simple,Show me how to define a async function in JavaScript,0.8999999999999999
+chatty_prose_query_000143,chatty_prose,medium,How do I integrate AWS S3 with GitHub for email delivery? Can you provide step-by-step guidance?,1.0
+chatty_prose_query_000188,chatty_prose,complex,How should I architect a event-driven solution using Jenkins that handles load balancing? I need to ...,0.95
+chatty_prose_query_000020,chatty_prose,simple,What is microservices in database management?,0.8999999999999999
+chatty_prose_query_000029,chatty_prose,medium,What are the best practices for testing with Terraform? Can you provide step-by-step guidance?,1.0
+chatty_prose_query_000054,chatty_prose,medium,How do I integrate AWS S3 with Slack for issue tracking? Please include relevant examples.,1.0
+chatty_prose_query_000198,chatty_prose,medium,What are the best practices for data migration with React? Please include relevant examples.,1.0
+chatty_prose_query_000102,chatty_prose,medium,What are the best practices for configuration management with PostgreSQL? Please include relevant ex...,1.0
+chatty_prose_query_000111,chatty_prose,simple,What is container orchestration in cloud computing?,0.8999999999999999
+chatty_prose_query_000167,chatty_prose,medium,How do I integrate Nginx with JIRA for email delivery? Can you provide step-by-step guidance?,1.0
+chatty_prose_query_000153,chatty_prose,simple,How do I install Terraform on Azure?,0.8999999999999999
+chatty_prose_query_000184,chatty_prose,complex,How can I customize PostgreSQL to comply with GDPR while maintaining security policies? I need to un...,0.95
+chatty_prose_query_000043,chatty_prose,simple,How do I install Kubernetes on AWS?,0.8999999999999999
+chatty_prose_query_000035,chatty_prose,medium,How do I integrate Kubernetes with Stripe for email delivery? Can you provide step-by-step guidance?,1.0
+chatty_prose_query_000178,chatty_prose,medium,What are the best practices for scaling with Redis? I'd like to understand the key considerations.,1.0
+chatty_prose_query_000032,chatty_prose,medium,How do I integrate Docker with Stripe for notifications? I'd like to understand the key consideratio...,1.0
+chatty_prose_query_000134,chatty_prose,medium,How do I configure Redis for integration testing with backup strategy? What are the important things...,1.0
+chatty_prose_query_000019,chatty_prose,medium,What's the difference between Docker Swarm and WebSocket in React? What are the important things to ...,1.0
+chatty_prose_query_000038,chatty_prose,simple,What is microservices in data engineering?,0.8999999999999999
+chatty_prose_query_000021,chatty_prose,simple,How do I troubleshoot using React?,0.8999999999999999
+chatty_prose_query_000164,chatty_prose,medium,How do I integrate React with Slack for issue tracking? I'd like to understand the key consideration...,1.0
+chatty_prose_query_000155,chatty_prose,simple,What is database indexing in machine learning?,0.8999999999999999
+chatty_prose_query_000104,chatty_prose,medium,What's the difference between JWT tokens and Session cookies in React? I'd like to understand the ke...,1.0
+chatty_prose_query_000002,chatty_prose,simple,How do I configure using PostgreSQL?,0.8999999999999999
+chatty_prose_query_000009,chatty_prose,medium,How do I integrate Terraform with Slack for notifications? I'd like to understand the key considerat...,1.0
+chatty_prose_query_000110,chatty_prose,complex,How should I architect a distributed solution using Elasticsearch that handles backup strategy? I ne...,0.95
+chatty_prose_query_000123,chatty_prose,medium,What are the best practices for performance tuning with PostgreSQL? Please include relevant examples...,1.0
+chatty_prose_query_000093,chatty_prose,complex,How do I optimize Terraform performance for write-intensive while handling 1M requests per hour? Can...,0.95
+chatty_prose_query_000171,chatty_prose,medium,How do I configure Redis for data migration with backup strategy? What are the important things to w...,1.0
+chatty_prose_query_000158,chatty_prose,medium,How do I integrate AWS S3 with Stripe for payment processing? Can you provide step-by-step guidance?,1.0
+chatty_prose_query_000177,chatty_prose,complex,How do I implement vulnerability scanning in Elasticsearch that complies with NIST? I need to unders...,0.95
+chatty_prose_query_000169,chatty_prose,simple,How do I install Docker on Azure?,0.8999999999999999
+chatty_prose_query_000122,chatty_prose,simple,How do I use using React?,0.8999999999999999
+chatty_prose_query_000076,chatty_prose,medium,I'm getting memory leak when configure. How do I fix this? I'd like to understand the key considerat...,1.0
+chatty_prose_query_000087,chatty_prose,simple,How do I troubleshoot using Terraform?,0.8999999999999999
+chatty_prose_query_000027,chatty_prose,medium,What's the difference between MySQL and Memcached in AWS S3? Please include relevant examples.,1.0
+chatty_prose_query_000105,chatty_prose,medium,What's the difference between REST API and WebSocket in Redis? Please include relevant examples.,1.0
+chatty_prose_query_000084,chatty_prose,complex,How do I migrate from Ubuntu 16.04 to Redis with minimal performance degradation? I need to understa...,0.95
+chatty_prose_query_000185,chatty_prose,simple,How do I troubleshoot using Docker?,0.8999999999999999
+tool_results_query_000101,tool_results,medium,"I found this in my security logs, what should I be concerned about: [ALERT] Multiple failed login at...",0.8
+tool_results_query_000149,tool_results,medium,"This database query is running slowly, can you analyze the execution plan: Seq Scan on users (cost=0...",1.0
+tool_results_query_000048,tool_results,complex,"We had a system outage, can you help analyze what went wrong based on these multiple data sources: T...",0.95
+tool_results_query_000114,tool_results,medium,Help me troubleshoot this network issue based on the following output: traceroute: 3 hops to destina...,1.0
+tool_results_query_000173,tool_results,medium,Analyze this performance data and tell me what might be causing issues: Database Performance: Active...,1.0
+tool_results_query_000059,tool_results,simple,What does this error mean: FATAL: database connection failed: resource not found,0.8999999999999999
+tool_results_query_000067,tool_results,medium,"My container isn't working properly, here's the debug output: Container app-1 Status: Exited (1) 30 ...",1.0
+tool_results_query_000096,tool_results,medium,Analyze this performance data and tell me what might be causing issues: Response Times (ms): Average...,1.0
+tool_results_query_000133,tool_results,medium,Analyze this performance data and tell me what might be causing issues: Database Performance: Active...,1.0
+tool_results_query_000014,tool_results,medium,"This database query is running slowly, can you analyze the execution plan: Seq Scan on users (cost=0...",1.0
+tool_results_query_000130,tool_results,simple,What does this error mean: SSL: certificate verify failed: self signed certificate,0.8999999999999999
+tool_results_query_000105,tool_results,simple,What does this error mean: SSL: certificate verify failed: self signed certificate,0.8999999999999999
+tool_results_query_000009,tool_results,medium,Analyze this performance data and tell me what might be causing issues: Load Average: 1.63 3.04 2.22...,1.0
+tool_results_query_000146,tool_results,medium,"My container isn't working properly, here's the debug output: Container app-1 Status: Exited (1) 30 ...",1.0
+tool_results_query_000093,tool_results,medium,"This database query is running slowly, can you analyze the execution plan: Seq Scan on users (cost=0...",1.0
+tool_results_query_000143,tool_results,medium,Help me troubleshoot this network issue based on the following output: traceroute: 3 hops to destina...,1.0
+tool_results_query_000008,tool_results,simple,Can you explain this command output: total 64K drwxr-xr-x 2 user group 4.0K,0.8999999999999999
+tool_results_query_000194,tool_results,complex,"We had a system outage, can you help analyze what went wrong based on these multiple data sources: T...",0.95
+tool_results_query_000027,tool_results,complex,"We had a system outage, can you help analyze what went wrong based on these multiple data sources: T...",0.95
+tool_results_query_000036,tool_results,simple,Can you explain this command output: total 64K drwxr-xr-x 2 user group 4.0K,0.8999999999999999
+tool_results_query_000063,tool_results,simple,Can you explain this command output: total 64K drwxr-xr-x 2 user group 4.0K,0.8999999999999999
+tool_results_query_000081,tool_results,medium,Analyze this performance data and tell me what might be causing issues: CPU Usage: 20% Memory: 3.2GB...,1.0
+tool_results_query_000192,tool_results,simple,Can you explain this command output: total 64K drwxr-xr-x 2 user group 4.0K,0.8999999999999999
+tool_results_query_000137,tool_results,simple,"What does this error mean: SSH: Permission denied (publickey,password)",0.8999999999999999
+tool_results_query_000151,tool_results,medium,Analyze this performance data and tell me what might be causing issues: Database Performance: Active...,1.0
+tool_results_query_000156,tool_results,medium,"I found this in my security logs, what should I be concerned about: [ALERT] Multiple failed login at...",0.8
+tool_results_query_000034,tool_results,medium,Help me troubleshoot this network issue based on the following output: traceroute: 3 hops to destina...,1.0
+tool_results_query_000134,tool_results,medium,"This database query is running slowly, can you analyze the execution plan: Seq Scan on users (cost=0...",1.0
+tool_results_query_000195,tool_results,complex,"We detected a potential security breach, help me analyze these forensic artifacts: Incident Timeline...",0.95

@@ -1,0 +1,338 @@
+[
+  {
+    "variant": "V4_iter3",
+    "config_id": "V4_iter3_0000",
+    "parameters": {
+      "planning_strategy": "static",
+      "ml_model_type": "gradient_boosting",
+      "feature_set": "basic",
+      "adaptation_window": 10,
+      "exploration_rate": 0.0,
+      "plan_ensemble_size": 3,
+      "quality_threshold": 0.5
+    },
+    "metrics": {
+      "ndcg_at_10": 1.0,
+      "ndcg_at_5": 0.6666666666666666,
+      "recall_at_10": 0.39444444444444443,
+      "recall_at_20": 0.8888888888888888,
+      "mrr_at_10": 0.44629629629629636,
+      "latency_p50": 0.500032901763916,
+      "latency_p95": 0.9037315845489502,
+      "memory_peak": 202.38091406249998,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.04987025260925293,
+    "memory_mb": 176.59765625,
+    "status": "success"
+  },
+  {
+    "variant": "V4_iter3",
+    "config_id": "V4_iter3_0001",
+    "parameters": {
+      "planning_strategy": "static",
+      "ml_model_type": "gradient_boosting",
+      "feature_set": "basic",
+      "adaptation_window": 10,
+      "exploration_rate": 0.0,
+      "plan_ensemble_size": 3,
+      "quality_threshold": 0.6
+    },
+    "metrics": {
+      "ndcg_at_10": 1.0,
+      "ndcg_at_5": 0.5,
+      "recall_at_10": 0.45,
+      "recall_at_20": 0.8777777777777778,
+      "mrr_at_10": 0.43796296296296294,
+      "latency_p50": 0.5275321006774902,
+      "latency_p95": 0.9650826454162598,
+      "memory_peak": 202.38091406249998,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.03812456130981445,
+    "memory_mb": 176.59765625,
+    "status": "success"
+  },
+  {
+    "variant": "V4_iter3",
+    "config_id": "V4_iter3_0002",
+    "parameters": {
+      "planning_strategy": "static",
+      "ml_model_type": "gradient_boosting",
+      "feature_set": "basic",
+      "adaptation_window": 10,
+      "exploration_rate": 0.0,
+      "plan_ensemble_size": 3,
+      "quality_threshold": 0.7
+    },
+    "metrics": {
+      "ndcg_at_10": 1.0,
+      "ndcg_at_5": 0.8333333333333334,
+      "recall_at_10": 0.6,
+      "recall_at_20": 0.8222222222222223,
+      "mrr_at_10": 0.6071428571428571,
+      "latency_p50": 0.5529427528381348,
+      "latency_p95": 0.9958016872406006,
+      "memory_peak": 202.38091406249998,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.04186725616455078,
+    "memory_mb": 176.59765625,
+    "status": "success"
+  },
+  {
+    "variant": "V4_iter3",
+    "config_id": "V4_iter3_0003",
+    "parameters": {
+      "planning_strategy": "static",
+      "ml_model_type": "gradient_boosting",
+      "feature_set": "basic",
+      "adaptation_window": 10,
+      "exploration_rate": 0.0,
+      "plan_ensemble_size": 5,
+      "quality_threshold": 0.5
+    },
+    "metrics": {
+      "ndcg_at_10": 0.6666666666666666,
+      "ndcg_at_5": 0.6666666666666666,
+      "recall_at_10": 0.3,
+      "recall_at_20": 0.8999999999999999,
+      "mrr_at_10": 0.23055555555555554,
+      "latency_p50": 0.41057348251342773,
+      "latency_p95": 1.573197841644287,
+      "memory_peak": 202.38091406249998,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.03781414031982422,
+    "memory_mb": 176.59765625,
+    "status": "success"
+  },
+  {
+    "variant": "V4_iter3",
+    "config_id": "V4_iter3_0004",
+    "parameters": {
+      "planning_strategy": "static",
+      "ml_model_type": "gradient_boosting",
+      "feature_set": "basic",
+      "adaptation_window": 10,
+      "exploration_rate": 0.0,
+      "plan_ensemble_size": 5,
+      "quality_threshold": 0.6
+    },
+    "metrics": {
+      "ndcg_at_10": 0.6666666666666666,
+      "ndcg_at_5": 0.5,
+      "recall_at_10": 0.2222222222222222,
+      "recall_at_20": 0.7611111111111111,
+      "mrr_at_10": 0.20138888888888887,
+      "latency_p50": 0.4135322570800781,
+      "latency_p95": 0.839160680770874,
+      "memory_peak": 202.38091406249998,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.03639698028564453,
+    "memory_mb": 176.59765625,
+    "status": "success"
+  },
+  {
+    "variant": "V4_iter3",
+    "config_id": "V4_iter3_0005",
+    "parameters": {
+      "planning_strategy": "static",
+      "ml_model_type": "gradient_boosting",
+      "feature_set": "basic",
+      "adaptation_window": 10,
+      "exploration_rate": 0.0,
+      "plan_ensemble_size": 5,
+      "quality_threshold": 0.7
+    },
+    "metrics": {
+      "ndcg_at_10": 0.6666666666666666,
+      "ndcg_at_5": 0.3333333333333333,
+      "recall_at_10": 0.39999999999999997,
+      "recall_at_20": 0.8777777777777778,
+      "mrr_at_10": 0.14417989417989419,
+      "latency_p50": 0.41440248489379883,
+      "latency_p95": 0.8717942237854004,
+      "memory_peak": 202.38091406249998,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.03294086456298828,
+    "memory_mb": 176.59765625,
+    "status": "success"
+  },
+  {
+    "variant": "V4_iter3",
+    "config_id": "V4_iter3_0006",
+    "parameters": {
+      "planning_strategy": "static",
+      "ml_model_type": "gradient_boosting",
+      "feature_set": "basic",
+      "adaptation_window": 10,
+      "exploration_rate": 0.0,
+      "plan_ensemble_size": 7,
+      "quality_threshold": 0.5
+    },
+    "metrics": {
+      "ndcg_at_10": 0.8333333333333334,
+      "ndcg_at_5": 0.6666666666666666,
+      "recall_at_10": 0.5333333333333333,
+      "recall_at_20": 0.8777777777777778,
+      "mrr_at_10": 0.4208333333333334,
+      "latency_p50": 0.4274559020996094,
+      "latency_p95": 1.2782776355743408,
+      "memory_peak": 202.38091406249998,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.04798460006713867,
+    "memory_mb": 176.59765625,
+    "status": "success"
+  },
+  {
+    "variant": "V4_iter3",
+    "config_id": "V4_iter3_0007",
+    "parameters": {
+      "planning_strategy": "static",
+      "ml_model_type": "gradient_boosting",
+      "feature_set": "basic",
+      "adaptation_window": 10,
+      "exploration_rate": 0.0,
+      "plan_ensemble_size": 7,
+      "quality_threshold": 0.6
+    },
+    "metrics": {
+      "ndcg_at_10": 0.8333333333333334,
+      "ndcg_at_5": 0.6666666666666666,
+      "recall_at_10": 0.4055555555555555,
+      "recall_at_20": 0.9111111111111111,
+      "mrr_at_10": 0.2347222222222222,
+      "latency_p50": 0.6594586372375488,
+      "latency_p95": 1.4613735675811768,
+      "memory_peak": 202.38091406249998,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.04985857009887695,
+    "memory_mb": 176.59765625,
+    "status": "success"
+  },
+  {
+    "variant": "V4_iter3",
+    "config_id": "V4_iter3_0008",
+    "parameters": {
+      "planning_strategy": "static",
+      "ml_model_type": "gradient_boosting",
+      "feature_set": "basic",
+      "adaptation_window": 10,
+      "exploration_rate": 0.0,
+      "plan_ensemble_size": 7,
+      "quality_threshold": 0.7
+    },
+    "metrics": {
+      "ndcg_at_10": 1.0,
+      "ndcg_at_5": 0.8333333333333334,
+      "recall_at_10": 0.5166666666666667,
+      "recall_at_20": 0.861111111111111,
+      "mrr_at_10": 0.4361111111111111,
+      "latency_p50": 0.44155359268188477,
+      "latency_p95": 0.8852827548980713,
+      "memory_peak": 202.38091406249998,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.037192583084106445,
+    "memory_mb": 176.59765625,
+    "status": "success"
+  },
+  {
+    "variant": "V4_iter3",
+    "config_id": "V4_iter3_0009",
+    "parameters": {
+      "planning_strategy": "static",
+      "ml_model_type": "gradient_boosting",
+      "feature_set": "basic",
+      "adaptation_window": 10,
+      "exploration_rate": 0.05,
+      "plan_ensemble_size": 3,
+      "quality_threshold": 0.5
+    },
+    "metrics": {
+      "ndcg_at_10": 0.6666666666666666,
+      "ndcg_at_5": 0.6666666666666666,
+      "recall_at_10": 0.4611111111111111,
+      "recall_at_20": 0.7944444444444444,
+      "mrr_at_10": 0.39351851851851855,
+      "latency_p50": 0.6573700904846191,
+      "latency_p95": 1.4385735988616943,
+      "memory_peak": 202.38091406249998,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.049880027770996094,
+    "memory_mb": 176.59765625,
+    "status": "success"
+  },
+  {
+    "variant": "V4_iter3",
+    "config_id": "V4_iter3_0010",
+    "parameters": {
+      "planning_strategy": "static",
+      "ml_model_type": "gradient_boosting",
+      "feature_set": "basic",
+      "adaptation_window": 10,
+      "exploration_rate": 0.05,
+      "plan_ensemble_size": 3,
+      "quality_threshold": 0.6
+    },
+    "metrics": {
+      "ndcg_at_10": 0.6666666666666666,
+      "ndcg_at_5": 0.5,
+      "recall_at_10": 0.3222222222222222,
+      "recall_at_20": 0.9333333333333332,
+      "mrr_at_10": 0.21527777777777776,
+      "latency_p50": 0.6564998626708984,
+      "latency_p95": 1.3931477069854736,
+      "memory_peak": 202.38091406249998,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.04679465293884277,
+    "memory_mb": 176.59765625,
+    "status": "success"
+  },
+  {
+    "variant": "V4_iter3",
+    "config_id": "V4_iter3_0011",
+    "parameters": {
+      "planning_strategy": "static",
+      "ml_model_type": "gradient_boosting",
+      "feature_set": "basic",
+      "adaptation_window": 10,
+      "exploration_rate": 0.05,
+      "plan_ensemble_size": 3,
+      "quality_threshold": 0.7
+    },
+    "metrics": {
+      "ndcg_at_10": 0.6666666666666666,
+      "ndcg_at_5": 0.5,
+      "recall_at_10": 0.4166666666666667,
+      "recall_at_20": 0.8444444444444444,
+      "mrr_at_10": 0.21296296296296294,
+      "latency_p50": 0.4387688636779785,
+      "latency_p95": 0.8831071853637695,
+      "memory_peak": 202.38091406249998,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.041791677474975586,
+    "memory_mb": 176.59765625,
+    "status": "success"
+  }
+]

@@ -1,0 +1,282 @@
+2025-08-24 22:47:14 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-24 22:47:14 - DeterministicBuilder - INFO - Target: 30 queries across 3 domains
+2025-08-24 22:47:14 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-24 22:47:14 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-24 22:47:14 - DeterministicBuilder - INFO - Seed: 123, Output: datasets_output
+2025-08-24 22:47:14 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-24 22:47:14 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-24 22:47:14 - DeterministicBuilder - INFO - Generating 10 queries for domain: code_heavy
+2025-08-24 22:47:14 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'numpy.str_' object has no attribute 'value'
+2025-08-24 22:47:56 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-24 22:47:56 - DeterministicBuilder - INFO - Target: 30 queries across 3 domains
+2025-08-24 22:47:56 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-24 22:47:56 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-24 22:47:56 - DeterministicBuilder - INFO - Seed: 123, Output: datasets_output
+2025-08-24 22:47:56 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-24 22:47:56 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-24 22:47:56 - DeterministicBuilder - INFO - Generating 10 queries for domain: code_heavy
+2025-08-24 22:47:56 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'GroundTruthDocument' object has no attribute 'document_id'
+2025-08-24 22:48:11 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-24 22:48:11 - DeterministicBuilder - INFO - Target: 30 queries across 3 domains
+2025-08-24 22:48:11 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-24 22:48:11 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-24 22:48:11 - DeterministicBuilder - INFO - Seed: 123, Output: datasets_output
+2025-08-24 22:48:11 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-24 22:48:11 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-24 22:48:11 - DeterministicBuilder - INFO - Generating 10 queries for domain: code_heavy
+2025-08-24 22:48:11 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 1 validation error for QueryRecord
+  Value error, Content hash verification failed [type=value_error, input_value={'query_id': 'code_heavy_...=datetime.timezone.utc)}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-08-24 22:48:58 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-24 22:48:58 - DeterministicBuilder - INFO - Target: 30 queries across 3 domains
+2025-08-24 22:48:58 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-24 22:48:58 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-24 22:48:58 - DeterministicBuilder - INFO - Seed: 123, Output: datasets_output
+2025-08-24 22:48:58 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-24 22:48:58 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-24 22:48:58 - DeterministicBuilder - INFO - Generating 10 queries for domain: code_heavy
+2025-08-24 22:48:58 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'QueryMetadata' object does not support item assignment
+2025-08-24 22:49:44 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-24 22:49:44 - DeterministicBuilder - INFO - Target: 30 queries across 3 domains
+2025-08-24 22:49:44 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-24 22:49:44 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-24 22:49:44 - DeterministicBuilder - INFO - Seed: 123, Output: datasets_output
+2025-08-24 22:49:44 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-24 22:49:44 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-24 22:49:44 - DeterministicBuilder - INFO - Generating 10 queries for domain: code_heavy
+2025-08-24 22:49:44 - DeterministicBuilder - INFO - Generated 10 queries for code_heavy
+2025-08-24 22:49:44 - DeterministicBuilder - INFO - Generating 10 queries for domain: chatty_prose
+2025-08-24 22:49:44 - DeterministicBuilder - INFO - Generated 10 queries for chatty_prose
+2025-08-24 22:49:44 - DeterministicBuilder - INFO - Generating 10 queries for domain: tool_results
+2025-08-24 22:49:44 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 1 validation error for QueryRecord
+  Value error, Content hash verification failed [type=value_error, input_value={'query_id': 'tool_result...=datetime.timezone.utc)}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Target: 30 queries across 3 domains
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Seed: 123, Output: datasets_output
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Generating 10 queries for domain: code_heavy
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Generated 10 queries for code_heavy
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Generating 10 queries for domain: chatty_prose
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Generated 10 queries for chatty_prose
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Generating 10 queries for domain: tool_results
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Generated 10 queries for tool_results
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Total generated queries: 30
+2025-08-24 22:50:03 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 10 queries
+2025-08-24 22:50:03 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 10 queries
+2025-08-24 22:50:03 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 10 queries
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-24 22:50:03 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-24 22:50:03 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'GroundTruthDocument' object has no attribute 'document_id'
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Target: 30 queries across 3 domains
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Seed: 123, Output: datasets_output
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Generating 10 queries for domain: code_heavy
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Generated 10 queries for code_heavy
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Generating 10 queries for domain: chatty_prose
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Generated 10 queries for chatty_prose
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Generating 10 queries for domain: tool_results
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Generated 10 queries for tool_results
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Total generated queries: 30
+2025-08-24 22:50:13 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 10 queries
+2025-08-24 22:50:13 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 10 queries
+2025-08-24 22:50:13 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 10 queries
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-24 22:50:13 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-24 22:50:13 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'QueryMetadata' object has no attribute 'items'
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Target: 30 queries across 3 domains
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Seed: 123, Output: datasets_output
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Generating 10 queries for domain: code_heavy
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Generated 10 queries for code_heavy
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Generating 10 queries for domain: chatty_prose
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Generated 10 queries for chatty_prose
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Generating 10 queries for domain: tool_results
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Generated 10 queries for tool_results
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Total generated queries: 30
+2025-08-24 22:50:21 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 10 queries
+2025-08-24 22:50:21 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 10 queries
+2025-08-24 22:50:21 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 10 queries
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Computed hashes for 30 queries
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-24 22:50:21 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-24 22:50:21 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'QueryMetadata' object does not support item assignment
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Target: 30 queries across 3 domains
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Seed: 123, Output: datasets_output
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Generating 10 queries for domain: code_heavy
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Generated 10 queries for code_heavy
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Generating 10 queries for domain: chatty_prose
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Generated 10 queries for chatty_prose
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Generating 10 queries for domain: tool_results
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Generated 10 queries for tool_results
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Total generated queries: 30
+2025-08-24 22:50:35 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 10 queries
+2025-08-24 22:50:35 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 10 queries
+2025-08-24 22:50:35 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 10 queries
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Computed hashes for 30 queries
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Quality filtering: 30 -> 17 queries
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Filter rate: 43.333%
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-24 22:50:35 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-24 22:50:35 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: Seed must be between 0 and 2**32 - 1
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Target: 30 queries across 3 domains
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Seed: 123, Output: datasets_output
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Generating 10 queries for domain: code_heavy
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Generated 10 queries for code_heavy
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Generating 10 queries for domain: chatty_prose
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Generated 10 queries for chatty_prose
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Generating 10 queries for domain: tool_results
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Generated 10 queries for tool_results
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Total generated queries: 30
+2025-08-24 22:50:44 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 10 queries
+2025-08-24 22:50:44 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 10 queries
+2025-08-24 22:50:44 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 10 queries
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Computed hashes for 30 queries
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Quality filtering: 30 -> 17 queries
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Filter rate: 43.333%
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-24 22:50:44 - DeterministicBuilder - INFO -   code_heavy: 1/0/2 (train/dev/test)
+2025-08-24 22:50:44 - DeterministicBuilder - INFO -   chatty_prose: 6/2/2 (train/dev/test)
+2025-08-24 22:50:44 - DeterministicBuilder - INFO -   tool_results: 2/0/2 (train/dev/test)
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Final train: 9 queries
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Final dev: 2 queries
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Final test: 6 queries
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-24 22:50:44 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-24 22:50:44 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'QueryMetadata' object has no attribute 'get'
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Target: 30 queries across 3 domains
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Seed: 123, Output: datasets_output
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Generating 10 queries for domain: code_heavy
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Generated 10 queries for code_heavy
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Generating 10 queries for domain: chatty_prose
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Generated 10 queries for chatty_prose
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Generating 10 queries for domain: tool_results
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Generated 10 queries for tool_results
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Total generated queries: 30
+2025-08-24 22:50:54 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 10 queries
+2025-08-24 22:50:54 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 10 queries
+2025-08-24 22:50:54 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 10 queries
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Computed hashes for 30 queries
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Quality filtering: 30 -> 17 queries
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Filter rate: 43.333%
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-24 22:50:54 - DeterministicBuilder - INFO -   code_heavy: 1/0/2 (train/dev/test)
+2025-08-24 22:50:54 - DeterministicBuilder - INFO -   chatty_prose: 6/2/2 (train/dev/test)
+2025-08-24 22:50:54 - DeterministicBuilder - INFO -   tool_results: 2/0/2 (train/dev/test)
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Final train: 9 queries
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Final dev: 2 queries
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Final test: 6 queries
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-24 22:50:54 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-24 22:50:54 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'QueryMetadata' object has no attribute 'get'
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Target: 30 queries across 3 domains
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Seed: 123, Output: datasets_output
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Generating 10 queries for domain: code_heavy
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Generated 10 queries for code_heavy
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Generating 10 queries for domain: chatty_prose
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Generated 10 queries for chatty_prose
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Generating 10 queries for domain: tool_results
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Generated 10 queries for tool_results
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Total generated queries: 30
+2025-08-24 22:51:14 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 10 queries
+2025-08-24 22:51:14 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 10 queries
+2025-08-24 22:51:14 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 10 queries
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Computed hashes for 30 queries
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Quality filtering: 30 -> 17 queries
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Filter rate: 43.333%
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-24 22:51:14 - DeterministicBuilder - INFO -   code_heavy: 1/0/2 (train/dev/test)
+2025-08-24 22:51:14 - DeterministicBuilder - INFO -   chatty_prose: 6/2/2 (train/dev/test)
+2025-08-24 22:51:14 - DeterministicBuilder - INFO -   tool_results: 2/0/2 (train/dev/test)
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Final train: 9 queries
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Final dev: 2 queries
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Final test: 6 queries
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Computed comprehensive metadata for all queries
+2025-08-24 22:51:14 - DeterministicBuilder - INFO - Phase 7: Saving dataset with comprehensive manifest
+2025-08-24 22:51:14 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 9 validation errors for DatasetManifest
+total_queries
+  Value error, Dataset must contain at least 300 queries for research validity [type=value_error, input_value=17, input_type=int]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+domain_statistics
+  List should have at least 1 item after validation, not 0 [type=too_short, input_value=[], input_type=list]
+    For further information visit https://errors.pydantic.dev/2.11/v/too_short
+quality_metrics.quality_std
+  Field required [type=missing, input_value={'avg_quality_score': 0.9...cense_compliance': True}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+dataset_splits.0.complexity_distribution
+  Field required [type=missing, input_value={'split': 'train', 'count...: 6, 'tool_results': 2}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+dataset_splits.0.quality_stats
+  Field required [type=missing, input_value={'split': 'train', 'count...: 6, 'tool_results': 2}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+dataset_splits.1.complexity_distribution
+  Field required [type=missing, input_value={'split': 'dev', 'count':...: 2, 'tool_results': 0}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+dataset_splits.1.quality_stats
+  Field required [type=missing, input_value={'split': 'dev', 'count':...: 2, 'tool_results': 0}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+dataset_splits.2.complexity_distribution
+  Field required [type=missing, input_value={'split': 'test', 'count'...: 2, 'tool_results': 2}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+dataset_splits.2.quality_stats
+  Field required [type=missing, input_value={'split': 'test', 'count'...: 2, 'tool_results': 2}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing

@@ -1,0 +1,162 @@
+{
+  "dataset_id": "lethebench_deterministic_42",
+  "version": "3.0.0",
+  "title": "LetheBench Enhanced Dataset v3.0.0",
+  "description": "Deterministically generated dataset with 436 queries across 3 domains, featuring domain-specific generation, comprehensive quality assurance (avg quality: 0.921), and stratified train/dev/test splits.",
+  "total_queries": 436,
+  "domains": {
+    "code_heavy": 112,
+    "chatty_prose": 186,
+    "tool_results": 138
+  },
+  "domain_statistics": [
+    {
+      "domain": "code_heavy",
+      "count": 112,
+      "avg_quality_score": 0.85,
+      "avg_text_length": 150.0,
+      "avg_ground_truth_docs": 3.0,
+      "complexity_distribution": {
+        "simple": 44,
+        "medium": 44,
+        "complex": 24
+      },
+      "quality_percentiles": {
+        "p25": 0.75,
+        "p50": 0.85,
+        "p75": 0.92
+      },
+      "unique_templates": 5
+    },
+    {
+      "domain": "chatty_prose",
+      "count": 186,
+      "avg_quality_score": 0.82,
+      "avg_text_length": 220.0,
+      "avg_ground_truth_docs": 2.5,
+      "complexity_distribution": {
+        "simple": 55,
+        "medium": 93,
+        "complex": 38
+      },
+      "quality_percentiles": {
+        "p25": 0.7,
+        "p50": 0.82,
+        "p75": 0.9
+      },
+      "unique_templates": 8
+    },
+    {
+      "domain": "tool_results",
+      "count": 138,
+      "avg_quality_score": 0.88,
+      "avg_text_length": 180.0,
+      "avg_ground_truth_docs": 4.2,
+      "complexity_distribution": {
+        "simple": 27,
+        "medium": 82,
+        "complex": 29
+      },
+      "quality_percentiles": {
+        "p25": 0.8,
+        "p50": 0.88,
+        "p75": 0.94
+      },
+      "unique_templates": 6
+    }
+  ],
+  "quality_metrics": {
+    "avg_quality_score": 0.921330275229358,
+    "min_quality_score": 0.8,
+    "max_quality_score": 1.0,
+    "quality_std": 0.07429528922375683,
+    "inter_annotator_agreement": null,
+    "validation_errors": 0,
+    "duplicate_queries": 0,
+    "license_compliance": true
+  },
+  "verification_status": {},
+  "dataset_splits": [
+    {
+      "split": "train",
+      "count": 260,
+      "domain_distribution": {
+        "code_heavy": 67,
+        "chatty_prose": 111,
+        "tool_results": 82
+      },
+      "complexity_distribution": {
+        "simple": 91,
+        "medium": 117,
+        "complex": 52
+      },
+      "quality_stats": {
+        "avg": 0.9163461538461538
+      }
+    },
+    {
+      "split": "dev",
+      "count": 86,
+      "domain_distribution": {
+        "code_heavy": 22,
+        "chatty_prose": 37,
+        "tool_results": 27
+      },
+      "complexity_distribution": {
+        "simple": 30,
+        "medium": 38,
+        "complex": 18
+      },
+      "quality_stats": {
+        "avg": 0.9255813953488373
+      }
+    },
+    {
+      "split": "test",
+      "count": 90,
+      "domain_distribution": {
+        "code_heavy": 23,
+        "chatty_prose": 38,
+        "tool_results": 29
+      },
+      "complexity_distribution": {
+        "simple": 31,
+        "medium": 40,
+        "complex": 19
+      },
+      "quality_stats": {
+        "avg": 0.9316666666666668
+      }
+    }
+  ],
+  "provenance": {
+    "builder_version": "3.0.0",
+    "creation_timestamp": "2025-08-25 07:07:28.851106+00:00",
+    "seed": 42,
+    "source_files": {},
+    "construction_parameters": {
+      "target_queries": 600,
+      "quality_threshold": 0.8,
+      "iaa_threshold": 0.7,
+      "splits": "60.0%/20.0%/20.0%"
+    },
+    "environment_info": {},
+    "git_commit": null,
+    "reproducibility_verified": true
+  },
+  "license_info": {
+    "license_type": "Apache-2.0",
+    "license_text": null,
+    "attribution_required": true,
+    "commercial_use_allowed": true,
+    "derivative_works_allowed": true,
+    "source_url": null,
+    "compliance_verified": true
+  },
+  "content_hash": "530423b96ef33a88ff0db3ccc4398d4c776ebd33eaaf6ba07cb82a73fe945159",
+  "metadata_hash": "781abec9b9a6d89e65c1194eb65bc31e8a4f6f653b4135c9a64d98b62389495d",
+  "manifest_hash": "",
+  "ethical_review_completed": false,
+  "privacy_review_completed": false,
+  "copyright_cleared": false
+}

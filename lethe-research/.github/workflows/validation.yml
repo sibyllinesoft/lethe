@@ -1,0 +1,398 @@
+# Quality Gate Validation Workflow
+# Specialized validation pipeline for quality enforcement
+
+name: Quality Gate Validation
+
+on:
+  workflow_call:
+    inputs:
+      validation_type:
+        description: 'Type of validation to perform'
+        required: true
+        type: string
+      strict_mode:
+        description: 'Enable strict validation mode'
+        required: false
+        type: boolean
+        default: true
+
+env:
+  VALIDATION_TIMEOUT: 600
+  STRICT_MODE: ${{ inputs.strict_mode }}
+  
+jobs:
+  # ===== Dataset Quality Validation =====
+  dataset-validation:
+    name: Dataset Quality Gates
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    if: contains(inputs.validation_type, 'dataset') || inputs.validation_type == 'all'
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Python Environment
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+        
+    - name: Install Dataset Validation Tools
+      run: |
+        pip install --no-cache-dir pandas numpy scipy scikit-learn
+        
+    - name: Validate Dataset Requirements
+      run: |
+        echo "🔍 Validating dataset quality gates..."
+        python scripts/apply_gates.py \
+          --type=dataset \
+          --min-queries=600 \
+          --min-domains=3 \
+          --min-iaa-kappa=0.7 \
+          --validate-schema=true \
+          --strict=${{ env.STRICT_MODE }}
+          
+    - name: Generate Dataset Report
+      run: |
+        python scripts/validate_setup.py --report-format=json --output=dataset-validation.json
+        
+    - name: Upload Dataset Validation Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: dataset-validation-results
+        path: dataset-validation.json
+
+  # ===== Security Validation =====  
+  security-validation:
+    name: Security Quality Gates
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    if: contains(inputs.validation_type, 'security') || inputs.validation_type == 'all'
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Security Scanning Tools
+      run: |
+        pip install --no-cache-dir semgrep bandit safety
+        npm install -g audit-ci
+        
+    - name: Run SAST Analysis
+      run: |
+        echo "🔒 Running comprehensive SAST analysis..."
+        
+        # Semgrep with custom rules
+        semgrep \
+          --config=auto \
+          --config=infra/security/semgrep-rules/ \
+          --json \
+          --output=sast-results.json \
+          --error \
+          .
+          
+        # Bandit for Python security
+        bandit -r . -f json -o bandit-results.json || true
+        
+        # Safety for dependency vulnerabilities
+        safety check --json --output safety-results.json || true
+        
+    - name: Validate Security Thresholds
+      run: |
+        echo "⚠️ Validating security quality gates..."
+        python scripts/apply_gates.py \
+          --type=security \
+          --sast-results=sast-results.json \
+          --bandit-results=bandit-results.json \
+          --safety-results=safety-results.json \
+          --max-high-severity=0 \
+          --max-critical-severity=0 \
+          --strict=${{ env.STRICT_MODE }}
+          
+    - name: Upload Security Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-validation-results
+        path: |
+          sast-results.json
+          bandit-results.json
+          safety-results.json
+
+  # ===== Performance Validation =====
+  performance-validation:
+    name: Performance Quality Gates
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    if: contains(inputs.validation_type, 'performance') || inputs.validation_type == 'all'
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Performance Testing Environment
+      run: |
+        pip install --no-cache-dir pytest-benchmark memory-profiler psutil
+        
+    - name: Start Test Infrastructure
+      run: |
+        echo "🚀 Starting test infrastructure..."
+        docker-compose -f infra/docker-compose.yml up -d --wait
+        sleep 60
+        
+    - name: Run Performance Benchmarks
+      run: |
+        echo "⚡ Running performance benchmark suite..."
+        python -m pytest tests/performance/ \
+          --benchmark-only \
+          --benchmark-json=performance-results.json \
+          --benchmark-warmup=true \
+          --benchmark-min-rounds=5
+          
+    - name: Memory and Resource Profiling
+      run: |
+        echo "💾 Profiling memory and resource usage..."
+        python scripts/apply_gates.py \
+          --type=performance \
+          --results=performance-results.json \
+          --profile-memory=true \
+          --profile-duration=300 \
+          --output=resource-profile.json
+          
+    - name: Validate Performance Thresholds  
+      run: |
+        echo "📊 Validating performance quality gates..."
+        python scripts/apply_gates.py \
+          --type=performance \
+          --performance-results=performance-results.json \
+          --resource-profile=resource-profile.json \
+          --max-p50-latency=3000 \
+          --max-p95-latency=6000 \
+          --max-memory-mb=1536 \
+          --strict=${{ env.STRICT_MODE }}
+          
+    - name: Cleanup Test Infrastructure
+      run: |
+        docker-compose -f infra/docker-compose.yml down -v
+        
+    - name: Upload Performance Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: performance-validation-results
+        path: |
+          performance-results.json
+          resource-profile.json
+
+  # ===== Code Quality Validation =====
+  code-quality-validation:
+    name: Code Quality Gates
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+    if: contains(inputs.validation_type, 'quality') || inputs.validation_type == 'all'
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Quality Analysis Tools
+      run: |
+        pip install --no-cache-dir mutmut pytest-cov radon mccabe
+        npm install -g jshint complexity-report
+        
+    - name: Run Mutation Testing
+      run: |
+        echo "🧬 Running mutation testing for code quality..."
+        
+        # Run mutation tests on critical paths
+        mutmut run \
+          --paths-to-mutate=./scripts,./analysis \
+          --runner="python -m pytest tests/unit/" \
+          --use-coverage
+          
+        # Generate mutation report
+        mutmut results --format=json > mutation-results.json
+        
+    - name: Code Complexity Analysis
+      run: |
+        echo "📐 Analyzing code complexity..."
+        
+        # Python complexity analysis
+        radon cc . --json > complexity-python.json
+        radon mi . --json > maintainability-python.json
+        
+        # JavaScript complexity (if exists)
+        if [ -f "package.json" ]; then
+          cr --format=json --output=complexity-javascript.json .
+        fi
+        
+    - name: Validate Quality Thresholds
+      run: |
+        echo "✨ Validating code quality gates..."
+        python scripts/apply_gates.py \
+          --type=quality \
+          --mutation-results=mutation-results.json \
+          --complexity-results=complexity-python.json \
+          --maintainability-results=maintainability-python.json \
+          --min-mutation-score=0.80 \
+          --max-cyclomatic-complexity=10 \
+          --min-maintainability-index=70 \
+          --strict=${{ env.STRICT_MODE }}
+          
+    - name: Upload Quality Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: code-quality-validation-results
+        path: |
+          mutation-results.json
+          complexity-python.json
+          maintainability-python.json
+          complexity-javascript.json
+
+  # ===== Integration Validation =====
+  integration-validation:
+    name: Integration Quality Gates
+    runs-on: ubuntu-22.04
+    timeout-minutes: 40
+    if: contains(inputs.validation_type, 'integration') || inputs.validation_type == 'all'
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Integration Test Environment
+      run: |
+        pip install --no-cache-dir -r requirements_statistical.txt
+        
+    - name: Start Full Infrastructure Stack
+      run: |
+        echo "🏗️ Starting full infrastructure for integration testing..."
+        docker-compose -f infra/docker-compose.yml up -d --wait
+        sleep 90
+        
+    - name: Run Golden Smoke Tests
+      run: |
+        echo "💨 Running comprehensive smoke test suite..."
+        ./scripts/spinup_smoke.sh \
+          --full-suite \
+          --timeout=1800 \
+          --validate-golden=true \
+          --output=smoke-test-results.json
+          
+    - name: Run End-to-End Integration Tests
+      run: |
+        echo "🔗 Running end-to-end integration tests..."
+        python -m pytest tests/integration/ \
+          --maxfail=1 \
+          --timeout=300 \
+          --junitxml=integration-test-results.xml \
+          --html=integration-test-report.html
+          
+    - name: Validate API Surface
+      run: |
+        echo "🔌 Validating API surface and contracts..."
+        python scripts/apply_gates.py \
+          --type=integration \
+          --smoke-results=smoke-test-results.json \
+          --validate-api-surface=true \
+          --check-backwards-compatibility=true \
+          --strict=${{ env.STRICT_MODE }}
+          
+    - name: Generate Integration Report
+      run: |
+        echo "📋 Generating integration validation report..."
+        cat > integration-validation-report.md << 'EOF'
+        # Integration Validation Report
+        
+        ## Test Execution Summary
+        - **Smoke Tests**: $(jq -r '.summary.total' smoke-test-results.json) tests
+        - **Integration Tests**: $(xmllint --xpath "//testsuite/@tests" integration-test-results.xml | cut -d'"' -f2) tests
+        - **Success Rate**: $(xmllint --xpath "//testsuite/@tests" integration-test-results.xml | cut -d'"' -f2)
+        
+        ## Quality Gate Status
+        - ✅ All smoke tests passed
+        - ✅ Integration test suite completed successfully
+        - ✅ API surface validation passed
+        - ✅ Backwards compatibility maintained
+        EOF
+        
+    - name: Cleanup Infrastructure
+      run: |
+        docker-compose -f infra/docker-compose.yml down -v
+        
+    - name: Upload Integration Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: integration-validation-results
+        path: |
+          smoke-test-results.json
+          integration-test-results.xml
+          integration-test-report.html
+          integration-validation-report.md
+
+  # ===== Validation Summary =====
+  validation-summary:
+    name: Validation Summary Report
+    runs-on: ubuntu-22.04
+    needs: [
+      dataset-validation,
+      security-validation, 
+      performance-validation,
+      code-quality-validation,
+      integration-validation
+    ]
+    if: always()
+    
+    steps:
+    - name: Download All Validation Results
+      uses: actions/download-artifact@v4
+      with:
+        path: validation-results/
+        
+    - name: Generate Summary Report
+      run: |
+        echo "📊 Generating comprehensive validation summary..."
+        cat > validation-summary.md << 'EOF'
+        # Quality Gate Validation Summary
+        
+        ## Validation Status Overview
+        - **Dataset Quality**: ${{ needs.dataset-validation.result }}
+        - **Security Analysis**: ${{ needs.security-validation.result }}
+        - **Performance Benchmarks**: ${{ needs.performance-validation.result }}
+        - **Code Quality**: ${{ needs.code-quality-validation.result }}
+        - **Integration Tests**: ${{ needs.integration-validation.result }}
+        
+        ## Overall Result
+        EOF
+        
+        if [[ "${{ needs.dataset-validation.result }}" == "success" ]] && \
+           [[ "${{ needs.security-validation.result }}" == "success" ]] && \
+           [[ "${{ needs.performance-validation.result }}" == "success" ]] && \
+           [[ "${{ needs.code-quality-validation.result }}" == "success" ]] && \
+           [[ "${{ needs.integration-validation.result }}" == "success" ]]; then
+          echo "✅ **ALL QUALITY GATES PASSED** - Ready for deployment" >> validation-summary.md
+        else
+          echo "❌ **QUALITY GATE FAILURES DETECTED** - Deployment blocked" >> validation-summary.md
+        fi
+        
+        echo "" >> validation-summary.md
+        echo "Generated on: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> validation-summary.md
+        
+    - name: Upload Validation Summary
+      uses: actions/upload-artifact@v4
+      with:
+        name: validation-summary
+        path: validation-summary.md
+        
+    - name: Set Validation Status
+      run: |
+        if [[ "${{ needs.dataset-validation.result }}" == "success" ]] && \
+           [[ "${{ needs.security-validation.result }}" == "success" ]] && \
+           [[ "${{ needs.performance-validation.result }}" == "success" ]] && \
+           [[ "${{ needs.code-quality-validation.result }}" == "success" ]] && \
+           [[ "${{ needs.integration-validation.result }}" == "success" ]]; then
+          echo "✅ All quality gates passed successfully"
+          exit 0
+        else
+          echo "❌ One or more quality gates failed"
+          exit 1
+        fi

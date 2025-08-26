@@ -1,0 +1,213 @@
+{
+  "checks": {
+    "baseline_non_empty_guard": {
+      "critical": true,
+      "details": {
+        "baseline_status": {
+          "bm25_only": {
+            "non_empty_results": true,
+            "ready": true,
+            "simulated_result_count": 5
+          },
+          "bm25_vector_simple": {
+            "non_empty_results": true,
+            "ready": true,
+            "simulated_result_count": 5
+          },
+          "cross_encoder": {
+            "non_empty_results": true,
+            "ready": true,
+            "simulated_result_count": 5
+          },
+          "faiss_ivf": {
+            "non_empty_results": true,
+            "ready": true,
+            "simulated_result_count": 5
+          },
+          "mmr_alternative": {
+            "non_empty_results": true,
+            "ready": true,
+            "simulated_result_count": 5
+          },
+          "vector_only": {
+            "non_empty_results": true,
+            "ready": true,
+            "simulated_result_count": 5
+          },
+          "window_baseline": {
+            "non_empty_results": true,
+            "ready": true,
+            "simulated_result_count": 5
+          }
+        },
+        "ready_baselines": 7,
+        "total_baselines": 7
+      },
+      "duration_seconds": 0.0,
+      "message": "All 7 baselines return non-empty results",
+      "passed": true,
+      "status": "passed"
+    },
+    "configuration_validity": {
+      "critical": true,
+      "details": {
+        "configs_count": 4,
+        "parsed_configs": {
+          "consumer_contract": {
+            "keys": [
+              "contract_version",
+              "contract_id",
+              "description",
+              "last_updated",
+              "consumer_expectations",
+              "testing_requirements",
+              "compliance_requirements"
+            ],
+            "size": 3235,
+            "valid": true
+          },
+          "metamorphic": {
+            "keys": [
+              "metamorphic_properties",
+              "execution_config",
+              "oracle_implementations",
+              "property_integration",
+              "reporting"
+            ],
+            "size": 4450,
+            "valid": true
+          },
+          "properties": {
+            "keys": [
+              "system_properties",
+              "mathematical_invariants",
+              "performance_requirements",
+              "budget_parity",
+              "quality_gates",
+              "hardware_profiles",
+              "baseline_implementations",
+              "test_data"
+            ],
+            "size": 3303,
+            "valid": true
+          },
+          "provider_contract": {
+            "keys": [
+              "contract_version",
+              "contract_id",
+              "description",
+              "last_updated",
+              "provider_guarantees",
+              "implementation_requirements",
+              "deployment_guarantees",
+              "compliance_implementation",
+              "maintenance_commitments"
+            ],
+            "size": 4929,
+            "valid": true
+          }
+        },
+        "parsing_errors": {}
+      },
+      "duration_seconds": 0.013,
+      "message": "All 4 configurations valid",
+      "passed": true,
+      "status": "passed"
+    },
+    "file_system_integrity": {
+      "critical": true,
+      "details": {
+        "accessible_paths": [
+          "scripts",
+          "spec",
+          "contracts",
+          "artifacts",
+          "spec/properties.yaml",
+          "spec/metamorphic.yaml",
+          "contracts/consumer.json",
+          "contracts/provider.json"
+        ],
+        "missing_directories": [],
+        "missing_files": [],
+        "working_directory": "/home/nathan/Projects/lethe/lethe-research"
+      },
+      "duration_seconds": 0.0,
+      "message": "All 8 required paths accessible",
+      "passed": true,
+      "status": "passed"
+    },
+    "python_environment": {
+      "critical": true,
+      "details": {
+        "installed_packages": {
+          "cryptography": "45.0.6",
+          "flask": "3.1.2",
+          "jsonschema": "4.25.1",
+          "numpy": "2.3.2",
+          "pandas": "2.3.2",
+          "requests": "2.32.5",
+          "scipy": "1.16.1",
+          "sklearn": "1.7.1",
+          "yaml": "6.0.2"
+        },
+        "missing_packages": [],
+        "packages_count": 9,
+        "python_executable": "/home/nathan/Projects/lethe/lethe-research/venv/bin/python3",
+        "python_version": "3.13.3 (main, Aug 14 2025, 11:53:40) [GCC 14.2.0]"
+      },
+      "duration_seconds": 0.688,
+      "message": "All 9 critical packages available",
+      "passed": true,
+      "status": "passed"
+    },
+    "security_constraints": {
+      "critical": false,
+      "details": {
+        "environment_vars": {
+          "BUILD_REPRODUCIBLE": "not_set",
+          "ENVIRONMENT": "not_set",
+          "SECURITY_MODE": "not_set"
+        },
+        "security_checks": {
+          "environment_isolation": false,
+          "reproducible_build": false,
+          "running_as_non_root": true,
+          "security_mode": false
+        },
+        "user_id": 1000
+      },
+      "duration_seconds": 0.0,
+      "message": "Security constraint failures: ['environment_isolation', 'security_mode', 'reproducible_build']",
+      "passed": true,
+      "status": "warning"
+    },
+    "system_resources": {
+      "critical": false,
+      "details": {
+        "cpu_cores": 16,
+        "disk_free_gb": 23.21463394165039,
+        "disk_total_gb": 915.5280418395996,
+        "memory_available_gb": 25.68315887451172,
+        "memory_total_gb": 125.6805191040039,
+        "resource_checks": {
+          "cpu_cores": true,
+          "disk_space": true,
+          "memory_available": true
+        }
+      },
+      "duration_seconds": 0.0,
+      "message": "All resource requirements satisfied",
+      "passed": true,
+      "status": "passed"
+    }
+  },
+  "overall_status": "ready",
+  "summary": {
+    "failed_checks": 0,
+    "passed_checks": 5,
+    "total_checks": 6,
+    "warning_checks": 1
+  },
+  "timestamp": "2025-08-25T10:16:09.082821",
+  "version": "1.0.0"
+}

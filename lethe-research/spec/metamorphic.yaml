@@ -1,0 +1,180 @@
+# Metamorphic Testing Properties for Lethe IR System
+# Version: 1.0.0  
+# Date: 2024-08-25
+
+metamorphic_properties:
+  
+  # Symmetry Properties
+  M1_query_permutation_invariance:
+    description: "Retrieving with permuted query terms should yield similar results"
+    test_type: "symmetry"
+    implementation:
+      input_transform: "permute_query_terms"
+      output_comparison: "set_similarity"
+      threshold: 0.85
+    examples:
+      - original: "machine learning algorithms"
+        transformed: "algorithms machine learning" 
+        expected_similarity: 0.90
+
+  M2_document_order_invariance:
+    description: "Document corpus ordering should not affect retrieval results"
+    test_type: "symmetry" 
+    implementation:
+      input_transform: "shuffle_document_corpus"
+      output_comparison: "ranking_correlation"
+      threshold: 0.95
+      
+  # Monotonicity Properties  
+  M3_relevance_monotonicity:
+    description: "Adding highly relevant documents should improve top-k results"
+    test_type: "monotonicity"
+    implementation:
+      input_transform: "add_relevant_document"
+      output_comparison: "ndcg_improvement"
+      min_improvement: 0.05
+      
+  M4_corpus_size_monotonicity:
+    description: "Larger corpus should not decrease recall@k for same query"
+    test_type: "monotonicity"
+    implementation:
+      input_transform: "expand_corpus"
+      output_comparison: "recall_non_decreasing"
+      tolerance: 0.01
+      
+  # Consistency Properties
+  M5_parameter_consistency:
+    description: "Small parameter changes should yield similar results"
+    test_type: "consistency"
+    implementation:
+      input_transform: "perturb_alpha_beta"
+      perturbation_size: 0.05
+      output_comparison: "ranking_similarity" 
+      threshold: 0.80
+      
+  M6_encoding_consistency:
+    description: "Different query encodings of same semantic content should be similar"
+    test_type: "consistency"
+    implementation:
+      input_transform: "paraphrase_query"
+      output_comparison: "result_overlap"
+      threshold: 0.70
+      
+  # Boundary Properties
+  M7_empty_query_boundary:
+    description: "Empty queries should return empty or default results"
+    test_type: "boundary"
+    implementation:
+      input: ""
+      expected_output: "empty_or_default"
+      max_results: 0
+      
+  M8_corpus_boundary:
+    description: "Queries on empty corpus should return empty results"  
+    test_type: "boundary"
+    implementation:
+      corpus_size: 0
+      expected_output: "empty"
+      max_results: 0
+      
+  # Inverse Properties
+  M9_alpha_beta_inverse:
+    description: "α=1,β=0 and α=0,β=1 should yield complementary behaviors"
+    test_type: "inverse"
+    implementation:
+      config1: {alpha: 1.0, beta: 0.0}
+      config2: {alpha: 0.0, beta: 1.0}
+      output_comparison: "complementary_rankings"
+      
+  M10_diversification_inverse:
+    description: "Enabling/disabling diversification should show expected trade-offs"
+    test_type: "inverse" 
+    implementation:
+      config1: {diversification: true}
+      config2: {diversification: false}
+      expected_trade_off: "precision_vs_diversity"
+      
+  # Injection Properties
+  M11_relevant_injection:
+    description: "Injecting known relevant documents should improve metrics"
+    test_type: "injection"
+    implementation:
+      injection_type: "highly_relevant"
+      position: "top_10"
+      expected_improvement: 0.10
+      metric: "ndcg_at_10"
+      
+  M12_irrelevant_injection:
+    description: "Injecting irrelevant documents should not improve top results"
+    test_type: "injection"
+    implementation:
+      injection_type: "completely_irrelevant" 
+      position: "random"
+      expected_change: "non_positive"
+      metric: "ndcg_at_10"
+      
+# Metamorphic Test Execution Configuration
+execution_config:
+  test_iterations: 100
+  statistical_significance: 0.05
+  random_seed: 42
+  
+  # Sampling strategies
+  query_sampling:
+    strategy: "stratified"
+    categories: ["short", "medium", "long"] 
+    samples_per_category: 50
+    
+  document_sampling:
+    strategy: "representative"
+    corpus_fraction: 0.1
+    min_documents: 1000
+    
+  # Failure thresholds
+  failure_thresholds:
+    individual_test: 0.10  # 10% of tests can fail
+    property_suite: 0.05   # 5% of properties can fail overall
+    critical_properties: 0.00 # No failures allowed for critical properties
+    
+  # Critical properties (zero tolerance)
+  critical_properties:
+    - "M7_empty_query_boundary"
+    - "M8_corpus_boundary" 
+    - "M9_alpha_beta_inverse"
+    
+# Metamorphic Oracle Implementation
+oracle_implementations:
+  ranking_similarity:
+    metric: "spearman_correlation"
+    threshold: 0.75
+    
+  set_similarity:
+    metric: "jaccard_index"  
+    threshold: 0.70
+    
+  ndcg_improvement:
+    baseline_comparison: true
+    min_delta: 0.05
+    
+  recall_non_decreasing:
+    tolerance: 0.01
+    statistical_test: "wilcoxon"
+    
+# Integration with Property Testing
+property_integration:
+  run_with_properties: true
+  combined_threshold: 0.80
+  metamorphic_weight: 0.4
+  property_weight: 0.6
+  
+# Reporting and Analysis
+reporting:
+  generate_failure_analysis: true
+  include_statistical_tests: true
+  confidence_intervals: true
+  effect_size_analysis: true
+  
+  output_formats:
+    - "json"
+    - "html_report"
+    - "csv_summary"

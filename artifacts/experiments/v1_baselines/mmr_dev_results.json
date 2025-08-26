@@ -1,0 +1,253 @@
+[
+  {
+    "query_id": "code_heavy_query_000010",
+    "session_id": "code_heavy_session_0001",
+    "domain": "code_heavy",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "code_heavy_doc_000010_00",
+      "code_heavy_doc_000010_01",
+      "code_heavy_doc_000010_02",
+      "code_heavy_doc_000010_03",
+      "code_heavy_doc_000010_04"
+    ],
+    "retrieved_docs": [
+      "tool_results_doc_000011_03",
+      "code_heavy_doc_000010_00",
+      "code_heavy_doc_000010_03",
+      "chatty_prose_doc_000006_00",
+      "chatty_prose_doc_000006_02",
+      "chatty_prose_doc_000003_04",
+      "tool_results_doc_000003_01",
+      "chatty_prose_doc_000011_00",
+      "code_heavy_doc_000010_02",
+      "tool_results_doc_000011_04"
+    ],
+    "relevance_scores": [
+      0.0790076382493263,
+      -0.035764874760372524,
+      0.056954658463152404,
+      -0.006284195791514445,
+      0.039392527631594454,
+      -0.04731659071884667,
+      0.07135576267125905,
+      0.05371563670396959,
+      0.04052837241004426,
+      -0.057859791124813015
+    ],
+    "latency_ms": 2.2382736206054688,
+    "memory_mb": 39.45703125,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7886992,
+    "baseline_name": "mmr"
+  },
+  {
+    "query_id": "chatty_prose_query_000011",
+    "session_id": "chatty_prose_session_0001",
+    "domain": "chatty_prose",
+    "complexity": "simple",
+    "ground_truth_docs": [
+      "chatty_prose_doc_000011_00",
+      "chatty_prose_doc_000011_01"
+    ],
+    "retrieved_docs": [
+      "tool_results_doc_000011_01",
+      "chatty_prose_doc_000003_03",
+      "code_heavy_doc_000010_00",
+      "chatty_prose_doc_000003_01",
+      "chatty_prose_doc_000006_01",
+      "tool_results_doc_000003_02",
+      "code_heavy_doc_000010_02",
+      "code_heavy_doc_000010_04",
+      "chatty_prose_doc_000003_02",
+      "tool_results_doc_000003_01"
+    ],
+    "relevance_scores": [
+      0.0883350059175817,
+      0.049646254199576786,
+      0.019971266582521026,
+      -0.0036424473049725074,
+      0.05948952077936466,
+      0.008989243626801683,
+      -0.004086259783649943,
+      0.06515044460607715,
+      -0.02830664653235128,
+      0.01825277402348323
+    ],
+    "latency_ms": 2.2614002227783203,
+    "memory_mb": 39.45703125,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7910607,
+    "baseline_name": "mmr"
+  },
+  {
+    "query_id": "chatty_prose_query_000003",
+    "session_id": "chatty_prose_session_0000",
+    "domain": "chatty_prose",
+    "complexity": "complex",
+    "ground_truth_docs": [
+      "chatty_prose_doc_000003_00",
+      "chatty_prose_doc_000003_01",
+      "chatty_prose_doc_000003_02",
+      "chatty_prose_doc_000003_03",
+      "chatty_prose_doc_000003_04"
+    ],
+    "retrieved_docs": [
+      "code_heavy_doc_000010_02",
+      "tool_results_doc_000003_01",
+      "chatty_prose_doc_000003_00",
+      "tool_results_doc_000011_04",
+      "code_heavy_doc_000010_00",
+      "chatty_prose_doc_000003_04",
+      "tool_results_doc_000003_02",
+      "chatty_prose_doc_000011_01",
+      "code_heavy_doc_000010_04",
+      "tool_results_doc_000011_03"
+    ],
+    "relevance_scores": [
+      0.0971150664152851,
+      0.02889521551667449,
+      0.02493351686414109,
+      0.03684969248696915,
+      0.09636859977255896,
+      0.0515070268802954,
+      -0.013603532076871181,
+      -7.331824253631214e-05,
+      0.0686693155393799,
+      0.007254818075808678
+    ],
+    "latency_ms": 2.0873546600341797,
+    "memory_mb": 39.45703125,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7932816,
+    "baseline_name": "mmr"
+  },
+  {
+    "query_id": "chatty_prose_query_000006",
+    "session_id": "chatty_prose_session_0000",
+    "domain": "chatty_prose",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "chatty_prose_doc_000006_00",
+      "chatty_prose_doc_000006_01",
+      "chatty_prose_doc_000006_02"
+    ],
+    "retrieved_docs": [
+      "chatty_prose_doc_000003_04",
+      "code_heavy_doc_000010_02",
+      "chatty_prose_doc_000011_01",
+      "chatty_prose_doc_000006_02",
+      "code_heavy_doc_000010_01",
+      "code_heavy_doc_000010_00",
+      "tool_results_doc_000011_00",
+      "chatty_prose_doc_000006_00",
+      "chatty_prose_doc_000003_00",
+      "tool_results_doc_000011_03"
+    ],
+    "relevance_scores": [
+      0.07676792793846113,
+      0.047155380407314665,
+      -0.027183118875334276,
+      0.06543570818961232,
+      0.06666296024306649,
+      -0.014557791781310623,
+      0.0592815101928147,
+      -0.00528631569434227,
+      0.01818447408686555,
+      0.022430449976159738
+    ],
+    "latency_ms": 2.2459030151367188,
+    "memory_mb": 39.45703125,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7956412,
+    "baseline_name": "mmr"
+  },
+  {
+    "query_id": "tool_results_query_000003",
+    "session_id": "tool_results_session_0000",
+    "domain": "tool_results",
+    "complexity": "simple",
+    "ground_truth_docs": [
+      "tool_results_doc_000003_00",
+      "tool_results_doc_000003_01",
+      "tool_results_doc_000003_02"
+    ],
+    "retrieved_docs": [
+      "tool_results_doc_000011_04",
+      "code_heavy_doc_000010_04",
+      "chatty_prose_doc_000003_00",
+      "tool_results_doc_000003_00",
+      "code_heavy_doc_000010_01",
+      "tool_results_doc_000011_02",
+      "chatty_prose_doc_000006_02",
+      "tool_results_doc_000011_03",
+      "chatty_prose_doc_000003_01",
+      "chatty_prose_doc_000006_01"
+    ],
+    "relevance_scores": [
+      0.11763556557676288,
+      -0.016317515061899587,
+      -0.010910949946588777,
+      0.07170130986562744,
+      -0.00499283379683564,
+      0.03667925399849484,
+      0.027385108579366577,
+      -0.03122547717911748,
+      0.0337194381266915,
+      -0.02353910213784179
+    ],
+    "latency_ms": 2.2728443145751953,
+    "memory_mb": 39.45703125,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7980363,
+    "baseline_name": "mmr"
+  },
+  {
+    "query_id": "tool_results_query_000011",
+    "session_id": "tool_results_session_0001",
+    "domain": "tool_results",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "tool_results_doc_000011_00",
+      "tool_results_doc_000011_01",
+      "tool_results_doc_000011_02",
+      "tool_results_doc_000011_03",
+      "tool_results_doc_000011_04"
+    ],
+    "retrieved_docs": [
+      "chatty_prose_doc_000011_01",
+      "chatty_prose_doc_000006_01",
+      "tool_results_doc_000003_01",
+      "chatty_prose_doc_000003_01",
+      "code_heavy_doc_000010_03",
+      "code_heavy_doc_000010_02",
+      "chatty_prose_doc_000011_00",
+      "tool_results_doc_000011_04",
+      "tool_results_doc_000011_03",
+      "tool_results_doc_000011_01"
+    ],
+    "relevance_scores": [
+      0.06926391476551229,
+      0.05149544057672291,
+      -0.0032435420665731687,
+      0.034348364600003005,
+      -0.025903264810269205,
+      0.033500463925000154,
+      0.039077485721263995,
+      0.06049161547511087,
+      0.025473613322244387,
+      -0.04963956577016837
+    ],
+    "latency_ms": 2.1855831146240234,
+    "memory_mb": 39.45703125,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.800437,
+    "baseline_name": "mmr"
+  }
+]

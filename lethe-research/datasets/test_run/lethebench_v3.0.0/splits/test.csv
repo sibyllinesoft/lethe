@@ -1,0 +1,10 @@
+query_id,domain,complexity,query_text,quality_score
+code_heavy_query_000011,code_heavy,medium,How can I efficiently group XML data in Java? Can you explain the key concepts involved?,0.8
+code_heavy_query_000006,code_heavy,medium,What's the best approach for image processing using futures in TypeScript? Please provide working ex...,0.8
+chatty_prose_query_000001,chatty_prose,simple,What is container orchestration in data engineering?,0.8999999999999999
+chatty_prose_query_000000,chatty_prose,medium,How do I integrate Git with SendGrid for issue tracking? I'd like to understand the key consideratio...,1.0
+chatty_prose_query_000004,chatty_prose,complex,How do I implement role-based access control in Terraform that complies with GDPR? I need to underst...,0.95
+chatty_prose_query_000010,chatty_prose,medium,How do I integrate Nginx with JIRA for issue tracking? What are the important things to watch out fo...,1.0
+tool_results_query_000001,tool_results,complex,"We had a system outage, can you help analyze what went wrong based on these multiple data sources: T...",0.95
+tool_results_query_000013,tool_results,complex,"We had a system outage, can you help analyze what went wrong based on these multiple data sources: T...",0.95
+tool_results_query_000008,tool_results,simple,Can you explain this command output: total 64K drwxr-xr-x 2 user group 4.0K,0.8999999999999999

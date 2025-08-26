@@ -1,0 +1,21 @@
+query_id,domain,complexity,query_text,quality_score
+code_heavy_query_000003,code_heavy,medium,How can I efficiently transform XML data in Java? I'd like to understand best practices for this.,0.8
+code_heavy_query_000001,code_heavy,medium,How can I efficiently sort JSON data in JavaScript? I'd like to understand best practices for this.,0.8
+code_heavy_query_000007,code_heavy,medium,What's an efficient way to implement dynamic programming for memory constraints in C++? Please provi...,1.0
+code_heavy_query_000009,code_heavy,medium,How should I handle authentication errors when large transactions in Go? I'd like to understand best...,0.8
+chatty_prose_query_000012,chatty_prose,medium,How do I integrate Kubernetes with Stripe for monitoring alerts? What are the important things to wa...,1.0
+chatty_prose_query_000007,chatty_prose,simple,What are the status codes for Elasticsearch?,0.8999999999999999
+chatty_prose_query_000015,chatty_prose,simple,How do I troubleshoot using Django?,0.8999999999999999
+chatty_prose_query_000009,chatty_prose,medium,How do I integrate Terraform with Slack for notifications? I'd like to understand the key considerat...,1.0
+chatty_prose_query_000008,chatty_prose,simple,How do I configure using Git?,0.8999999999999999
+chatty_prose_query_000013,chatty_prose,complex,How do I implement audit logging in React that complies with PCI DSS? I need to understand both the ...,0.95
+chatty_prose_query_000014,chatty_prose,medium,How do I integrate Elasticsearch with Stripe for notifications? Please include relevant examples.,1.0
+chatty_prose_query_000016,chatty_prose,complex,How do I implement role-based access control in AWS S3 that complies with OWASP Top 10? I need a com...,0.95
+chatty_prose_query_000005,chatty_prose,medium,What are the best practices for configuration management with Git? Can you provide step-by-step guid...,1.0
+chatty_prose_query_000002,chatty_prose,simple,How do I configure using PostgreSQL?,0.8999999999999999
+tool_results_query_000009,tool_results,medium,Analyze this performance data and tell me what might be causing issues: Load Average: 1.63 3.04 2.22...,1.0
+tool_results_query_000010,tool_results,simple,Can you explain this command output: total 64K drwxr-xr-x 2 user group 4.0K,0.8999999999999999
+tool_results_query_000015,tool_results,medium,Analyze this performance data and tell me what might be causing issues: Response Times (ms): Average...,1.0
+tool_results_query_000006,tool_results,medium,"I found this in my security logs, what should I be concerned about: [ALERT] Multiple failed login at...",0.8
+tool_results_query_000014,tool_results,medium,"This database query is running slowly, can you analyze the execution plan: Seq Scan on users (cost=0...",1.0
+tool_results_query_000004,tool_results,simple,Can you explain this command output: total 64K drwxr-xr-x 2 user group 4.0K,0.8999999999999999

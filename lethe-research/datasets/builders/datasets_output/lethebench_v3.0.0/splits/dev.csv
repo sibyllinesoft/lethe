@@ -1,0 +1,3 @@
+query_id,domain,complexity,query_text,quality_score
+chatty_prose_query_000009,chatty_prose,complex,How do I migrate from SVN to Kubernetes with minimal user disruption? Can you provide detailed steps...,0.95
+chatty_prose_query_000001,chatty_prose,complex,How do I optimize Docker performance for transactional processing while handling 100K users? I need ...,0.95

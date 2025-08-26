@@ -1,0 +1,147 @@
+# Custom Semgrep Security Rules for Lethe Research
+# Tailored security patterns for Python research code
+
+rules:
+  - id: lethe-hardcoded-secrets
+    message: Hardcoded secrets detected in Lethe research code
+    severity: ERROR
+    languages: [python, javascript, yaml, json]
+    patterns:
+      - pattern-either:
+          - pattern: password = "..."
+          - pattern: api_key = "..."
+          - pattern: secret_key = "..."
+          - pattern: token = "..."
+          - pattern: private_key = "..."
+          - pattern: aws_access_key = "..."
+          - pattern: openai_api_key = "..."
+    pattern-not: password = ""
+    pattern-not: api_key = ""
+
+  - id: lethe-unsafe-eval
+    message: Unsafe eval() usage detected - potential code injection
+    severity: ERROR
+    languages: [python, javascript]
+    patterns:
+      - pattern: eval(...)
+      - pattern: exec(...)
+    pattern-not: eval("__import__")  # Allow common safe patterns
+
+  - id: lethe-sql-injection-risk
+    message: Potential SQL injection vulnerability
+    severity: WARNING
+    languages: [python]
+    patterns:
+      - pattern: cursor.execute("... + ...")
+      - pattern: cursor.execute(f"...")
+      - pattern: connection.execute("... + ...")
+      - pattern: connection.execute(f"...")
+
+  - id: lethe-unsafe-pickle
+    message: Unsafe pickle usage - potential code execution risk
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern: pickle.load(...)
+      - pattern: pickle.loads(...)
+      - pattern: cPickle.load(...)
+      - pattern: cPickle.loads(...)
+    pattern-not: pickle.load(open("..."))  # Allow file loading
+
+  - id: lethe-debug-code
+    message: Debug code should not be in production
+    severity: WARNING
+    languages: [python, javascript]
+    patterns:
+      - pattern: print("DEBUG: ...")
+      - pattern: console.log("DEBUG: ...")
+      - pattern: import pdb; pdb.set_trace()
+      - pattern: debugger;
+
+  - id: lethe-insecure-random
+    message: Insecure random number generation for security purposes
+    severity: WARNING
+    languages: [python]
+    patterns:
+      - pattern: random.random()
+      - pattern: random.randint(...)
+    pattern-inside: |
+      def $FUNC(...):
+        ...
+        $PASSWORD = ...
+        ...
+
+  - id: lethe-unsafe-yaml
+    message: Unsafe YAML loading - potential code execution
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern: yaml.load(...)
+    pattern-not: yaml.load(..., Loader=yaml.SafeLoader)
+    pattern-not: yaml.load(..., Loader=yaml.BaseLoader)
+
+  - id: lethe-path-traversal
+    message: Potential path traversal vulnerability
+    severity: WARNING
+    languages: [python]
+    patterns:
+      - pattern: open($PATH + ...)
+      - pattern: open($PATH / ...)
+    pattern-where:
+      - pattern: $PATH
+      - pattern-not: $PATH = "..."
+
+  - id: lethe-weak-crypto
+    message: Weak cryptographic algorithm detected
+    severity: WARNING
+    languages: [python]
+    patterns:
+      - pattern: hashlib.md5(...)
+      - pattern: hashlib.sha1(...)
+    pattern-not-inside: |
+      # Allow for non-security purposes with comment
+      # MD5/SHA1 used for checksums only
+
+  - id: lethe-unsafe-ssl
+    message: Unsafe SSL/TLS configuration
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern: ssl.create_default_context(check_hostname=False)
+      - pattern: ssl.create_default_context(verify_mode=ssl.CERT_NONE)
+      - pattern: requests.get(..., verify=False)
+      - pattern: requests.post(..., verify=False)
+
+  - id: lethe-temp-file-permissions
+    message: Temporary files created with unsafe permissions
+    severity: WARNING
+    languages: [python]
+    patterns:
+      - pattern: tempfile.mktemp(...)
+    message: Use tempfile.mkstemp() or NamedTemporaryFile instead
+
+  - id: lethe-shell-injection
+    message: Potential shell injection vulnerability
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern: subprocess.call($CMD, shell=True)
+      - pattern: subprocess.run($CMD, shell=True)
+      - pattern: subprocess.Popen($CMD, shell=True)
+      - pattern: os.system($CMD)
+    pattern-where:
+      - pattern: $CMD
+      - pattern-not: $CMD = "..."
+
+  - id: lethe-research-data-exposure
+    message: Potential research data exposure in logs
+    severity: WARNING
+    languages: [python]
+    patterns:
+      - pattern: logging.info($MSG)
+      - pattern: logging.debug($MSG)
+      - pattern: print($MSG)
+    pattern-where:
+      - pattern: $MSG
+      - pattern-regex: ".*(query|response|data|result|output).*"
+    message: Avoid logging sensitive research data

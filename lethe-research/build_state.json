@@ -1,0 +1,29 @@
+{
+  "started_at": "2025-08-25T23:59:42.057096+00:00",
+  "phases": {
+    "B0": {
+      "started_at": "2025-08-25T23:59:42.057238+00:00",
+      "steps": [
+        {
+          "step": "install_python_deps",
+          "success": true,
+          "output": "Requirement already satisfied: jsonschema in ./.venv/lib/python3.13/site-packages (from -r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 5)) (4.25.1)\nRequirement already satisfied: pytest in ./.venv/lib/python3.13/site-packages (from -r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 8)) (8.4.1)\nCollecting sqlite-utils (from -r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 11))\n  Downloading sqlite_utils-3.38-py3-none-any.whl.metadata (7.5 kB)\nRequirement already satisfied: attrs>=22.2.0 in ./.venv/lib/python3.13/site-packages (from jsonschema->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 5)) (25.3.0)\nRequirement already satisfied: jsonschema-specifications>=2023.03.6 in ./.venv/lib/python3.13/site-packages (from jsonschema->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 5)) (2025.4.1)\nRequirement already satisfied: referencing>=0.28.4 in ./.venv/lib/python3.13/site-packages (from jsonschema->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 5)) (0.36.2)\nRequirement already satisfied: rpds-py>=0.7.1 in ./.venv/lib/python3.13/site-packages (from jsonschema->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 5)) (0.27.0)\nRequirement already satisfied: iniconfig>=1 in ./.venv/lib/python3.13/site-packages (from pytest->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 8)) (2.1.0)\nRequirement already satisfied: packaging>=20 in ./.venv/lib/python3.13/site-packages (from pytest->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 8)) (25.0)\nRequirement already satisfied: pluggy<2,>=1.5 in ./.venv/lib/python3.13/site-packages (from pytest->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 8)) (1.6.0)\nRequirement already satisfied: pygments>=2.7.2 in ./.venv/lib/python3.13/site-packages (from pytest->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 8)) (2.19.2)\nCollecting sqlite-fts4 (from sqlite-utils->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 11))\n  Using cached sqlite_fts4-1.0.3-py3-none-any.whl.metadata (6.6 kB)\nRequirement already satisfied: click in ./.venv/lib/python3.13/site-packages (from sqlite-utils->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 11)) (8.2.1)\nCollecting click-default-group>=1.2.3 (from sqlite-utils->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 11))\n  Using cached click_default_group-1.2.4-py2.py3-none-any.whl.metadata (2.8 kB)\nRequirement already satisfied: tabulate in ./.venv/lib/python3.13/site-packages (from sqlite-utils->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 11)) (0.9.0)\nRequirement already satisfied: python-dateutil in ./.venv/lib/python3.13/site-packages (from sqlite-utils->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 11)) (2.9.0.post0)\nRequirement already satisfied: six>=1.5 in ./.venv/lib/python3.13/site-packages (from python-dateutil->sqlite-utils->-r /home/nathan/Projects/lethe/lethe-research/infra/requirements_hermetic.txt (line 11)) (1.17.0)\nDownloading sqlite_utils-3.38-py3-none-any.whl (68 kB)\nUsing cached click_default_group-1.2.4-py2.py3-none-any.whl (4.1 kB)\nUsing cached sqlite_fts4-1.0.3-py3-none-any.whl (10.0 kB)\nInstalling collected packages: sqlite-fts4, click-default-group, sqlite-utils\n\nSuccessfully installed click-default-group-1.2.4 sqlite-fts4-1.0.3 sqlite-utils-3.38\n",
+          "error": ""
+        },
+        {
+          "step": "install_node_deps",
+          "success": false,
+          "output": "",
+          "error": "npm ERR! code EUNSUPPORTEDPROTOCOL\nnpm ERR! Unsupported URL Type \"workspace:\": workspace:*\n\nnpm ERR! A complete log of this run can be found in:\nnpm ERR!     /home/nathan/.npm/_logs/2025-08-25T23_59_44_181Z-debug-0.log\n"
+        }
+      ],
+      "success": false
+    }
+  },
+  "current_phase": "B0",
+  "success": false,
+  "artifacts": {},
+  "environment": {},
+  "validation": {},
+  "failed_phase": "B0"
+}

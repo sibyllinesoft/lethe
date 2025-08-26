@@ -1,0 +1,314 @@
+[
+  {
+    "variant": "V2_iter1",
+    "config_id": "V2_iter1_0000",
+    "parameters": {
+      "alpha": 0.1,
+      "k_initial": 20,
+      "k_final": 10,
+      "chunk_size": 256,
+      "chunk_overlap": 32
+    },
+    "metrics": {
+      "ndcg_at_10": 1.0,
+      "ndcg_at_5": 0.6666666666666666,
+      "recall_at_10": 0.5777777777777778,
+      "recall_at_20": 0.9666666666666667,
+      "mrr_at_10": 0.4953703703703704,
+      "latency_p50": 0.2795124053955078,
+      "latency_p95": 0.48996806144714355,
+      "memory_peak": 180.2131953125,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.04168438911437988,
+    "memory_mb": 163.26953125,
+    "status": "success"
+  },
+  {
+    "variant": "V2_iter1",
+    "config_id": "V2_iter1_0001",
+    "parameters": {
+      "alpha": 0.1,
+      "k_initial": 20,
+      "k_final": 10,
+      "chunk_size": 256,
+      "chunk_overlap": 64
+    },
+    "metrics": {
+      "ndcg_at_10": 0.8333333333333334,
+      "ndcg_at_5": 0.6666666666666666,
+      "recall_at_10": 0.5111111111111112,
+      "recall_at_20": 0.7888888888888889,
+      "mrr_at_10": 0.4529761904761905,
+      "latency_p50": 0.2860832214355469,
+      "latency_p95": 0.5780422687530518,
+      "memory_peak": 180.8526015625,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.03447079658508301,
+    "memory_mb": 163.51953125,
+    "status": "success"
+  },
+  {
+    "variant": "V2_iter1",
+    "config_id": "V2_iter1_0002",
+    "parameters": {
+      "alpha": 0.1,
+      "k_initial": 20,
+      "k_final": 10,
+      "chunk_size": 256,
+      "chunk_overlap": 128
+    },
+    "metrics": {
+      "ndcg_at_10": 0.8333333333333334,
+      "ndcg_at_5": 0.6666666666666666,
+      "recall_at_10": 0.48888888888888893,
+      "recall_at_20": 0.9111111111111111,
+      "mrr_at_10": 0.44603174603174606,
+      "latency_p50": 0.4201531410217285,
+      "latency_p95": 0.852816104888916,
+      "memory_peak": 180.8526015625,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.03927874565124512,
+    "memory_mb": 163.51953125,
+    "status": "success"
+  },
+  {
+    "variant": "V2_iter1",
+    "config_id": "V2_iter1_0003",
+    "parameters": {
+      "alpha": 0.1,
+      "k_initial": 20,
+      "k_final": 10,
+      "chunk_size": 320,
+      "chunk_overlap": 32
+    },
+    "metrics": {
+      "ndcg_at_10": 0.8333333333333334,
+      "ndcg_at_5": 1.0,
+      "recall_at_10": 0.5777777777777778,
+      "recall_at_20": 0.9111111111111111,
+      "mrr_at_10": 0.5694444444444445,
+      "latency_p50": 0.323486328125,
+      "latency_p95": 0.6224584579467773,
+      "memory_peak": 180.8526015625,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.038747310638427734,
+    "memory_mb": 163.51953125,
+    "status": "success"
+  },
+  {
+    "variant": "V2_iter1",
+    "config_id": "V2_iter1_0004",
+    "parameters": {
+      "alpha": 0.1,
+      "k_initial": 20,
+      "k_final": 10,
+      "chunk_size": 320,
+      "chunk_overlap": 64
+    },
+    "metrics": {
+      "ndcg_at_10": 0.8333333333333334,
+      "ndcg_at_5": 0.5,
+      "recall_at_10": 0.4666666666666666,
+      "recall_at_20": 0.9333333333333332,
+      "mrr_at_10": 0.42751322751322757,
+      "latency_p50": 0.3020048141479492,
+      "latency_p95": 0.6317460536956787,
+      "memory_peak": 180.8526015625,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.03466486930847168,
+    "memory_mb": 163.51953125,
+    "status": "success"
+  },
+  {
+    "variant": "V2_iter1",
+    "config_id": "V2_iter1_0005",
+    "parameters": {
+      "alpha": 0.1,
+      "k_initial": 20,
+      "k_final": 10,
+      "chunk_size": 320,
+      "chunk_overlap": 128
+    },
+    "metrics": {
+      "ndcg_at_10": 0.8333333333333334,
+      "ndcg_at_5": 0.5,
+      "recall_at_10": 0.36666666666666664,
+      "recall_at_20": 0.9111111111111111,
+      "mrr_at_10": 0.4351851851851852,
+      "latency_p50": 0.29758214950561523,
+      "latency_p95": 0.6384432315826416,
+      "memory_peak": 180.8526015625,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.03522801399230957,
+    "memory_mb": 163.51953125,
+    "status": "success"
+  },
+  {
+    "variant": "V2_iter1",
+    "config_id": "V2_iter1_0006",
+    "parameters": {
+      "alpha": 0.1,
+      "k_initial": 20,
+      "k_final": 10,
+      "chunk_size": 512,
+      "chunk_overlap": 32
+    },
+    "metrics": {
+      "ndcg_at_10": 0.8333333333333334,
+      "ndcg_at_5": 0.5,
+      "recall_at_10": 0.3722222222222223,
+      "recall_at_20": 0.9333333333333332,
+      "mrr_at_10": 0.3263888888888889,
+      "latency_p50": 0.29808759689331055,
+      "latency_p95": 0.6314301490783691,
+      "memory_peak": 180.8526015625,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.0350041389465332,
+    "memory_mb": 163.51953125,
+    "status": "success"
+  },
+  {
+    "variant": "V2_iter1",
+    "config_id": "V2_iter1_0007",
+    "parameters": {
+      "alpha": 0.1,
+      "k_initial": 20,
+      "k_final": 10,
+      "chunk_size": 512,
+      "chunk_overlap": 64
+    },
+    "metrics": {
+      "ndcg_at_10": 1.0,
+      "ndcg_at_5": 0.5,
+      "recall_at_10": 0.5388888888888889,
+      "recall_at_20": 0.8444444444444446,
+      "mrr_at_10": 0.4682539682539683,
+      "latency_p50": 0.3303098678588867,
+      "latency_p95": 0.6162667274475098,
+      "memory_peak": 180.8526015625,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.03522634506225586,
+    "memory_mb": 163.51953125,
+    "status": "success"
+  },
+  {
+    "variant": "V2_iter1",
+    "config_id": "V2_iter1_0008",
+    "parameters": {
+      "alpha": 0.1,
+      "k_initial": 20,
+      "k_final": 10,
+      "chunk_size": 512,
+      "chunk_overlap": 128
+    },
+    "metrics": {
+      "ndcg_at_10": 1.0,
+      "ndcg_at_5": 0.8333333333333334,
+      "recall_at_10": 0.6055555555555555,
+      "recall_at_20": 1.0,
+      "mrr_at_10": 0.41944444444444445,
+      "latency_p50": 0.3224754333496094,
+      "latency_p95": 0.6495630741119385,
+      "memory_peak": 180.8526015625,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.03521251678466797,
+    "memory_mb": 163.51953125,
+    "status": "success"
+  },
+  {
+    "variant": "V2_iter1",
+    "config_id": "V2_iter1_0009",
+    "parameters": {
+      "alpha": 0.1,
+      "k_initial": 20,
+      "k_final": 15,
+      "chunk_size": 256,
+      "chunk_overlap": 32
+    },
+    "metrics": {
+      "ndcg_at_10": 1.0,
+      "ndcg_at_5": 0.8333333333333334,
+      "recall_at_10": 0.48333333333333334,
+      "recall_at_20": 0.9666666666666667,
+      "mrr_at_10": 0.46944444444444455,
+      "latency_p50": 0.31337738037109375,
+      "latency_p95": 0.8635568618774414,
+      "memory_peak": 180.8526015625,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.03590059280395508,
+    "memory_mb": 163.51953125,
+    "status": "success"
+  },
+  {
+    "variant": "V2_iter1",
+    "config_id": "V2_iter1_0010",
+    "parameters": {
+      "alpha": 0.1,
+      "k_initial": 20,
+      "k_final": 15,
+      "chunk_size": 256,
+      "chunk_overlap": 64
+    },
+    "metrics": {
+      "ndcg_at_10": 1.0,
+      "ndcg_at_5": 0.8333333333333334,
+      "recall_at_10": 0.5666666666666667,
+      "recall_at_20": 0.9111111111111111,
+      "mrr_at_10": 0.7685185185185185,
+      "latency_p50": 0.3252553939819336,
+      "latency_p95": 0.7021927833557129,
+      "memory_peak": 180.8526015625,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.03592538833618164,
+    "memory_mb": 163.51953125,
+    "status": "success"
+  },
+  {
+    "variant": "V2_iter1",
+    "config_id": "V2_iter1_0011",
+    "parameters": {
+      "alpha": 0.1,
+      "k_initial": 20,
+      "k_final": 15,
+      "chunk_size": 256,
+      "chunk_overlap": 128
+    },
+    "metrics": {
+      "ndcg_at_10": 0.8333333333333334,
+      "ndcg_at_5": 0.6666666666666666,
+      "recall_at_10": 0.26666666666666666,
+      "recall_at_20": 0.7611111111111111,
+      "mrr_at_10": 0.4055555555555556,
+      "latency_p50": 0.29139041900634766,
+      "latency_p95": 0.6237220764160156,
+      "memory_peak": 180.8526015625,
+      "contradiction_rate": 0.0,
+      "consistency_index": 0.0
+    },
+    "runtime_seconds": 0.0354156494140625,
+    "memory_mb": 163.51953125,
+    "status": "success"
+  }
+]

@@ -1,0 +1,253 @@
+[
+  {
+    "query_id": "code_heavy_query_000010",
+    "session_id": "code_heavy_session_0001",
+    "domain": "code_heavy",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "code_heavy_doc_000010_00",
+      "code_heavy_doc_000010_01",
+      "code_heavy_doc_000010_02",
+      "code_heavy_doc_000010_03",
+      "code_heavy_doc_000010_04"
+    ],
+    "retrieved_docs": [
+      "tool_results_doc_000011_04",
+      "tool_results_doc_000011_03",
+      "tool_results_doc_000011_02",
+      "tool_results_doc_000011_01",
+      "tool_results_doc_000011_00",
+      "tool_results_doc_000003_02",
+      "tool_results_doc_000003_01",
+      "tool_results_doc_000003_00",
+      "chatty_prose_doc_000006_02",
+      "chatty_prose_doc_000006_01"
+    ],
+    "relevance_scores": [
+      1.0,
+      0.9,
+      0.8,
+      0.7,
+      0.6,
+      0.5,
+      0.4,
+      0.30000000000000004,
+      0.19999999999999996,
+      0.09999999999999998
+    ],
+    "latency_ms": 0.3139972686767578,
+    "memory_mb": 38.65625,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7741354,
+    "baseline_name": "window"
+  },
+  {
+    "query_id": "chatty_prose_query_000011",
+    "session_id": "chatty_prose_session_0001",
+    "domain": "chatty_prose",
+    "complexity": "simple",
+    "ground_truth_docs": [
+      "chatty_prose_doc_000011_00",
+      "chatty_prose_doc_000011_01"
+    ],
+    "retrieved_docs": [
+      "tool_results_doc_000011_04",
+      "tool_results_doc_000011_03",
+      "tool_results_doc_000011_02",
+      "tool_results_doc_000011_01",
+      "tool_results_doc_000011_00",
+      "tool_results_doc_000003_02",
+      "tool_results_doc_000003_01",
+      "tool_results_doc_000003_00",
+      "chatty_prose_doc_000006_02",
+      "chatty_prose_doc_000006_01"
+    ],
+    "relevance_scores": [
+      1.0,
+      0.9,
+      0.8,
+      0.7,
+      0.6,
+      0.5,
+      0.4,
+      0.30000000000000004,
+      0.19999999999999996,
+      0.09999999999999998
+    ],
+    "latency_ms": 0.06628036499023438,
+    "memory_mb": 38.65625,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7743232,
+    "baseline_name": "window"
+  },
+  {
+    "query_id": "chatty_prose_query_000003",
+    "session_id": "chatty_prose_session_0000",
+    "domain": "chatty_prose",
+    "complexity": "complex",
+    "ground_truth_docs": [
+      "chatty_prose_doc_000003_00",
+      "chatty_prose_doc_000003_01",
+      "chatty_prose_doc_000003_02",
+      "chatty_prose_doc_000003_03",
+      "chatty_prose_doc_000003_04"
+    ],
+    "retrieved_docs": [
+      "tool_results_doc_000011_04",
+      "tool_results_doc_000011_03",
+      "tool_results_doc_000011_02",
+      "tool_results_doc_000011_01",
+      "tool_results_doc_000011_00",
+      "tool_results_doc_000003_02",
+      "tool_results_doc_000003_01",
+      "tool_results_doc_000003_00",
+      "chatty_prose_doc_000006_02",
+      "chatty_prose_doc_000006_01"
+    ],
+    "relevance_scores": [
+      1.0,
+      0.9,
+      0.8,
+      0.7,
+      0.6,
+      0.5,
+      0.4,
+      0.30000000000000004,
+      0.19999999999999996,
+      0.09999999999999998
+    ],
+    "latency_ms": 0.0553131103515625,
+    "memory_mb": 38.65625,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7744253,
+    "baseline_name": "window"
+  },
+  {
+    "query_id": "chatty_prose_query_000006",
+    "session_id": "chatty_prose_session_0000",
+    "domain": "chatty_prose",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "chatty_prose_doc_000006_00",
+      "chatty_prose_doc_000006_01",
+      "chatty_prose_doc_000006_02"
+    ],
+    "retrieved_docs": [
+      "tool_results_doc_000011_04",
+      "tool_results_doc_000011_03",
+      "tool_results_doc_000011_02",
+      "tool_results_doc_000011_01",
+      "tool_results_doc_000011_00",
+      "tool_results_doc_000003_02",
+      "tool_results_doc_000003_01",
+      "tool_results_doc_000003_00",
+      "chatty_prose_doc_000006_02",
+      "chatty_prose_doc_000006_01"
+    ],
+    "relevance_scores": [
+      1.0,
+      0.9,
+      0.8,
+      0.7,
+      0.6,
+      0.5,
+      0.4,
+      0.30000000000000004,
+      0.19999999999999996,
+      0.09999999999999998
+    ],
+    "latency_ms": 0.06699562072753906,
+    "memory_mb": 38.65625,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7745361,
+    "baseline_name": "window"
+  },
+  {
+    "query_id": "tool_results_query_000003",
+    "session_id": "tool_results_session_0000",
+    "domain": "tool_results",
+    "complexity": "simple",
+    "ground_truth_docs": [
+      "tool_results_doc_000003_00",
+      "tool_results_doc_000003_01",
+      "tool_results_doc_000003_02"
+    ],
+    "retrieved_docs": [
+      "tool_results_doc_000011_04",
+      "tool_results_doc_000011_03",
+      "tool_results_doc_000011_02",
+      "tool_results_doc_000011_01",
+      "tool_results_doc_000011_00",
+      "tool_results_doc_000003_02",
+      "tool_results_doc_000003_01",
+      "tool_results_doc_000003_00",
+      "chatty_prose_doc_000006_02",
+      "chatty_prose_doc_000006_01"
+    ],
+    "relevance_scores": [
+      1.0,
+      0.9,
+      0.8,
+      0.7,
+      0.6,
+      0.5,
+      0.4,
+      0.30000000000000004,
+      0.19999999999999996,
+      0.09999999999999998
+    ],
+    "latency_ms": 0.04553794860839844,
+    "memory_mb": 38.65625,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7746449,
+    "baseline_name": "window"
+  },
+  {
+    "query_id": "tool_results_query_000011",
+    "session_id": "tool_results_session_0001",
+    "domain": "tool_results",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "tool_results_doc_000011_00",
+      "tool_results_doc_000011_01",
+      "tool_results_doc_000011_02",
+      "tool_results_doc_000011_03",
+      "tool_results_doc_000011_04"
+    ],
+    "retrieved_docs": [
+      "tool_results_doc_000011_04",
+      "tool_results_doc_000011_03",
+      "tool_results_doc_000011_02",
+      "tool_results_doc_000011_01",
+      "tool_results_doc_000011_00",
+      "tool_results_doc_000003_02",
+      "tool_results_doc_000003_01",
+      "tool_results_doc_000003_00",
+      "chatty_prose_doc_000006_02",
+      "chatty_prose_doc_000006_01"
+    ],
+    "relevance_scores": [
+      1.0,
+      0.9,
+      0.8,
+      0.7,
+      0.6,
+      0.5,
+      0.4,
+      0.30000000000000004,
+      0.19999999999999996,
+      0.09999999999999998
+    ],
+    "latency_ms": 0.05650520324707031,
+    "memory_mb": 38.65625,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7747521,
+    "baseline_name": "window"
+  }
+]

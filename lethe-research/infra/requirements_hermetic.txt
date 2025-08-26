@@ -1,0 +1,11 @@
+# Ultra-minimal dependencies for hermetic validation
+# Using only pure Python packages to avoid compilation issues
+
+# Core validation
+jsonschema
+
+# Testing (minimal)
+pytest
+
+# System utilities  
+sqlite-utils

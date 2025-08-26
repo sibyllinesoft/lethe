@@ -1,0 +1,4 @@
+2025-08-23 02:16:34,839 - INFO - Creating LetheBench dataset...
+2025-08-23 02:16:34,839 - INFO - Scanning examples directory: /home/nathan/Projects/lethe/ctx-run/examples
+2025-08-23 02:16:34,839 - INFO - Discovered 0 examples
+2025-08-23 02:16:34,839 - ERROR - ❌ Dataset creation failed: No examples found to create dataset

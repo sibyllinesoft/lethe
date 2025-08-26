@@ -1,0 +1,7 @@
+query_id,domain,complexity,query_text,quality_score
+code_heavy_query_000010,code_heavy,medium,How should I handle database errors when concurrent updates in Python? Please provide working exampl...,0.8
+chatty_prose_query_000011,chatty_prose,simple,How do I troubleshoot using Docker?,0.8999999999999999
+chatty_prose_query_000003,chatty_prose,complex,How can I customize Nginx to provide real-time analytics while maintaining backward compatibility? P...,0.95
+chatty_prose_query_000006,chatty_prose,medium,What are the best practices for testing with Git? What are the important things to watch out for?,1.0
+tool_results_query_000003,tool_results,simple,Can you explain this command output: total 64K drwxr-xr-x 2 user group 4.0K,0.8999999999999999
+tool_results_query_000011,tool_results,medium,Help me troubleshoot this network issue based on the following output: traceroute: 3 hops to destina...,1.0

@@ -1,0 +1,7 @@
+query_id,domain,complexity,query_text,quality_score
+code_heavy_query_000005,code_heavy,medium,How should I handle authentication errors when large transactions in Go? What are the common pitfall...,0.8
+code_heavy_query_000003,code_heavy,complex,How should I optimize database operations in Python for high-frequency queries with large datasets? ...,0.95
+chatty_prose_query_000006,chatty_prose,simple,How do I troubleshoot using Terraform?,0.8999999999999999
+chatty_prose_query_000000,chatty_prose,simple,What is load balancing in DevOps?,0.8999999999999999
+tool_results_query_000005,tool_results,medium,Help me troubleshoot this network issue based on the following output: traceroute: 3 hops to destina...,1.0
+tool_results_query_000000,tool_results,medium,Analyze this performance data and tell me what might be causing issues: CPU Usage: 20% Memory: 3.2GB...,1.0

@@ -1,0 +1,52 @@
+{
+  "experiment": "v1_baselines",
+  "split": "dev",
+  "quick_mode": true,
+  "total_queries": 6,
+  "total_documents": 23,
+  "total_time_seconds": 0.0454554557800293,
+  "baselines": {
+    "window": {
+      "queries_completed": 6,
+      "avg_latency_ms": 0.10077158610026042,
+      "avg_memory_mb": 38.65625,
+      "success_rate": 1.0
+    },
+    "bm25_only": {
+      "queries_completed": 6,
+      "avg_latency_ms": 0.32393137613932294,
+      "avg_memory_mb": 38.65625,
+      "success_rate": 1.0
+    },
+    "vector_only": {
+      "queries_completed": 6,
+      "avg_latency_ms": 0.26293595631917316,
+      "avg_memory_mb": 39.33203125,
+      "success_rate": 1.0
+    },
+    "bm25_vector_simple": {
+      "queries_completed": 6,
+      "avg_latency_ms": 0.4609823226928711,
+      "avg_memory_mb": 39.33203125,
+      "success_rate": 1.0
+    },
+    "cross_encoder": {
+      "queries_completed": 6,
+      "avg_latency_ms": 0.35170714060465497,
+      "avg_memory_mb": 39.33203125,
+      "success_rate": 1.0
+    },
+    "faiss_ivf": {
+      "queries_completed": 6,
+      "avg_latency_ms": 0.1383225123087565,
+      "avg_memory_mb": 39.33203125,
+      "success_rate": 1.0
+    },
+    "mmr": {
+      "queries_completed": 6,
+      "avg_latency_ms": 2.215226491292318,
+      "avg_memory_mb": 39.45703125,
+      "success_rate": 1.0
+    }
+  }
+}

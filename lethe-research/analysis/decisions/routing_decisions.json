@@ -1,0 +1,27 @@
+{
+  "decision_counts": {
+    "PROMOTE": 0,
+    "AGENT_REFINE": 1,
+    "MANUAL_QA": 3
+  },
+  "top_promotion_candidates": [],
+  "key_refinement_targets": [
+    {
+      "method": "iter3",
+      "confidence": 0.8,
+      "rationale": "Recoverable issues found: mutation_evaluation: Mutation score below threshold: 0.757 < 0.8"
+    }
+  ],
+  "critical_manual_reviews": [
+    {
+      "method": "iter4",
+      "confidence": 0.9,
+      "rationale": "Critical failures require manual review: sast_evaluation: High severity SAST issues found: 1 > 0"
+    },
+    {
+      "method": "iter2",
+      "confidence": 0.9,
+      "rationale": "Critical failures require manual review: sast_evaluation: Critical SAST issues found: 1 > 0"
+    }
+  ]
+}

@@ -1,0 +1,453 @@
+# Comprehensive CI/CD Pipeline for Lethe Research Infrastructure
+# Implements hermetic builds, comprehensive validation, and quality gates
+
+name: Full CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
+
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '20'
+  SECURITY_SCAN_REQUIRED: true
+  HERMETIC_BUILD: true
+
+jobs:
+  # ===== Quality Gates Phase =====
+  validation:
+    name: Quality Gates Validation
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    
+    strategy:
+      matrix:
+        check: [
+          'lint-python',
+          'lint-javascript', 
+          'type-check',
+          'license-scan',
+          'dependency-audit',
+          'sast-semgrep'
+        ]
+        
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: recursive
+        
+    - name: Setup Python Environment
+      if: contains(matrix.check, 'python') || matrix.check == 'sast-semgrep'
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+        cache-dependency-path: |
+          **/requirements*.txt
+          
+    - name: Setup Node.js Environment  
+      if: contains(matrix.check, 'javascript') || matrix.check == 'type-check'
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: '**/package-lock.json'
+        
+    - name: Install Dependencies
+      run: |
+        if [[ "${{ matrix.check }}" == *"python"* ]] || [[ "${{ matrix.check }}" == "sast-semgrep" ]]; then
+          pip install --no-cache-dir -r requirements_statistical.txt
+          pip install --no-cache-dir black isort mypy bandit safety
+        fi
+        
+        if [[ "${{ matrix.check }}" == *"javascript"* ]] || [[ "${{ matrix.check }}" == "type-check" ]]; then
+          npm ci
+        fi
+        
+    - name: Python Linting
+      if: matrix.check == 'lint-python'
+      run: |
+        echo "🔍 Running Python linting checks..."
+        black --check --diff .
+        isort --check-only --diff .
+        
+    - name: JavaScript Linting
+      if: matrix.check == 'lint-javascript'
+      run: |
+        echo "🔍 Running JavaScript linting checks..."
+        npm run lint
+        
+    - name: Type Checking
+      if: matrix.check == 'type-check'
+      run: |
+        echo "🔍 Running type checking..."
+        if [ -f "pyproject.toml" ] || [ -f "mypy.ini" ]; then
+          mypy . --strict --show-error-codes
+        fi
+        if [ -f "tsconfig.json" ]; then
+          npx tsc --noEmit
+        fi
+        
+    - name: License Scanning
+      if: matrix.check == 'license-scan'
+      run: |
+        echo "🔍 Running license compliance scan..."
+        pip install pip-licenses
+        pip-licenses --allow-only="MIT;BSD;Apache;ISC;MPL-2.0"
+        
+    - name: Dependency Audit
+      if: matrix.check == 'dependency-audit'
+      run: |
+        echo "🔍 Running dependency vulnerability audit..."
+        if command -v safety &> /dev/null; then
+          safety check --json
+        fi
+        if [ -f "package.json" ]; then
+          npm audit --audit-level=moderate
+        fi
+        
+    - name: SAST Security Scanning
+      if: matrix.check == 'sast-semgrep'
+      run: |
+        echo "🔍 Running SAST security analysis..."
+        pip install semgrep
+        semgrep --config=auto --error --json --output=semgrep-results.json .
+        
+    - name: Upload Security Results
+      if: matrix.check == 'sast-semgrep'
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-scan-results
+        path: semgrep-results.json
+        retention-days: 30
+
+  # ===== Container Build Phase =====  
+  build:
+    name: Hermetic Container Build
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    needs: validation
+    
+    outputs:
+      image-digest: ${{ steps.build.outputs.digest }}
+      image-metadata: ${{ steps.meta.outputs.json }}
+      
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      with:
+        driver-opts: |
+          network=host
+          
+    - name: Generate Container Metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: |
+          lethe-research
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+        labels: |
+          org.opencontainers.image.title=Lethe Research Infrastructure
+          org.opencontainers.image.description=Hermetic research environment
+          org.opencontainers.image.vendor=Lethe Research Team
+          security.scan.required=true
+          compliance.hermetic-build=true
+          
+    - name: Record Environment State
+      run: |
+        echo "📋 Recording hermetic build environment..."
+        python scripts/record_env.py --output=build-manifest.json
+        
+    - name: Build Container Image
+      id: build
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: infra/Dockerfile
+        target: runtime
+        platforms: linux/amd64
+        push: false
+        load: true
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          BUILDKIT_INLINE_CACHE=1
+          BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+          
+    - name: Security Scan Container
+      run: |
+        echo "🔒 Scanning container for vulnerabilities..."
+        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+          -v $(pwd):/app aquasec/trivy:latest image \
+          --security-checks vuln,config \
+          --exit-code 1 \
+          --severity HIGH,CRITICAL \
+          --format json \
+          --output /app/trivy-results.json \
+          ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          
+    - name: Test Container Boot
+      run: |
+        echo "🚀 Testing container boot sequence..."
+        docker-compose -f infra/docker-compose.yml up -d --wait
+        sleep 30
+        ./scripts/spinup_smoke.sh --validate-only
+        docker-compose -f infra/docker-compose.yml down -v
+        
+    - name: Generate Boot Transcript
+      run: |
+        echo "📝 Generating signed boot transcript..."
+        python scripts/sign_transcript.py \
+          --manifest=build-manifest.json \
+          --trivy=trivy-results.json \
+          --output=boot-transcript.json
+          
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts-${{ github.sha }}
+        path: |
+          build-manifest.json
+          boot-transcript.json
+          trivy-results.json
+        retention-days: 90
+
+  # ===== Testing Phase =====
+  testing:
+    name: Comprehensive Testing Suite  
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    needs: build
+    
+    strategy:
+      matrix:
+        test-suite: [
+          'unit-tests',
+          'integration-tests', 
+          'mutation-tests',
+          'performance-tests',
+          'smoke-tests'
+        ]
+        
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts-${{ github.sha }}
+        
+    - name: Setup Test Environment
+      run: |
+        echo "🧪 Setting up test environment for ${{ matrix.test-suite }}..."
+        python -m pip install --upgrade pip
+        pip install -r requirements_statistical.txt
+        
+        if [[ "${{ matrix.test-suite }}" == *"mutation"* ]]; then
+          pip install mutmut
+        fi
+        
+        if [[ "${{ matrix.test-suite }}" == *"performance"* ]]; then
+          pip install pytest-benchmark memory-profiler
+        fi
+        
+    - name: Unit Tests
+      if: matrix.test-suite == 'unit-tests'
+      run: |
+        echo "🔬 Running unit tests with coverage..."
+        python -m pytest tests/unit/ \
+          --cov=. \
+          --cov-report=xml \
+          --cov-report=html \
+          --cov-fail-under=90 \
+          --junitxml=unit-test-results.xml
+          
+    - name: Integration Tests
+      if: matrix.test-suite == 'integration-tests'
+      run: |
+        echo "🔗 Running integration tests..."
+        docker-compose -f infra/docker-compose.yml up -d --wait
+        sleep 45
+        
+        python -m pytest tests/integration/ \
+          --maxfail=1 \
+          --junitxml=integration-test-results.xml
+          
+        docker-compose -f infra/docker-compose.yml down -v
+        
+    - name: Mutation Tests
+      if: matrix.test-suite == 'mutation-tests'
+      run: |
+        echo "🧬 Running mutation testing..."
+        mutmut run --paths-to-mutate=./scripts,./analysis
+        mutmut results > mutation-test-results.txt
+        
+        # Check mutation score threshold
+        SCORE=$(mutmut results | grep -o "mutation score [0-9.]*" | cut -d' ' -f3)
+        echo "Mutation score: $SCORE"
+        if (( $(echo "$SCORE < 0.80" | bc -l) )); then
+          echo "❌ Mutation score $SCORE below threshold 0.80"
+          exit 1
+        fi
+        
+    - name: Performance Tests
+      if: matrix.test-suite == 'performance-tests'
+      run: |
+        echo "⚡ Running performance benchmarks..."
+        docker-compose -f infra/docker-compose.yml up -d --wait
+        sleep 45
+        
+        python -m pytest tests/performance/ \
+          --benchmark-only \
+          --benchmark-json=performance-results.json
+          
+        # Validate performance thresholds
+        python scripts/apply_gates.py \
+          --type=performance \
+          --results=performance-results.json \
+          --thresholds='{"p50_max": "3s", "p95_max": "6s", "memory_max": "1.5GB"}'
+          
+        docker-compose -f infra/docker-compose.yml down -v
+        
+    - name: Smoke Tests  
+      if: matrix.test-suite == 'smoke-tests'
+      run: |
+        echo "💨 Running golden smoke tests..."
+        docker-compose -f infra/docker-compose.yml up -d --wait
+        sleep 60
+        
+        ./scripts/spinup_smoke.sh --full-suite
+        
+        docker-compose -f infra/docker-compose.yml down -v
+        
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-${{ matrix.test-suite }}-${{ github.sha }}
+        path: |
+          *-test-results.*
+          coverage.xml
+          htmlcov/
+          performance-results.json
+        retention-days: 30
+
+  # ===== Deployment Phase =====
+  deploy:
+    name: Artifact Generation & Deployment
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    needs: [build, testing]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Download All Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts/
+        
+    - name: Generate Deployment Bundle
+      run: |
+        echo "📦 Creating deployment artifact bundle..."
+        ./scripts/bundle_artifact.sh \
+          --version=${{ github.sha }} \
+          --include-tests=false \
+          --verify-signatures=true \
+          --output=lethe-research-${{ github.sha }}.tar.gz
+          
+    - name: Verify Bundle Integrity
+      run: |
+        echo "🔐 Verifying bundle integrity and signatures..."
+        python scripts/apply_gates.py \
+          --type=bundle \
+          --artifact=lethe-research-${{ github.sha }}.tar.gz \
+          --verify-hashes=true \
+          --verify-signatures=true
+          
+    - name: Upload Deployment Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: deployment-bundle-${{ github.sha }}
+        path: lethe-research-${{ github.sha }}.tar.gz
+        retention-days: 365
+        
+    - name: Generate Deployment Report
+      run: |
+        echo "📊 Generating deployment readiness report..."
+        cat > deployment-report.md << 'EOF'
+        # Deployment Report - ${{ github.sha }}
+        
+        ## Build Information
+        - **Commit**: ${{ github.sha }}
+        - **Branch**: ${{ github.ref_name }}
+        - **Build Time**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        - **Environment**: Production
+        
+        ## Quality Gates Status
+        - ✅ Security scan passed (0 high/critical issues)
+        - ✅ License compliance verified
+        - ✅ All tests passed (unit, integration, performance)
+        - ✅ Mutation score ≥ 0.80
+        - ✅ Performance benchmarks met (p50≤3s, p95≤6s, RSS≤1.5GB)
+        - ✅ Container security scan passed
+        - ✅ Boot verification completed with signed transcript
+        
+        ## Artifact Information
+        - **Bundle**: lethe-research-${{ github.sha }}.tar.gz
+        - **Size**: $(ls -lh lethe-research-${{ github.sha }}.tar.gz | cut -d' ' -f5)
+        - **SHA256**: $(sha256sum lethe-research-${{ github.sha }}.tar.gz | cut -d' ' -f1)
+        
+        ## Deployment Ready
+        This artifact has passed all quality gates and is ready for production deployment.
+        EOF
+        
+    - name: Upload Deployment Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: deployment-report-${{ github.sha }}
+        path: deployment-report.md
+        retention-days: 365
+
+  # ===== Notification Phase =====
+  notify:
+    name: Deployment Notification
+    runs-on: ubuntu-22.04
+    needs: [deploy]
+    if: always()
+    
+    steps:
+    - name: Deployment Success Notification
+      if: needs.deploy.result == 'success'
+      run: |
+        echo "✅ Deployment artifact successfully created and validated"
+        echo "Ready for production deployment: lethe-research-${{ github.sha }}.tar.gz"
+        
+    - name: Deployment Failure Notification  
+      if: needs.deploy.result == 'failure'
+      run: |
+        echo "❌ Deployment artifact creation failed"
+        echo "Check logs for quality gate failures or build issues"
+        exit 1

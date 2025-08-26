@@ -1,0 +1,142 @@
+{
+  "version": "1.0.0",
+  "description": "Smoke test configuration for Lethe Research Infrastructure",
+  "test_suites": {
+    "basic": {
+      "name": "Basic Smoke Tests",
+      "description": "Essential system functionality validation",
+      "timeout_seconds": 600,
+      "tests": [
+        {
+          "name": "environment_validation",
+          "type": "system",
+          "required": true,
+          "timeout": 30
+        },
+        {
+          "name": "container_build",
+          "type": "docker",
+          "required": true,
+          "timeout": 300
+        },
+        {
+          "name": "health_endpoints",
+          "type": "http",
+          "required": true,
+          "timeout": 60,
+          "endpoints": [
+            "http://localhost:8080/health",
+            "http://localhost:8080/ready"
+          ]
+        }
+      ]
+    },
+    "full": {
+      "name": "Full Integration Suite",
+      "description": "Comprehensive system validation including performance",
+      "timeout_seconds": 1800,
+      "tests": [
+        {
+          "name": "infrastructure_startup",
+          "type": "docker-compose",
+          "required": true,
+          "timeout": 300
+        },
+        {
+          "name": "database_connectivity",
+          "type": "database",
+          "required": true,
+          "timeout": 60,
+          "connections": [
+            {
+              "type": "postgresql",
+              "host": "localhost",
+              "port": 5432,
+              "database": "lethe_research"
+            }
+          ]
+        },
+        {
+          "name": "cache_connectivity",
+          "type": "cache",
+          "required": true,
+          "timeout": 30,
+          "connections": [
+            {
+              "type": "redis",
+              "host": "localhost", 
+              "port": 6379
+            }
+          ]
+        },
+        {
+          "name": "performance_smoke",
+          "type": "performance",
+          "required": false,
+          "timeout": 120,
+          "thresholds": {
+            "max_response_time_ms": 1000,
+            "max_memory_mb": 1536,
+            "min_throughput_rps": 10
+          }
+        },
+        {
+          "name": "golden_validation",
+          "type": "validation",
+          "required": false,
+          "timeout": 300,
+          "golden_data_path": "artifacts/golden"
+        }
+      ]
+    }
+  },
+  "quality_gates": {
+    "basic": {
+      "min_passed_required_tests": "100%",
+      "allow_optional_failures": true,
+      "max_total_time_seconds": 600
+    },
+    "full": {
+      "min_passed_required_tests": "100%",
+      "min_passed_optional_tests": "75%",
+      "max_total_time_seconds": 1800,
+      "performance_requirements": {
+        "api_response_time_p95_ms": 1000,
+        "memory_usage_peak_mb": 1536,
+        "startup_time_seconds": 120
+      }
+    }
+  },
+  "environments": {
+    "development": {
+      "default_suite": "basic",
+      "strict_mode": false,
+      "log_level": "DEBUG"
+    },
+    "staging": {
+      "default_suite": "full", 
+      "strict_mode": true,
+      "log_level": "INFO"
+    },
+    "production": {
+      "default_suite": "full",
+      "strict_mode": true,
+      "log_level": "WARNING",
+      "additional_validation": {
+        "security_scan": true,
+        "license_compliance": true,
+        "dependency_audit": true
+      }
+    }
+  },
+  "notifications": {
+    "on_failure": {
+      "email": false,
+      "webhook": false,
+      "log_level": "ERROR"
+    },
+    "on_success": {
+      "log_level": "INFO"
+    }
+  }
+}

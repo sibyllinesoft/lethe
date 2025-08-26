@@ -1,0 +1,10 @@
+query_id,domain,complexity,query_text,quality_score
+code_heavy_query_000004,code_heavy,simple,Show me how to define a async function in Rust,0.8999999999999999
+chatty_prose_query_000004,chatty_prose,simple,What is authentication in cloud computing?,0.8999999999999999
+chatty_prose_query_000003,chatty_prose,complex,How do I migrate from Ubuntu 16.04 to Redis with minimal performance degradation? I need to understa...,0.95
+chatty_prose_query_000007,chatty_prose,simple,How do I install React on macOS?,0.8999999999999999
+chatty_prose_query_000002,chatty_prose,simple,How do I install PostgreSQL on macOS?,0.8999999999999999
+chatty_prose_query_000008,chatty_prose,complex,How can I customize Nginx to maintain 99.99% uptime while maintaining security policies? I need to u...,0.95
+chatty_prose_query_000005,chatty_prose,complex,How do I optimize Git performance for mixed workloads while handling 10TB of data? Can you provide d...,0.95
+tool_results_query_000002,tool_results,medium,Help me troubleshoot this network issue based on the following output: traceroute: 3 hops to destina...,1.0
+tool_results_query_000004,tool_results,medium,"This database query is running slowly, can you analyze the execution plan: Seq Scan on users (cost=0...",1.0

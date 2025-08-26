@@ -1,0 +1,1406 @@
+{
+  "gatekeeper_results": {
+    "processing_metadata": {
+      "timestamp": "2025-08-25T13:58:19.110799",
+      "total_configurations": 4,
+      "gatekeeper_version": "1.0.0"
+    },
+    "decision_summary": {
+      "PROMOTE": [],
+      "AGENT_REFINE": [
+        {
+          "configuration_id": "iter3",
+          "confidence": 0.8,
+          "rationale": "Recoverable issues found: mutation_evaluation: Mutation score below threshold: 0.757 < 0.8"
+        }
+      ],
+      "MANUAL_QA": [
+        {
+          "configuration_id": "iter4",
+          "confidence": 0.9,
+          "rationale": "Critical failures require manual review: sast_evaluation: High severity SAST issues found: 1 > 0"
+        },
+        {
+          "configuration_id": "iter2",
+          "confidence": 0.9,
+          "rationale": "Critical failures require manual review: sast_evaluation: Critical SAST issues found: 1 > 0"
+        },
+        {
+          "configuration_id": "iter1",
+          "confidence": 0.9,
+          "rationale": "Critical failures require manual review: sast_evaluation: Critical SAST issues found: 1 > 0; sast_evaluation: High severity SAST issues found: 1 > 0"
+        }
+      ]
+    },
+    "individual_decisions": [
+      {
+        "configuration_id": "iter4",
+        "routing_decision": "MANUAL_QA",
+        "decision_confidence": 0.9,
+        "decision_rationale": "Critical failures require manual review: sast_evaluation: High severity SAST issues found: 1 > 0",
+        "gate_evaluations": {
+          "statistical_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "ci_backed_wins": {
+                "status": "GateStatus.PASSED",
+                "wins_count": 1,
+                "total_comparisons": 1,
+                "win_rate": 1.0
+              },
+              "statistical_significance": {
+                "status": "GateStatus.PASSED",
+                "significant_uncorrected": 1,
+                "significant_fdr_corrected": 1,
+                "total_tests": 1
+              },
+              "effect_sizes": {
+                "status": "GateStatus.WARNING",
+                "large_effects": 0,
+                "total_comparisons": 1
+              }
+            },
+            "evidence": {
+              "ci_backed_wins": 1,
+              "significant_results_uncorrected": 1,
+              "significant_results_fdr": 1,
+              "large_effect_sizes": 0,
+              "quantitative_evidence_available": true
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "mutation_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "mutation_score": {
+                "status": "GateStatus.PASSED",
+                "score": 0.877933880812342,
+                "threshold": 0.8,
+                "score_deficit": 0
+              },
+              "mutation_coverage": {
+                "total_mutations": 0,
+                "killed_mutations": 0,
+                "equivalent_mutations": 0,
+                "timeout_mutations": 0,
+                "coverage_ratio": 0.0
+              }
+            },
+            "evidence": {
+              "mutation_score": 0.877933880812342,
+              "meets_threshold": true,
+              "mutation_coverage": 0.0,
+              "fault_detection_capability": "adequate"
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "sast_evaluation": {
+            "overall_status": "GateStatus.FAILED",
+            "gate_details": {
+              "sast_issues": {
+                "critical_issues": 0,
+                "high_issues": 1,
+                "medium_issues": 1,
+                "low_issues": 6,
+                "total_issues": 8,
+                "critical_gate_passed": true,
+                "high_gate_passed": false
+              }
+            },
+            "evidence": {
+              "critical_issues": 0,
+              "high_severity_issues": 1,
+              "total_security_issues": 0,
+              "vulnerability_count": 0,
+              "sast_compliance": "non_compliant"
+            },
+            "failures": [
+              "High severity SAST issues found: 1 > 0"
+            ],
+            "warnings": []
+          },
+          "property_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "property_score": {
+                "status": "GateStatus.PASSED",
+                "score": 0.7232094148956483,
+                "threshold": 0.7,
+                "score_deficit": 0
+              }
+            },
+            "evidence": {
+              "property_score": 0.7232094148956483,
+              "meets_threshold": true,
+              "property_validation_status": "adequate"
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "performance_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "performance_budgets": {
+                "latency_p95_ms": 1442.9279554241123,
+                "latency_budget_ms": 3000,
+                "latency_gate_passed": true,
+                "memory_peak_mb": 716.4391933136169,
+                "memory_budget_mb": 1500,
+                "memory_gate_passed": true,
+                "quality_score": 0.9723361889424834,
+                "quality_adequate": true
+              }
+            },
+            "evidence": {
+              "latency_p95_ms": 1442.9279554241123,
+              "memory_peak_mb": 716.4391933136169,
+              "meets_latency_budget": true,
+              "meets_memory_budget": true,
+              "performance_compliance": "compliant"
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "risk_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "risk_assessment": {
+                "t2_risk_score": 0.3543399101865722,
+                "risk_threshold": 0.5,
+                "risk_score_gate_passed": true,
+                "high_risk_dimensions": 2,
+                "dimensions_threshold": 2,
+                "dimensions_gate_passed": true,
+                "failure_modes": [],
+                "critical_failure_modes": [],
+                "risk_category": "medium"
+              }
+            },
+            "evidence": {
+              "t2_risk_score": 0.3543399101865722,
+              "high_risk_dimensions": 2,
+              "failure_modes": [],
+              "risk_category": "medium",
+              "risk_compliance": "compliant"
+            },
+            "failures": [],
+            "warnings": []
+          }
+        },
+        "composite_analysis": {
+          "composite_score": 0.85,
+          "gate_scores": {
+            "statistical_evaluation": 1.0,
+            "mutation_evaluation": 1.0,
+            "sast_evaluation": 0.0,
+            "property_evaluation": 1.0,
+            "performance_evaluation": 1.0,
+            "risk_evaluation": 1.0
+          },
+          "gate_weights_applied": {
+            "statistical_evaluation": 0.3,
+            "mutation_evaluation": 0.2,
+            "sast_evaluation": 0.15,
+            "property_evaluation": 0.15,
+            "performance_evaluation": 0.1,
+            "risk_evaluation": 0.1
+          },
+          "passed_gates": 5,
+          "failed_gates": 1,
+          "total_gates": 6,
+          "pass_rate": 0.8333333333333334
+        },
+        "evidence_summary": {
+          "quantitative_evidence": {
+            "statistical_evaluation_ci_backed_wins": 1,
+            "statistical_evaluation_significant_results_uncorrected": 1,
+            "statistical_evaluation_significant_results_fdr": 1,
+            "statistical_evaluation_large_effect_sizes": 0,
+            "statistical_evaluation_quantitative_evidence_available": true,
+            "mutation_evaluation_mutation_score": 0.877933880812342,
+            "mutation_evaluation_meets_threshold": true,
+            "mutation_evaluation_mutation_coverage": 0.0,
+            "sast_evaluation_critical_issues": 0,
+            "sast_evaluation_high_severity_issues": 1,
+            "sast_evaluation_total_security_issues": 0,
+            "sast_evaluation_vulnerability_count": 0,
+            "property_evaluation_property_score": 0.7232094148956483,
+            "property_evaluation_meets_threshold": true,
+            "performance_evaluation_latency_p95_ms": 1442.9279554241123,
+            "performance_evaluation_memory_peak_mb": 716.4391933136169,
+            "performance_evaluation_meets_latency_budget": true,
+            "performance_evaluation_meets_memory_budget": true,
+            "risk_evaluation_t2_risk_score": 0.3543399101865722,
+            "risk_evaluation_high_risk_dimensions": 2
+          },
+          "qualitative_evidence": {
+            "mutation_evaluation_fault_detection_capability": "adequate",
+            "sast_evaluation_sast_compliance": "non_compliant",
+            "property_evaluation_property_validation_status": "adequate",
+            "performance_evaluation_performance_compliance": "compliant",
+            "risk_evaluation_failure_modes": [],
+            "risk_evaluation_risk_category": "medium",
+            "risk_evaluation_risk_compliance": "compliant"
+          },
+          "evidence_completeness": {
+            "score": 1.0,
+            "required_evidence": [
+              "statistical_evaluation_ci_backed_wins",
+              "mutation_evaluation_mutation_score",
+              "sast_evaluation_critical_issues",
+              "performance_evaluation_latency_p95_ms"
+            ],
+            "available_evidence": [
+              "statistical_evaluation_ci_backed_wins",
+              "statistical_evaluation_significant_results_uncorrected",
+              "statistical_evaluation_significant_results_fdr",
+              "statistical_evaluation_large_effect_sizes",
+              "statistical_evaluation_quantitative_evidence_available",
+              "mutation_evaluation_mutation_score",
+              "mutation_evaluation_meets_threshold",
+              "mutation_evaluation_mutation_coverage",
+              "sast_evaluation_critical_issues",
+              "sast_evaluation_high_severity_issues",
+              "sast_evaluation_total_security_issues",
+              "sast_evaluation_vulnerability_count",
+              "property_evaluation_property_score",
+              "property_evaluation_meets_threshold",
+              "performance_evaluation_latency_p95_ms",
+              "performance_evaluation_memory_peak_mb",
+              "performance_evaluation_meets_latency_budget",
+              "performance_evaluation_meets_memory_budget",
+              "risk_evaluation_t2_risk_score",
+              "risk_evaluation_high_risk_dimensions",
+              "mutation_evaluation_fault_detection_capability",
+              "sast_evaluation_sast_compliance",
+              "property_evaluation_property_validation_status",
+              "performance_evaluation_performance_compliance",
+              "risk_evaluation_failure_modes",
+              "risk_evaluation_risk_category",
+              "risk_evaluation_risk_compliance"
+            ],
+            "missing_evidence": []
+          }
+        },
+        "failure_analysis": {
+          "failure_count_by_gate": {
+            "statistical_evaluation": 0,
+            "mutation_evaluation": 0,
+            "sast_evaluation": 1,
+            "property_evaluation": 0,
+            "performance_evaluation": 0,
+            "risk_evaluation": 0
+          },
+          "critical_failures": [
+            {
+              "gate": "sast_evaluation",
+              "failure": "High severity SAST issues found: 1 > 0",
+              "severity": "critical"
+            }
+          ],
+          "recoverable_failures": [],
+          "failure_patterns": [],
+          "mitigation_strategies": {
+            "statistical_failures": "Increase sample size, improve experimental design",
+            "mutation_failures": "Enhance test coverage, add property-based tests",
+            "sast_failures": "Security code review, vulnerability patching",
+            "performance_failures": "Algorithm optimization, caching, infrastructure scaling",
+            "risk_failures": "Risk mitigation planning, monitoring enhancement"
+          }
+        },
+        "recommendations": [
+          "Manual security review",
+          "Expert analysis of critical failures"
+        ],
+        "decision_metadata": {
+          "timestamp": "2025-08-25T13:58:19.111012",
+          "gatekeeper_version": "1.0.0",
+          "thresholds_applied": {
+            "ci_lower_bound_min": 0.0,
+            "statistical_significance": 0.05,
+            "fdr_q_value": 0.05,
+            "mutation_score_min": 0.8,
+            "sast_high_severity_max": 0,
+            "sast_critical_severity_max": 0,
+            "property_score_min": 0.7,
+            "latency_p95_max": 3000,
+            "memory_peak_max": 1500,
+            "risk_score_max": 0.5,
+            "high_risk_dimensions_max": 2
+          },
+          "weights_applied": {
+            "statistical_gates": 0.3,
+            "mutation_gates": 0.2,
+            "sast_gates": 0.15,
+            "property_gates": 0.15,
+            "performance_gates": 0.1,
+            "risk_gates": 0.1
+          }
+        }
+      },
+      {
+        "configuration_id": "iter2",
+        "routing_decision": "MANUAL_QA",
+        "decision_confidence": 0.9,
+        "decision_rationale": "Critical failures require manual review: sast_evaluation: Critical SAST issues found: 1 > 0",
+        "gate_evaluations": {
+          "statistical_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "ci_backed_wins": {
+                "status": "GateStatus.PASSED",
+                "wins_count": 1,
+                "total_comparisons": 1,
+                "win_rate": 1.0
+              },
+              "statistical_significance": {
+                "status": "GateStatus.PASSED",
+                "significant_uncorrected": 1,
+                "significant_fdr_corrected": 1,
+                "total_tests": 1
+              },
+              "effect_sizes": {
+                "status": "GateStatus.WARNING",
+                "large_effects": 0,
+                "total_comparisons": 1
+              }
+            },
+            "evidence": {
+              "ci_backed_wins": 1,
+              "significant_results_uncorrected": 1,
+              "significant_results_fdr": 1,
+              "large_effect_sizes": 0,
+              "quantitative_evidence_available": true
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "mutation_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "mutation_score": {
+                "status": "GateStatus.PASSED",
+                "score": 0.8658883564988256,
+                "threshold": 0.8,
+                "score_deficit": 0
+              },
+              "mutation_coverage": {
+                "total_mutations": 0,
+                "killed_mutations": 0,
+                "equivalent_mutations": 0,
+                "timeout_mutations": 0,
+                "coverage_ratio": 0.0
+              }
+            },
+            "evidence": {
+              "mutation_score": 0.8658883564988256,
+              "meets_threshold": true,
+              "mutation_coverage": 0.0,
+              "fault_detection_capability": "adequate"
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "sast_evaluation": {
+            "overall_status": "GateStatus.FAILED",
+            "gate_details": {
+              "sast_issues": {
+                "critical_issues": 1,
+                "high_issues": 0,
+                "medium_issues": 4,
+                "low_issues": 5,
+                "total_issues": 10,
+                "critical_gate_passed": false,
+                "high_gate_passed": true
+              }
+            },
+            "evidence": {
+              "critical_issues": 1,
+              "high_severity_issues": 0,
+              "total_security_issues": 0,
+              "vulnerability_count": 0,
+              "sast_compliance": "non_compliant"
+            },
+            "failures": [
+              "Critical SAST issues found: 1 > 0"
+            ],
+            "warnings": []
+          },
+          "property_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "property_score": {
+                "status": "GateStatus.PASSED",
+                "score": 0.762317832417117,
+                "threshold": 0.7,
+                "score_deficit": 0
+              }
+            },
+            "evidence": {
+              "property_score": 0.762317832417117,
+              "meets_threshold": true,
+              "property_validation_status": "adequate"
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "performance_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "performance_budgets": {
+                "latency_p95_ms": 2000.0,
+                "latency_budget_ms": 3000,
+                "latency_gate_passed": true,
+                "memory_peak_mb": 800.0,
+                "memory_budget_mb": 1500,
+                "memory_gate_passed": true,
+                "quality_score": 0.6,
+                "quality_adequate": true
+              }
+            },
+            "evidence": {
+              "latency_p95_ms": 2000.0,
+              "memory_peak_mb": 800.0,
+              "meets_latency_budget": true,
+              "meets_memory_budget": true,
+              "performance_compliance": "compliant"
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "risk_evaluation": {
+            "overall_status": "GateStatus.FAILED",
+            "gate_details": {
+              "risk_assessment": {
+                "t2_risk_score": 0.5439176216186319,
+                "risk_threshold": 0.5,
+                "risk_score_gate_passed": false,
+                "high_risk_dimensions": 1,
+                "dimensions_threshold": 2,
+                "dimensions_gate_passed": true,
+                "failure_modes": [],
+                "critical_failure_modes": [],
+                "risk_category": "medium"
+              }
+            },
+            "evidence": {
+              "t2_risk_score": 0.5439176216186319,
+              "high_risk_dimensions": 1,
+              "failure_modes": [],
+              "risk_category": "medium",
+              "risk_compliance": "non_compliant"
+            },
+            "failures": [
+              "Risk score exceeds threshold: 0.544 > 0.5"
+            ],
+            "warnings": []
+          }
+        },
+        "composite_analysis": {
+          "composite_score": 0.75,
+          "gate_scores": {
+            "statistical_evaluation": 1.0,
+            "mutation_evaluation": 1.0,
+            "sast_evaluation": 0.0,
+            "property_evaluation": 1.0,
+            "performance_evaluation": 1.0,
+            "risk_evaluation": 0.0
+          },
+          "gate_weights_applied": {
+            "statistical_evaluation": 0.3,
+            "mutation_evaluation": 0.2,
+            "sast_evaluation": 0.15,
+            "property_evaluation": 0.15,
+            "performance_evaluation": 0.1,
+            "risk_evaluation": 0.1
+          },
+          "passed_gates": 4,
+          "failed_gates": 2,
+          "total_gates": 6,
+          "pass_rate": 0.6666666666666666
+        },
+        "evidence_summary": {
+          "quantitative_evidence": {
+            "statistical_evaluation_ci_backed_wins": 1,
+            "statistical_evaluation_significant_results_uncorrected": 1,
+            "statistical_evaluation_significant_results_fdr": 1,
+            "statistical_evaluation_large_effect_sizes": 0,
+            "statistical_evaluation_quantitative_evidence_available": true,
+            "mutation_evaluation_mutation_score": 0.8658883564988256,
+            "mutation_evaluation_meets_threshold": true,
+            "mutation_evaluation_mutation_coverage": 0.0,
+            "sast_evaluation_critical_issues": 1,
+            "sast_evaluation_high_severity_issues": 0,
+            "sast_evaluation_total_security_issues": 0,
+            "sast_evaluation_vulnerability_count": 0,
+            "property_evaluation_property_score": 0.762317832417117,
+            "property_evaluation_meets_threshold": true,
+            "performance_evaluation_latency_p95_ms": 2000.0,
+            "performance_evaluation_memory_peak_mb": 800.0,
+            "performance_evaluation_meets_latency_budget": true,
+            "performance_evaluation_meets_memory_budget": true,
+            "risk_evaluation_t2_risk_score": 0.5439176216186319,
+            "risk_evaluation_high_risk_dimensions": 1
+          },
+          "qualitative_evidence": {
+            "mutation_evaluation_fault_detection_capability": "adequate",
+            "sast_evaluation_sast_compliance": "non_compliant",
+            "property_evaluation_property_validation_status": "adequate",
+            "performance_evaluation_performance_compliance": "compliant",
+            "risk_evaluation_failure_modes": [],
+            "risk_evaluation_risk_category": "medium",
+            "risk_evaluation_risk_compliance": "non_compliant"
+          },
+          "evidence_completeness": {
+            "score": 1.0,
+            "required_evidence": [
+              "statistical_evaluation_ci_backed_wins",
+              "mutation_evaluation_mutation_score",
+              "sast_evaluation_critical_issues",
+              "performance_evaluation_latency_p95_ms"
+            ],
+            "available_evidence": [
+              "statistical_evaluation_ci_backed_wins",
+              "statistical_evaluation_significant_results_uncorrected",
+              "statistical_evaluation_significant_results_fdr",
+              "statistical_evaluation_large_effect_sizes",
+              "statistical_evaluation_quantitative_evidence_available",
+              "mutation_evaluation_mutation_score",
+              "mutation_evaluation_meets_threshold",
+              "mutation_evaluation_mutation_coverage",
+              "sast_evaluation_critical_issues",
+              "sast_evaluation_high_severity_issues",
+              "sast_evaluation_total_security_issues",
+              "sast_evaluation_vulnerability_count",
+              "property_evaluation_property_score",
+              "property_evaluation_meets_threshold",
+              "performance_evaluation_latency_p95_ms",
+              "performance_evaluation_memory_peak_mb",
+              "performance_evaluation_meets_latency_budget",
+              "performance_evaluation_meets_memory_budget",
+              "risk_evaluation_t2_risk_score",
+              "risk_evaluation_high_risk_dimensions",
+              "mutation_evaluation_fault_detection_capability",
+              "sast_evaluation_sast_compliance",
+              "property_evaluation_property_validation_status",
+              "performance_evaluation_performance_compliance",
+              "risk_evaluation_failure_modes",
+              "risk_evaluation_risk_category",
+              "risk_evaluation_risk_compliance"
+            ],
+            "missing_evidence": []
+          }
+        },
+        "failure_analysis": {
+          "failure_count_by_gate": {
+            "statistical_evaluation": 0,
+            "mutation_evaluation": 0,
+            "sast_evaluation": 1,
+            "property_evaluation": 0,
+            "performance_evaluation": 0,
+            "risk_evaluation": 1
+          },
+          "critical_failures": [
+            {
+              "gate": "sast_evaluation",
+              "failure": "Critical SAST issues found: 1 > 0",
+              "severity": "critical"
+            }
+          ],
+          "recoverable_failures": [
+            {
+              "gate": "risk_evaluation",
+              "failure": "Risk score exceeds threshold: 0.544 > 0.5",
+              "severity": "recoverable"
+            }
+          ],
+          "failure_patterns": [],
+          "mitigation_strategies": {
+            "statistical_failures": "Increase sample size, improve experimental design",
+            "mutation_failures": "Enhance test coverage, add property-based tests",
+            "sast_failures": "Security code review, vulnerability patching",
+            "performance_failures": "Algorithm optimization, caching, infrastructure scaling",
+            "risk_failures": "Risk mitigation planning, monitoring enhancement"
+          }
+        },
+        "recommendations": [
+          "Manual security review",
+          "Expert analysis of critical failures"
+        ],
+        "decision_metadata": {
+          "timestamp": "2025-08-25T13:58:19.111168",
+          "gatekeeper_version": "1.0.0",
+          "thresholds_applied": {
+            "ci_lower_bound_min": 0.0,
+            "statistical_significance": 0.05,
+            "fdr_q_value": 0.05,
+            "mutation_score_min": 0.8,
+            "sast_high_severity_max": 0,
+            "sast_critical_severity_max": 0,
+            "property_score_min": 0.7,
+            "latency_p95_max": 3000,
+            "memory_peak_max": 1500,
+            "risk_score_max": 0.5,
+            "high_risk_dimensions_max": 2
+          },
+          "weights_applied": {
+            "statistical_gates": 0.3,
+            "mutation_gates": 0.2,
+            "sast_gates": 0.15,
+            "property_gates": 0.15,
+            "performance_gates": 0.1,
+            "risk_gates": 0.1
+          }
+        }
+      },
+      {
+        "configuration_id": "iter3",
+        "routing_decision": "AGENT_REFINE",
+        "decision_confidence": 0.8,
+        "decision_rationale": "Recoverable issues found: mutation_evaluation: Mutation score below threshold: 0.757 < 0.8",
+        "gate_evaluations": {
+          "statistical_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "ci_backed_wins": {
+                "status": "GateStatus.PASSED",
+                "wins_count": 1,
+                "total_comparisons": 1,
+                "win_rate": 1.0
+              },
+              "statistical_significance": {
+                "status": "GateStatus.PASSED",
+                "significant_uncorrected": 1,
+                "significant_fdr_corrected": 1,
+                "total_tests": 1
+              },
+              "effect_sizes": {
+                "status": "GateStatus.WARNING",
+                "large_effects": 0,
+                "total_comparisons": 1
+              }
+            },
+            "evidence": {
+              "ci_backed_wins": 1,
+              "significant_results_uncorrected": 1,
+              "significant_results_fdr": 1,
+              "large_effect_sizes": 0,
+              "quantitative_evidence_available": true
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "mutation_evaluation": {
+            "overall_status": "GateStatus.FAILED",
+            "gate_details": {
+              "mutation_score": {
+                "status": "GateStatus.FAILED",
+                "score": 0.7573955300655468,
+                "threshold": 0.8,
+                "score_deficit": 0.042604469934453215
+              },
+              "mutation_coverage": {
+                "total_mutations": 0,
+                "killed_mutations": 0,
+                "equivalent_mutations": 0,
+                "timeout_mutations": 0,
+                "coverage_ratio": 0.0
+              }
+            },
+            "evidence": {
+              "mutation_score": 0.7573955300655468,
+              "meets_threshold": false,
+              "mutation_coverage": 0.0,
+              "fault_detection_capability": "inadequate"
+            },
+            "failures": [
+              "Mutation score below threshold: 0.757 < 0.8"
+            ],
+            "warnings": []
+          },
+          "sast_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "sast_issues": {
+                "critical_issues": 0,
+                "high_issues": 0,
+                "medium_issues": 2,
+                "low_issues": 5,
+                "total_issues": 7,
+                "critical_gate_passed": true,
+                "high_gate_passed": true
+              }
+            },
+            "evidence": {
+              "critical_issues": 0,
+              "high_severity_issues": 0,
+              "total_security_issues": 0,
+              "vulnerability_count": 0,
+              "sast_compliance": "compliant"
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "property_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "property_score": {
+                "status": "GateStatus.PASSED",
+                "score": 0.723296174999029,
+                "threshold": 0.7,
+                "score_deficit": 0
+              }
+            },
+            "evidence": {
+              "property_score": 0.723296174999029,
+              "meets_threshold": true,
+              "property_validation_status": "adequate"
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "performance_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "performance_budgets": {
+                "latency_p95_ms": 1347.4601414171934,
+                "latency_budget_ms": 3000,
+                "latency_gate_passed": true,
+                "memory_peak_mb": 702.119021212579,
+                "memory_budget_mb": 1500,
+                "memory_gate_passed": true,
+                "quality_score": 0.9167235884075108,
+                "quality_adequate": true
+              }
+            },
+            "evidence": {
+              "latency_p95_ms": 1347.4601414171934,
+              "memory_peak_mb": 702.119021212579,
+              "meets_latency_budget": true,
+              "meets_memory_budget": true,
+              "performance_compliance": "compliant"
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "risk_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "risk_assessment": {
+                "t2_risk_score": 0.4590860155913161,
+                "risk_threshold": 0.5,
+                "risk_score_gate_passed": true,
+                "high_risk_dimensions": 1,
+                "dimensions_threshold": 2,
+                "dimensions_gate_passed": true,
+                "failure_modes": [],
+                "critical_failure_modes": [],
+                "risk_category": "medium"
+              }
+            },
+            "evidence": {
+              "t2_risk_score": 0.4590860155913161,
+              "high_risk_dimensions": 1,
+              "failure_modes": [],
+              "risk_category": "medium",
+              "risk_compliance": "compliant"
+            },
+            "failures": [],
+            "warnings": []
+          }
+        },
+        "composite_analysis": {
+          "composite_score": 0.8,
+          "gate_scores": {
+            "statistical_evaluation": 1.0,
+            "mutation_evaluation": 0.0,
+            "sast_evaluation": 1.0,
+            "property_evaluation": 1.0,
+            "performance_evaluation": 1.0,
+            "risk_evaluation": 1.0
+          },
+          "gate_weights_applied": {
+            "statistical_evaluation": 0.3,
+            "mutation_evaluation": 0.2,
+            "sast_evaluation": 0.15,
+            "property_evaluation": 0.15,
+            "performance_evaluation": 0.1,
+            "risk_evaluation": 0.1
+          },
+          "passed_gates": 5,
+          "failed_gates": 1,
+          "total_gates": 6,
+          "pass_rate": 0.8333333333333334
+        },
+        "evidence_summary": {
+          "quantitative_evidence": {
+            "statistical_evaluation_ci_backed_wins": 1,
+            "statistical_evaluation_significant_results_uncorrected": 1,
+            "statistical_evaluation_significant_results_fdr": 1,
+            "statistical_evaluation_large_effect_sizes": 0,
+            "statistical_evaluation_quantitative_evidence_available": true,
+            "mutation_evaluation_mutation_score": 0.7573955300655468,
+            "mutation_evaluation_meets_threshold": false,
+            "mutation_evaluation_mutation_coverage": 0.0,
+            "sast_evaluation_critical_issues": 0,
+            "sast_evaluation_high_severity_issues": 0,
+            "sast_evaluation_total_security_issues": 0,
+            "sast_evaluation_vulnerability_count": 0,
+            "property_evaluation_property_score": 0.723296174999029,
+            "property_evaluation_meets_threshold": true,
+            "performance_evaluation_latency_p95_ms": 1347.4601414171934,
+            "performance_evaluation_memory_peak_mb": 702.119021212579,
+            "performance_evaluation_meets_latency_budget": true,
+            "performance_evaluation_meets_memory_budget": true,
+            "risk_evaluation_t2_risk_score": 0.4590860155913161,
+            "risk_evaluation_high_risk_dimensions": 1
+          },
+          "qualitative_evidence": {
+            "mutation_evaluation_fault_detection_capability": "inadequate",
+            "sast_evaluation_sast_compliance": "compliant",
+            "property_evaluation_property_validation_status": "adequate",
+            "performance_evaluation_performance_compliance": "compliant",
+            "risk_evaluation_failure_modes": [],
+            "risk_evaluation_risk_category": "medium",
+            "risk_evaluation_risk_compliance": "compliant"
+          },
+          "evidence_completeness": {
+            "score": 1.0,
+            "required_evidence": [
+              "statistical_evaluation_ci_backed_wins",
+              "mutation_evaluation_mutation_score",
+              "sast_evaluation_critical_issues",
+              "performance_evaluation_latency_p95_ms"
+            ],
+            "available_evidence": [
+              "statistical_evaluation_ci_backed_wins",
+              "statistical_evaluation_significant_results_uncorrected",
+              "statistical_evaluation_significant_results_fdr",
+              "statistical_evaluation_large_effect_sizes",
+              "statistical_evaluation_quantitative_evidence_available",
+              "mutation_evaluation_mutation_score",
+              "mutation_evaluation_meets_threshold",
+              "mutation_evaluation_mutation_coverage",
+              "sast_evaluation_critical_issues",
+              "sast_evaluation_high_severity_issues",
+              "sast_evaluation_total_security_issues",
+              "sast_evaluation_vulnerability_count",
+              "property_evaluation_property_score",
+              "property_evaluation_meets_threshold",
+              "performance_evaluation_latency_p95_ms",
+              "performance_evaluation_memory_peak_mb",
+              "performance_evaluation_meets_latency_budget",
+              "performance_evaluation_meets_memory_budget",
+              "risk_evaluation_t2_risk_score",
+              "risk_evaluation_high_risk_dimensions",
+              "mutation_evaluation_fault_detection_capability",
+              "sast_evaluation_sast_compliance",
+              "property_evaluation_property_validation_status",
+              "performance_evaluation_performance_compliance",
+              "risk_evaluation_failure_modes",
+              "risk_evaluation_risk_category",
+              "risk_evaluation_risk_compliance"
+            ],
+            "missing_evidence": []
+          }
+        },
+        "failure_analysis": {
+          "failure_count_by_gate": {
+            "statistical_evaluation": 0,
+            "mutation_evaluation": 1,
+            "sast_evaluation": 0,
+            "property_evaluation": 0,
+            "performance_evaluation": 0,
+            "risk_evaluation": 0
+          },
+          "critical_failures": [],
+          "recoverable_failures": [
+            {
+              "gate": "mutation_evaluation",
+              "failure": "Mutation score below threshold: 0.757 < 0.8",
+              "severity": "recoverable"
+            }
+          ],
+          "failure_patterns": [],
+          "mitigation_strategies": {
+            "statistical_failures": "Increase sample size, improve experimental design",
+            "mutation_failures": "Enhance test coverage, add property-based tests",
+            "sast_failures": "Security code review, vulnerability patching",
+            "performance_failures": "Algorithm optimization, caching, infrastructure scaling",
+            "risk_failures": "Risk mitigation planning, monitoring enhancement"
+          }
+        },
+        "recommendations": [
+          "Automated refinement cycle",
+          "Parameter optimization",
+          "Additional testing"
+        ],
+        "decision_metadata": {
+          "timestamp": "2025-08-25T13:58:19.111256",
+          "gatekeeper_version": "1.0.0",
+          "thresholds_applied": {
+            "ci_lower_bound_min": 0.0,
+            "statistical_significance": 0.05,
+            "fdr_q_value": 0.05,
+            "mutation_score_min": 0.8,
+            "sast_high_severity_max": 0,
+            "sast_critical_severity_max": 0,
+            "property_score_min": 0.7,
+            "latency_p95_max": 3000,
+            "memory_peak_max": 1500,
+            "risk_score_max": 0.5,
+            "high_risk_dimensions_max": 2
+          },
+          "weights_applied": {
+            "statistical_gates": 0.3,
+            "mutation_gates": 0.2,
+            "sast_gates": 0.15,
+            "property_gates": 0.15,
+            "performance_gates": 0.1,
+            "risk_gates": 0.1
+          }
+        }
+      },
+      {
+        "configuration_id": "iter1",
+        "routing_decision": "MANUAL_QA",
+        "decision_confidence": 0.9,
+        "decision_rationale": "Critical failures require manual review: sast_evaluation: Critical SAST issues found: 1 > 0; sast_evaluation: High severity SAST issues found: 1 > 0",
+        "gate_evaluations": {
+          "statistical_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "ci_backed_wins": {
+                "status": "GateStatus.PASSED",
+                "wins_count": 1,
+                "total_comparisons": 1,
+                "win_rate": 1.0
+              },
+              "statistical_significance": {
+                "status": "GateStatus.PASSED",
+                "significant_uncorrected": 1,
+                "significant_fdr_corrected": 1,
+                "total_tests": 1
+              },
+              "effect_sizes": {
+                "status": "GateStatus.WARNING",
+                "large_effects": 0,
+                "total_comparisons": 1
+              }
+            },
+            "evidence": {
+              "ci_backed_wins": 1,
+              "significant_results_uncorrected": 1,
+              "significant_results_fdr": 1,
+              "large_effect_sizes": 0,
+              "quantitative_evidence_available": true
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "mutation_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "mutation_score": {
+                "status": "GateStatus.PASSED",
+                "score": 0.8901884727434914,
+                "threshold": 0.8,
+                "score_deficit": 0
+              },
+              "mutation_coverage": {
+                "total_mutations": 0,
+                "killed_mutations": 0,
+                "equivalent_mutations": 0,
+                "timeout_mutations": 0,
+                "coverage_ratio": 0.0
+              }
+            },
+            "evidence": {
+              "mutation_score": 0.8901884727434914,
+              "meets_threshold": true,
+              "mutation_coverage": 0.0,
+              "fault_detection_capability": "adequate"
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "sast_evaluation": {
+            "overall_status": "GateStatus.FAILED",
+            "gate_details": {
+              "sast_issues": {
+                "critical_issues": 1,
+                "high_issues": 1,
+                "medium_issues": 2,
+                "low_issues": 7,
+                "total_issues": 11,
+                "critical_gate_passed": false,
+                "high_gate_passed": false
+              }
+            },
+            "evidence": {
+              "critical_issues": 1,
+              "high_severity_issues": 1,
+              "total_security_issues": 0,
+              "vulnerability_count": 0,
+              "sast_compliance": "non_compliant"
+            },
+            "failures": [
+              "Critical SAST issues found: 1 > 0",
+              "High severity SAST issues found: 1 > 0"
+            ],
+            "warnings": []
+          },
+          "property_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "property_score": {
+                "status": "GateStatus.PASSED",
+                "score": 0.7469381089355098,
+                "threshold": 0.7,
+                "score_deficit": 0
+              }
+            },
+            "evidence": {
+              "property_score": 0.7469381089355098,
+              "meets_threshold": true,
+              "property_validation_status": "adequate"
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "performance_evaluation": {
+            "overall_status": "GateStatus.PASSED",
+            "gate_details": {
+              "performance_budgets": {
+                "latency_p95_ms": 2000.0,
+                "latency_budget_ms": 3000,
+                "latency_gate_passed": true,
+                "memory_peak_mb": 800.0,
+                "memory_budget_mb": 1500,
+                "memory_gate_passed": true,
+                "quality_score": 0.6,
+                "quality_adequate": true
+              }
+            },
+            "evidence": {
+              "latency_p95_ms": 2000.0,
+              "memory_peak_mb": 800.0,
+              "meets_latency_budget": true,
+              "meets_memory_budget": true,
+              "performance_compliance": "compliant"
+            },
+            "failures": [],
+            "warnings": []
+          },
+          "risk_evaluation": {
+            "overall_status": "GateStatus.FAILED",
+            "gate_details": {
+              "risk_assessment": {
+                "t2_risk_score": 0.5616596012631003,
+                "risk_threshold": 0.5,
+                "risk_score_gate_passed": false,
+                "high_risk_dimensions": 2,
+                "dimensions_threshold": 2,
+                "dimensions_gate_passed": true,
+                "failure_modes": [],
+                "critical_failure_modes": [],
+                "risk_category": "high"
+              }
+            },
+            "evidence": {
+              "t2_risk_score": 0.5616596012631003,
+              "high_risk_dimensions": 2,
+              "failure_modes": [],
+              "risk_category": "high",
+              "risk_compliance": "non_compliant"
+            },
+            "failures": [
+              "Risk score exceeds threshold: 0.562 > 0.5"
+            ],
+            "warnings": []
+          }
+        },
+        "composite_analysis": {
+          "composite_score": 0.75,
+          "gate_scores": {
+            "statistical_evaluation": 1.0,
+            "mutation_evaluation": 1.0,
+            "sast_evaluation": 0.0,
+            "property_evaluation": 1.0,
+            "performance_evaluation": 1.0,
+            "risk_evaluation": 0.0
+          },
+          "gate_weights_applied": {
+            "statistical_evaluation": 0.3,
+            "mutation_evaluation": 0.2,
+            "sast_evaluation": 0.15,
+            "property_evaluation": 0.15,
+            "performance_evaluation": 0.1,
+            "risk_evaluation": 0.1
+          },
+          "passed_gates": 4,
+          "failed_gates": 2,
+          "total_gates": 6,
+          "pass_rate": 0.6666666666666666
+        },
+        "evidence_summary": {
+          "quantitative_evidence": {
+            "statistical_evaluation_ci_backed_wins": 1,
+            "statistical_evaluation_significant_results_uncorrected": 1,
+            "statistical_evaluation_significant_results_fdr": 1,
+            "statistical_evaluation_large_effect_sizes": 0,
+            "statistical_evaluation_quantitative_evidence_available": true,
+            "mutation_evaluation_mutation_score": 0.8901884727434914,
+            "mutation_evaluation_meets_threshold": true,
+            "mutation_evaluation_mutation_coverage": 0.0,
+            "sast_evaluation_critical_issues": 1,
+            "sast_evaluation_high_severity_issues": 1,
+            "sast_evaluation_total_security_issues": 0,
+            "sast_evaluation_vulnerability_count": 0,
+            "property_evaluation_property_score": 0.7469381089355098,
+            "property_evaluation_meets_threshold": true,
+            "performance_evaluation_latency_p95_ms": 2000.0,
+            "performance_evaluation_memory_peak_mb": 800.0,
+            "performance_evaluation_meets_latency_budget": true,
+            "performance_evaluation_meets_memory_budget": true,
+            "risk_evaluation_t2_risk_score": 0.5616596012631003,
+            "risk_evaluation_high_risk_dimensions": 2
+          },
+          "qualitative_evidence": {
+            "mutation_evaluation_fault_detection_capability": "adequate",
+            "sast_evaluation_sast_compliance": "non_compliant",
+            "property_evaluation_property_validation_status": "adequate",
+            "performance_evaluation_performance_compliance": "compliant",
+            "risk_evaluation_failure_modes": [],
+            "risk_evaluation_risk_category": "high",
+            "risk_evaluation_risk_compliance": "non_compliant"
+          },
+          "evidence_completeness": {
+            "score": 1.0,
+            "required_evidence": [
+              "statistical_evaluation_ci_backed_wins",
+              "mutation_evaluation_mutation_score",
+              "sast_evaluation_critical_issues",
+              "performance_evaluation_latency_p95_ms"
+            ],
+            "available_evidence": [
+              "statistical_evaluation_ci_backed_wins",
+              "statistical_evaluation_significant_results_uncorrected",
+              "statistical_evaluation_significant_results_fdr",
+              "statistical_evaluation_large_effect_sizes",
+              "statistical_evaluation_quantitative_evidence_available",
+              "mutation_evaluation_mutation_score",
+              "mutation_evaluation_meets_threshold",
+              "mutation_evaluation_mutation_coverage",
+              "sast_evaluation_critical_issues",
+              "sast_evaluation_high_severity_issues",
+              "sast_evaluation_total_security_issues",
+              "sast_evaluation_vulnerability_count",
+              "property_evaluation_property_score",
+              "property_evaluation_meets_threshold",
+              "performance_evaluation_latency_p95_ms",
+              "performance_evaluation_memory_peak_mb",
+              "performance_evaluation_meets_latency_budget",
+              "performance_evaluation_meets_memory_budget",
+              "risk_evaluation_t2_risk_score",
+              "risk_evaluation_high_risk_dimensions",
+              "mutation_evaluation_fault_detection_capability",
+              "sast_evaluation_sast_compliance",
+              "property_evaluation_property_validation_status",
+              "performance_evaluation_performance_compliance",
+              "risk_evaluation_failure_modes",
+              "risk_evaluation_risk_category",
+              "risk_evaluation_risk_compliance"
+            ],
+            "missing_evidence": []
+          }
+        },
+        "failure_analysis": {
+          "failure_count_by_gate": {
+            "statistical_evaluation": 0,
+            "mutation_evaluation": 0,
+            "sast_evaluation": 2,
+            "property_evaluation": 0,
+            "performance_evaluation": 0,
+            "risk_evaluation": 1
+          },
+          "critical_failures": [
+            {
+              "gate": "sast_evaluation",
+              "failure": "Critical SAST issues found: 1 > 0",
+              "severity": "critical"
+            },
+            {
+              "gate": "sast_evaluation",
+              "failure": "High severity SAST issues found: 1 > 0",
+              "severity": "critical"
+            }
+          ],
+          "recoverable_failures": [
+            {
+              "gate": "risk_evaluation",
+              "failure": "Risk score exceeds threshold: 0.562 > 0.5",
+              "severity": "recoverable"
+            }
+          ],
+          "failure_patterns": [
+            [
+              "issues",
+              2
+            ],
+            [
+              "found:",
+              2
+            ]
+          ],
+          "mitigation_strategies": {
+            "statistical_failures": "Increase sample size, improve experimental design",
+            "mutation_failures": "Enhance test coverage, add property-based tests",
+            "sast_failures": "Security code review, vulnerability patching",
+            "performance_failures": "Algorithm optimization, caching, infrastructure scaling",
+            "risk_failures": "Risk mitigation planning, monitoring enhancement"
+          }
+        },
+        "recommendations": [
+          "Manual security review",
+          "Expert analysis of critical failures"
+        ],
+        "decision_metadata": {
+          "timestamp": "2025-08-25T13:58:19.111334",
+          "gatekeeper_version": "1.0.0",
+          "thresholds_applied": {
+            "ci_lower_bound_min": 0.0,
+            "statistical_significance": 0.05,
+            "fdr_q_value": 0.05,
+            "mutation_score_min": 0.8,
+            "sast_high_severity_max": 0,
+            "sast_critical_severity_max": 0,
+            "property_score_min": 0.7,
+            "latency_p95_max": 3000,
+            "memory_peak_max": 1500,
+            "risk_score_max": 0.5,
+            "high_risk_dimensions_max": 2
+          },
+          "weights_applied": {
+            "statistical_gates": 0.3,
+            "mutation_gates": 0.2,
+            "sast_gates": 0.15,
+            "property_gates": 0.15,
+            "performance_gates": 0.1,
+            "risk_gates": 0.1
+          }
+        }
+      }
+    ],
+    "batch_statistics": {
+      "promote_count": 0,
+      "refine_count": 1,
+      "manual_qa_count": 3,
+      "promote_rate": 0.0,
+      "automation_rate": 0.25
+    }
+  },
+  "task5_evaluation": {
+    "statistical_requirements": {
+      "bootstrap_samples_adequate": true,
+      "fdr_control_applied": true,
+      "confidence_level_appropriate": true,
+      "metric_families_separated": true
+    },
+    "gatekeeper_requirements": {
+      "promotion_candidates_identified": false,
+      "refinement_candidates_identified": true,
+      "manual_qa_cases_flagged": true,
+      "automation_rate_adequate": false
+    },
+    "evidence_requirements": {
+      "ci_backed_evidence_available": true,
+      "fdr_controlled_significance": true,
+      "strong_evidence_methods": 4,
+      "promotion_ready_methods": 4
+    },
+    "overall_compliance": false
+  },
+  "routing_summary": {
+    "decision_counts": {
+      "PROMOTE": 0,
+      "AGENT_REFINE": 1,
+      "MANUAL_QA": 3
+    },
+    "top_promotion_candidates": [],
+    "key_refinement_targets": [
+      {
+        "method": "iter3",
+        "confidence": 0.8,
+        "rationale": "Recoverable issues found: mutation_evaluation: Mutation score below threshold: 0.757 < 0.8"
+      }
+    ],
+    "critical_manual_reviews": [
+      {
+        "method": "iter4",
+        "confidence": 0.9,
+        "rationale": "Critical failures require manual review: sast_evaluation: High severity SAST issues found: 1 > 0"
+      },
+      {
+        "method": "iter2",
+        "confidence": 0.9,
+        "rationale": "Critical failures require manual review: sast_evaluation: Critical SAST issues found: 1 > 0"
+      }
+    ]
+  },
+  "evidence_requirements_check": {
+    "requirements_met": {
+      "iter4": {
+        "ci_lower_bound_positive": true,
+        "fdr_significant_results": true,
+        "adequate_sample_size": true,
+        "consistent_evidence": true
+      },
+      "iter2": {
+        "ci_lower_bound_positive": true,
+        "fdr_significant_results": true,
+        "adequate_sample_size": true,
+        "consistent_evidence": true
+      },
+      "iter3": {
+        "ci_lower_bound_positive": true,
+        "fdr_significant_results": true,
+        "adequate_sample_size": true,
+        "consistent_evidence": true
+      },
+      "iter1": {
+        "ci_lower_bound_positive": true,
+        "fdr_significant_results": true,
+        "adequate_sample_size": true,
+        "consistent_evidence": true
+      }
+    },
+    "evidence_strength_by_method": {
+      "iter4": "strong",
+      "iter2": "strong",
+      "iter3": "strong",
+      "iter1": "strong"
+    },
+    "promotion_readiness": {
+      "iter4": {
+        "ready": true,
+        "missing_requirements": []
+      },
+      "iter2": {
+        "ready": true,
+        "missing_requirements": []
+      },
+      "iter3": {
+        "ready": true,
+        "missing_requirements": []
+      },
+      "iter1": {
+        "ready": true,
+        "missing_requirements": []
+      }
+    },
+    "overall_assessment": "strong"
+  }
+}

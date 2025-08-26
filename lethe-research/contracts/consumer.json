@@ -1,0 +1,208 @@
+{
+  "contract_version": "1.0.0",
+  "contract_id": "lethe_ir_consumer",
+  "description": "Consumer contract for Lethe Hybrid IR System",
+  "last_updated": "2024-08-25T00:00:00Z",
+  
+  "consumer_expectations": {
+    "query_interface": {
+      "required_fields": [
+        "query_text",
+        "k_results",
+        "alpha",
+        "beta"
+      ],
+      "optional_fields": [
+        "filters",
+        "diversification",
+        "reranking",
+        "timeout_ms"
+      ],
+      "field_types": {
+        "query_text": "string",
+        "k_results": "integer",
+        "alpha": "float",
+        "beta": "float",
+        "filters": "object",
+        "diversification": "boolean",
+        "reranking": "boolean", 
+        "timeout_ms": "integer"
+      },
+      "field_constraints": {
+        "query_text": {
+          "min_length": 1,
+          "max_length": 1000,
+          "not_empty": true
+        },
+        "k_results": {
+          "min": 1,
+          "max": 100,
+          "default": 10
+        },
+        "alpha": {
+          "min": 0.0,
+          "max": 1.0,
+          "default": 0.5
+        },
+        "beta": {
+          "min": 0.0,
+          "max": 1.0,
+          "default": 0.5
+        },
+        "timeout_ms": {
+          "min": 100,
+          "max": 30000,
+          "default": 3000
+        }
+      }
+    },
+    
+    "response_interface": {
+      "required_fields": [
+        "query_id",
+        "results",
+        "metadata",
+        "timing"
+      ],
+      "response_structure": {
+        "query_id": "string",
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required_fields": [
+              "doc_id",
+              "score", 
+              "content",
+              "metadata"
+            ]
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "required_fields": [
+            "total_docs",
+            "alpha_used",
+            "beta_used",
+            "diversification_applied",
+            "reranking_applied"
+          ]
+        },
+        "timing": {
+          "type": "object",
+          "required_fields": [
+            "total_ms",
+            "retrieval_ms",
+            "reranking_ms",
+            "diversification_ms"
+          ]
+        }
+      }
+    },
+    
+    "performance_guarantees": {
+      "latency": {
+        "p95_max_ms": 3000,
+        "p99_max_ms": 5000,
+        "median_target_ms": 1500
+      },
+      "memory": {
+        "max_heap_gb": 1.5,
+        "max_resident_gb": 2.0
+      },
+      "quality": {
+        "min_ndcg_at_10": 0.60,
+        "min_recall_at_50": 0.75,
+        "min_mrr_at_10": 0.55
+      },
+      "availability": {
+        "uptime_percent": 99.9,
+        "max_error_rate": 0.001
+      }
+    },
+    
+    "behavioral_requirements": {
+      "empty_query_handling": {
+        "behavior": "return_empty_or_default",
+        "max_results": 0,
+        "error_allowed": false
+      },
+      "parameter_boundaries": {
+        "alpha_1_beta_0": {
+          "expected_behavior": "bm25_equivalent",
+          "similarity_threshold": 0.95
+        },
+        "alpha_0_beta_1": {
+          "expected_behavior": "dense_equivalent", 
+          "similarity_threshold": 0.95
+        }
+      },
+      "consistency": {
+        "repeated_queries": {
+          "similarity_threshold": 0.99,
+          "tolerance_seconds": 60
+        },
+        "parameter_perturbation": {
+          "max_change": 0.05,
+          "similarity_threshold": 0.80
+        }
+      }
+    },
+    
+    "error_handling": {
+      "timeout_behavior": {
+        "return_partial_results": true,
+        "include_timeout_flag": true,
+        "min_results_if_partial": 1
+      },
+      "invalid_input": {
+        "return_error_response": true,
+        "include_validation_details": true,
+        "error_format": "rfc7807"
+      },
+      "system_errors": {
+        "graceful_degradation": true,
+        "fallback_to_bm25": true,
+        "log_error_details": true
+      }
+    }
+  },
+  
+  "testing_requirements": {
+    "property_tests": {
+      "run_all_properties": true,
+      "min_pass_rate": 0.70
+    },
+    "metamorphic_tests": {
+      "run_all_metamorphic": true,
+      "min_pass_rate": 0.80
+    },
+    "baseline_comparisons": {
+      "run_budget_parity": true,
+      "tolerance_percent": 5.0
+    },
+    "smoke_tests": {
+      "non_empty_baseline_guard": true,
+      "readiness_probes": true,
+      "boot_transcript": true
+    }
+  },
+  
+  "compliance_requirements": {
+    "reproducibility": {
+      "fixed_seeds": true,
+      "pinned_dependencies": true,
+      "hermetic_environment": true
+    },
+    "security": {
+      "zero_high_sast": true,
+      "dependency_audit_pass": true,
+      "input_validation": true
+    },
+    "quality_gates": {
+      "mutation_testing": 0.80,
+      "property_testing": 0.70,
+      "false_discovery_rate": 0.05
+    }
+  }
+}

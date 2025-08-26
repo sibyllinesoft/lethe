@@ -1,0 +1,157 @@
+# Hermetic Multi-stage Dockerfile for Lethe vNext Research
+# SQLite-only datastore with complete network isolation
+# Complies with: TODO.md hermetic reproducibility requirements
+
+# ===== Base Stage =====
+FROM python:3.11-alpine@sha256:5f0192349d7b15069947122d96d65b6c78c91fb0ff5448fe0e78b0f4db0d6bb8 AS base
+
+# Set build arguments for reproducible builds
+ARG BUILD_DATE
+ARG VCS_REF  
+ARG VERSION=1.0.0
+
+# Install system dependencies with exact versions for reproducibility
+RUN apk add --no-cache \
+    sqlite=3.43.2-r0 \
+    sqlite-dev=3.43.2-r0 \
+    gcc=13.2.1_git20231014-r0 \
+    musl-dev=1.2.4_git20230717-r4 \
+    libffi-dev=3.4.4-r2 \
+    openssl-dev=3.1.4-r5 \
+    nodejs=20.10.0-r1 \
+    npm=10.2.3-r0 \
+    git=2.43.0-r0 \
+    curl=8.5.0-r0 \
+    jq=1.7-r4 \
+    bash=5.2.21-r0 \
+    dumb-init=1.2.5-r3 \
+    && rm -rf /var/cache/apk/*
+
+# Create non-root user for security
+RUN addgroup -g 1001 lethe && adduser -D -u 1001 -G lethe lethe
+
+# ===== Builder Stage =====
+FROM base AS builder
+
+WORKDIR /app
+RUN chown lethe:lethe /app
+
+# Copy lockfiles for dependency caching
+COPY --chown=lethe:lethe infra/requirements_hermetic.txt ./requirements.txt
+COPY --chown=lethe:lethe infra/lockfiles/ ./lockfiles/
+
+USER lethe
+
+# Install Python dependencies with hash verification
+RUN pip install --no-cache-dir --user --require-hashes -r requirements.txt
+
+# Install Node.js dependencies for ctx-run packages
+COPY --chown=lethe:lethe ../ctx-run/package*.json ../ctx-run/
+COPY --chown=lethe:lethe ../ctx-run/packages/ ../ctx-run/packages/
+RUN cd ../ctx-run && npm ci --only=production
+
+# Verify installed packages and generate manifest
+RUN python -c "
+import pkg_resources, json, hashlib
+packages = {d.project_name: {'version': d.version, 'location': d.location} 
+           for d in pkg_resources.working_set}
+with open('/tmp/python_manifest.json', 'w') as f:
+    json.dump(packages, f, sort_keys=True, indent=2)
+print('Python package verification complete')
+"
+
+# ===== Runtime Stage =====
+FROM base AS runtime
+
+# Set environment variables for hermetic operation
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PATH="/home/lethe/.local/bin:$PATH" \
+    ENVIRONMENT=hermetic \
+    NETWORK_MODE=isolated \
+    DATASTORE_TYPE=sqlite \
+    BUILD_REPRODUCIBLE=1 \
+    HERMETIC_MODE=1 \
+    VERSION=${VERSION}
+
+WORKDIR /app
+RUN chown lethe:lethe /app && chmod 755 /app
+
+# Copy built dependencies from builder
+COPY --from=builder --chown=lethe:lethe /home/lethe/.local /home/lethe/.local
+COPY --from=builder --chown=lethe:lethe /tmp/python_manifest.json /app/build_manifest/
+COPY --from=builder --chown=lethe:lethe /ctx-run/node_modules /app/ctx-run/node_modules
+
+# Copy application code
+COPY --chown=lethe:lethe scripts/ ./scripts/
+COPY --chown=lethe:lethe verification/ ./verification/
+COPY --chown=lethe:lethe experiments/ ./experiments/
+COPY --chown=lethe:lethe datasets/ ./datasets/
+COPY --chown=lethe:lethe ../ctx-run/packages/ ./ctx-run/packages/
+COPY --chown=lethe:lethe infra/config/hermetic.json ./config/config.json
+
+# Create data directories
+RUN mkdir -p data/sqlite data/indices artifacts logs build_manifest && \
+    chown -R lethe:lethe data artifacts logs build_manifest
+
+USER lethe
+
+# Initialize SQLite database with required extensions
+RUN python -c "
+import sqlite3, json, os
+db_path = '/app/data/sqlite/lethe.db'
+os.makedirs(os.path.dirname(db_path), exist_ok=True)
+conn = sqlite3.connect(db_path)
+conn.execute('PRAGMA journal_mode=WAL')
+conn.execute('PRAGMA synchronous=NORMAL')
+conn.execute('PRAGMA temp_store=memory')
+conn.execute('PRAGMA mmap_size=268435456')  # 256MB
+conn.execute('CREATE TABLE IF NOT EXISTS system_info (key TEXT PRIMARY KEY, value TEXT)')
+conn.execute('INSERT OR REPLACE INTO system_info (key, value) VALUES (?, ?)', 
+           ('initialized_at', '$(date -Iseconds)'))
+conn.execute('INSERT OR REPLACE INTO system_info (key, value) VALUES (?, ?)',
+           ('version', '${VERSION}'))
+conn.commit()
+conn.close()
+print('SQLite database initialized')
+"
+
+# Health check for hermetic environment
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD python scripts/readiness.py --hermetic || exit 1
+
+# Security labels for compliance
+LABEL maintainer="Lethe Research Team" \
+      version="${VERSION}" \
+      vcs.ref="${VCS_REF}" \
+      build.date="${BUILD_DATE}" \
+      security.scan="required" \
+      compliance="hermetic-reproducible" \
+      datastore="sqlite-only" \
+      network="localhost-only" \
+      base.image="python:3.11-alpine" \
+      base.digest="sha256:5f0192349d7b15069947122d96d65b6c78c91fb0ff5448fe0e78b0f4db0d6bb8"
+
+EXPOSE 8080
+
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["python", "scripts/spinup_smoke.sh", "--hermetic"]
+
+# ===== Smoke Test Stage =====
+FROM runtime AS smoke-test
+
+COPY --chown=lethe:lethe scripts/spinup_smoke.sh ./scripts/
+COPY --chown=lethe:lethe verification/golden/ ./verification/golden/
+
+CMD ["python", "scripts/spinup_smoke.sh", "--smoke-only"]
+
+# ===== Environment Recorder Stage =====
+FROM runtime AS env-recorder
+
+RUN pip install --no-cache-dir --user docker psutil
+
+COPY --chown=lethe:lethe scripts/record_env.py ./scripts/
+
+CMD ["python", "scripts/record_env.py", "--out", "/app/artifacts/env_manifest.json"]

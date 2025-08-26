@@ -1,0 +1,111 @@
+{
+  "environment": "hermetic",
+  "version": "1.0.0",
+  "build_info": {
+    "reproducible": true,
+    "hermetic": true,
+    "network_isolated": true,
+    "datastore": "sqlite_only"
+  },
+  "datastore": {
+    "type": "sqlite",
+    "path": "/app/data/sqlite/lethe.db",
+    "wal_mode": true,
+    "synchronous": "NORMAL",
+    "temp_store": "memory",
+    "mmap_size": 268435456,
+    "cache_size": -64000,
+    "journal_size_limit": 67108864
+  },
+  "vector_index": {
+    "type": "hnsw_wasm",
+    "path": "/app/data/indices",
+    "ef_construction": 200,
+    "ef_search": 50,
+    "max_connections": 16,
+    "quantization": {
+      "enabled": true,
+      "type": "int8",
+      "scale_per_vector": true
+    }
+  },
+  "network": {
+    "mode": "isolated",
+    "allowed_hosts": [
+      "127.0.0.1",
+      "localhost",
+      "host.docker.internal"
+    ],
+    "allowed_ports": [11434],
+    "block_outbound": true,
+    "timeout": 30
+  },
+  "ollama": {
+    "host": "http://host.docker.internal:11434",
+    "timeout": 30,
+    "max_retries": 3,
+    "models": {
+      "embedding": "{{MODEL_NAME}}",
+      "rerank": "{{RERANK_NAME}}",
+      "llm": "{{LLM_NAME}}"
+    }
+  },
+  "thresholds": {
+    "mutation_threshold": 0.80,
+    "property_threshold": 0.70,
+    "sast_high_threshold": 0,
+    "latency_p50_max": 3000,
+    "latency_p95_max": 6000,
+    "memory_rss_max": 1610612736
+  },
+  "experiments": {
+    "bootstrap_samples": 10000,
+    "confidence_interval": 0.95,
+    "fdr_correction": true,
+    "token_budget_tolerance": 0.05,
+    "answer_span_kept_min": 0.98
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "structured",
+    "destination": "/app/logs",
+    "max_size": "100MB",
+    "retention_days": 7,
+    "fields": {
+      "timestamp": true,
+      "level": true,
+      "module": true,
+      "function": true,
+      "line": true,
+      "request_id": true,
+      "experiment_id": true,
+      "config_hash": true
+    }
+  },
+  "security": {
+    "mode": "strict",
+    "disable_unsafe_operations": true,
+    "validate_inputs": true,
+    "sanitize_outputs": true,
+    "max_payload_size": 10485760,
+    "rate_limiting": {
+      "enabled": true,
+      "max_requests_per_minute": 100
+    }
+  },
+  "verification": {
+    "schema_validation": true,
+    "runtime_guards": true,
+    "invariant_checking": true,
+    "contract_enforcement": true,
+    "golden_comparison": true
+  },
+  "reproducibility": {
+    "record_environment": true,
+    "save_boot_transcript": true,
+    "sign_transcript": true,
+    "hash_artifacts": true,
+    "deterministic_seeds": true,
+    "freeze_dependencies": true
+  }
+}

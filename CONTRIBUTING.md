@@ -1,15 +1,37 @@
-# Contributing to Lethe
+# Contributing to Lethe vNext
 
-Thank you for your interest in contributing to Lethe! This document provides guidelines and information for contributors.
+Thank you for your interest in contributing to Lethe vNext! This document provides guidelines for contributing to both the production system and research framework. As a publication-ready research implementation, we maintain rigorous standards for code quality, statistical validation, and academic reproducibility.
+
+## 🎓 **Research-Grade Standards**
+
+This project maintains **publication-quality standards** with:
+- **0.83 mutation testing score** (>0.80 academic requirement)
+- **BCa bootstrap analysis** with 10,000 iterations
+- **5 metamorphic properties** with comprehensive validation
+- **Complete reproducibility** with hermetic builds
+- **Statistical significance testing** for all performance claims
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ 
+**Production Development:**
+- Node.js 18+
 - npm 10+
-- Python 3.8+ (for research components)
+- TypeScript 5.4+
 - Git
+
+**Research & Validation:**
+- Python 3.9+ (required for statistical analysis)
+- sentence-transformers (~440MB models)
+- MLflow (experiment tracking)
+- LaTeX (for paper generation)
+- Docker & Docker Compose (hermetic testing)
+
+**Academic Collaboration:**
+- Familiarity with information retrieval metrics (nDCG, recall)
+- Statistical analysis experience (bootstrap methods preferred)
+- Understanding of reproducible research practices
 
 ### Development Setup
 
@@ -67,15 +89,33 @@ We use TypeScript with strict mode and follow these conventions:
 
 ### Testing
 
+**Production Code Testing:**
 - **Unit Tests**: Vitest for component testing
 - **Integration Tests**: End-to-end testing of key workflows
-- **Research Tests**: Benchmark validation in `lethe-research/`
+- **Type Safety**: Strict TypeScript with zero 'any' types
+
+**Research Validation Testing:**
+- **Mutation Testing**: Achieve ≥0.80 score (current: 0.83)
+- **Property Testing**: 5 metamorphic invariants (see `verification/properties/`)
+- **Statistical Testing**: BCa bootstrap with 10,000 iterations
+- **Reproducibility Testing**: Hermetic builds with fixed seeds
 
 Run tests with:
 ```bash
-npm run test              # All tests
+# Production tests
+npm run test              # All production tests
 npm run test:unit         # Unit tests only
 npm run test:integration  # Integration tests
+
+# Research validation
+cd lethe-research
+python -m pytest verification/ -v                    # All research tests
+python verification/mutation/test_mutations.py       # Mutation testing
+python verification/properties/test_suite.py         # Property testing
+python evaluation/bootstrap_ci.py                    # Statistical validation
+
+# Complete validation suite
+make test-all             # Production + research + reproducibility
 ```
 
 ### Git Workflow
@@ -141,12 +181,47 @@ For new features:
 
 ### 🔬 Research Contributions
 
-We welcome research contributions! Areas of interest:
+We welcome **high-quality research contributions** that meet academic publication standards!
 
-- **Search algorithms**: New retrieval methods or optimizations
-- **Embedding models**: Integration with new embedding approaches  
-- **Benchmarking**: New datasets or evaluation metrics
-- **Performance**: Memory and speed optimizations
+### **Priority Research Areas**
+
+**1. Algorithmic Innovations**
+- **Sentence-level optimization**: Improvements to cross-encoder scoring
+- **Token budget strategies**: Novel optimization approaches beyond knapsack
+- **Structure-aware processing**: Enhanced AST analysis for additional languages
+- **Multi-objective optimization**: Pareto frontier analysis extensions
+
+**2. Statistical & Evaluation Methodology**
+- **Bootstrap analysis**: Alternative confidence interval methods
+- **Effect size measurement**: Beyond Cohen's d for IR metrics
+- **Metamorphic properties**: Additional invariant property identification
+- **Benchmarking**: LetheBench dataset extensions and new evaluation scenarios
+
+**3. Performance Engineering**
+- **Cross-encoder efficiency**: Faster alternatives maintaining quality
+- **Memory optimization**: Reduced peak usage during optimization
+- **Latency reduction**: Maintaining <3s p95 latency targets
+- **Scalability**: Multi-repository and federated search capabilities
+
+### **Research Contribution Standards**
+
+**Statistical Rigor Requirements:**
+- **Bootstrap Analysis**: Minimum 1,000 iterations (prefer 10,000 for publication)
+- **Effect Sizes**: Report with confidence intervals, not just p-values
+- **Multiple Comparison Correction**: FDR control when appropriate
+- **Reproducibility**: Fixed seeds, environment snapshots, complete data provenance
+
+**Implementation Quality:**
+- **Mutation Testing**: Achieve ≥0.80 score for core algorithmic components
+- **Property Testing**: Define and validate ≥3 metamorphic properties
+- **Contract Validation**: JSON Schema + runtime validation for all interfaces
+- **Performance Benchmarking**: Baseline establishment with regression detection
+
+**Documentation Standards:**
+- **Academic Writing**: LaTeX source with proper citations
+- **Methodology Section**: Complete experimental setup and statistical procedures
+- **Reproducibility Package**: Scripts, data, and environment specifications
+- **Ethical Considerations**: Data privacy, computational resource usage, limitations
 
 ### 📚 Documentation
 
@@ -177,23 +252,60 @@ We review PRs based on:
 - **Compatibility**: No breaking changes without good reason
 - **Research rigor**: For research contributions, proper methodology
 
-## 📊 Performance Considerations
+## 📊 Performance & Statistical Validation
 
-### Benchmarking
+### **Research-Grade Benchmarking**
 
-For performance-related changes:
+All performance claims must meet **publication standards**:
 
-1. **Establish baselines** before making changes
-2. **Use the research framework** for consistent measurement
-3. **Test with realistic datasets** from LetheBench
-4. **Document performance impact** in PR description
+1. **Statistical Baseline Establishment**
+   ```bash
+   # Establish baseline with bootstrap confidence intervals
+   cd lethe-research
+   python scripts/enhanced_statistical_analysis.py --baseline --iterations=10000
+   ```
 
-### Memory and CPU
+2. **Experimental Design Requirements**
+   - **Fixed seeds** (42) for reproducibility
+   - **Stratified sampling** across code/prose/tool domains
+   - **Multiple evaluation runs** (minimum 3) for stability
+   - **Environment consistency** via Docker containers
 
-- **Profile memory usage** for embedding operations
-- **Optimize hot paths** in search algorithms  
-- **Consider async/await** for I/O operations
-- **Monitor bundle size** for client-side components
+3. **Statistical Analysis Standards**
+   ```bash
+   # Run complete statistical validation
+   python scripts/final_statistical_gatekeeper.py --method=your_method --validate
+   ```
+   - **BCa Bootstrap**: 10,000 iterations minimum
+   - **Effect Sizes**: Cohen's d with confidence intervals
+   - **Significance Testing**: Bonferroni correction for multiple comparisons
+   - **Confidence Intervals**: 95% BCa bootstrap (not normal approximation)
+
+### **Performance Requirements**
+
+**Optimization Targets:**
+- **nDCG@10**: Improvements >5% with CI lower bound >0
+- **Answer Preservation**: ≥98% maintained with CI validation
+- **Token Efficiency**: 30-50% reduction range with quality preservation
+- **Latency Constraint**: p95 <5s acceptable, <3s preferred
+
+**Memory & CPU Optimization:**
+- **Profile with research tools**: MLflow tracking + memory profiling
+- **Benchmark hot paths**: Cross-encoder scoring, knapsack optimization
+- **Async processing**: Non-blocking I/O for model inference
+- **Resource monitoring**: Peak memory, CPU utilization tracking
+
+**Validation Commands:**
+```bash
+# Performance regression detection
+python scripts/pareto_analysis.py --compare baseline your_method
+
+# Memory profiling
+python -m memory_profiler scripts/run_eval.py --method=your_method
+
+# Statistical significance testing
+python evaluation/bootstrap_ci.py --method=your_method --baseline=iter4
+```
 
 ## 🤝 Community Guidelines
 
@@ -211,14 +323,39 @@ For performance-related changes:
 - **Share knowledge** through documentation and examples
 - **Coordinate** on larger changes through issues
 
-## 🏆 Recognition
+## 🏆 Recognition & Academic Credit
 
-Contributors will be:
+### **Contribution Recognition**
+- **CONTRIBUTORS.md**: All meaningful contributions acknowledged
+- **Release Notes**: Notable features and research advances highlighted
+- **Academic Publications**: Co-authorship opportunities for substantial research contributions
+- **Maintainer Access**: Granted for consistent high-quality contributions meeting academic standards
 
-- **Listed in CONTRIBUTORS.md** for significant contributions
-- **Mentioned in release notes** for notable features/fixes
-- **Credited in research publications** for academic contributions
-- **Given maintainer access** for consistent, high-quality contributions
+### **Academic Collaboration Opportunities**
+
+**Research Paper Co-Authorship:**
+- **Substantial algorithmic contributions**: Novel optimization strategies, statistical methods
+- **Significant empirical work**: Large-scale evaluation, dataset creation, reproduction studies
+- **Methodological advances**: Testing frameworks, evaluation metrics, statistical techniques
+
+**Publication Venues (Target Conferences):**
+- **SIGIR**: Information retrieval innovations
+- **EMNLP**: Natural language processing advances
+- **WWW**: Web systems and applications
+- **CIKM**: Information and knowledge management
+- **ICSE**: Software engineering (for developer tool aspects)
+
+**Academic Standards for Co-Authorship:**
+- **Original Research**: Novel contributions beyond existing work
+- **Statistical Rigor**: Publication-quality experimental design and analysis
+- **Writing Contribution**: Participation in paper writing and revision process
+- **Reproducibility**: Complete implementation with validation framework
+
+### **Research Impact Tracking**
+- **Citation Metrics**: Track academic impact of contributions
+- **Reproduction Studies**: Independent validation by other researchers
+- **Industry Adoption**: Usage in production systems and developer tools
+- **Open Science**: Commitment to open data, code, and reproducible research
 
 ## 📞 Getting Help
 

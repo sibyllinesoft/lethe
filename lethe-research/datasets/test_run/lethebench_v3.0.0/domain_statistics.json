@@ -1,0 +1,50 @@
+{
+  "code_heavy": {
+    "count": 7,
+    "avg_quality_score": 0.8285714285714285,
+    "std_quality_score": 0.0699854212223765,
+    "min_quality_score": 0.8,
+    "max_quality_score": 1.0,
+    "avg_text_length": 104.85714285714286,
+    "std_text_length": 10.999072317097234,
+    "avg_ground_truth_docs": 4.285714285714286,
+    "complexity_distribution": {
+      "simple": 0,
+      "medium": 7,
+      "complex": 0
+    },
+    "unique_templates": 4
+  },
+  "chatty_prose": {
+    "count": 17,
+    "avg_quality_score": 0.9529411764705882,
+    "std_quality_score": 0.043624696982915705,
+    "min_quality_score": 0.8999999999999999,
+    "max_quality_score": 1.0,
+    "avg_text_length": 93.0,
+    "std_text_length": 45.88220211136596,
+    "avg_ground_truth_docs": 3.588235294117647,
+    "complexity_distribution": {
+      "simple": 6,
+      "medium": 7,
+      "complex": 4
+    },
+    "unique_templates": 7
+  },
+  "tool_results": {
+    "count": 11,
+    "avg_quality_score": 0.9363636363636363,
+    "std_quality_score": 0.060643927564210616,
+    "min_quality_score": 0.8,
+    "max_quality_score": 1.0,
+    "avg_text_length": 184.36363636363637,
+    "std_text_length": 92.10396569023382,
+    "avg_ground_truth_docs": 3.6363636363636362,
+    "complexity_distribution": {
+      "simple": 4,
+      "medium": 5,
+      "complex": 2
+    },
+    "unique_templates": 6
+  }
+}

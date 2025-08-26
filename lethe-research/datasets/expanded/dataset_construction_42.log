@@ -1,0 +1,494 @@
+2025-08-25 02:59:36 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-25 02:59:36 - DeterministicBuilder - INFO - Target: 600 queries across 3 domains
+2025-08-25 02:59:36 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-25 02:59:36 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-25 02:59:36 - DeterministicBuilder - INFO - Seed: 42, Output: datasets/expanded
+2025-08-25 02:59:36 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-25 02:59:36 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-25 02:59:36 - DeterministicBuilder - INFO - Generating 200 queries for domain: code_heavy
+2025-08-25 02:59:36 - DeterministicBuilder - INFO - Generated 200 queries for code_heavy
+2025-08-25 02:59:36 - DeterministicBuilder - INFO - Generating 200 queries for domain: chatty_prose
+2025-08-25 02:59:36 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 1 validation error for QueryRecord
+query_text
+  Value error, Query must contain at least 5 words [type=value_error, input_value='Does PostgreSQL support auto-scaling?', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.9/v/value_error
+2025-08-25 03:01:54 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-25 03:01:54 - DeterministicBuilder - INFO - Target: 600 queries across 3 domains
+2025-08-25 03:01:54 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-25 03:01:54 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-25 03:01:54 - DeterministicBuilder - INFO - Seed: 42, Output: datasets/expanded
+2025-08-25 03:01:54 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-25 03:01:54 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-25 03:01:54 - DeterministicBuilder - INFO - Generating 200 queries for domain: code_heavy
+2025-08-25 03:01:54 - DeterministicBuilder - INFO - Generated 200 queries for code_heavy
+2025-08-25 03:01:54 - DeterministicBuilder - INFO - Generating 200 queries for domain: chatty_prose
+2025-08-25 03:01:54 - DeterministicBuilder - INFO - Generated 200 queries for chatty_prose
+2025-08-25 03:01:54 - DeterministicBuilder - INFO - Generating 200 queries for domain: tool_results
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Generated 200 queries for tool_results
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Total generated queries: 600
+2025-08-25 03:01:55 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 200 queries
+2025-08-25 03:01:55 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 200 queries
+2025-08-25 03:01:55 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 200 queries
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Computed hashes for 600 queries
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Quality filtering: 600 -> 436 queries
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Filter rate: 27.333%
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-25 03:01:55 - DeterministicBuilder - INFO -   code_heavy: 67/22/23 (train/dev/test)
+2025-08-25 03:01:55 - DeterministicBuilder - INFO -   chatty_prose: 111/37/38 (train/dev/test)
+2025-08-25 03:01:55 - DeterministicBuilder - INFO -   tool_results: 82/27/29 (train/dev/test)
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Final train: 260 queries
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Final dev: 86 queries
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Final test: 90 queries
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Computed comprehensive metadata for all queries
+2025-08-25 03:01:55 - DeterministicBuilder - INFO - Phase 7: Saving dataset with comprehensive manifest
+2025-08-25 03:01:55 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: name 'DomainStatistics' is not defined
+2025-08-25 03:02:34 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-25 03:02:34 - DeterministicBuilder - INFO - Target: 600 queries across 3 domains
+2025-08-25 03:02:34 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-25 03:02:34 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-25 03:02:34 - DeterministicBuilder - INFO - Seed: 42, Output: datasets/expanded
+2025-08-25 03:02:34 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-25 03:02:34 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-25 03:02:34 - DeterministicBuilder - INFO - Generating 200 queries for domain: code_heavy
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Generated 200 queries for code_heavy
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Generating 200 queries for domain: chatty_prose
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Generated 200 queries for chatty_prose
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Generating 200 queries for domain: tool_results
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Generated 200 queries for tool_results
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Total generated queries: 600
+2025-08-25 03:02:35 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 200 queries
+2025-08-25 03:02:35 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 200 queries
+2025-08-25 03:02:35 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 200 queries
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Computed hashes for 600 queries
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Quality filtering: 600 -> 436 queries
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Filter rate: 27.333%
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-25 03:02:35 - DeterministicBuilder - INFO -   code_heavy: 67/22/23 (train/dev/test)
+2025-08-25 03:02:35 - DeterministicBuilder - INFO -   chatty_prose: 111/37/38 (train/dev/test)
+2025-08-25 03:02:35 - DeterministicBuilder - INFO -   tool_results: 82/27/29 (train/dev/test)
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Final train: 260 queries
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Final dev: 86 queries
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Final test: 90 queries
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Computed comprehensive metadata for all queries
+2025-08-25 03:02:35 - DeterministicBuilder - INFO - Phase 7: Saving dataset with comprehensive manifest
+2025-08-25 03:02:35 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 1 validation error for DomainStatistics
+complexity_distribution
+  Value error, Complexity distribution must sum to total count [type=value_error, input_value={<ComplexityLevel.SIMPLE:....COMPLEX: 'complex'>: 0}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/value_error
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Target: 600 queries across 3 domains
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Seed: 42, Output: datasets/expanded
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Generating 200 queries for domain: code_heavy
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Generated 200 queries for code_heavy
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Generating 200 queries for domain: chatty_prose
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Generated 200 queries for chatty_prose
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Generating 200 queries for domain: tool_results
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Generated 200 queries for tool_results
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Total generated queries: 600
+2025-08-25 03:04:15 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 200 queries
+2025-08-25 03:04:15 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 200 queries
+2025-08-25 03:04:15 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 200 queries
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Computed hashes for 600 queries
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Quality filtering: 600 -> 436 queries
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Filter rate: 27.333%
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-25 03:04:15 - DeterministicBuilder - INFO -   code_heavy: 67/22/23 (train/dev/test)
+2025-08-25 03:04:15 - DeterministicBuilder - INFO -   chatty_prose: 111/37/38 (train/dev/test)
+2025-08-25 03:04:15 - DeterministicBuilder - INFO -   tool_results: 82/27/29 (train/dev/test)
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Final train: 260 queries
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Final dev: 86 queries
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Final test: 90 queries
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Computed comprehensive metadata for all queries
+2025-08-25 03:04:15 - DeterministicBuilder - INFO - Phase 7: Saving dataset with comprehensive manifest
+2025-08-25 03:04:15 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: name 'LicenseType' is not defined
+2025-08-25 03:04:25 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-25 03:04:25 - DeterministicBuilder - INFO - Target: 600 queries across 3 domains
+2025-08-25 03:04:25 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-25 03:04:25 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-25 03:04:25 - DeterministicBuilder - INFO - Seed: 42, Output: datasets/expanded
+2025-08-25 03:04:25 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-25 03:04:25 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-25 03:04:25 - DeterministicBuilder - INFO - Generating 200 queries for domain: code_heavy
+2025-08-25 03:04:25 - DeterministicBuilder - INFO - Generated 200 queries for code_heavy
+2025-08-25 03:04:25 - DeterministicBuilder - INFO - Generating 200 queries for domain: chatty_prose
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Generated 200 queries for chatty_prose
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Generating 200 queries for domain: tool_results
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Generated 200 queries for tool_results
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Total generated queries: 600
+2025-08-25 03:04:26 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 200 queries
+2025-08-25 03:04:26 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 200 queries
+2025-08-25 03:04:26 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 200 queries
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Computed hashes for 600 queries
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Quality filtering: 600 -> 436 queries
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Filter rate: 27.333%
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-25 03:04:26 - DeterministicBuilder - INFO -   code_heavy: 67/22/23 (train/dev/test)
+2025-08-25 03:04:26 - DeterministicBuilder - INFO -   chatty_prose: 111/37/38 (train/dev/test)
+2025-08-25 03:04:26 - DeterministicBuilder - INFO -   tool_results: 82/27/29 (train/dev/test)
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Final train: 260 queries
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Final dev: 86 queries
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Final test: 90 queries
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Computed comprehensive metadata for all queries
+2025-08-25 03:04:26 - DeterministicBuilder - INFO - Phase 7: Saving dataset with comprehensive manifest
+2025-08-25 03:04:26 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'DatasetSplitInfo' object is not subscriptable
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Target: 600 queries across 3 domains
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Seed: 42, Output: datasets/expanded
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Generating 200 queries for domain: code_heavy
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Generated 200 queries for code_heavy
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Generating 200 queries for domain: chatty_prose
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Generated 200 queries for chatty_prose
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Generating 200 queries for domain: tool_results
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Generated 200 queries for tool_results
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Total generated queries: 600
+2025-08-25 03:04:50 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 200 queries
+2025-08-25 03:04:50 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 200 queries
+2025-08-25 03:04:50 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 200 queries
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Computed hashes for 600 queries
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Quality filtering: 600 -> 436 queries
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Filter rate: 27.333%
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-25 03:04:50 - DeterministicBuilder - INFO -   code_heavy: 67/22/23 (train/dev/test)
+2025-08-25 03:04:50 - DeterministicBuilder - INFO -   chatty_prose: 111/37/38 (train/dev/test)
+2025-08-25 03:04:50 - DeterministicBuilder - INFO -   tool_results: 82/27/29 (train/dev/test)
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Final train: 260 queries
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Final dev: 86 queries
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Final test: 90 queries
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Computed comprehensive metadata for all queries
+2025-08-25 03:04:50 - DeterministicBuilder - INFO - Phase 7: Saving dataset with comprehensive manifest
+2025-08-25 03:04:50 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'DatasetManifest' object has no attribute 'creation_timestamp'
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Target: 600 queries across 3 domains
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Seed: 42, Output: datasets/expanded
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Generating 200 queries for domain: code_heavy
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Generated 200 queries for code_heavy
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Generating 200 queries for domain: chatty_prose
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Generated 200 queries for chatty_prose
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Generating 200 queries for domain: tool_results
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Generated 200 queries for tool_results
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Total generated queries: 600
+2025-08-25 03:05:31 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 200 queries
+2025-08-25 03:05:31 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 200 queries
+2025-08-25 03:05:31 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 200 queries
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-25 03:05:31 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Computed hashes for 600 queries
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Quality filtering: 600 -> 436 queries
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Filter rate: 27.333%
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-25 03:05:32 - DeterministicBuilder - INFO -   code_heavy: 67/22/23 (train/dev/test)
+2025-08-25 03:05:32 - DeterministicBuilder - INFO -   chatty_prose: 111/37/38 (train/dev/test)
+2025-08-25 03:05:32 - DeterministicBuilder - INFO -   tool_results: 82/27/29 (train/dev/test)
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Final train: 260 queries
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Final dev: 86 queries
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Final test: 90 queries
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Computed comprehensive metadata for all queries
+2025-08-25 03:05:32 - DeterministicBuilder - INFO - Phase 7: Saving dataset with comprehensive manifest
+2025-08-25 03:05:32 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'QualityMetrics' object has no attribute 'get'
+2025-08-25 03:06:00 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-25 03:06:00 - DeterministicBuilder - INFO - Target: 600 queries across 3 domains
+2025-08-25 03:06:00 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-25 03:06:00 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-25 03:06:00 - DeterministicBuilder - INFO - Seed: 42, Output: datasets/expanded
+2025-08-25 03:06:00 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-25 03:06:00 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-25 03:06:00 - DeterministicBuilder - INFO - Generating 200 queries for domain: code_heavy
+2025-08-25 03:06:00 - DeterministicBuilder - INFO - Generated 200 queries for code_heavy
+2025-08-25 03:06:00 - DeterministicBuilder - INFO - Generating 200 queries for domain: chatty_prose
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Generated 200 queries for chatty_prose
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Generating 200 queries for domain: tool_results
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Generated 200 queries for tool_results
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Total generated queries: 600
+2025-08-25 03:06:01 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 200 queries
+2025-08-25 03:06:01 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 200 queries
+2025-08-25 03:06:01 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 200 queries
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Computed hashes for 600 queries
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Quality filtering: 600 -> 436 queries
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Filter rate: 27.333%
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-25 03:06:01 - DeterministicBuilder - INFO -   code_heavy: 67/22/23 (train/dev/test)
+2025-08-25 03:06:01 - DeterministicBuilder - INFO -   chatty_prose: 111/37/38 (train/dev/test)
+2025-08-25 03:06:01 - DeterministicBuilder - INFO -   tool_results: 82/27/29 (train/dev/test)
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Final train: 260 queries
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Final dev: 86 queries
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Final test: 90 queries
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Computed comprehensive metadata for all queries
+2025-08-25 03:06:01 - DeterministicBuilder - INFO - Phase 7: Saving dataset with comprehensive manifest
+2025-08-25 03:06:01 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'ProvenanceInfo' object is not subscriptable
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Target: 600 queries across 3 domains
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Seed: 42, Output: datasets/expanded
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Generating 200 queries for domain: code_heavy
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Generated 200 queries for code_heavy
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Generating 200 queries for domain: chatty_prose
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Generated 200 queries for chatty_prose
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Generating 200 queries for domain: tool_results
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Generated 200 queries for tool_results
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Total generated queries: 600
+2025-08-25 03:06:14 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 200 queries
+2025-08-25 03:06:14 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 200 queries
+2025-08-25 03:06:14 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 200 queries
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Computed hashes for 600 queries
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Quality filtering: 600 -> 436 queries
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Filter rate: 27.333%
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-25 03:06:14 - DeterministicBuilder - INFO -   code_heavy: 67/22/23 (train/dev/test)
+2025-08-25 03:06:14 - DeterministicBuilder - INFO -   chatty_prose: 111/37/38 (train/dev/test)
+2025-08-25 03:06:14 - DeterministicBuilder - INFO -   tool_results: 82/27/29 (train/dev/test)
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Final train: 260 queries
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Final dev: 86 queries
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Final test: 90 queries
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Computed comprehensive metadata for all queries
+2025-08-25 03:06:14 - DeterministicBuilder - INFO - Phase 7: Saving dataset with comprehensive manifest
+2025-08-25 03:06:14 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'QualityMetrics' object is not subscriptable
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Target: 600 queries across 3 domains
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Seed: 42, Output: datasets/expanded
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Generating 200 queries for domain: code_heavy
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Generated 200 queries for code_heavy
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Generating 200 queries for domain: chatty_prose
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Generated 200 queries for chatty_prose
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Generating 200 queries for domain: tool_results
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Generated 200 queries for tool_results
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Total generated queries: 600
+2025-08-25 03:06:29 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 200 queries
+2025-08-25 03:06:29 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 200 queries
+2025-08-25 03:06:29 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 200 queries
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Computed hashes for 600 queries
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Quality filtering: 600 -> 436 queries
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Filter rate: 27.333%
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-25 03:06:29 - DeterministicBuilder - INFO -   code_heavy: 67/22/23 (train/dev/test)
+2025-08-25 03:06:29 - DeterministicBuilder - INFO -   chatty_prose: 111/37/38 (train/dev/test)
+2025-08-25 03:06:29 - DeterministicBuilder - INFO -   tool_results: 82/27/29 (train/dev/test)
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Final train: 260 queries
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Final dev: 86 queries
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Final test: 90 queries
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Computed comprehensive metadata for all queries
+2025-08-25 03:06:29 - DeterministicBuilder - INFO - Phase 7: Saving dataset with comprehensive manifest
+2025-08-25 03:06:29 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'ProvenanceInfo' object is not subscriptable
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Target: 600 queries across 3 domains
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Seed: 42, Output: datasets/expanded
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Generating 200 queries for domain: code_heavy
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Generated 200 queries for code_heavy
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Generating 200 queries for domain: chatty_prose
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Generated 200 queries for chatty_prose
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Generating 200 queries for domain: tool_results
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Generated 200 queries for tool_results
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Total generated queries: 600
+2025-08-25 03:06:47 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 200 queries
+2025-08-25 03:06:47 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 200 queries
+2025-08-25 03:06:47 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 200 queries
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Computed hashes for 600 queries
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Quality filtering: 600 -> 436 queries
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Filter rate: 27.333%
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-25 03:06:47 - DeterministicBuilder - INFO -   code_heavy: 67/22/23 (train/dev/test)
+2025-08-25 03:06:47 - DeterministicBuilder - INFO -   chatty_prose: 111/37/38 (train/dev/test)
+2025-08-25 03:06:47 - DeterministicBuilder - INFO -   tool_results: 82/27/29 (train/dev/test)
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Final train: 260 queries
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Final dev: 86 queries
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Final test: 90 queries
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Computed comprehensive metadata for all queries
+2025-08-25 03:06:47 - DeterministicBuilder - INFO - Phase 7: Saving dataset with comprehensive manifest
+2025-08-25 03:06:47 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'LicenseInfo' object is not subscriptable
+2025-08-25 03:07:04 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-25 03:07:04 - DeterministicBuilder - INFO - Target: 600 queries across 3 domains
+2025-08-25 03:07:04 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-25 03:07:04 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-25 03:07:04 - DeterministicBuilder - INFO - Seed: 42, Output: datasets/expanded
+2025-08-25 03:07:04 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-25 03:07:04 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-25 03:07:04 - DeterministicBuilder - INFO - Generating 200 queries for domain: code_heavy
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Generated 200 queries for code_heavy
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Generating 200 queries for domain: chatty_prose
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Generated 200 queries for chatty_prose
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Generating 200 queries for domain: tool_results
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Generated 200 queries for tool_results
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Total generated queries: 600
+2025-08-25 03:07:05 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 200 queries
+2025-08-25 03:07:05 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 200 queries
+2025-08-25 03:07:05 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 200 queries
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Computed hashes for 600 queries
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Quality filtering: 600 -> 436 queries
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Filter rate: 27.333%
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-25 03:07:05 - DeterministicBuilder - INFO -   code_heavy: 67/22/23 (train/dev/test)
+2025-08-25 03:07:05 - DeterministicBuilder - INFO -   chatty_prose: 111/37/38 (train/dev/test)
+2025-08-25 03:07:05 - DeterministicBuilder - INFO -   tool_results: 82/27/29 (train/dev/test)
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Final train: 260 queries
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Final dev: 86 queries
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Final test: 90 queries
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Computed comprehensive metadata for all queries
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Phase 7: Saving dataset with comprehensive manifest
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Dataset saved to datasets/expanded/lethebench_v3.0.0
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Manifest hash: 530423b96ef33a88ff0db3ccc4398d4c776ebd33eaaf6ba07cb82a73fe945159
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Phase 8: Running final verification
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - Running comprehensive dataset integrity verification...
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - ✓ Query count verification passed: 436
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - ✓ Domain distribution verification passed
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - ✓ Content hash verification passed
+2025-08-25 03:07:05 - DeterministicBuilder - INFO - ✓ Quality verification passed: avg=0.921, min=0.800
+2025-08-25 03:07:05 - DeterministicBuilder - ERROR - Enhanced dataset construction failed: 'ProvenanceInfo' object does not support item assignment
+2025-08-25 03:07:28 - DeterministicBuilder - INFO - Initialized Enhanced DeterministicDatasetBuilder v3.0.0
+2025-08-25 03:07:28 - DeterministicBuilder - INFO - Target: 600 queries across 3 domains
+2025-08-25 03:07:28 - DeterministicBuilder - INFO - Quality thresholds: main=0.8, IAA≥0.7
+2025-08-25 03:07:28 - DeterministicBuilder - INFO - Splits: 60.0%/20.0%/20.0%
+2025-08-25 03:07:28 - DeterministicBuilder - INFO - Seed: 42, Output: datasets/expanded
+2025-08-25 03:07:28 - DeterministicBuilder - INFO - Starting enhanced deterministic dataset construction...
+2025-08-25 03:07:28 - DeterministicBuilder - INFO - Phase 1: Generating domain-specific queries
+2025-08-25 03:07:28 - DeterministicBuilder - INFO - Generating 200 queries for domain: code_heavy
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Generated 200 queries for code_heavy
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Generating 200 queries for domain: chatty_prose
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Generated 200 queries for chatty_prose
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Generating 200 queries for domain: tool_results
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Generated 200 queries for tool_results
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Total generated queries: 600
+2025-08-25 03:07:29 - DeterministicBuilder - INFO -   DomainType.CODE_HEAVY: 200 queries
+2025-08-25 03:07:29 - DeterministicBuilder - INFO -   DomainType.CHATTY_PROSE: 200 queries
+2025-08-25 03:07:29 - DeterministicBuilder - INFO -   DomainType.TOOL_RESULTS: 200 queries
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Phase 2: Computing deterministic content hashes
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Computing content hashes for all queries...
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Computed hashes for 600 queries
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Phase 3: Running comprehensive quality audit
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Quality audit disabled, skipping...
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Phase 4: Applying quality filtering
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Quality filtering: 600 -> 436 queries
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Filter rate: 27.333%
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Phase 5: Creating stratified dataset splits
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Creating dataset splits: 60.0%/20.0%/20.0%
+2025-08-25 03:07:29 - DeterministicBuilder - INFO -   code_heavy: 67/22/23 (train/dev/test)
+2025-08-25 03:07:29 - DeterministicBuilder - INFO -   chatty_prose: 111/37/38 (train/dev/test)
+2025-08-25 03:07:29 - DeterministicBuilder - INFO -   tool_results: 82/27/29 (train/dev/test)
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Final train: 260 queries
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Final dev: 86 queries
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Final test: 90 queries
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Phase 6: Computing comprehensive metadata
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Computing comprehensive metadata and statistics...
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Computed comprehensive metadata for all queries
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Phase 7: Saving dataset with comprehensive manifest
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Dataset saved to datasets/expanded/lethebench_v3.0.0
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Manifest hash: 530423b96ef33a88ff0db3ccc4398d4c776ebd33eaaf6ba07cb82a73fe945159
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Phase 8: Running final verification
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Running comprehensive dataset integrity verification...
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - ✓ Query count verification passed: 436
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - ✓ Domain distribution verification passed
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - ✓ Content hash verification passed
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - ✓ Quality verification passed: avg=0.921, min=0.800
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - ✓ All enhanced dataset verification checks passed
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Enhanced dataset construction completed in 0.60s
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Final dataset: 436 queries
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Quality audit disabled
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - IAA not computed
+2025-08-25 03:07:29 - DeterministicBuilder - INFO - Manifest hash: 530423b96ef33a88...

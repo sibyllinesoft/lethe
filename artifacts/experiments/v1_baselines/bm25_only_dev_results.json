@@ -1,0 +1,227 @@
+[
+  {
+    "query_id": "code_heavy_query_000010",
+    "session_id": "code_heavy_session_0001",
+    "domain": "code_heavy",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "code_heavy_doc_000010_00",
+      "code_heavy_doc_000010_01",
+      "code_heavy_doc_000010_02",
+      "code_heavy_doc_000010_03",
+      "code_heavy_doc_000010_04"
+    ],
+    "retrieved_docs": [
+      "code_heavy_doc_000010_03",
+      "tool_results_doc_000011_03",
+      "tool_results_doc_000011_04",
+      "tool_results_doc_000003_02",
+      "chatty_prose_doc_000006_02",
+      "tool_results_doc_000003_01",
+      "tool_results_doc_000011_00",
+      "chatty_prose_doc_000011_00",
+      "chatty_prose_doc_000011_01",
+      "chatty_prose_doc_000003_00"
+    ],
+    "relevance_scores": [
+      7.994790375898416,
+      4.852657948588996,
+      3.3810904338998578,
+      3.332816851265724,
+      2.5802143081242734,
+      1.9600117947249363,
+      1.9483028023147817,
+      1.894781834104146,
+      1.894781834104146,
+      1.040946342681826
+    ],
+    "latency_ms": 0.25725364685058594,
+    "memory_mb": 38.65625,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7751453,
+    "baseline_name": "bm25_only"
+  },
+  {
+    "query_id": "chatty_prose_query_000011",
+    "session_id": "chatty_prose_session_0001",
+    "domain": "chatty_prose",
+    "complexity": "simple",
+    "ground_truth_docs": [
+      "chatty_prose_doc_000011_00",
+      "chatty_prose_doc_000011_01"
+    ],
+    "retrieved_docs": [
+      "chatty_prose_doc_000011_00",
+      "chatty_prose_doc_000011_01",
+      "tool_results_doc_000003_01",
+      "tool_results_doc_000011_00",
+      "tool_results_doc_000011_02",
+      "tool_results_doc_000011_03",
+      "tool_results_doc_000003_02"
+    ],
+    "relevance_scores": [
+      3.789563668208292,
+      3.789563668208292,
+      3.7035847533688653,
+      3.5394865285977564,
+      1.6645861178097698,
+      1.5198410973232719,
+      1.2607610750843397
+    ],
+    "latency_ms": 0.13303756713867188,
+    "memory_mb": 38.65625,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.775335,
+    "baseline_name": "bm25_only"
+  },
+  {
+    "query_id": "chatty_prose_query_000003",
+    "session_id": "chatty_prose_session_0000",
+    "domain": "chatty_prose",
+    "complexity": "complex",
+    "ground_truth_docs": [
+      "chatty_prose_doc_000003_00",
+      "chatty_prose_doc_000003_01",
+      "chatty_prose_doc_000003_02",
+      "chatty_prose_doc_000003_03",
+      "chatty_prose_doc_000003_04"
+    ],
+    "retrieved_docs": [
+      "tool_results_doc_000011_02",
+      "tool_results_doc_000003_01",
+      "tool_results_doc_000011_00",
+      "code_heavy_doc_000010_03",
+      "chatty_prose_doc_000003_00",
+      "chatty_prose_doc_000003_03",
+      "chatty_prose_doc_000003_04",
+      "chatty_prose_doc_000003_01",
+      "chatty_prose_doc_000003_02",
+      "chatty_prose_doc_000011_00"
+    ],
+    "relevance_scores": [
+      3.074179100441017,
+      2.679971418117264,
+      2.6638156718861636,
+      2.315702433323955,
+      2.1912680804361133,
+      2.1912680804361133,
+      2.1912680804361133,
+      2.1397326222006945,
+      2.1397326222006945,
+      1.941007300362945
+    ],
+    "latency_ms": 0.24271011352539062,
+    "memory_mb": 38.65625,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7756329,
+    "baseline_name": "bm25_only"
+  },
+  {
+    "query_id": "chatty_prose_query_000006",
+    "session_id": "chatty_prose_session_0000",
+    "domain": "chatty_prose",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "chatty_prose_doc_000006_00",
+      "chatty_prose_doc_000006_01",
+      "chatty_prose_doc_000006_02"
+    ],
+    "retrieved_docs": [
+      "tool_results_doc_000011_04",
+      "tool_results_doc_000003_02",
+      "tool_results_doc_000011_03",
+      "tool_results_doc_000003_00",
+      "tool_results_doc_000011_02",
+      "tool_results_doc_000011_01",
+      "tool_results_doc_000003_01",
+      "tool_results_doc_000011_00",
+      "code_heavy_doc_000010_03",
+      "chatty_prose_doc_000006_02"
+    ],
+    "relevance_scores": [
+      4.604877132257586,
+      3.8187035719582685,
+      3.8187035719582685,
+      3.3509953099260574,
+      3.31732225892791,
+      2.7752887058254423,
+      2.4133609003961607,
+      2.399822267230483,
+      1.597838309927105,
+      1.4958741803747375
+    ],
+    "latency_ms": 0.37932395935058594,
+    "memory_mb": 38.65625,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7760713,
+    "baseline_name": "bm25_only"
+  },
+  {
+    "query_id": "tool_results_query_000003",
+    "session_id": "tool_results_session_0000",
+    "domain": "tool_results",
+    "complexity": "simple",
+    "ground_truth_docs": [
+      "tool_results_doc_000003_00",
+      "tool_results_doc_000003_01",
+      "tool_results_doc_000003_02"
+    ],
+    "retrieved_docs": [
+      "code_heavy_doc_000010_03",
+      "chatty_prose_doc_000011_00",
+      "chatty_prose_doc_000011_01",
+      "chatty_prose_doc_000006_00",
+      "chatty_prose_doc_000006_01",
+      "chatty_prose_doc_000003_00",
+      "chatty_prose_doc_000003_03",
+      "chatty_prose_doc_000003_04",
+      "tool_results_doc_000003_01"
+    ],
+    "relevance_scores": [
+      1.297458900924097,
+      0.578378184774598,
+      0.578378184774598,
+      0.5732840267506911,
+      0.5732840267506911,
+      0.31670376596790084,
+      0.31670376596790084,
+      0.31670376596790084,
+      0.18657840166304485
+    ],
+    "latency_ms": 0.2665519714355469,
+    "memory_mb": 38.65625,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7763913,
+    "baseline_name": "bm25_only"
+  },
+  {
+    "query_id": "tool_results_query_000011",
+    "session_id": "tool_results_session_0001",
+    "domain": "tool_results",
+    "complexity": "medium",
+    "ground_truth_docs": [
+      "tool_results_doc_000011_00",
+      "tool_results_doc_000011_01",
+      "tool_results_doc_000011_02",
+      "tool_results_doc_000011_03",
+      "tool_results_doc_000011_04"
+    ],
+    "retrieved_docs": [
+      "code_heavy_doc_000010_03"
+    ],
+    "relevance_scores": [
+      1.297458900924097
+    ],
+    "latency_ms": 0.6647109985351562,
+    "memory_mb": 38.65625,
+    "entities_covered": [],
+    "contradictions": [],
+    "timestamp": 1756124208.7771213,
+    "baseline_name": "bm25_only"
+  }
+]

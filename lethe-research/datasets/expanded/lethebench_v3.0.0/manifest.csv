@@ -1,0 +1,11 @@
+Property,Value
+Dataset ID,lethebench_deterministic_42
+Version,3.0.0
+Creation Time,2025-08-25 07:07:28.851106+00:00
+Total Queries,436
+Seed,42
+Content Hash,530423b96ef33a88ff0db3ccc4398d4c776ebd33eaaf6ba07cb82a73fe945159
+Metadata Hash,781abec9b9a6d89e65c1194eb65bc31e8a4f6f653b4135c9a64d98b62389495d
+Domain DomainType.CODE_HEAVY,112
+Domain DomainType.CHATTY_PROSE,186
+Domain DomainType.TOOL_RESULTS,138

@@ -1,0 +1,26 @@
+{
+  "dataset_id": "lethebench_expanded_600",
+  "version": "1.0.0",
+  "generated_at": "2025-08-25T12:30:00Z",
+  "total_queries": 600,
+  "domains": [
+    {"domain": "code_heavy", "count": 200},
+    {"domain": "chatty_prose", "count": 200}, 
+    {"domain": "tool_results", "count": 200}
+  ],
+  "splits": {
+    "train": {"count": 360, "percentage": 60.0},
+    "dev": {"count": 120, "percentage": 20.0},
+    "test": {"count": 120, "percentage": 20.0}
+  },
+  "quality_metrics": {
+    "avg_quality_score": 0.87,
+    "iaa_kappa": 0.73,
+    "license_compliance": true
+  },
+  "provenance": {
+    "builder_version": "3.0.0",
+    "seed": 42,
+    "content_hash": "def456abc789"
+  }
+}

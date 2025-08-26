@@ -1,0 +1,7 @@
+[
+  {"doc_id": "doc_001", "title": "Introduction to Machine Learning", "content": "Machine learning is a subset of artificial intelligence that focuses on algorithms that can learn from data without explicit programming."},
+  {"doc_id": "doc_002", "title": "Neural Networks Basics", "content": "Neural networks are computational models inspired by biological neural networks. They consist of interconnected nodes that process information."},
+  {"doc_id": "doc_003", "title": "Information Retrieval Systems", "content": "Information retrieval systems help users find relevant documents from large collections. They use various techniques like term matching and vector similarity."},
+  {"doc_id": "doc_004", "title": "Hybrid Search Methods", "content": "Hybrid search combines multiple retrieval approaches, such as keyword-based and semantic search, to improve result quality and coverage."},
+  {"doc_id": "doc_005", "title": "Evaluation Metrics for IR", "content": "Information retrieval systems are evaluated using metrics like precision, recall, nDCG, and mean reciprocal rank to measure their effectiveness."}
+]

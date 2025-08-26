@@ -1,0 +1,104 @@
+# Production-Grade Information Retrieval System Configuration
+# Lethe Hybrid IR System - Task 2 Implementation
+
+# BM25 Configuration
+bm25:
+  # Core BM25 parameters
+  k1: 0.9
+  b: 0.4
+  
+  # Index settings
+  stemmer: "porter"  # porter, krovetz, none
+  stopwords: true
+  lowercase: true
+  
+  # Build settings
+  ram_buffer_size: 2048  # MB
+  max_merge_count: 8
+
+# HNSW Configuration
+hnsw:
+  # Build parameters
+  m: 16  # Number of bi-directional links
+  ef_construction: 200  # Size of dynamic candidate list during construction
+  max_m: 16  # Maximum number of bi-directional links
+  ml: 1.4426950408889634  # Level generation parameter (1/log(2))
+  
+  # Search parameter sweep for recall curves
+  ef_search_values: [64, 128, 256, 512]
+  target_recall: 0.98  # Target recall@1000
+  
+  # Memory and performance
+  max_elements: 1000000
+  memory_limit_gb: 4.0
+
+# IVF-PQ Configuration  
+ivf_pq:
+  # IVF parameter sweep
+  nlist_values: [1000, 4000, 16000]
+  nprobe_values: [1, 4, 16, 64]
+  
+  # PQ parameter sweep
+  nbits_values: [6, 8, 10]
+  m_pq: 64  # Number of subquantizers
+  
+  # Training parameters
+  training_sample_size: 1000000
+  max_training_iterations: 25
+  
+  # Search parameters
+  target_recall: 0.98
+  
+  # Budget constraints
+  memory_limit_gb: 2.0
+  compute_flops_budget: 1000000
+
+# Dense Embedding Configuration
+embeddings:
+  # Model settings
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  model_cache_dir: "./models"
+  
+  # Encoding settings
+  batch_size: 32
+  max_length: 512
+  normalize_embeddings: true
+  
+  # Performance settings
+  device: "auto"  # cuda, cpu, auto
+  fp16: true
+  dataloader_num_workers: 4
+  
+  # Persistence
+  embeddings_cache_dir: "./embeddings"
+  cache_embeddings: true
+
+# System Configuration
+system:
+  # Hardware profile (CPU_32C_128G, optional GPU_A100_40G)
+  cpu_cores: 32
+  memory_gb: 128
+  gpu_memory_gb: 40
+  
+  # Performance settings
+  concurrency: 1  # For latency measurements
+  warm_cache: true
+  
+  # Directories
+  indices_dir: "./indices"
+  data_dir: "./datasets"
+  models_dir: "./models"
+  
+  # Budget constraints (±5% compute/FLOPs parity)
+  flops_budget_variance: 0.05
+
+# Datasets to process
+datasets:
+  - "msmarco-passage-dev"
+  - "trec-covid"
+  - "nfcorpus"
+  - "fiqa-2018"
+
+# Global settings
+debug: false
+log_level: "INFO"

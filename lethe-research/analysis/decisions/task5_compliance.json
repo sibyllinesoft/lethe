@@ -1,0 +1,21 @@
+{
+  "statistical_requirements": {
+    "bootstrap_samples_adequate": true,
+    "fdr_control_applied": true,
+    "confidence_level_appropriate": true,
+    "metric_families_separated": true
+  },
+  "gatekeeper_requirements": {
+    "promotion_candidates_identified": false,
+    "refinement_candidates_identified": true,
+    "manual_qa_cases_flagged": true,
+    "automation_rate_adequate": false
+  },
+  "evidence_requirements": {
+    "ci_backed_evidence_available": true,
+    "fdr_controlled_significance": true,
+    "strong_evidence_methods": 4,
+    "promotion_ready_methods": 4
+  },
+  "overall_compliance": false
+}

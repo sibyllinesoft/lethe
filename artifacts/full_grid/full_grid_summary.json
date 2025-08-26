@@ -1,0 +1,130 @@
+{
+  "experiment_info": {
+    "start_time": "2025-08-25T08:40:11.373599",
+    "end_time": "2025-08-25T08:40:12.264463",
+    "duration_minutes": 0.014847816666666668,
+    "quick_mode": true
+  },
+  "overall_stats": {
+    "total_configurations": 24,
+    "successful_configurations": 24,
+    "success_rate": 1.0,
+    "variants_tested": 2
+  },
+  "variant_summaries": {
+    "V2_iter1": {
+      "name": "Core Hybrid Retrieval",
+      "configurations_tested": 12,
+      "successful_configurations": 12,
+      "best_ndcg_at_10": 1.0,
+      "best_parameters": {
+        "alpha": 0.1,
+        "k_initial": 20,
+        "k_final": 10,
+        "chunk_size": 256,
+        "chunk_overlap": 32
+      },
+      "avg_runtime": 0.036396563053131104,
+      "avg_latency_p95": 0.6583504875500997
+    },
+    "V3_iter2": {
+      "name": "Query Understanding & Reranking",
+      "configurations_tested": 12,
+      "successful_configurations": 12,
+      "best_ndcg_at_10": 1.0,
+      "best_parameters": {
+        "beta": 0.0,
+        "k_rerank": 10,
+        "query_rewrite": "none",
+        "hyde_num_docs": 1,
+        "decompose_max_subqueries": 2,
+        "retrieval_stages": "single"
+      },
+      "avg_runtime": 0.03546895583470663,
+      "avg_latency_p95": 0.8789122104644775
+    }
+  },
+  "best_configurations": {
+    "V2_iter1": {
+      "variant": "V2_iter1",
+      "config_id": "V2_iter1_0000",
+      "parameters": {
+        "alpha": 0.1,
+        "k_initial": 20,
+        "k_final": 10,
+        "chunk_size": 256,
+        "chunk_overlap": 32
+      },
+      "metrics": {
+        "ndcg_at_10": 1.0,
+        "ndcg_at_5": 0.6666666666666666,
+        "recall_at_10": 0.5777777777777778,
+        "recall_at_20": 0.9666666666666667,
+        "mrr_at_10": 0.4953703703703704,
+        "latency_p50": 0.2795124053955078,
+        "latency_p95": 0.48996806144714355,
+        "memory_peak": 180.2131953125,
+        "contradiction_rate": 0.0,
+        "consistency_index": 0.0
+      },
+      "runtime_seconds": 0.04168438911437988,
+      "memory_mb": 163.26953125,
+      "status": "success"
+    },
+    "V3_iter2": {
+      "variant": "V3_iter2",
+      "config_id": "V3_iter2_0000",
+      "parameters": {
+        "beta": 0.0,
+        "k_rerank": 10,
+        "query_rewrite": "none",
+        "hyde_num_docs": 1,
+        "decompose_max_subqueries": 2,
+        "retrieval_stages": "single"
+      },
+      "metrics": {
+        "ndcg_at_10": 1.0,
+        "ndcg_at_5": 0.8333333333333334,
+        "recall_at_10": 0.5722222222222222,
+        "recall_at_20": 0.9666666666666667,
+        "mrr_at_10": 0.2847222222222222,
+        "latency_p50": 0.3338813781738281,
+        "latency_p95": 0.7260560989379883,
+        "memory_peak": 184.38000000000002,
+        "contradiction_rate": 0.0,
+        "consistency_index": 0.0
+      },
+      "runtime_seconds": 0.036382436752319336,
+      "memory_mb": 164.625,
+      "status": "success"
+    }
+  },
+  "performance_analysis": {
+    "overall_best_variant": "V2_iter1",
+    "overall_best_ndcg_at_10": 1.0,
+    "overall_best_parameters": {
+      "alpha": 0.1,
+      "k_initial": 20,
+      "k_final": 10,
+      "chunk_size": 256,
+      "chunk_overlap": 32
+    },
+    "ndcg_improvements": {
+      "V2_iter1": {
+        "absolute_improvement": 0.55,
+        "relative_improvement": 1.2222222222222223,
+        "meets_target": "True"
+      },
+      "V3_iter2": {
+        "absolute_improvement": 0.55,
+        "relative_improvement": 1.2222222222222223,
+        "meets_target": "True"
+      }
+    },
+    "latency_analysis": {
+      "min_p95": 0.48996806144714355,
+      "max_p95": 1.2818098068237305,
+      "avg_p95": 0.7686313490072886
+    }
+  }
+}

@@ -1,0 +1,155 @@
+# Lethe System Properties and Invariants
+# Version: 1.0.0
+# Date: 2024-08-25
+
+system_properties:
+  name: "lethe_hybrid_ir"
+  version: "1.0.0"
+  description: "Hybrid Information Retrieval System with Dynamic Fusion"
+  
+# Mathematical Properties (P1-P5)
+mathematical_invariants:
+  P1_alpha_unity_equals_bm25:
+    description: "When α→1, system behavior must equal BM25-only baseline"
+    tolerance: 0.05
+    test_cases:
+      - alpha: 1.0
+        beta: 0.0
+        expected_behavior: "bm25_only"
+        metric_threshold: 0.95
+        
+  P2_alpha_zero_equals_dense:
+    description: "When α→0, system behavior must equal dense vector baseline"
+    tolerance: 0.05
+    test_cases:
+      - alpha: 0.0
+        beta: 1.0
+        expected_behavior: "dense_only"
+        metric_threshold: 0.95
+        
+  P3_monotonic_alpha_beta:
+    description: "Performance should be monotonic in α,β parameters"
+    test_cases:
+      - parameter: "alpha"
+        range: [0.1, 0.3, 0.5, 0.7, 0.9]
+        monotonicity: "increasing"
+        metric: "ndcg_at_10"
+      - parameter: "beta"
+        range: [0.1, 0.3, 0.5, 0.7, 0.9]
+        monotonicity: "increasing"
+        metric: "recall_at_50"
+        
+  P4_diversification_improves_coverage:
+    description: "Diversification must increase coverage@N metrics"
+    test_cases:
+      - diversification: true
+        expected_improvement: 0.15
+        metric: "coverage_at_10"
+      - diversification: true
+        expected_improvement: 0.20
+        metric: "topic_diversity"
+        
+  P5_reranking_improves_precision:
+    description: "Cross-encoder reranking must improve precision metrics"
+    test_cases:
+      - reranking: true
+        expected_improvement: 0.10
+        metric: "ndcg_at_10"
+      - reranking: true
+        expected_improvement: 0.12
+        metric: "mrr_at_10"
+
+# Performance Thresholds
+performance_requirements:
+  latency:
+    p95_threshold_ms: 3000
+    p99_threshold_ms: 5000
+    target_median_ms: 1500
+    
+  memory:
+    max_heap_gb: 1.5
+    max_resident_gb: 2.0
+    baseline_mb: 512
+    
+  throughput:
+    min_queries_per_second: 10
+    target_queries_per_second: 50
+    burst_capacity: 100
+    
+  quality:
+    min_ndcg_at_10: 0.60
+    min_recall_at_50: 0.75
+    min_mrr_at_10: 0.55
+
+# Budget Parity Requirements
+budget_parity:
+  tolerance_percent: 5.0
+  compute_metrics:
+    - "total_flops"
+    - "vector_operations" 
+    - "bm25_scoring_ops"
+    - "reranking_compute"
+  comparison_baselines:
+    - "bm25_only"
+    - "dense_only"
+    - "cross_encoder_baseline"
+
+# Quality Gates
+quality_gates:
+  T_mut: 0.80  # Mutation testing threshold
+  T_prop: 0.70 # Property testing threshold
+  SAST_high: 0 # No high-severity SAST findings
+  FDR_q: 0.05  # False discovery rate
+  
+# Hardware Profiles
+hardware_profiles:
+  CPU_32C_128G:
+    cores: 32
+    memory_gb: 128
+    storage_gb: 500
+    network_gbps: 10
+    required: true
+    
+  GPU_A100_40G:
+    gpu_memory_gb: 40
+    cuda_cores: 6912
+    tensor_cores: 432
+    required: false
+    note: "Optional GPU acceleration"
+
+# Baseline Implementations Required
+baseline_implementations:
+  - name: "window_baseline"
+    description: "Recency-only retrieval"
+    required: true
+    
+  - name: "bm25_only" 
+    description: "Pure lexical search"
+    required: true
+    
+  - name: "vector_only"
+    description: "Pure semantic search"
+    required: true
+    
+  - name: "bm25_vector_simple"
+    description: "BM25+Vector without rerank/diversify"
+    required: true
+    
+  - name: "cross_encoder"
+    description: "Cross-encoder reranking over BM25"
+    required: true
+    
+  - name: "faiss_ivf"
+    description: "Alternative FAISS-based RAG system"
+    required: true
+    
+  - name: "mmr_alternative"
+    description: "Different diversification approach"
+    required: true
+
+# Test Data Requirements
+test_data:
+  real_benchmarks_only: true
+  no_toy_data: true
+  no_synthetic_latencies: true
+  end_to_end_timing_only: true
