@@ -50,10 +50,9 @@ def test_timing_basic():
             dummy_op()
             
         print("✓ Basic timing test passed")
-        return True
     except Exception as e:
         print(f"❌ Timing test failed: {e}")
-        return False
+        raise AssertionError(f"Timing test failed: {e}")
 
 def test_config_basic():
     """Basic config test.""" 
@@ -63,15 +62,12 @@ def test_config_basic():
         config = RetrieverConfig()
         errors = config.validate()
         
-        if errors:
-            print(f"❌ Config validation failed: {errors}")
-            return False
+        assert not errors, f"Config validation failed: {errors}"
             
         print("✓ Basic config test passed")
-        return True
     except Exception as e:
         print(f"❌ Config test failed: {e}")
-        return False
+        raise AssertionError(f"Config test failed: {e}")
 
 if __name__ == "__main__":
     print("🧪 Minimal IR System Test")
@@ -80,14 +76,18 @@ if __name__ == "__main__":
     test_individual_modules()
     print()
     
-    success = True
-    success &= test_timing_basic()
-    success &= test_config_basic()
-    
-    print("=" * 30)
-    if success:
-        print("✅ Minimal tests passed!")
-    else:
-        print("❌ Some tests failed")
+    try:
+        test_timing_basic()
+        test_config_basic()
         
-    sys.exit(0 if success else 1)
+        print("=" * 30)
+        print("✅ Minimal tests passed!")
+        sys.exit(0)
+    except AssertionError as e:
+        print("=" * 30)
+        print(f"❌ Test failed: {e}")
+        sys.exit(1)
+    except Exception as e:
+        print("=" * 30)
+        print(f"❌ Unexpected error: {e}")
+        sys.exit(1)

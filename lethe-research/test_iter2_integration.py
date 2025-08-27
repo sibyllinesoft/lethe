@@ -155,17 +155,23 @@ async def test_iteration2_integration():
         
         if test_summary["quality_gates"]["overall_pass"]:
             logger.info("🎉 Iteration 2 implementation PASSED all quality gates!")
-            return True
         else:
             logger.warning("⚠️ Iteration 2 implementation did not pass all quality gates")
-            return False
+            
+        # Use proper assertion instead of return
+        assert test_summary["quality_gates"]["overall_pass"], "Iteration 2 implementation did not pass all quality gates"
             
     except Exception as e:
         logger.error(f"❌ Integration test failed: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        # Re-raise the exception instead of returning False
+        raise
 
 if __name__ == "__main__":
-    success = asyncio.run(test_iteration2_integration())
-    sys.exit(0 if success else 1)
+    try:
+        asyncio.run(test_iteration2_integration())
+        sys.exit(0)
+    except Exception as e:
+        print(f"Test failed: {e}")
+        sys.exit(1)

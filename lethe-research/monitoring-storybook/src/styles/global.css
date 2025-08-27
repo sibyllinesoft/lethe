@@ -1,0 +1,233 @@
+/* Lethe Monitoring Design System - Graphite Theme */
+@import '../design-system/base.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global styles for the Lethe Monitoring Storybook */
+
+/* Legacy base styles - now handled by design system base.css */
+
+@layer components {
+  /* Design System Component Styles - Graphite Theme */
+  
+  .dashboard-card {
+    @apply bg-surface-primary rounded-lg shadow-soft border border-graphite-200 p-6 hover:shadow-medium transition-all duration-200;
+  }
+
+  .metric-value {
+    @apply text-3xl font-bold text-graphite-900 leading-none;
+  }
+
+  .metric-label {
+    @apply text-sm font-medium text-graphite-600;
+  }
+
+  .metric-subtitle {
+    @apply text-sm text-graphite-500;
+  }
+
+  .trend-up {
+    @apply text-success-600;
+  }
+
+  .trend-down {
+    @apply text-error-600;
+  }
+
+  .trend-stable {
+    @apply text-graphite-500;
+  }
+
+  .status-success {
+    @apply text-success-700 bg-success-50 border-success-200;
+  }
+
+  .status-error {
+    @apply text-error-700 bg-error-50 border-error-200;
+  }
+
+  .status-warning {
+    @apply text-warning-700 bg-warning-50 border-warning-200;
+  }
+
+  .terminal-dark {
+    @apply bg-graphite-950 text-graphite-300 font-mono terminal-scrollbar;
+  }
+
+  .terminal-header {
+    @apply bg-graphite-900 text-graphite-300 px-4 py-3 rounded-t-lg border-b border-graphite-700;
+  }
+
+  .code-block {
+    @apply bg-graphite-50 rounded-md p-4 font-mono text-sm overflow-x-auto border border-graphite-200;
+  }
+
+  .table-header {
+    @apply px-4 py-3 text-left text-xs font-medium text-graphite-600 uppercase tracking-wider cursor-pointer hover:bg-graphite-100 transition-colors;
+  }
+
+  .table-cell {
+    @apply px-4 py-3 whitespace-nowrap text-sm text-graphite-700;
+  }
+
+  .chart-container {
+    @apply bg-surface-primary p-6 rounded-lg shadow-soft border border-graphite-200;
+  }
+
+  .chart-title {
+    @apply text-lg font-semibold text-graphite-900 mb-4;
+  }
+
+  .legend-item {
+    @apply flex items-center text-sm text-graphite-600;
+  }
+
+  .legend-dot {
+    @apply w-3 h-3 rounded-full mr-2;
+  }
+
+  .section-header {
+    @apply text-lg font-semibold text-graphite-900 mb-4;
+  }
+
+  .subsection-header {
+    @apply text-base font-medium text-graphite-900 mb-2;
+  }
+
+  .loading-spinner {
+    @apply animate-spin h-4 w-4 text-graphite-500;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border;
+  }
+
+  .badge-success {
+    @apply bg-success-100 text-success-700 border-success-200;
+  }
+
+  .badge-error {
+    @apply bg-error-100 text-error-700 border-error-200;
+  }
+
+  .badge-warning {
+    @apply bg-warning-100 text-warning-700 border-warning-200;
+  }
+
+  .badge-info {
+    @apply bg-blue-100 text-blue-700 border-blue-200;
+  }
+}
+
+@layer utilities {
+  /* Custom utilities */
+  
+  .text-shadow {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  /* Animation utilities */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideIn {
+    from { 
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 2s ease-in-out infinite;
+  }
+
+  /* Focus states for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  }
+
+  /* Responsive text sizing */
+  .text-responsive-sm {
+    @apply text-sm md:text-base;
+  }
+
+  .text-responsive-lg {
+    @apply text-lg md:text-xl lg:text-2xl;
+  }
+
+  .text-responsive-xl {
+    @apply text-xl md:text-2xl lg:text-3xl xl:text-4xl;
+  }
+}
+
+/* Custom scrollbars are now handled in design-system/base.css */
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .chart-container {
+    break-inside: avoid;
+  }
+  
+  .dashboard-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .dashboard-card {
+    border-width: 2px;
+  }
+  
+  .table-header {
+    border-bottom-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .loading-spinner {
+    animation: none;
+  }
+}

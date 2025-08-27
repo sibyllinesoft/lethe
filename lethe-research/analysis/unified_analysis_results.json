@@ -1,0 +1,2020 @@
+{
+  "hypothesis_testing": {
+    "statistical_tests": [
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "baseline_vector",
+        "metric": "ndcg_at_10",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "baseline_vector",
+        "metric": "recall_at_50",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "baseline_vector",
+        "metric": "coverage_at_n",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "baseline_vector",
+        "metric": "latency_ms_total",
+        "statistic": 4945.0,
+        "p_value": 0.8940631319544825,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.025949469853096385,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 148.23248148715584,
+        "baseline_std": 30.590702827546092,
+        "comparison_mean": 149.05748136863394,
+        "comparison_std": 32.950594587893185,
+        "baseline_ci": [
+          142.40094992995495,
+          154.32357251029754
+        ],
+        "comparison_ci": [
+          142.7041730485838,
+          155.84321171512528
+        ],
+        "difference_ci": [
+          -0.03501401938931971,
+          1.5958234975734733
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "baseline_vector",
+        "metric": "contradiction_rate",
+        "statistic": 4774.0,
+        "p_value": 0.5816445097552116,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": -0.07408850004353432,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.1000097387878088,
+        "baseline_std": 0.030550618346171163,
+        "comparison_mean": 0.09780523096162735,
+        "comparison_std": 0.028937640014288703,
+        "baseline_ci": [
+          0.0940948680363542,
+          0.10632037557634194
+        ],
+        "comparison_ci": [
+          0.09244737401584756,
+          0.10372987847920592
+        ],
+        "difference_ci": [
+          -0.0030870502045980018,
+          -0.001409344890468105
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "baseline_vector",
+        "metric": "memory_mb",
+        "statistic": 4911.0,
+        "p_value": 0.8288007406269458,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": -0.06117200980359739,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 257.8041027350213,
+        "baseline_std": 49.419185871069914,
+        "comparison_mean": 254.77111685894334,
+        "comparison_std": 49.74282408557946,
+        "baseline_ci": [
+          249.97962708376275,
+          268.2289639050602
+        ],
+        "comparison_ci": [
+          244.4385440058641,
+          264.65600488365243
+        ],
+        "difference_ci": [
+          -4.3748018379048625,
+          -1.6405852144303157
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_1",
+        "metric": "ndcg_at_10",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_1",
+        "metric": "recall_at_50",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_1",
+        "metric": "coverage_at_n",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_1",
+        "metric": "latency_ms_total",
+        "statistic": 3516.0,
+        "p_value": 0.0002892216211309929,
+        "p_value_corrected": 0.017353297267859575,
+        "significant": true,
+        "significant_corrected": true,
+        "effect_size": -0.4871020101302295,
+        "effect_size_interpretation": "small",
+        "baseline_mean": 148.23248148715584,
+        "baseline_std": 30.590702827546092,
+        "comparison_mean": 134.76263667648928,
+        "comparison_std": 24.36367487561931,
+        "baseline_ci": [
+          141.76356237940158,
+          153.61005548395494
+        ],
+        "comparison_ci": [
+          129.97870151847167,
+          139.66237060352276
+        ],
+        "difference_ci": [
+          -14.189848468934752,
+          -12.722101364184029
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_1",
+        "metric": "contradiction_rate",
+        "statistic": 5151.0,
+        "p_value": 0.7130745482880949,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.05585690726262627,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.1000097387878088,
+        "baseline_std": 0.030550618346171163,
+        "comparison_mean": 0.10167474212371073,
+        "comparison_std": 0.02904716017151408,
+        "baseline_ci": [
+          0.09447701814773254,
+          0.10615149833832226
+        ],
+        "comparison_ci": [
+          0.09644648707634818,
+          0.10764361485126159
+        ],
+        "difference_ci": [
+          0.0008385366034971993,
+          0.0024893758654906664
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_1",
+        "metric": "memory_mb",
+        "statistic": 3387.0,
+        "p_value": 8.149364023531583e-05,
+        "p_value_corrected": 0.004889618414118949,
+        "significant": true,
+        "significant_corrected": true,
+        "effect_size": -0.5962853476221355,
+        "effect_size_interpretation": "medium",
+        "baseline_mean": 257.8041027350213,
+        "baseline_std": 49.419185871069914,
+        "comparison_mean": 231.8594081859639,
+        "comparison_std": 36.661661142423576,
+        "baseline_ci": [
+          247.9721425523342,
+          268.4180938200045
+        ],
+        "comparison_ci": [
+          225.06980764108562,
+          238.5651754883594
+        ],
+        "difference_ci": [
+          -27.134418432349886,
+          -24.740227171713983
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_2",
+        "metric": "ndcg_at_10",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_2",
+        "metric": "recall_at_50",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_2",
+        "metric": "coverage_at_n",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_2",
+        "metric": "latency_ms_total",
+        "statistic": 3150.0,
+        "p_value": 6.2118386240191e-06,
+        "p_value_corrected": 0.00037271031744114596,
+        "significant": true,
+        "significant_corrected": true,
+        "effect_size": -0.6398122163517037,
+        "effect_size_interpretation": "medium",
+        "baseline_mean": 148.23248148715584,
+        "baseline_std": 30.590702827546092,
+        "comparison_mean": 130.59215852124862,
+        "comparison_std": 24.17724932305811,
+        "baseline_ci": [
+          142.04841657258618,
+          154.1247109253032
+        ],
+        "comparison_ci": [
+          125.37203137896488,
+          135.1584943357118
+        ],
+        "difference_ci": [
+          -18.376011728491708,
+          -16.909466205919287
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_2",
+        "metric": "contradiction_rate",
+        "statistic": 4763.0,
+        "p_value": 0.5633576490749412,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": -0.08613327145013897,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.1000097387878088,
+        "baseline_std": 0.030550618346171163,
+        "comparison_mean": 0.09739232118790164,
+        "comparison_std": 0.03022450081877693,
+        "baseline_ci": [
+          0.09423837003256254,
+          0.10597623794484047
+        ],
+        "comparison_ci": [
+          0.09177829735403656,
+          0.1034504868113286
+        ],
+        "difference_ci": [
+          -0.0033902183228337874,
+          -0.0018582116075598998
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_2",
+        "metric": "memory_mb",
+        "statistic": 2970.0,
+        "p_value": 7.090886408303293e-07,
+        "p_value_corrected": 4.2545318449819764e-05,
+        "significant": true,
+        "significant_corrected": true,
+        "effect_size": -0.7597131871717806,
+        "effect_size_interpretation": "medium",
+        "baseline_mean": 257.8041027350213,
+        "baseline_std": 49.419185871069914,
+        "comparison_mean": 221.57612582053937,
+        "comparison_std": 45.88820157100263,
+        "baseline_ci": [
+          248.92653903903746,
+          267.70293372702156
+        ],
+        "comparison_ci": [
+          213.19900737496678,
+          230.58691556909184
+        ],
+        "difference_ci": [
+          -37.60416798226802,
+          -34.87018907441476
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_3",
+        "metric": "ndcg_at_10",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_3",
+        "metric": "recall_at_50",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_3",
+        "metric": "coverage_at_n",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_3",
+        "metric": "latency_ms_total",
+        "statistic": 2686.0,
+        "p_value": 1.578731482434268e-08,
+        "p_value_corrected": 9.472388894605608e-07,
+        "significant": true,
+        "significant_corrected": true,
+        "effect_size": -0.8406110402104318,
+        "effect_size_interpretation": "large",
+        "baseline_mean": 148.23248148715584,
+        "baseline_std": 30.590702827546092,
+        "comparison_mean": 125.30321176846928,
+        "comparison_std": 23.50038899885363,
+        "baseline_ci": [
+          142.03218211579892,
+          153.81922226336349
+        ],
+        "comparison_ci": [
+          120.9216738224152,
+          129.82641373599202
+        ],
+        "difference_ci": [
+          -23.709786774251885,
+          -22.18522805120383
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_3",
+        "metric": "contradiction_rate",
+        "statistic": 4734.0,
+        "p_value": 0.5165195365976569,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": -0.1059827415470942,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.1000097387878088,
+        "baseline_std": 0.030550618346171163,
+        "comparison_mean": 0.09702622432141628,
+        "comparison_std": 0.0255266776967625,
+        "baseline_ci": [
+          0.0937581795618791,
+          0.10553424124098094
+        ],
+        "comparison_ci": [
+          0.09162263172833461,
+          0.10213050874028072
+        ],
+        "difference_ci": [
+          -0.0037546288165178623,
+          -0.0022649370706588645
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_bm25",
+        "comparison_method": "lethe_iter_3",
+        "metric": "memory_mb",
+        "statistic": 2322.0,
+        "p_value": 6.063100283410663e-11,
+        "p_value_corrected": 3.637860170046398e-09,
+        "significant": true,
+        "significant_corrected": true,
+        "effect_size": -1.0486076152480162,
+        "effect_size_interpretation": "large",
+        "baseline_mean": 257.8041027350213,
+        "baseline_std": 49.419185871069914,
+        "comparison_mean": 211.78426966208542,
+        "comparison_std": 37.54747766133414,
+        "baseline_ci": [
+          248.53612827834837,
+          268.25285968451095
+        ],
+        "comparison_ci": [
+          203.31708003957587,
+          218.5216434068369
+        ],
+        "difference_ci": [
+          -47.12858272044351,
+          -44.86167483298462
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_1",
+        "metric": "ndcg_at_10",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_1",
+        "metric": "recall_at_50",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_1",
+        "metric": "coverage_at_n",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_1",
+        "metric": "latency_ms_total",
+        "statistic": 3716.0,
+        "p_value": 0.0017121686402466107,
+        "p_value_corrected": 0.10273011841479665,
+        "significant": true,
+        "significant_corrected": false,
+        "effect_size": -0.49331733003518125,
+        "effect_size_interpretation": "small",
+        "baseline_mean": 149.05748136863394,
+        "baseline_std": 32.950594587893185,
+        "comparison_mean": 134.76263667648928,
+        "comparison_std": 24.36367487561931,
+        "baseline_ci": [
+          142.60408050716998,
+          155.22560546636632
+        ],
+        "comparison_ci": [
+          129.91598729574105,
+          139.37563069770832
+        ],
+        "difference_ci": [
+          -15.096803755854886,
+          -13.506919274961215
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_1",
+        "metric": "contradiction_rate",
+        "statistic": 5379.0,
+        "p_value": 0.35505814399502555,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.1334661582873023,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.09780523096162735,
+        "baseline_std": 0.028937640014288703,
+        "comparison_mean": 0.10167474212371073,
+        "comparison_std": 0.02904716017151408,
+        "baseline_ci": [
+          0.09165968092735509,
+          0.10345632797054953
+        ],
+        "comparison_ci": [
+          0.096157940304572,
+          0.10773888123259702
+        ],
+        "difference_ci": [
+          0.0031167204805858223,
+          0.0046151128149101005
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_1",
+        "metric": "memory_mb",
+        "statistic": 3535.0,
+        "p_value": 0.0003457794448460502,
+        "p_value_corrected": 0.020746766690763013,
+        "significant": true,
+        "significant_corrected": true,
+        "effect_size": -0.5243608878961133,
+        "effect_size_interpretation": "medium",
+        "baseline_mean": 254.77111685894334,
+        "baseline_std": 49.74282408557946,
+        "comparison_mean": 231.8594081859639,
+        "comparison_std": 36.661661142423576,
+        "baseline_ci": [
+          245.82880056199218,
+          265.08347367701475
+        ],
+        "comparison_ci": [
+          224.1931810177582,
+          238.9722457098192
+        ],
+        "difference_ci": [
+          -24.137730270962535,
+          -21.757609045530725
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_2",
+        "metric": "ndcg_at_10",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_2",
+        "metric": "recall_at_50",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_2",
+        "metric": "coverage_at_n",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_2",
+        "metric": "latency_ms_total",
+        "statistic": 3357.0,
+        "p_value": 5.9884302374535286e-05,
+        "p_value_corrected": 0.003593058142472117,
+        "significant": true,
+        "significant_corrected": true,
+        "effect_size": -0.6389650792509017,
+        "effect_size_interpretation": "medium",
+        "baseline_mean": 149.05748136863394,
+        "baseline_std": 32.950594587893185,
+        "comparison_mean": 130.59215852124862,
+        "comparison_std": 24.17724932305811,
+        "baseline_ci": [
+          142.5474713637358,
+          155.20454544469789
+        ],
+        "comparison_ci": [
+          125.80998775579715,
+          135.38786329371234
+        ],
+        "difference_ci": [
+          -19.191852275545106,
+          -17.637574610375538
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_2",
+        "metric": "contradiction_rate",
+        "statistic": 4955.0,
+        "p_value": 0.9134160074646397,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": -0.013955280309561828,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.09780523096162735,
+        "baseline_std": 0.028937640014288703,
+        "comparison_mean": 0.09739232118790164,
+        "comparison_std": 0.03022450081877693,
+        "baseline_ci": [
+          0.09246122232112018,
+          0.1035986187389295
+        ],
+        "comparison_ci": [
+          0.09147218936406885,
+          0.10327811113335501
+        ],
+        "difference_ci": [
+          -0.0012217756009161535,
+          0.0004267862972343587
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_2",
+        "metric": "memory_mb",
+        "statistic": 3120.0,
+        "p_value": 4.382837470694318e-06,
+        "p_value_corrected": 0.0002629702482416591,
+        "significant": true,
+        "significant_corrected": true,
+        "effect_size": -0.6936673137982449,
+        "effect_size_interpretation": "medium",
+        "baseline_mean": 254.77111685894334,
+        "baseline_std": 49.74282408557946,
+        "comparison_mean": 221.57612582053937,
+        "comparison_std": 45.88820157100263,
+        "baseline_ci": [
+          245.15787338794325,
+          263.90143009356325
+        ],
+        "comparison_ci": [
+          212.73438342450223,
+          230.0666332973306
+        ],
+        "difference_ci": [
+          -34.448438021894155,
+          -31.81122463076663
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_3",
+        "metric": "ndcg_at_10",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_3",
+        "metric": "recall_at_50",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_3",
+        "metric": "coverage_at_n",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_3",
+        "metric": "latency_ms_total",
+        "statistic": 2875.0,
+        "p_value": 2.0919044541043978e-07,
+        "p_value_corrected": 1.2551426724626387e-05,
+        "significant": true,
+        "significant_corrected": true,
+        "effect_size": -0.8300388290299602,
+        "effect_size_interpretation": "large",
+        "baseline_mean": 149.05748136863394,
+        "baseline_std": 32.950594587893185,
+        "comparison_mean": 125.30321176846928,
+        "comparison_std": 23.50038899885363,
+        "baseline_ci": [
+          142.70675100318297,
+          155.7760572333219
+        ],
+        "comparison_ci": [
+          120.54597179166211,
+          129.70325376761147
+        ],
+        "difference_ci": [
+          -24.52631639368376,
+          -22.972974321401654
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_3",
+        "metric": "contradiction_rate",
+        "statistic": 4945.0,
+        "p_value": 0.8940631319544825,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": -0.02855019368307111,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.09780523096162735,
+        "baseline_std": 0.028937640014288703,
+        "comparison_mean": 0.09702622432141628,
+        "comparison_std": 0.0255266776967625,
+        "baseline_ci": [
+          0.0925175906730578,
+          0.10396017381123752
+        ],
+        "comparison_ci": [
+          0.09188903184763798,
+          0.10201655528421232
+        ],
+        "difference_ci": [
+          -0.0015314619849702915,
+          -2.0742281370295372e-05
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "baseline_vector",
+        "comparison_method": "lethe_iter_3",
+        "metric": "memory_mb",
+        "statistic": 2512.0,
+        "p_value": 1.2174398428521566e-09,
+        "p_value_corrected": 7.30463905711294e-08,
+        "significant": true,
+        "significant_corrected": true,
+        "effect_size": -0.9754431084981346,
+        "effect_size_interpretation": "large",
+        "baseline_mean": 254.77111685894334,
+        "baseline_std": 49.74282408557946,
+        "comparison_mean": 211.78426966208542,
+        "comparison_std": 37.54747766133414,
+        "baseline_ci": [
+          244.94625648603878,
+          264.0423405801315
+        ],
+        "comparison_ci": [
+          204.19053788120536,
+          218.90728757570406
+        ],
+        "difference_ci": [
+          -44.21639399829917,
+          -41.81650538639219
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_1",
+        "comparison_method": "lethe_iter_2",
+        "metric": "ndcg_at_10",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_1",
+        "comparison_method": "lethe_iter_2",
+        "metric": "recall_at_50",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_1",
+        "comparison_method": "lethe_iter_2",
+        "metric": "coverage_at_n",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_1",
+        "comparison_method": "lethe_iter_2",
+        "metric": "latency_ms_total",
+        "statistic": 4580.0,
+        "p_value": 0.30536241471358205,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": -0.17183222062432624,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 134.76263667648928,
+        "baseline_std": 24.36367487561931,
+        "comparison_mean": 130.59215852124862,
+        "comparison_std": 24.17724932305811,
+        "baseline_ci": [
+          130.41560091990203,
+          139.68977364469293
+        ],
+        "comparison_ci": [
+          125.97965102305021,
+          135.39893316325924
+        ],
+        "difference_ci": [
+          -4.800731680129869,
+          -3.4435226350089567
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_1",
+        "comparison_method": "lethe_iter_2",
+        "metric": "contradiction_rate",
+        "statistic": 4579.0,
+        "p_value": 0.30421095844675183,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": -0.14447296680996535,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.10167474212371073,
+        "baseline_std": 0.02904716017151408,
+        "comparison_mean": 0.09739232118790164,
+        "comparison_std": 0.03022450081877693,
+        "baseline_ci": [
+          0.09630996093445252,
+          0.10683749633071289
+        ],
+        "comparison_ci": [
+          0.09169966151318457,
+          0.10302141893510904
+        ],
+        "difference_ci": [
+          -0.005047216613021528,
+          -0.00342426345062491
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_1",
+        "comparison_method": "lethe_iter_2",
+        "metric": "memory_mb",
+        "statistic": 4315.0,
+        "p_value": 0.09442582830514129,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": -0.24759936154341328,
+        "effect_size_interpretation": "small",
+        "baseline_mean": 231.8594081859639,
+        "baseline_std": 36.661661142423576,
+        "comparison_mean": 221.57612582053937,
+        "comparison_std": 45.88820157100263,
+        "baseline_ci": [
+          225.01863720748318,
+          239.23002436534017
+        ],
+        "comparison_ci": [
+          212.0007766838329,
+          230.42634773060163
+        ],
+        "difference_ci": [
+          -11.434132289481074,
+          -9.107551168635279
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_1",
+        "comparison_method": "lethe_iter_3",
+        "metric": "ndcg_at_10",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_1",
+        "comparison_method": "lethe_iter_3",
+        "metric": "recall_at_50",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_1",
+        "comparison_method": "lethe_iter_3",
+        "metric": "coverage_at_n",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_1",
+        "comparison_method": "lethe_iter_3",
+        "metric": "latency_ms_total",
+        "statistic": 3941.0,
+        "p_value": 0.009700481425073907,
+        "p_value_corrected": 0.5820288855044344,
+        "significant": true,
+        "significant_corrected": false,
+        "effect_size": -0.3951978131711321,
+        "effect_size_interpretation": "small",
+        "baseline_mean": 134.76263667648928,
+        "baseline_std": 24.36367487561931,
+        "comparison_mean": 125.30321176846928,
+        "comparison_std": 23.50038899885363,
+        "baseline_ci": [
+          130.00793374470499,
+          139.56028472646392
+        ],
+        "comparison_ci": [
+          120.88900866538897,
+          129.80259298844757
+        ],
+        "difference_ci": [
+          -10.116852744022461,
+          -8.806237839376285
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_1",
+        "comparison_method": "lethe_iter_3",
+        "metric": "contradiction_rate",
+        "statistic": 4509.0,
+        "p_value": 0.2307293294334024,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": -0.1700036495828326,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.10167474212371073,
+        "baseline_std": 0.02904716017151408,
+        "comparison_mean": 0.09702622432141628,
+        "comparison_std": 0.0255266776967625,
+        "baseline_ci": [
+          0.09548119478402353,
+          0.1072476496434557
+        ],
+        "comparison_ci": [
+          0.09225454955517913,
+          0.1020973800507532
+        ],
+        "difference_ci": [
+          -0.005388048690058735,
+          -0.0038803276915790317
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_1",
+        "comparison_method": "lethe_iter_3",
+        "metric": "memory_mb",
+        "statistic": 3579.0,
+        "p_value": 0.0005188448055070472,
+        "p_value_corrected": 0.03113068833042283,
+        "significant": true,
+        "significant_corrected": true,
+        "effect_size": -0.5410036765096291,
+        "effect_size_interpretation": "medium",
+        "baseline_mean": 231.8594081859639,
+        "baseline_std": 36.661661142423576,
+        "comparison_mean": 211.78426966208542,
+        "comparison_std": 37.54747766133414,
+        "baseline_ci": [
+          224.8759178389774,
+          238.95718596795723
+        ],
+        "comparison_ci": [
+          204.39474566640834,
+          219.55824869171005
+        ],
+        "difference_ci": [
+          -21.05175518682569,
+          -18.972517942028862
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_2",
+        "comparison_method": "lethe_iter_3",
+        "metric": "ndcg_at_10",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_2",
+        "comparison_method": "lethe_iter_3",
+        "metric": "recall_at_50",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_2",
+        "comparison_method": "lethe_iter_3",
+        "metric": "coverage_at_n",
+        "statistic": 5000.0,
+        "p_value": 1.0,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": 0.0,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.0,
+        "baseline_std": 0.0,
+        "comparison_mean": 0.0,
+        "comparison_std": 0.0,
+        "baseline_ci": [
+          NaN,
+          NaN
+        ],
+        "comparison_ci": [
+          NaN,
+          NaN
+        ],
+        "difference_ci": [
+          NaN,
+          NaN
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_2",
+        "comparison_method": "lethe_iter_3",
+        "metric": "latency_ms_total",
+        "statistic": 4364.0,
+        "p_value": 0.1204772228303031,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": -0.22184042847875718,
+        "effect_size_interpretation": "small",
+        "baseline_mean": 130.59215852124862,
+        "baseline_std": 24.17724932305811,
+        "comparison_mean": 125.30321176846928,
+        "comparison_std": 23.50038899885363,
+        "baseline_ci": [
+          125.86441521404645,
+          135.48643852433707
+        ],
+        "comparison_ci": [
+          120.9248114116284,
+          130.09773901880132
+        ],
+        "difference_ci": [
+          -5.930429649547112,
+          -4.6574006535221555
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_2",
+        "comparison_method": "lethe_iter_3",
+        "metric": "contradiction_rate",
+        "statistic": 4997.0,
+        "p_value": 0.99512617463719,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": -0.013086863190067898,
+        "effect_size_interpretation": "negligible",
+        "baseline_mean": 0.09739232118790164,
+        "baseline_std": 0.03022450081877693,
+        "comparison_mean": 0.09702622432141628,
+        "comparison_std": 0.0255266776967625,
+        "baseline_ci": [
+          0.09211386568332475,
+          0.10342702324438069
+        ],
+        "comparison_ci": [
+          0.09230691122371887,
+          0.10209994490304125
+        ],
+        "difference_ci": [
+          -0.0011569614018206462,
+          0.00044875481331426294
+        ]
+      },
+      {
+        "test_name": "Mann-Whitney U",
+        "baseline_method": "lethe_iter_2",
+        "comparison_method": "lethe_iter_3",
+        "metric": "memory_mb",
+        "statistic": 4370.0,
+        "p_value": 0.1240209135223654,
+        "p_value_corrected": 1.0,
+        "significant": false,
+        "significant_corrected": false,
+        "effect_size": -0.23355221663929415,
+        "effect_size_interpretation": "small",
+        "baseline_mean": 221.57612582053937,
+        "baseline_std": 45.88820157100263,
+        "comparison_mean": 211.78426966208542,
+        "comparison_std": 37.54747766133414,
+        "baseline_ci": [
+          211.75884128796807,
+          230.03362568327051
+        ],
+        "comparison_ci": [
+          204.43941090539266,
+          218.38898915624043
+        ],
+        "difference_ci": [
+          -11.030203744911217,
+          -8.709879726005271
+        ]
+      }
+    ],
+    "effect_sizes": {},
+    "hypothesis_conclusions": {
+      "H1_quality_improvement": {
+        "supported": false,
+        "supporting_tests": 0,
+        "total_tests": 12,
+        "support_ratio": 0.0
+      },
+      "H2_efficiency_maintained": {
+        "supported": true,
+        "supporting_tests": 6,
+        "total_tests": 6,
+        "support_ratio": 1.0
+      },
+      "H3_coverage_increased": {
+        "supported": false,
+        "supporting_tests": 0,
+        "total_tests": 6,
+        "support_ratio": 0.0
+      },
+      "H4_consistency_improved": {
+        "supported": false,
+        "supporting_tests": 0,
+        "total_tests": 6,
+        "support_ratio": 0.0
+      }
+    },
+    "multiple_comparison_summary": {}
+  },
+  "pareto_analysis": {
+    "objectives": {
+      "ndcg_at_10": {
+        "direction": "maximize",
+        "weight": 1.0
+      },
+      "latency_ms_total": {
+        "direction": "minimize",
+        "weight": 1.0
+      },
+      "memory_mb": {
+        "direction": "minimize",
+        "weight": 0.5
+      }
+    },
+    "pareto_solutions": [
+      {
+        "method": "baseline_bm25",
+        "objectives": {
+          "ndcg_at_10": 0.0,
+          "latency_ms_total": 148.23248148715587,
+          "memory_mb": 257.8041027350213
+        },
+        "normalized_objectives": {
+          "ndcg_at_10": 0.0,
+          "latency_ms_total": 0.03473059350443507,
+          "memory_mb": 0.0
+        },
+        "dominated_by": [],
+        "dominates": [],
+        "is_pareto_optimal": true,
+        "pareto_rank": 4
+      },
+      {
+        "method": "baseline_vector",
+        "objectives": {
+          "ndcg_at_10": 0.0,
+          "latency_ms_total": 149.05748136863394,
+          "memory_mb": 254.7711168589434
+        },
+        "normalized_objectives": {
+          "ndcg_at_10": 0.0,
+          "latency_ms_total": 0.0,
+          "memory_mb": 0.06590605992140298
+        },
+        "dominated_by": [],
+        "dominates": [],
+        "is_pareto_optimal": true,
+        "pareto_rank": 4
+      },
+      {
+        "method": "lethe_iter_1",
+        "objectives": {
+          "ndcg_at_10": 0.0,
+          "latency_ms_total": 134.76263667648928,
+          "memory_mb": 231.85940818596396
+        },
+        "normalized_objectives": {
+          "ndcg_at_10": 0.0,
+          "latency_ms_total": 0.6017800139830684,
+          "memory_mb": 0.5637720264638536
+        },
+        "dominated_by": [],
+        "dominates": [
+          "baseline_bm25",
+          "baseline_vector"
+        ],
+        "is_pareto_optimal": true,
+        "pareto_rank": 3
+      },
+      {
+        "method": "lethe_iter_2",
+        "objectives": {
+          "ndcg_at_10": 0.0,
+          "latency_ms_total": 130.59215852124862,
+          "memory_mb": 221.57612582053943
+        },
+        "normalized_objectives": {
+          "ndcg_at_10": 0.0,
+          "latency_ms_total": 0.7773475319677825,
+          "memory_mb": 0.7872253003843993
+        },
+        "dominated_by": [],
+        "dominates": [
+          "baseline_bm25",
+          "baseline_vector",
+          "lethe_iter_1"
+        ],
+        "is_pareto_optimal": true,
+        "pareto_rank": 2
+      },
+      {
+        "method": "lethe_iter_3",
+        "objectives": {
+          "ndcg_at_10": 0.0,
+          "latency_ms_total": 125.30321176846928,
+          "memory_mb": 211.78426966208542
+        },
+        "normalized_objectives": {
+          "ndcg_at_10": 0.0,
+          "latency_ms_total": 1.0,
+          "memory_mb": 1.0
+        },
+        "dominated_by": [],
+        "dominates": [
+          "baseline_bm25",
+          "baseline_vector",
+          "lethe_iter_1",
+          "lethe_iter_2"
+        ],
+        "is_pareto_optimal": true,
+        "pareto_rank": 1
+      }
+    ],
+    "trade_offs": {
+      "trade_offs": [
+        {
+          "solution1": "baseline_bm25",
+          "solution2": "baseline_vector",
+          "trade_offs": {
+            "ndcg_at_10": 0,
+            "latency_ms_total": 0.5565580992783712,
+            "memory_mb": -1.176469204291627
+          }
+        },
+        {
+          "solution1": "baseline_bm25",
+          "solution2": "lethe_iter_1",
+          "trade_offs": {
+            "ndcg_at_10": 0,
+            "latency_ms_total": -9.086972487763237,
+            "memory_mb": -10.063724461252676
+          }
+        },
+        {
+          "solution1": "baseline_bm25",
+          "solution2": "lethe_iter_2",
+          "trade_offs": {
+            "ndcg_at_10": 0,
+            "latency_ms_total": -11.900443673970171,
+            "memory_mb": -14.05252148051268
+          }
+        },
+        {
+          "solution1": "baseline_bm25",
+          "solution2": "lethe_iter_3",
+          "trade_offs": {
+            "ndcg_at_10": 0,
+            "latency_ms_total": -15.46845164342295,
+            "memory_mb": -17.85069848955678
+          }
+        },
+        {
+          "solution1": "baseline_vector",
+          "solution2": "lethe_iter_1",
+          "trade_offs": {
+            "ndcg_at_10": 0,
+            "latency_ms_total": -9.590155798213237,
+            "memory_mb": -8.993055788841536
+          }
+        },
+        {
+          "solution1": "baseline_vector",
+          "solution2": "lethe_iter_2",
+          "trade_offs": {
+            "ndcg_at_10": 0,
+            "latency_ms_total": -12.388055049527335,
+            "memory_mb": -13.029338430377377
+          }
+        },
+        {
+          "solution1": "baseline_vector",
+          "solution2": "lethe_iter_3",
+          "trade_offs": {
+            "ndcg_at_10": 0,
+            "latency_ms_total": -15.936314891446472,
+            "memory_mb": -16.87273177856267
+          }
+        },
+        {
+          "solution1": "lethe_iter_1",
+          "solution2": "lethe_iter_2",
+          "trade_offs": {
+            "ndcg_at_10": 0,
+            "latency_ms_total": -3.0946842968443056,
+            "memory_mb": -4.435136984899388
+          }
+        },
+        {
+          "solution1": "lethe_iter_1",
+          "solution2": "lethe_iter_3",
+          "trade_offs": {
+            "ndcg_at_10": 0,
+            "latency_ms_total": -7.019323116041622,
+            "memory_mb": -8.658323887283096
+          }
+        },
+        {
+          "solution1": "lethe_iter_2",
+          "solution2": "lethe_iter_3",
+          "trade_offs": {
+            "ndcg_at_10": 0,
+            "latency_ms_total": -4.049972687999315,
+            "memory_mb": -4.4191837555570865
+          }
+        }
+      ],
+      "pareto_optimal_count": 5,
+      "total_solutions": 5
+    },
+    "method_stats": [
+      {
+        "method": "baseline_bm25",
+        "ndcg_at_10": 0.0,
+        "latency_ms_total": 148.23248148715587,
+        "memory_mb": 257.8041027350213
+      },
+      {
+        "method": "baseline_vector",
+        "ndcg_at_10": 0.0,
+        "latency_ms_total": 149.05748136863394,
+        "memory_mb": 254.7711168589434
+      },
+      {
+        "method": "lethe_iter_1",
+        "ndcg_at_10": 0.0,
+        "latency_ms_total": 134.76263667648928,
+        "memory_mb": 231.85940818596396
+      },
+      {
+        "method": "lethe_iter_2",
+        "ndcg_at_10": 0.0,
+        "latency_ms_total": 130.59215852124862,
+        "memory_mb": 221.57612582053943
+      },
+      {
+        "method": "lethe_iter_3",
+        "ndcg_at_10": 0.0,
+        "latency_ms_total": 125.30321176846928,
+        "memory_mb": 211.78426966208542
+      }
+    ]
+  },
+  "publication_output": {
+    "summary_stats": [
+      {
+        

@@ -1,6 +1,30 @@
-# Lethe Research Evaluation Pipeline
+# Lethe Research Scripts Directory
 
-This directory contains the complete one-command execution pipeline for the Lethe NeurIPS research project.
+This directory contains evaluation scripts for the Lethe research project, including both the **legacy pipeline scripts** and the **new unified analysis framework**.
+
+## ✨ New: Unified Analysis Framework
+
+**Recommended approach:** Use the unified analysis framework instead of fragmented legacy scripts:
+
+```bash
+# Run complete analysis with unified framework
+python ../src/analysis_unified.py --artifacts-dir ../artifacts/ --output-dir ../results/
+
+# Or use interactively
+python -c "from src.analysis_unified import UnifiedAnalysisFramework; 
+framework = UnifiedAnalysisFramework(); 
+framework.load_experimental_data('../artifacts/'); 
+results = framework.run_complete_analysis()"
+```
+
+**Benefits of Unified Framework:**
+- Single coherent analysis pipeline (replaces 8+ fragmented scripts)
+- Plugin architecture for extensibility
+- Enhanced statistical testing with proper corrections
+- Automatic LaTeX table and figure generation
+- Better error handling and progress reporting
+
+## 🔄 Legacy Pipeline (For Reference)
 
 ## 🚀 One-Command Execution
 
@@ -143,14 +167,43 @@ If pipeline fails, individual stages can be run separately:
 SKIP_DATASET=true SKIP_BASELINES=true ./run_full_evaluation.sh
 ```
 
+## 🔄 Migration from Legacy Scripts
+
+The unified analysis framework replaces these legacy scripts:
+
+| Legacy Script | Unified Framework Component | Migration Status |
+|--------------|----------------------------|------------------|
+| `enhanced_statistical_analysis.py` | `HypothesisTestingPlugin` | ✅ Fully migrated |
+| `pareto_analysis.py` | `ParetoAnalysisPlugin` | ✅ Fully migrated |
+| `final_analysis.py` | `PublicationOutputPlugin` | ✅ Fully migrated |
+| `generate_figures.py` | Integrated figure generation | ✅ Enhanced |
+| `generate_tables.py` | Integrated table generation | ✅ Enhanced |
+| `run_analysis.py` | Main framework orchestrator | ✅ Replaced |
+
+### Migration Helper Commands
+
+```bash
+# Validate unified framework against legacy outputs
+python -c "
+from src.analysis_unified import UnifiedAnalysisFramework
+framework = UnifiedAnalysisFramework()
+framework.migrate_from_legacy_scripts()
+framework.validate_against_legacy_outputs('legacy_outputs/')
+"
+
+# Test unified framework
+python ../test_unified_analysis.py
+```
+
 ## 📞 Support
 
-For issues or questions about the evaluation pipeline:
+For issues or questions:
 
-1. Check the troubleshooting section above
-2. Review execution logs in `artifacts/*/logs/`
-3. Run validation script: `python validate_results.py --results-dir artifacts/latest/`
-4. Consult the main project documentation
+1. **New Unified Framework**: See `../src/README.md` and `../docs/getting-started.md`
+2. **Legacy Pipeline Issues**: Check troubleshooting section above
+3. **Migration Questions**: Review execution logs in `artifacts/*/logs/`
+4. **Validation**: Run `python validate_results.py --results-dir artifacts/latest/`
+5. **Full Documentation**: Consult `../README.md`
 
 ---
 

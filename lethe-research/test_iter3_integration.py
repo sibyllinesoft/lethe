@@ -53,25 +53,44 @@ class Iteration3IntegrationTest:
         try:
             # Step 1: Train and validate ML models
             logger.info("Step 1: ML Model Training & Validation")
-            model_success = self.test_ml_training()
-            self.test_results['ml_models']['trained'] = model_success
-            
-            if not model_success:
+            try:
+                self.test_ml_training()
+                model_success = True
+                self.test_results['ml_models']['trained'] = model_success
+            except AssertionError:
+                model_success = False
+                self.test_results['ml_models']['trained'] = model_success
                 logger.error("ML model training failed, aborting integration test")
-                return self.test_results
+                raise
             
             # Step 2: Test TypeScript integration
             logger.info("Step 2: TypeScript Integration Testing")  
-            ts_success = self.test_typescript_integration()
-            self.test_results['typescript_integration']['success'] = ts_success
+            try:
+                self.test_typescript_integration()
+                ts_success = True
+                self.test_results['typescript_integration']['success'] = ts_success
+            except AssertionError:
+                ts_success = False
+                self.test_results['typescript_integration']['success'] = ts_success
+                raise
             
             # Step 3: Performance validation
             logger.info("Step 3: Performance & Quality Gate Validation")
-            perf_success = self.test_performance_constraints()
+            try:
+                self.test_performance_constraints()
+                perf_success = True
+            except AssertionError:
+                perf_success = False
+                raise
             
             # Step 4: End-to-end validation
             logger.info("Step 4: End-to-End ML Pipeline Validation")
-            e2e_success = self.test_end_to_end_pipeline()
+            try:
+                self.test_end_to_end_pipeline()
+                e2e_success = True
+            except AssertionError:
+                e2e_success = False
+                raise
             
             # Overall success determination
             overall_success = model_success and ts_success and perf_success and e2e_success
@@ -85,10 +104,13 @@ class Iteration3IntegrationTest:
         except Exception as e:
             logger.error(f"Integration test failed with error: {e}")
             self.test_results['error'] = str(e)
+            raise
             
+        # Assert overall success instead of returning
+        assert self.test_results['overall_success'], f"Integration test failed - Components: ML:{model_success}, TS:{ts_success}, Perf:{perf_success}, E2E:{e2e_success}"
         return self.test_results
     
-    def test_ml_training(self) -> bool:
+    def test_ml_training(self):
         """Test ML model training and basic functionality."""
         
         try:
@@ -131,13 +153,13 @@ class Iteration3IntegrationTest:
             else:
                 logger.error(f"❌ ML training failed validation - Fusion: {fusion_success}, Plan: {plan_success}, Loading: {loading_success}, Speed: {speed_success}")
                 
-            return success
+            assert success, f"ML training failed validation - Fusion: {fusion_success}, Plan: {plan_success}, Loading: {loading_success}, Speed: {speed_success}"
             
         except Exception as e:
             logger.error(f"ML training test failed: {e}")
-            return False
+            raise
     
-    def test_typescript_integration(self) -> bool:
+    def test_typescript_integration(self):
         """Test TypeScript integration with ML predictions."""
         
         test_queries = [
@@ -150,9 +172,7 @@ class Iteration3IntegrationTest:
         
         ctx_run_path = Path(__file__).parent.parent / "ctx-run"
         
-        if not ctx_run_path.exists():
-            logger.error(f"ctx-run directory not found at {ctx_run_path}")
-            return False
+        assert ctx_run_path.exists(), f"ctx-run directory not found at {ctx_run_path}"
         
         successful_tests = 0
         
@@ -268,9 +288,9 @@ class Iteration3IntegrationTest:
         
         logger.info(f"TypeScript integration: {successful_tests}/{len(test_queries)} tests passed ({success_rate:.1%})")
         
-        return success
+        assert success, f"TypeScript integration insufficient: {successful_tests}/{len(test_queries)} tests passed ({success_rate:.1%}), need >=80%"
     
-    def test_performance_constraints(self) -> bool:
+    def test_performance_constraints(self):
         """Test performance constraints and quality gates."""
         
         try:
@@ -311,9 +331,7 @@ class Iteration3IntegrationTest:
                     result['plan'] in ['explore', 'verify', 'exploit']
                 )
                 
-                if not has_valid_results:
-                    logger.error(f"Invalid prediction results for query: {query[:30]}...")
-                    return False
+                assert has_valid_results, f"Invalid prediction results for query: {query[:30]}..."
             
             # Performance statistics
             avg_prediction_time = statistics.mean(prediction_times)
@@ -342,13 +360,13 @@ class Iteration3IntegrationTest:
             else:
                 logger.error(f"❌ Performance validation failed - Load: {load_success}, Speed: {speed_success}, Avg: {avg_speed_success}")
                 
-            return overall_success
+            assert overall_success, f"Performance validation failed - Load: {load_success}, Speed: {speed_success}, Avg: {avg_speed_success}"
             
         except Exception as e:
             logger.error(f"Performance test failed: {e}")
-            return False
+            raise
     
-    def test_end_to_end_pipeline(self) -> bool:
+    def test_end_to_end_pipeline(self):
         """Test complete end-to-end ML-enhanced pipeline."""
         
         try:
@@ -415,11 +433,11 @@ class Iteration3IntegrationTest:
             
             logger.info(f"End-to-end pipeline: {successful_cases}/{len(test_cases)} tests passed ({success_rate:.1%})")
             
-            return pipeline_success
+            assert pipeline_success, f"End-to-end pipeline insufficient: {successful_cases}/{len(test_cases)} tests passed ({success_rate:.1%}), need >=80%"
             
         except Exception as e:
             logger.error(f"End-to-end pipeline test failed: {e}")
-            return False
+            raise
 
 
 def main():
@@ -463,9 +481,14 @@ def main():
     else:
         print("\n⚠️ Iteration 3 implementation needs attention before evaluation.")
         
+    assert results['overall_success'], "Integration test suite failed - check individual component results"
     return results['overall_success']
 
 
 if __name__ == "__main__":
-    success = main()
-    exit(0 if success else 1)
+    try:
+        success = main()
+        exit(0)
+    except Exception as e:
+        print(f"Integration test failed: {e}")
+        exit(1)

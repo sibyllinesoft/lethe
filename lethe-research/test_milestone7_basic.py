@@ -7,37 +7,34 @@ Tests core functionality without heavy dependencies.
 import sys
 import json
 from pathlib import Path
+from typing import Tuple
+
+# Add src to path for test utilities
+sys.path.insert(0, str(Path(__file__).parent / "src"))
+from testing.test_utils import (
+    assert_imports_available,
+    assert_files_exist,
+    assert_makefile_targets,
+    generate_synthetic_data
+)
 
 def test_basic_imports():
     """Test basic Python imports without heavy ML dependencies"""
+    # Test scientific libraries
+    assert_imports_available("pandas", "numpy")
     
-    try:
-        import pandas as pd
-        import numpy as np
-        print("✅ pandas and numpy imported successfully")
-        
-        # Test basic matplotlib without display
-        import matplotlib
-        matplotlib.use('Agg')  # Use non-interactive backend
-        import matplotlib.pyplot as plt
-        print("✅ matplotlib imported successfully")
-        
-        import json
-        import hashlib
-        from pathlib import Path
-        from dataclasses import dataclass, asdict
-        from typing import Dict, List, Tuple, Optional, Any
-        print("✅ Standard library imports successful")
-        
-        return True
-        
-    except Exception as e:
-        print(f"❌ Basic import failed: {str(e)}")
-        return False
+    # Test matplotlib with non-interactive backend
+    import matplotlib
+    matplotlib.use('Agg')  # Use non-interactive backend
+    assert_imports_available("matplotlib.pyplot")
+    
+    # Test standard library imports
+    assert_imports_available(
+        "json", "hashlib", "pathlib", "dataclasses", "typing"
+    )
 
 def test_file_structure():
     """Test that all required files exist"""
-    
     required_files = [
         "src/eval/milestone7_analysis.py",
         "run_milestone7_analysis.py",
@@ -47,157 +44,83 @@ def test_file_structure():
         "demo_milestone7.py"
     ]
     
-    missing_files = []
-    for file_path in required_files:
-        if not Path(file_path).exists():
-            missing_files.append(file_path)
-    
-    if missing_files:
-        print(f"❌ Missing files: {missing_files}")
-        return False
-    else:
-        print("✅ All required files present")
-        return True
+    assert_files_exist(*required_files)
 
 def test_makefile_integration():
     """Test Makefile has proper targets"""
+    required_targets = [
+        "figures:",
+        "milestone7-analysis:",
+        "milestone7-quick:",
+        "tables:",
+        "plots:",
+        "sanity-checks:"
+    ]
     
-    try:
-        with open("Makefile") as f:
-            content = f.read()
-        
-        required_targets = [
-            "figures:",
-            "milestone7-analysis:",
-            "milestone7-quick:",
-            "tables:",
-            "plots:",
-            "sanity-checks:"
-        ]
-        
-        missing = []
-        for target in required_targets:
-            if target not in content:
-                missing.append(target)
-        
-        if missing:
-            print(f"❌ Missing Makefile targets: {missing}")
-            return False
-        else:
-            print("✅ All Makefile targets present")
-            return True
-            
-    except Exception as e:
-        print(f"❌ Makefile test failed: {str(e)}")
-        return False
+    assert_makefile_targets(*required_targets)
 
 def test_dataclass_creation():
     """Test that we can create the basic dataclasses"""
+    from dataclasses import dataclass
     
-    try:
-        from dataclasses import dataclass
-        from typing import Tuple
-        
-        @dataclass
-        class TestMetrics:
-            ndcg_10: float
-            latency_p95_ms: float
-            ndcg_10_ci: Tuple[float, float]
-        
-        # Create test instance
-        test_metrics = TestMetrics(
-            ndcg_10=0.75,
-            latency_p95_ms=250.5,
-            ndcg_10_ci=(0.70, 0.80)
-        )
-        
-        print("✅ Dataclass creation successful")
-        print(f"   Sample metric: nDCG@10 = {test_metrics.ndcg_10}")
-        return True
-        
-    except Exception as e:
-        print(f"❌ Dataclass test failed: {str(e)}")
-        return False
+    @dataclass
+    class TestMetrics:
+        ndcg_10: float
+        latency_p95_ms: float
+        ndcg_10_ci: Tuple[float, float]
+    
+    # Create test instance
+    test_metrics = TestMetrics(
+        ndcg_10=0.75,
+        latency_p95_ms=250.5,
+        ndcg_10_ci=(0.70, 0.80)
+    )
+    
+    # Validate dataclass creation worked
+    assert test_metrics.ndcg_10 == 0.75
+    assert test_metrics.latency_p95_ms == 250.5
+    assert test_metrics.ndcg_10_ci == (0.70, 0.80)
+    assert hasattr(test_metrics, '__dataclass_fields__')
 
 def test_synthetic_data_generation():
     """Test synthetic data generation for quick testing"""
+    # Define schema for synthetic data
+    schema = {
+        "query": "str",
+        "query_type": ["exact_match", "general"],
+        "novelty_score": "float",
+        "planning_action": ["EXPLORE", "RETRIEVE"],
+        "retrieved_docs": "list"
+    }
     
-    try:
-        # Create minimal synthetic dataset
-        synthetic_data = []
-        for i in range(10):
-            item = {
-                "query": f"test query {i}",
-                "query_type": "exact_match" if i % 3 == 0 else "general",
-                "novelty_score": 0.3 + (i % 5) * 0.15,
-                "planning_action": "EXPLORE" if i % 4 == 0 else "RETRIEVE",
-                "retrieved_docs": [
-                    {"relevance_score": 0.9 if i % 3 == 0 else 0.6}
-                ]
-            }
-            synthetic_data.append(item)
-        
-        # Test JSON serialization
-        json_str = json.dumps(synthetic_data, indent=2)
-        parsed_back = json.loads(json_str)
-        
-        print("✅ Synthetic data generation successful")
-        print(f"   Generated {len(synthetic_data)} test items")
-        return True
-        
-    except Exception as e:
-        print(f"❌ Synthetic data test failed: {str(e)}")
-        return False
+    # Generate synthetic data
+    synthetic_data = generate_synthetic_data(schema, n_samples=10)
+    
+    # Validate generated data
+    assert len(synthetic_data) == 10
+    assert all("query" in item for item in synthetic_data)
+    assert all("query_type" in item for item in synthetic_data)
+    assert all("novelty_score" in item for item in synthetic_data)
+    
+    # Test JSON serialization
+    json_str = json.dumps(synthetic_data, indent=2)
+    parsed_back = json.loads(json_str)
+    assert len(parsed_back) == len(synthetic_data)
 
+# Note: The main() function is no longer needed for pytest-style tests.
+# These tests will be run automatically by pytest.
+
+# Keep the main() function for backward compatibility if run directly
 def main():
-    """Run basic Milestone 7 tests"""
-    
+    """Run basic Milestone 7 tests (for backward compatibility)"""
     print("🚀 Milestone 7 Basic Implementation Test")
-    print("=" * 60)
-    
-    tests = [
-        ("File Structure", test_file_structure),
-        ("Basic Imports", test_basic_imports),
-        ("Makefile Integration", test_makefile_integration), 
-        ("Dataclass Creation", test_dataclass_creation),
-        ("Synthetic Data Generation", test_synthetic_data_generation)
-    ]
-    
-    results = []
-    for test_name, test_func in tests:
-        print(f"\n🔍 Testing {test_name}...")
-        try:
-            result = test_func()
-            results.append((test_name, result))
-        except Exception as e:
-            print(f"❌ {test_name} test crashed: {str(e)}")
-            results.append((test_name, False))
-    
-    print("\n" + "=" * 60)
-    print("TEST SUMMARY")
-    print("=" * 60)
-    
-    passed = sum(1 for _, result in results if result)
-    total = len(results)
-    
-    for test_name, result in results:
-        status = "✅ PASSED" if result else "❌ FAILED"
-        print(f"{test_name:<25} {status}")
-    
-    print(f"\nOverall: {passed}/{total} tests passed")
-    
-    if passed == total:
-        print("\n🎉 All basic tests passed!")
-        print("\nNext steps:")
-        print("1. Install requirements: pip install -r requirements_milestone7.txt")
-        print("2. Run: make milestone7-quick")
-        print("3. Check: make analysis-summary")
-        return True
-    else:
-        print(f"\n❌ {total - passed} tests failed")
-        print("Please fix issues before proceeding")
-        return False
+    print("Note: This file now uses proper pytest assertions.")
+    print("Run with: python -m pytest test_milestone7_basic.py -v")
+    return True
 
 if __name__ == "__main__":
-    success = main()
-    sys.exit(0 if success else 1)
+    # When run directly, suggest using pytest
+    print("✅ Tests have been converted to use proper pytest assertions.")
+    print("Please run with: python -m pytest test_milestone7_basic.py -v")
+    print("Or simply: pytest test_milestone7_basic.py -v")
+    sys.exit(0)
