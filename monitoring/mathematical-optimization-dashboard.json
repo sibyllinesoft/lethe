@@ -1,0 +1,402 @@
+{
+  "dashboard": {
+    "id": "lethe-mathematical-optimization",
+    "title": "Lethe Mathematical Optimization Control Surface",
+    "description": "Advanced monitoring for Lambda Control Surface, DPP algorithms, and mathematical orchestrator",
+    "version": "1.0.0",
+    "tags": ["lethe", "mathematical-optimization", "production"],
+    
+    "time_options": {
+      "refresh_intervals": ["5s", "10s", "30s", "1m", "5m"],
+      "default_refresh": "30s",
+      "time_range": {
+        "default": "1h",
+        "options": ["15m", "1h", "6h", "24h", "7d"]
+      }
+    }
+  },
+  
+  "panels": [
+    {
+      "id": "lambda-control-surface",
+      "title": "Lambda Control Surface",
+      "type": "graph",
+      "grid_position": {"x": 0, "y": 0, "w": 12, "h": 8},
+      "targets": [
+        {
+          "metric": "lethe_lambda_parameter",
+          "legend": "λ parameter evolution",
+          "color": "#1f77b4"
+        },
+        {
+          "metric": "lethe_primal_dual_gap", 
+          "legend": "Primal-dual gap",
+          "color": "#ff7f0e"
+        },
+        {
+          "metric": "lethe_size_function_value",
+          "legend": "Size function size(λ)",
+          "color": "#2ca02c"
+        }
+      ],
+      "y_axes": [
+        {
+          "label": "Parameter Value",
+          "min": 0,
+          "max": "auto"
+        }
+      ],
+      "alerts": [
+        {
+          "condition": "lethe_primal_dual_gap > 0.01",
+          "severity": "warning",
+          "message": "Primal-dual gap exceeding target threshold"
+        },
+        {
+          "condition": "lethe_lambda_drift_rate > 0.1",
+          "severity": "critical", 
+          "message": "Lambda parameter drift detected"
+        }
+      ]
+    },
+    
+    {
+      "id": "dpp-performance",
+      "title": "Determinantal Point Process Performance",
+      "type": "heatmap",
+      "grid_position": {"x": 12, "y": 0, "w": 12, "h": 8},
+      "targets": [
+        {
+          "metric": "lethe_dpp_delta_cbu_per_ms",
+          "dimensions": ["rank_r", "timestamp"],
+          "aggregation": "avg"
+        }
+      ],
+      "heatmap_settings": {
+        "x_axis": "rank_r",
+        "y_axis": "time",
+        "color_scale": "YlOrRd",
+        "min_color": "#ffffcc",
+        "max_color": "#d73027"
+      },
+      "alerts": [
+        {
+          "condition": "lethe_dpp_efficiency < 0.85",
+          "severity": "warning",
+          "message": "DPP efficiency below target"
+        }
+      ]
+    },
+    
+    {
+      "id": "diversity-metrics",
+      "title": "Diversity and Coverage Metrics",
+      "type": "stat",
+      "grid_position": {"x": 0, "y": 8, "w": 8, "h": 4},
+      "targets": [
+        {
+          "metric": "lethe_diversity_score",
+          "stat_type": "current",
+          "unit": "percent",
+          "color_thresholds": [
+            {"value": 0.8, "color": "red"},
+            {"value": 0.85, "color": "yellow"}, 
+            {"value": 0.9, "color": "green"}
+          ]
+        },
+        {
+          "metric": "lethe_orthogonal_mass_distribution",
+          "stat_type": "current",
+          "unit": "coefficient"
+        }
+      ],
+      "value_mappings": [
+        {
+          "range": {"from": 0.9, "to": 1.0},
+          "display_text": "Excellent Diversity"
+        },
+        {
+          "range": {"from": 0.85, "to": 0.9},
+          "display_text": "Good Diversity"
+        }
+      ]
+    },
+    
+    {
+      "id": "knapsack-optimization",
+      "title": "Knapsack Optimization Efficiency",
+      "type": "bargauge",
+      "grid_position": {"x": 8, "y": 8, "w": 8, "h": 4},
+      "targets": [
+        {
+          "metric": "lethe_token_utilization_ratio",
+          "legend": "Token Utilization"
+        },
+        {
+          "metric": "lethe_importance_density_ratio", 
+          "legend": "Importance Density"
+        },
+        {
+          "metric": "lethe_ilp_solver_usage_ratio",
+          "legend": "ILP Solver Usage"
+        }
+      ],
+      "display_mode": "list",
+      "orientation": "horizontal",
+      "show_unfilled": true,
+      "min_value": 0,
+      "max_value": 1,
+      "thresholds": [
+        {"color": "red", "value": 0.7},
+        {"color": "yellow", "value": 0.85},
+        {"color": "green", "value": 0.95}
+      ]
+    },
+    
+    {
+      "id": "causal-grouping",
+      "title": "Causal Group Structure Analysis",
+      "type": "table",
+      "grid_position": {"x": 16, "y": 8, "w": 8, "h": 4},
+      "targets": [
+        {
+          "metric": "lethe_causal_groups",
+          "format": "table",
+          "columns": ["group_id", "size", "coverage", "laminarity_score"]
+        }
+      ],
+      "column_styles": [
+        {
+          "pattern": "laminarity_score",
+          "type": "number",
+          "unit": "short",
+          "color_mode": "value",
+          "thresholds": [
+            {"color": "red", "value": 0.8},
+            {"color": "green", "value": 0.95}
+          ]
+        }
+      ]
+    },
+    
+    {
+      "id": "performance-breakdown",
+      "title": "Component Performance Timing",
+      "type": "piechart",
+      "grid_position": {"x": 0, "y": 12, "w": 8, "h": 6},
+      "targets": [
+        {
+          "metric": "lethe_lagrangian_timing_ms",
+          "legend": "Lagrangian Optimization"
+        },
+        {
+          "metric": "lethe_dpp_computation_ms",
+          "legend": "DPP Computation"
+        },
+        {
+          "metric": "lethe_causal_analysis_ms",
+          "legend": "Causal Analysis"
+        },
+        {
+          "metric": "lethe_voi_calibration_ms",
+          "legend": "VoI Calibration"
+        },
+        {
+          "metric": "lethe_rust_hotpath_ms",
+          "legend": "Rust Hot Path"
+        }
+      ],
+      "pie_type": "donut",
+      "legend": {
+        "display_mode": "list",
+        "placement": "right"
+      }
+    },
+    
+    {
+      "id": "calibration-metrics",
+      "title": "Value of Information Calibration",
+      "type": "graph",
+      "grid_position": {"x": 8, "y": 12, "w": 8, "h": 6},
+      "targets": [
+        {
+          "metric": "lethe_voi_expected_calibration_error",
+          "legend": "ECE (%)",
+          "color": "#d62728"
+        },
+        {
+          "metric": "lethe_voi_prediction_accuracy",
+          "legend": "Prediction Accuracy",
+          "color": "#9467bd"
+        }
+      ],
+      "y_axes": [
+        {
+          "label": "Calibration Error",
+          "min": 0,
+          "max": 0.2,
+          "unit": "percent"
+        }
+      ],
+      "thresholds": [
+        {
+          "value": 0.08,
+          "color": "red",
+          "display": true,
+          "fill": "below",
+          "fillColor": "rgba(255, 0, 0, 0.1)"
+        }
+      ]
+    },
+    
+    {
+      "id": "system-health",
+      "title": "Mathematical Optimization System Health",
+      "type": "stat",
+      "grid_position": {"x": 16, "y": 12, "w": 8, "h": 6},
+      "targets": [
+        {
+          "metric": "lethe_math_optimization_success_rate",
+          "stat_type": "current",
+          "unit": "percent",
+          "decimals": 1
+        },
+        {
+          "metric": "lethe_rust_fallback_rate",
+          "stat_type": "current", 
+          "unit": "percent",
+          "decimals": 2
+        },
+        {
+          "metric": "lethe_performance_target_met",
+          "stat_type": "current",
+          "unit": "bool",
+          "value_mappings": [
+            {"value": 1, "text": "✅ TARGET MET"},
+            {"value": 0, "text": "❌ TARGET MISSED"}
+          ]
+        }
+      ]
+    },
+    
+    {
+      "id": "embedding-integration",
+      "title": "EmbeddingGemma-300M Integration Status",
+      "type": "table",
+      "grid_position": {"x": 0, "y": 18, "w": 12, "h": 4},
+      "targets": [
+        {
+          "metric": "lethe_embedding_comparison",
+          "format": "table",
+          "columns": ["embedding_type", "dimension", "cbu_per_gb", "performance_score", "active"]
+        }
+      ],
+      "column_styles": [
+        {
+          "pattern": "embedding_type",
+          "type": "string"
+        },
+        {
+          "pattern": "cbu_per_gb",
+          "type": "number",
+          "unit": "short",
+          "decimals": 2
+        },
+        {
+          "pattern": "active",
+          "type": "string",
+          "value_mappings": [
+            {"value": "true", "text": "🟢 Active"},
+            {"value": "false", "text": "⚪ Inactive"}
+          ]
+        }
+      ]
+    },
+    
+    {
+      "id": "group-split-validation",
+      "title": "Group Split System Validation",
+      "type": "logs",
+      "grid_position": {"x": 12, "y": 18, "w": 12, "h": 4},
+      "targets": [
+        {
+          "metric": "lethe_group_split_logs",
+          "filter": "level=INFO AND component=group-split"
+        }
+      ],
+      "display_options": {
+        "show_time": true,
+        "show_labels": true,
+        "wrap_lines": true
+      }
+    }
+  ],
+  
+  "template_variables": [
+    {
+      "name": "environment",
+      "type": "constant",
+      "value": "production"
+    },
+    {
+      "name": "lambda_threshold",
+      "type": "interval",
+      "query": "lethe_lambda_parameter",
+      "refresh": "on_time_range_change"
+    },
+    {
+      "name": "optimization_mode",
+      "type": "custom",
+      "options": ["automatic", "forced_rust", "disabled"],
+      "default": "automatic"
+    }
+  ],
+  
+  "alerting_rules": [
+    {
+      "name": "Lambda Drift Alert",
+      "condition": "increase(lethe_lambda_parameter[5m]) > 0.1",
+      "for": "2m",
+      "labels": {
+        "severity": "critical",
+        "component": "mathematical-optimization"
+      },
+      "annotations": {
+        "summary": "Lambda parameter experiencing significant drift",
+        "description": "The Lambda parameter has changed by more than 0.1 in the last 5 minutes, indicating potential optimization instability."
+      }
+    },
+    {
+      "name": "Mathematical Optimization Failure",
+      "condition": "lethe_math_optimization_success_rate < 0.95",
+      "for": "5m", 
+      "labels": {
+        "severity": "warning",
+        "component": "mathematical-optimization"
+      },
+      "annotations": {
+        "summary": "Mathematical optimization success rate degraded",
+        "description": "The mathematical optimization success rate has fallen below 95% over the last 5 minutes."
+      }
+    },
+    {
+      "name": "Performance Target Missed",
+      "condition": "lethe_performance_target_met == 0",
+      "for": "1m",
+      "labels": {
+        "severity": "critical", 
+        "component": "performance"
+      },
+      "annotations": {
+        "summary": "Performance targets not being met",
+        "description": "The system is consistently missing performance targets. Check component timings and resource utilization."
+      }
+    }
+  ],
+  
+  "refresh": "30s",
+  "timezone": "UTC",
+  "editable": true,
+  "hideControls": false,
+  "sharedCrosshair": true
+}

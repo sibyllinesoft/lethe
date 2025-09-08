@@ -1,0 +1,3 @@
+{"query": "Fix Python memory leak", "type": "debug"}
+{"query": "Optimize database queries", "type": "performance"}
+{"query": "Handle async exceptions", "type": "error_handling"}

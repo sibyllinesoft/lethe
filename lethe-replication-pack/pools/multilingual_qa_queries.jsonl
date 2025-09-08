@@ -1,0 +1,3 @@
+{"query": "What is machine learning?", "expected_lang": "en"}
+{"query": "\u4ec0\u4e48\u662f\u673a\u5668\u5b66\u4e60\uff1f", "expected_lang": "zh"}
+{"query": "How to implement neural networks", "expected_lang": "en"}

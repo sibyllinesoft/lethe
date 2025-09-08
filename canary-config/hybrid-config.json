@@ -1,0 +1,47 @@
+{
+  "deployment": {
+    "name": "lethe-hybrid-canary",
+    "version": "1.0.0-canary",
+    "traffic_percentage": 5,
+    "deployment_timestamp": "20250907_192720",
+    "evaluation_status": "approved",
+    "promotion_criteria_met": true,
+    "confidence_level": 0.75
+  },
+  
+  "hybrid_parameters": {
+    "head_configuration": {
+      "head_keep_ratio": 0.12,
+      "head_percentage": 12,
+      "description": "Lethe pins compact, KV-friendly head (defs/symbols/errors)"
+    },
+    "tail_configuration": {
+      "streaming_enabled": true,
+      "window_size": 6000,
+      "stride": 3000,
+      "stride_ratio": 0.5,
+      "attention_sinks": 96,
+      "description": "StreamingLLM rolls windowed tail with attention sinks"
+    },
+    "optimization_parameters": {
+      "dpp_rank": 14,
+      "ce_early_exit_k2": 320,
+      "group_split_tau": 0.7,
+      "lambda_tokens": "dynamic",
+      "mu_compute": "dynamic"
+    }
+  },
+  
+  "gating_logic": {
+    "enable_streaming_conditions": {
+      "accept_rate_threshold": 0.4,
+      "entity_entropy_threshold": "dynamic",
+      "description": "Enable Streaming only if accept-rate after Lethe < 0.4 AND entity-entropy > threshold"
+    },
+    "fallback_mode": "head_only",
+    "budget_optimization": {
+      "tight_budget_strategy": "shrink_tail_first",
+      "loose_budget_strategy": "shrink_head_first"
+    }
+  }
+}

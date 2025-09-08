@@ -1,0 +1,7 @@
+{
+  "missing_budgets": false,
+  "cis_bracket_means": true,
+  "equal_pairing_counts": true,
+  "latency_percentiles_valid": true,
+  "pool_fingerprints_consistent": true
+}

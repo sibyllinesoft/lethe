@@ -1,0 +1,210 @@
+{
+  "adversarial_tests": [
+    {
+      "test_name": "Near-Duplicate Storm",
+      "test_type": "near_duplicates",
+      "execution_time_sec": 0.00018405914306640625,
+      "results": [
+        {
+          "query": "How to optimize Python performance?",
+          "relevance": 0.7949954478068263,
+          "latency": 16.31624045121507,
+          "success": true
+        },
+        {
+          "query": "How can I optimize Python performance",
+          "relevance": 0.6361297113630151,
+          "latency": 45.116141835333224,
+          "success": true
+        },
+        {
+          "query": "Ways to optimize Python performance",
+          "relevance": 0.7702997428048887,
+          "latency": 21.05023562862689,
+          "success": true
+        },
+        {
+          "query": "Optimizing Python performance techniques",
+          "relevance": 0.8852438109763658,
+          "latency": 13.632489645563389,
+          "success": true
+        },
+        {
+          "query": "Python performance optimization methods",
+          "relevance": 0.8948586308847944,
+          "latency": 17.54813543792877,
+          "success": false
+        }
+      ],
+      "metrics": {
+        "avg_relevance": 0.796305468767178,
+        "avg_latency_ms": 22.732648599733473,
+        "success_rate": 0.8,
+        "degradation": 0.00461816404102755,
+        "expected_degradation": 0.15
+      },
+      "test_passed": true,
+      "recovery_actions": []
+    },
+    {
+      "test_name": "Symbol Chain Depth 4-6",
+      "test_type": "symbol_chains",
+      "execution_time_sec": 6.365776062011719e-05,
+      "results": [
+        {
+          "query": "Find usage of sklearn.model_selection.GridSearchCV.best_estimator_.predict in codebase",
+          "chain_depth": 5,
+          "relevance": 0.7597659705971765,
+          "latency": 35.3037846669726,
+          "success": true
+        },
+        {
+          "query": "Find usage of torch.nn.functional.cross_entropy.backward.grad in codebase",
+          "chain_depth": 6,
+          "relevance": 0.6052156310959521,
+          "latency": 31.049568191698057,
+          "success": true
+        },
+        {
+          "query": "Find usage of pandas.DataFrame.groupby.agg.apply.transform in codebase",
+          "chain_depth": 6,
+          "relevance": 0.6307628298961766,
+          "latency": 38.963536063623515,
+          "success": true
+        },
+        {
+          "query": "Find usage of numpy.random.RandomState.choice.flatten.reshape in codebase",
+          "chain_depth": 6,
+          "relevance": 0.8246394864653412,
+          "latency": 44.579606717042346,
+          "success": false
+        }
+      ],
+      "metrics": {
+        "avg_relevance": 0.7050959795136617,
+        "avg_latency_ms": 37.47412390983413,
+        "success_rate": 0.75,
+        "degradation": 0.11863002560792299,
+        "expected_degradation": 0.25
+      },
+      "test_passed": true,
+      "recovery_actions": []
+    },
+    {
+      "test_name": "JSON-KV Needles",
+      "test_type": "json_kv",
+      "execution_time_sec": 3.600120544433594e-05,
+      "results": [
+        {
+          "query": "Extract config.database.connection.pool.max_size from configuration",
+          "key_path": "config.database.connection.pool.max_size",
+          "relevance": 0.7193778290433887,
+          "latency": 43.15364146781,
+          "success": true
+        },
+        {
+          "query": "Extract metadata.user.preferences.theme.colors.primary from configuration",
+          "key_path": "metadata.user.preferences.theme.colors.primary",
+          "relevance": 0.8271901479114673,
+          "latency": 17.942449578482552,
+          "success": true
+        }
+      ],
+      "metrics": {
+        "avg_relevance": 0.773283988477428,
+        "avg_latency_ms": 30.548045523146275,
+        "success_rate": 1.0,
+        "degradation": 0.0333950144032151,
+        "expected_degradation": 0.2
+      },
+      "test_passed": true,
+      "recovery_actions": []
+    },
+    {
+      "test_name": "Bilingual Code-Switch",
+      "test_type": "bilingual",
+      "execution_time_sec": 5.1975250244140625e-05,
+      "results": [
+        {
+          "query": "\u5982\u4f55\u4f7f\u7528 API \u8fdb\u884c\u6027\u80fd\u4f18\u5316",
+          "language_mix": "en-zh",
+          "relevance": 0.8040666110032708,
+          "latency": 40.06041476195438,
+          "success": true
+        },
+        {
+          "query": "How to \u6570\u636e\u5e93 Python performance \u4f18\u5316",
+          "language_mix": "en-zh",
+          "relevance": 0.6952493529511939,
+          "latency": 10.295205418656588,
+          "success": false
+        },
+        {
+          "query": "\u5982\u4f55\u4f7f\u7528 performance \u8fdb\u884c\u6027\u80fd\u4f18\u5316",
+          "language_mix": "en-zh",
+          "relevance": 0.6321829614380242,
+          "latency": 47.54321784974867,
+          "success": true
+        },
+        {
+          "query": "How to \u4f18\u5316 Python performance \u4f18\u5316",
+          "language_mix": "en-zh",
+          "relevance": 0.602452368382359,
+          "latency": 16.93453739599981,
+          "success": true
+        },
+        {
+          "query": "\u5982\u4f55\u4f7f\u7528 algorithm \u8fdb\u884c\u6027\u80fd\u4f18\u5316",
+          "language_mix": "en-zh",
+          "relevance": 0.8106947128952781,
+          "latency": 42.48999824870944,
+          "success": true
+        },
+        {
+          "query": "How to \u7b97\u6cd5 Python performance \u4f18\u5316",
+          "language_mix": "en-zh",
+          "relevance": 0.7734962646993164,
+          "latency": 43.229361795197015,
+          "success": true
+        }
+      ],
+      "metrics": {
+        "avg_relevance": 0.7196903785615737,
+        "avg_latency_ms": 33.425455911710976,
+        "success_rate": 0.8333333333333334,
+        "degradation": 0.10038702679803294,
+        "expected_degradation": 0.3
+      },
+      "test_passed": true,
+      "recovery_actions": []
+    },
+    {
+      "test_name": "Index Outage Scenario",
+      "test_type": "outage",
+      "execution_time_sec": 2.956390380859375e-05,
+      "results": [
+        {
+          "query": "Find database optimization patterns",
+          "outage_mode": "reranker_only",
+          "relevance": 0.6129285904999848,
+          "latency": 44.0382816067982,
+          "success": true
+        }
+      ],
+      "metrics": {
+        "avg_relevance": 0.6129285904999848,
+        "avg_latency_ms": 44.0382816067982,
+        "success_rate": 1.0,
+        "degradation": 0.23383926187501902,
+        "expected_degradation": 0.4
+      },
+      "test_passed": true,
+      "recovery_actions": []
+    }
+  ],
+  "summary": {
+    "tests_run": 5,
+    "tests_passed": 5,
+    "overall_degradation": 0.09817389854504352
+  }
+}

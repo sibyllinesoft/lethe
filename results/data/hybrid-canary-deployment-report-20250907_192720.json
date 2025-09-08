@@ -1,0 +1,89 @@
+{
+  "deployment_report": {
+    "deployment_id": "lethe-hybrid-canary-20250907_192720",
+    "status": "DEPLOYED_AND_MONITORING",
+    "timestamp": "20250907_192720",
+    "deployment_type": "5_percent_canary",
+    "evaluation_criteria_met": true,
+    "promotion_confidence": 0.75
+  },
+  
+  "configuration_summary": {
+    "hybrid_parameters": {
+      "head_keep_ratio": 0.12,
+      "window_size": 6000,
+      "stride": 3000,
+      "attention_sinks": 96,
+      "dpp_rank": 14,
+      "ce_early_exit_k2": 320,
+      "group_split_tau": 0.7
+    },
+    "traffic_split": {
+      "hybrid_percentage": 5,
+      "streaming_percentage": 95,
+      "routing_method": "istio_virtual_service"
+    }
+  },
+  
+  "monitoring_status": {
+    "metrics_collection": "active",
+    "alert_channels": ["slack", "email", "pagerduty"],
+    "monitoring_interval_seconds": 10,
+    "alert_evaluation_interval_seconds": 30,
+    "dashboard_url": "http://monitoring.lethe.internal/canary"
+  },
+  
+  "safety_measures": {
+    "automatic_rollback": "configured",
+    "circuit_breakers": "active",
+    "performance_constraints": {
+      "p95_latency": "≤+1ms vs baseline",
+      "error_rate": "≤110% of baseline", 
+      "cbu_improvement": ">0 ΔCBU/1k"
+    },
+    "validation_period_hours": 72
+  },
+  
+  "success_metrics": {
+    "evaluation_result": "hybrid_beats_streaming",
+    "cbu_improvement": "+8.36 ΔCBU/1k",
+    "p95_constraint": "satisfied",
+    "confidence_level": 0.75,
+    "promotion_approved": true
+  },
+  
+  "next_steps": {
+    "immediate": [
+      "Monitor real-time metrics for 2 hours",
+      "Validate no alerts triggered",
+      "Confirm ΔCBU/1k improvement sustained"
+    ],
+    "24_hour": [
+      "Analyze 24h stability metrics", 
+      "Prepare 25% traffic increase if successful",
+      "Generate performance comparison report"
+    ],
+    "72_hour": [
+      "Complete canary evaluation period",
+      "Make go/no-go decision for full deployment",
+      "Document lessons learned"
+    ]
+  },
+  
+  "rollback_procedures": {
+    "automatic_triggers": [
+      "p95_latency > baseline + 1ms",
+      "error_rate > 110% baseline",
+      "ΔCBU/1k < 0 for >30min",
+      "primal_dual_gap > 1.0%"
+    ],
+    "manual_rollback_command": "kubectl apply -f rollback-config.yaml",
+    "rollback_time_estimate": "< 2 minutes"
+  },
+  
+  "contact_information": {
+    "deployment_engineer": "DevOps Automation Agent",
+    "monitoring_team": "lethe-monitoring@company.com",
+    "escalation_oncall": "lethe-oncall@company.com"
+  }
+}

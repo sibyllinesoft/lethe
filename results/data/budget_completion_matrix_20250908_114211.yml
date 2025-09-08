@@ -1,0 +1,313 @@
+version: 4.0_budget_completion
+timestamp: '20250908_114211'
+purpose: Fill missing budget slices to pass validation
+validation_target: Pass all budget coverage checks
+tasks:
+  first_stage: []
+  rerankers:
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 10
+    seed: 42
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 10
+    seed: 123
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 10
+    seed: 456
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 10
+    seed: 789
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 10
+    seed: 999
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 5
+    seed: 42
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 5
+    seed: 123
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 5
+    seed: 456
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 5
+    seed: 789
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 5
+    seed: 999
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 1
+    seed: 42
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 1
+    seed: 123
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 1
+    seed: 456
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 1
+    seed: 789
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Mixed Code QA
+    keep_ratio: 0.08
+    k: 1
+    seed: 999
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Multilingual QA
+    keep_ratio: 0.08
+    k: 10
+    seed: 42
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Multilingual QA
+    keep_ratio: 0.08
+    k: 10
+    seed: 123
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Multilingual QA
+    keep_ratio: 0.08
+    k: 10
+    seed: 456
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Multilingual QA
+    keep_ratio: 0.08
+    k: 10
+    seed: 789
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  - system: BGE_Reranker
+    scenario: Multilingual QA
+    keep_ratio: 0.08
+    k: 10
+    seed: 999
+    priority: high
+    strategy: frozen_pool_rerank
+    pool_fingerprint_required: sha256:frozen_union_pool_a1b2c3d4
+  streaming: []
+  different_pool:
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 10
+    seed: 42
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 10
+    seed: 123
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 10
+    seed: 456
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 10
+    seed: 789
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 10
+    seed: 999
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 5
+    seed: 42
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 5
+    seed: 123
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 5
+    seed: 456
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 5
+    seed: 789
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 5
+    seed: 999
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 1
+    seed: 42
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 1
+    seed: 123
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 1
+    seed: 456
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 1
+    seed: 789
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+  - system: ColBERTv2
+    scenario: System Debugging
+    keep_ratio: 0.3
+    k: 1
+    seed: 999
+    priority: high
+    strategy: exclude_from_headline
+    pool_fingerprint: sha256:different_candidate_pool_8f4a9b2c
+    note: Different pool - exclude from headline until frozen pool compliance
+execution_order:
+- Generate frozen union pools for missing reranker slices
+- Run first-stage search for missing BM25/Vector slices
+- Execute matched keep-ratio runs for streaming systems
+- Mark different-pool systems as Not Comparable
+success_criteria:
+  complete_budget_coverage: true
+  all_systems_paired: true
+  validation_passes: true

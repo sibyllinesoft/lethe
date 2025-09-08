@@ -1,0 +1,302 @@
+{
+  "timestamp": "2025-09-07T14:18:16.231417",
+  "dataset": "code_run",
+  "samples_tested": 2,
+  "competitors_tested": [
+    "lethe",
+    "longnet",
+    "selective_context",
+    "llmlingua",
+    "h2o",
+    "streamingllm"
+  ],
+  "results": {
+    "lethe": {
+      "status": "completed",
+      "samples_processed": 2,
+      "samples_failed": 0,
+      "avg_processing_time_ms": 2607.4881553649902,
+      "avg_compression_ratio": 1.0,
+      "avg_accuracy": 0.5,
+      "total_time_ms": 5214.9763107299805,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "context_length_chars": 181591,
+          "query_length_chars": 135,
+          "processing_time_ms": 2659.858226776123,
+          "original_tokens": 25958,
+          "processed_tokens": 25958,
+          "compression_ratio": 1.0,
+          "response_length": 267,
+          "accuracy": 0.0,
+          "metadata": {
+            "approach": "semantic_retrieval"
+          }
+        },
+        {
+          "sample_id": 1,
+          "context_length_chars": 181682,
+          "query_length_chars": 136,
+          "processing_time_ms": 2555.1180839538574,
+          "original_tokens": 25992,
+          "processed_tokens": 25992,
+          "compression_ratio": 1.0,
+          "response_length": 236,
+          "accuracy": 1.0,
+          "metadata": {
+            "approach": "semantic_retrieval"
+          }
+        }
+      ],
+      "requirements": []
+    },
+    "longnet": {
+      "status": "completed",
+      "samples_processed": 2,
+      "samples_failed": 0,
+      "avg_processing_time_ms": 2236.6583347320557,
+      "avg_compression_ratio": 0.15070267580243207,
+      "avg_accuracy": 0.5,
+      "total_time_ms": 4473.316669464111,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "context_length_chars": 181591,
+          "query_length_chars": 135,
+          "processing_time_ms": 2135.1003646850586,
+          "original_tokens": 25958,
+          "processed_tokens": 3915,
+          "compression_ratio": 0.15082055628322674,
+          "response_length": 168,
+          "accuracy": 0.0,
+          "metadata": {
+            "approach": "dilated_hierarchical_attention",
+            "model": "gemma2:9b",
+            "ollama_url": "http://localhost:11434",
+            "segment_len": 512,
+            "dilated_ratios": [
+              1,
+              2,
+              4,
+              8
+            ],
+            "max_dilated_ratio": 8,
+            "hierarchical_levels_used": 4,
+            "requires_long_sequence": true,
+            "effective_resolution": "1/8"
+          }
+        },
+        {
+          "sample_id": 1,
+          "context_length_chars": 181682,
+          "query_length_chars": 136,
+          "processing_time_ms": 2338.2163047790527,
+          "original_tokens": 25992,
+          "processed_tokens": 3914,
+          "compression_ratio": 0.15058479532163743,
+          "response_length": 246,
+          "accuracy": 1.0,
+          "metadata": {
+            "approach": "dilated_hierarchical_attention",
+            "model": "gemma2:9b",
+            "ollama_url": "http://localhost:11434",
+            "segment_len": 512,
+            "dilated_ratios": [
+              1,
+              2,
+              4,
+              8
+            ],
+            "max_dilated_ratio": 8,
+            "hierarchical_levels_used": 4,
+            "requires_long_sequence": true,
+            "effective_resolution": "1/8"
+          }
+        }
+      ],
+      "requirements": [
+        "requests>=2.20.0"
+      ]
+    },
+    "selective_context": {
+      "status": "completed",
+      "samples_processed": 2,
+      "samples_failed": 0,
+      "avg_processing_time_ms": 1209.4415426254272,
+      "avg_compression_ratio": 0.0,
+      "avg_accuracy": 0.5,
+      "total_time_ms": 2418.8830852508545,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "context_length_chars": 181591,
+          "query_length_chars": 135,
+          "processing_time_ms": 1746.6881275177002,
+          "original_tokens": 25958,
+          "processed_tokens": 0,
+          "compression_ratio": 0.0,
+          "response_length": 295,
+          "accuracy": 0.0,
+          "metadata": {
+            "approach": "selective_context_pruning",
+            "sentence_model": "SentenceTransformer",
+            "model": "gemma2:9b",
+            "ollama_url": "http://localhost:11434",
+            "sentences_total": 2,
+            "sentences_kept": 0,
+            "sentence_retention_ratio": 0.0,
+            "avg_relevance_score": 0.0,
+            "selection_strategy": "relevance_based",
+            "max_context_tokens": 3915
+          }
+        },
+        {
+          "sample_id": 1,
+          "context_length_chars": 181682,
+          "query_length_chars": 136,
+          "processing_time_ms": 672.1949577331543,
+          "original_tokens": 25992,
+          "processed_tokens": 0,
+          "compression_ratio": 0.0,
+          "response_length": 148,
+          "accuracy": 1.0,
+          "metadata": {
+            "approach": "selective_context_pruning",
+            "sentence_model": "SentenceTransformer",
+            "model": "gemma2:9b",
+            "ollama_url": "http://localhost:11434",
+            "sentences_total": 2,
+            "sentences_kept": 0,
+            "sentence_retention_ratio": 0.0,
+            "avg_relevance_score": 0.0,
+            "selection_strategy": "relevance_based",
+            "max_context_tokens": 3914
+          }
+        }
+      ],
+      "requirements": [
+        "requests>=2.20.0",
+        "sentence-transformers>=2.0.0",
+        "scikit-learn>=1.0.0"
+      ]
+    },
+    "llmlingua": {
+      "status": "unavailable",
+      "error": "Dependencies not installed",
+      "requirements": [
+        "llmlingua>=0.2.0",
+        "torch>=1.8.0",
+        "transformers>=4.20.0",
+        "accelerate>=0.20.0",
+        "sentencepiece>=0.1.90"
+      ]
+    },
+    "h2o": {
+      "status": "completed",
+      "samples_processed": 2,
+      "samples_failed": 0,
+      "avg_processing_time_ms": 2740.8286333084106,
+      "avg_compression_ratio": 0.15399429117818017,
+      "avg_accuracy": 0.5,
+      "total_time_ms": 5481.657266616821,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "context_length_chars": 181591,
+          "query_length_chars": 135,
+          "processing_time_ms": 2538.8927459716797,
+          "original_tokens": 25958,
+          "processed_tokens": 4000,
+          "compression_ratio": 0.15409507666230063,
+          "response_length": 217,
+          "accuracy": 0.0,
+          "metadata": {
+            "approach": "attention_pruning",
+            "model": "gemma2:9b",
+            "ollama_url": "http://localhost:11434",
+            "max_length": 4000,
+            "heavy_hitter_ratio": 0.75,
+            "recent_context_ratio": 0.25
+          }
+        },
+        {
+          "sample_id": 1,
+          "context_length_chars": 181682,
+          "query_length_chars": 136,
+          "processing_time_ms": 2942.7645206451416,
+          "original_tokens": 25992,
+          "processed_tokens": 4000,
+          "compression_ratio": 0.1538935056940597,
+          "response_length": 368,
+          "accuracy": 1.0,
+          "metadata": {
+            "approach": "attention_pruning",
+            "model": "gemma2:9b",
+            "ollama_url": "http://localhost:11434",
+            "max_length": 4000,
+            "heavy_hitter_ratio": 0.75,
+            "recent_context_ratio": 0.25
+          }
+        }
+      ],
+      "requirements": [
+        "requests>=2.20.0"
+      ]
+    },
+    "streamingllm": {
+      "status": "completed",
+      "samples_processed": 2,
+      "samples_failed": 0,
+      "avg_processing_time_ms": 2411.417603492737,
+      "avg_compression_ratio": 0.07884507708322824,
+      "avg_accuracy": 1.0,
+      "total_time_ms": 4822.835206985474,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "context_length_chars": 181591,
+          "query_length_chars": 135,
+          "processing_time_ms": 2750.356435775757,
+          "original_tokens": 25958,
+          "processed_tokens": 2048,
+          "compression_ratio": 0.07889667925109793,
+          "response_length": 351,
+          "accuracy": 1.0,
+          "metadata": {
+            "approach": "sliding_window_attention",
+            "model": "gemma2:9b",
+            "ollama_url": "http://localhost:11434",
+            "window_size": 2048,
+            "attention_sink_size": 4,
+            "streaming_enabled": true,
+            "effective_window_usage": 1.0
+          }
+        },
+        {
+          "sample_id": 1,
+          "context_length_chars": 181682,
+          "query_length_chars": 136,
+          "processing_time_ms": 2072.478771209717,
+          "original_tokens": 25992,
+          "processed_tokens": 2048,
+          "compression_ratio": 0.07879347491535857,
+          "response_length": 195,
+          "accuracy": 1.0,
+          "metadata": {
+            "approach": "sliding_window_attention",
+            "model": "gemma2:9b",
+            "ollama_url": "http://localhost:11434",
+            "window_size": 2048,
+            "attention_sink_size": 4,
+            "streaming_enabled": true,
+            "effective_window_usage": 1.0
+          }
+        }
+      ],
+      "requirements": [
+        "requests>=2.20.0"
+      ]
+    }
+  }
+}

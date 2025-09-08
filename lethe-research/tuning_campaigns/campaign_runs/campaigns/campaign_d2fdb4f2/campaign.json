@@ -1,0 +1,85 @@
+{
+  "campaign_id": "campaign_d2fdb4f2",
+  "spec": {
+    "name": "Zh.QA Code-Switch Fragility",
+    "slice_name": "Zh.QA@8%",
+    "budget_tier": 8,
+    "n_trials": 15,
+    "knob_spaces": [
+      {
+        "name": "re_isotonic",
+        "knob_type": "categorical",
+        "bounds": [
+          true,
+          false
+        ],
+        "description": "Apply isotonic recalibration",
+        "risk_level": "low"
+      },
+      {
+        "name": "ce_early_exit_cap",
+        "knob_type": "real",
+        "bounds": [
+          1.0,
+          1.4
+        ],
+        "description": "Cross-encoder early exit capacity multiplier",
+        "risk_level": "medium"
+      },
+      {
+        "name": "K2_multiplier",
+        "knob_type": "real",
+        "bounds": [
+          1.0,
+          1.5
+        ],
+        "description": "Rerank K2 parameter multiplier",
+        "risk_level": "low"
+      },
+      {
+        "name": "r_dpp",
+        "knob_type": "integer",
+        "bounds": [
+          12,
+          20
+        ],
+        "description": "DPP rank parameter",
+        "risk_level": "medium"
+      },
+      {
+        "name": "lambda_hybrid",
+        "knob_type": "real",
+        "bounds": [
+          0.0,
+          0.15
+        ],
+        "description": "Hybrid weighting parameter",
+        "risk_level": "low"
+      },
+      {
+        "name": "head_keep_unchanged",
+        "knob_type": "categorical",
+        "bounds": [
+          true
+        ],
+        "description": "Keep head_keep parameter unchanged",
+        "risk_level": "low"
+      }
+    ],
+    "gates": {
+      "min_delta_p5": 0.015,
+      "min_ci_confidence": 0.0,
+      "max_latency_p95_delta": 1.0,
+      "max_kv_drop": 0.01
+    },
+    "objective_function": "delta_p5_per_ms"
+  },
+  "status": "failed",
+  "n_trials_completed": 15,
+  "n_trials_total": 15,
+  "best_objective": null,
+  "created_time": "2025-09-08T14:24:14.053681",
+  "start_time": "2025-09-08T14:24:14.054257",
+  "end_time": "2025-09-08T14:25:30.997175",
+  "promotion_approved": false
+}

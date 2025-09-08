@@ -1,0 +1,68 @@
+# InfinityBench Evaluation Configuration
+# Academic-quality evaluation setup for Lethe system
+
+dataset:
+  name: "infinitybench"
+  download_url: "https://huggingface.co/datasets/xinrongzhang2022/InfiniteBench"
+  data_dir: "./data/infinitybench"
+  max_samples: null  # Use all samples, set to number for quick testing
+  tasks:
+    - "passkey"
+    - "number_string"  
+    - "kv_retrieval"
+    - "longbook_qa_eng"
+    - "longdialogue_qa_eng"
+    - "math_find"
+    - "math_calc"
+    - "code_run"
+    - "code_debug"
+    - "longbook_sum_eng"
+    - "longbook_choice_eng"
+    - "longbook_qa_chn"
+
+evaluation:
+  metrics:
+    - "rouge_l"
+    - "exact_match" 
+    - "f1"
+    - "accuracy"
+    - "ndcg_10"
+  bootstrap_samples: 1000
+  confidence_level: 0.95
+  random_seed: 42
+  
+  # P/R curves and efficiency analysis
+  enable_pr_analysis: true
+  k_values: [1, 5, 10, 20, 50, 100]
+  max_results: 100
+  relevance_threshold: 0.3
+
+baselines:
+  bm25:
+    k1: 1.2
+    b: 0.75
+    chunk_size: 512
+    chunk_overlap: 50
+  
+  naive_chunking:
+    strategies: ["uniform", "first", "random"]
+    chunk_size: 1024
+    max_chunks: 10
+    
+  dense_retrieval:
+    model: "sentence-transformers/all-MiniLM-L6-v2"
+    top_k: 5
+    chunk_size: 512
+
+lethe:
+  enabled: true
+  config_path: "../ctx-run/packages/core/src/config/index.ts"
+  lambda: 0.1
+  mu: 0.001
+  max_context_tokens: 100000
+
+output:
+  results_dir: "./results"
+  report_format: ["json", "latex", "markdown"] 
+  include_plots: true
+  save_intermediate: true

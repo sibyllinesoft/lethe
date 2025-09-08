@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Validation Failure - No Measured Data</title>
+    <style>
+        body { font-family: monospace; margin: 40px; background: #ffe6e6; }
+        .error { color: #d00; font-weight: bold; font-size: 18px; }
+        .instructions { background: #f5f5f5; padding: 20px; margin: 20px 0; }
+        code { background: #eee; padding: 2px 4px; }
+    </style>
+</head>
+<body>
+    <div class="error">❌ VALIDATION FAILURE: Cannot render advantage map</div>
+    
+    <h2>Issue</h2>
+    <p>Per TODO.md requirements, the HTML refuses to render because no measured competitor data is available.</p>
+    
+    <h2>Required Actions</h2>
+    <div class="instructions">
+        <ol>
+            <li>Start containerized competitors: <code>docker-compose up -d</code></li>
+            <li>Run adapter harness: <code>python adapter_harness.py</code></li>
+            <li>Complete full experiment matrix with measured results</li>
+            <li>Regenerate report with real measurement data</li>
+        </ol>
+    </div>
+    
+    <h2>Status</h2>
+    <p><strong>Measured systems:</strong> 0</p>
+    <p><strong>Simulated systems:</strong> Removed per TODO.md</p>
+    <p><strong>Next step:</strong> Implement containerized testing harness</p>
+    
+    <p><em>This page will be replaced with the real advantage map once measured data is available.</em></p>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{
+  "timestamp": "2025-09-07T08:58:10.587738",
+  "competitors_tested": [
+    "lethe"
+  ],
+  "test_cases": 4,
+  "results": {
+    "lethe": {
+      "status": "completed",
+      "test_results": [
+        {
+          "test_case": "short_qa",
+          "processing_time_ms": 0.0059604644775390625,
+          "original_tokens": 48,
+          "processed_tokens": 48,
+          "compression_ratio": 1.0,
+          "response_length": 52,
+          "accuracy_score": null,
+          "metadata": {
+            "approach": "semantic_retrieval"
+          }
+        },
+        {
+          "test_case": "medium_context",
+          "processing_time_ms": 0.015735626220703125,
+          "original_tokens": 728,
+          "processed_tokens": 728,
+          "compression_ratio": 1.0,
+          "response_length": 55,
+          "accuracy_score": null,
+          "metadata": {
+            "approach": "semantic_retrieval"
+          }
+        },
+        {
+          "test_case": "long_context_needle",
+          "processing_time_ms": 0.0324249267578125,
+          "original_tokens": 2000,
+          "processed_tokens": 2000,
+          "compression_ratio": 1.0,
+          "response_length": 43,
+          "accuracy_score": null,
+          "metadata": {
+            "approach": "semantic_retrieval"
+          }
+        },
+        {
+          "test_case": "very_long_context",
+          "processing_time_ms": 0.13303756713867188,
+          "original_tokens": 5000,
+          "processed_tokens": 5000,
+          "compression_ratio": 1.0,
+          "response_length": 76,
+          "accuracy_score": null,
+          "metadata": {
+            "approach": "semantic_retrieval"
+          }
+        }
+      ],
+      "requirements": []
+    }
+  }
+}

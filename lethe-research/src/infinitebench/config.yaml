@@ -1,0 +1,167 @@
+# InfiniteBench Evaluation Configuration
+# =====================================
+#
+# This configuration file defines all parameters for the InfiniteBench
+# evaluation pipeline. Modify these settings to customize the evaluation
+# for your specific research needs.
+
+# Data Configuration
+# ------------------
+data:
+  # Path to the InfiniteBench dataset directory
+  infinitebench_path: "benchmarks/infinitebench/data"
+  
+  # Directory for saving evaluation results
+  output_dir: "artifacts/infinitebench_results"
+  
+  # Cache directory for intermediate data
+  cache_dir: ".cache/infinitebench"
+
+# Evaluation Configuration
+# ------------------------
+evaluation:
+  # Tasks to evaluate (comment out tasks to skip them)
+  tasks:
+    - "passkey"              # Passkey retrieval in long context
+    - "number_string"        # Number string locating task  
+    - "kv_retrieval"         # Key-value retrieval from JSON
+    - "longbook_sum_eng"     # Long book summarization (English)
+    - "longbook_choice_eng"  # Long book multiple choice (English)
+    - "longbook_qa_eng"      # Long book Q&A (English)
+    - "longbook_qa_chn"      # Long book Q&A (Chinese)
+    - "longdialogue_qa_eng"  # Long dialogue Q&A (English)
+    - "code_debug"           # Code debugging task
+    - "code_run"             # Code execution task
+    - "math_calc"            # Mathematical calculation
+    - "math_find"            # Mathematical finding task
+  
+  # Maximum samples per task (null = use all samples)
+  max_samples_per_task: null
+  
+  # Methods to evaluate
+  methods:
+    - "bm25"              # BM25 baseline
+    - "naive_chunking"    # Naive chunking baseline
+    - "dense_retrieval"   # Dense retrieval baseline
+    - "lethe"             # Lethe system (main evaluation target)
+    # - "gpt4"            # GPT-4 baseline (expensive, enable manually)
+  
+  # Include GPT-4 baseline (warning: this is expensive!)
+  include_gpt4_baseline: false
+  
+  # Statistical analysis parameters
+  bootstrap_samples: 1000      # Number of bootstrap samples for CI
+  confidence_level: 0.95       # Confidence level for intervals
+  
+  # Parallel processing
+  parallel_jobs: 4            # Number of parallel evaluation jobs
+
+# Baseline Method Configuration
+# -----------------------------
+baselines:
+  # BM25 parameters
+  bm25:
+    k1: 1.2                   # Term frequency saturation parameter
+    b: 0.75                   # Length normalization parameter
+    top_k: 5                  # Number of top chunks to retrieve
+  
+  # Naive chunking parameters
+  naive_chunking:
+    chunk_size: 1024          # Size of each chunk in tokens
+    strategy: "uniform"       # Chunking strategy: uniform, first, random
+    top_k: 5                  # Number of chunks to retrieve
+  
+  # Dense retrieval parameters
+  dense_retrieval:
+    model_name: "all-MiniLM-L6-v2"  # Sentence transformer model
+    top_k: 5                  # Number of chunks to retrieve
+    batch_size: 32            # Batch size for encoding
+    
+  # GPT-4 parameters (if enabled)
+  gpt4:
+    model: "gpt-4"            # GPT-4 model version
+    temperature: 0.0          # Generation temperature
+    max_tokens: 1000          # Maximum output tokens
+
+# Lethe System Configuration
+# ---------------------------
+lethe:
+  # Core parameters for Lethe evaluation
+  max_context_length: 200000  # Maximum context length to evaluate
+  chunk_size: 512             # Default chunk size for processing
+  overlap: 50                 # Chunk overlap in tokens
+  
+  # Retrieval parameters
+  retrieval:
+    top_k: 10                 # Number of chunks to retrieve initially
+    rerank: true              # Whether to apply reranking
+    rerank_top_k: 5           # Final number after reranking
+  
+  # Generation parameters (if applicable)
+  generation:
+    temperature: 0.1          # Generation temperature
+    max_tokens: 500           # Maximum output tokens
+
+# Reporting Configuration
+# -----------------------
+reporting:
+  # Generate visualization plots
+  generate_plots: true
+  
+  # Plot format (png, pdf, svg)
+  plot_format: "png"
+  
+  # Include detailed statistical analysis
+  include_detailed_analysis: true
+  
+  # Generate publication-ready reports
+  publication_ready: true
+  
+  # Plot styling
+  plots:
+    style: "whitegrid"        # Seaborn plot style
+    figsize: [12, 8]          # Default figure size
+    dpi: 300                  # Resolution for saved plots
+    font_size: 12             # Default font size
+
+# Logging Configuration
+# ---------------------
+logging:
+  level: "INFO"               # Log level: DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # Save logs to file
+  save_to_file: true
+  log_file: "evaluation.log"
+
+# Performance Tuning
+# ------------------
+performance:
+  # Memory management
+  max_memory_gb: 16           # Maximum memory usage
+  clear_cache_frequency: 10   # Clear cache every N tasks
+  
+  # Batch processing
+  batch_size: 8               # Batch size for processing samples
+  
+  # Timeout settings
+  timeout_seconds: 300        # Timeout per sample evaluation
+
+# Quality Control
+# ---------------
+quality:
+  # Validation parameters
+  min_samples_per_task: 10    # Minimum samples required per task
+  max_failures_per_task: 5    # Maximum allowed failures per task
+  
+  # Output validation
+  validate_outputs: true      # Validate output format
+  require_non_empty: true     # Require non-empty outputs
+
+# Experimental Features
+# ---------------------
+experimental:
+  # Enable experimental features (use with caution)
+  enable_caching: true        # Cache intermediate results
+  use_multiprocessing: true   # Use multiprocessing for speed
+  save_debug_info: false      # Save detailed debug information

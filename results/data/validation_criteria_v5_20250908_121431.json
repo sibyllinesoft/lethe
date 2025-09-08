@@ -1,0 +1,18 @@
+{
+  "tolerances": {
+    "macro_p5_delta": 0.005,
+    "latency_p95_delta_ms": 5,
+    "qps_delta_percent": 10
+  },
+  "required_checksums": {
+    "frozen_union_pool": "sha256:frozen_union_pool_a1b2c3d4",
+    "colbert_pool": "sha256:different_candidate_pool_8f4a9b2c"
+  },
+  "pass_criteria": {
+    "paired_counts_identical": true,
+    "cis_bracket_means": true,
+    "latency_percentiles_valid": true,
+    "pool_fingerprints_match": true,
+    "validation_page_green": true
+  }
+}

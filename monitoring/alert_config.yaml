@@ -1,0 +1,211 @@
+# Alert Configuration for Lethe-StreamingLLM Hybrid Monitoring
+# Implements all TODO.md instrumentation requirements and thresholds
+
+groups:
+  - name: lethe_core_performance
+    rules:
+      - alert: PrimalDualGapTooHigh
+        expr: lethe_primal_dual_gap > 0.005
+        for: 5m
+        labels:
+          severity: critical
+          component: optimizer
+        annotations:
+          summary: "Primal-dual proxy gap exceeds 0.5% threshold"
+          description: "Gap is {{ $value | humanizePercentage }}, should stay <0.5%"
+          
+      - alert: P95LatencyRegression
+        expr: lethe_latency_seconds{component="llm",quantile="0.95"} > 0.143
+        for: 2m
+        labels:
+          severity: warning
+          component: performance
+        annotations:
+          summary: "LLM p95 latency regression >+1ms from baseline"
+          description: "Current p95: {{ $value | humanizeDuration }}, baseline: 142ms"
+          
+      - alert: QualityDegradation
+        expr: lethe_delta_cbu_1k < 8.0
+        for: 5m
+        labels:
+          severity: critical
+          component: quality
+        annotations:
+          summary: "ΔCBU/1k quality metric below baseline"
+          description: "Current ΔCBU/1k: {{ $value }}, baseline: 8.42"
+
+  - name: lethe_parameter_drift
+    rules:
+      - alert: LambdaDriftExcessive
+        expr: abs(lethe_lambda_drift_24h) > 15
+        for: 10m
+        labels:
+          severity: critical
+          component: parameters
+        annotations:
+          summary: "Lambda parameter drift >±15% over 24h"
+          description: "Lambda drift: {{ $value }}% in 24h window"
+          runbook_url: "https://docs.lethe.ai/runbooks/parameter-drift"
+          
+      - alert: MuDriftExcessive
+        expr: abs(lethe_mu_drift_24h) > 15
+        for: 10m
+        labels:
+          severity: critical
+          component: parameters
+        annotations:
+          summary: "Mu parameter drift >±15% over 24h"
+          description: "Mu drift: {{ $value }}% in 24h window"
+
+  - name: lethe_kv_monitoring
+    rules:
+      - alert: KVJaccardDrop
+        expr: lethe_kv_jaccard_drop > 0.10
+        for: 3m
+        labels:
+          severity: warning
+          component: kv_cache
+        annotations:
+          summary: "KV prefix Jaccard similarity dropped >-10pp"
+          description: "Drop: {{ $value | humanizePercentage }}, consider reducing H by 2-3%"
+          
+      - alert: KVPrefixReuseDecline
+        expr: lethe_kv_prefix_reuse < 0.65
+        for: 5m
+        labels:
+          severity: warning
+          component: kv_cache
+        annotations:
+          summary: "KV prefix reuse efficiency declining"
+          description: "Current reuse: {{ $value | humanizePercentage }}, target: >70%"
+
+  - name: lethe_tail_evt
+    rules:
+      - alert: TailEVTShapeRising
+        expr: lethe_evt_xi > 0.3
+        for: 10m
+        labels:
+          severity: warning
+          component: tail_distribution
+        annotations:
+          summary: "EVT shape parameter ξ indicates heavier tails"
+          description: "ξ = {{ $value }}, consider shrinking stride and fanout first"
+          
+      - alert: TailCVaRTooHigh
+        expr: lethe_tail_cvar_095 > 200
+        for: 5m
+        labels:
+          severity: warning
+          component: tail_distribution
+        annotations:
+          summary: "Tail CVaR₀.₉₅ compute risk elevated"
+          description: "Current tail CVaR: {{ $value }}ms"
+
+  - name: lethe_canary_health
+    rules:
+      - alert: CanaryHealthPoor
+        expr: lethe_canary_health < 0.6
+        for: 5m
+        labels:
+          severity: warning
+          component: canary
+        annotations:
+          summary: "Canary health score below promotion threshold"
+          description: "Health: {{ $value | humanizePercentage }}, need >80% for promotion"
+          
+      - alert: CanaryEmergencyRollback
+        expr: lethe_canary_health < 0.3
+        for: 1m
+        labels:
+          severity: critical
+          component: canary
+        annotations:
+          summary: "Canary health critical - emergency rollback recommended"
+          description: "Health: {{ $value | humanizePercentage }}, consider immediate rollback"
+
+  - name: lethe_token_economics
+    rules:
+      - alert: KeepRatioImbalance
+        expr: |
+          (lethe_keep_ratio_head + lethe_keep_ratio_tail) > 0.35 or
+          (lethe_keep_ratio_head + lethe_keep_ratio_tail) < 0.15
+        for: 5m
+        labels:
+          severity: warning
+          component: token_economics
+        annotations:
+          summary: "Keep ratio outside optimal range [15%-35%]"
+          description: "Total ratio: {{ $value }}, head: {{ $labels.head }}, tail: {{ $labels.tail }}"
+          
+      - alert: HeadTokensInsufficient
+        expr: lethe_keep_ratio_head < 0.08
+        for: 3m
+        labels:
+          severity: warning
+          component: token_economics
+        annotations:
+          summary: "Head keep ratio too low, may impact KV reuse"
+          description: "Head ratio: {{ $value | humanizePercentage }}, recommended: 8-20%"
+
+  - name: lethe_system_health
+    rules:
+      - alert: RequestRateAnomaly
+        expr: |
+          rate(lethe_requests_total[5m]) > 2 * rate(lethe_requests_total[1h]) or
+          rate(lethe_requests_total[5m]) < 0.1 * rate(lethe_requests_total[1h])
+        for: 2m
+        labels:
+          severity: warning
+          component: traffic
+        annotations:
+          summary: "Request rate anomaly detected"
+          description: "Current rate deviates significantly from historical pattern"
+          
+      - alert: PrecisionRecallRegression
+        expr: |
+          lethe_precision_at_k < 0.8 or
+          lethe_recall_at_k < 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: quality
+        annotations:
+          summary: "Precision/Recall metrics below threshold"
+          description: "P@k: {{ $labels.precision }}, R@k: {{ $labels.recall }}"
+
+# Auto-remediation webhook configurations
+auto_remediation:
+  - alert: KVJaccardDrop
+    webhook: http://lethe-controller:8080/auto-remediate
+    action: reduce_head_ratio
+    params:
+      reduction_factor: 0.97  # Reduce by 3%
+      
+  - alert: TailEVTShapeRising
+    webhook: http://lethe-controller:8080/auto-remediate  
+    action: reduce_stride
+    params:
+      stride_factor: 0.8  # Reduce stride by 20%
+      
+  - alert: CanaryEmergencyRollback
+    webhook: http://lethe-controller:8080/emergency-rollback
+    action: immediate_rollback
+    params:
+      rollback_to_percentage: 0  # Full rollback
+
+# Notification routing
+notification_config:
+  critical_alerts:
+    - slack: "#lethe-alerts"
+    - pagerduty: "lethe-oncall"
+    - email: "lethe-team@company.com"
+    
+  warning_alerts:
+    - slack: "#lethe-monitoring"
+    - email: "lethe-team@company.com"
+
+# Dashboard links for alert context
+dashboard_links:
+  main_dashboard: "https://grafana.company.com/d/lethe-production/lethe-production-monitoring"
+  canary_dashboard: "https://grafana.company.com/d/lethe-canary/lethe-canary-rollout"
+  parameter_dashboard: "https://grafana.company.com/d/lethe-params/lethe-parameter-monitoring"

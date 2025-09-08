@@ -15,5 +15,8 @@ export * from './pipeline';
 // Iteration 2 components
 export * from './query-understanding';
 
+// Lens integration (search server)
+export * from './lens';
+
 // Configuration management (externalized)
 export * from './config';

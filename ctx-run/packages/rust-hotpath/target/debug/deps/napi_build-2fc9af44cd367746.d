@@ -1,0 +1,11 @@
+/media/nathan/Seagate Hub/Projects/lethe/ctx-run/packages/rust-hotpath/target/debug/deps/napi_build-2fc9af44cd367746.d: /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/lib.rs /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/android.rs /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/macos.rs /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/wasi.rs /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/windows.rs
+
+/media/nathan/Seagate Hub/Projects/lethe/ctx-run/packages/rust-hotpath/target/debug/deps/libnapi_build-2fc9af44cd367746.rlib: /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/lib.rs /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/android.rs /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/macos.rs /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/wasi.rs /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/windows.rs
+
+/media/nathan/Seagate Hub/Projects/lethe/ctx-run/packages/rust-hotpath/target/debug/deps/libnapi_build-2fc9af44cd367746.rmeta: /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/lib.rs /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/android.rs /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/macos.rs /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/wasi.rs /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/windows.rs
+
+/home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/lib.rs:
+/home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/android.rs:
+/home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/macos.rs:
+/home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/wasi.rs:
+/home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-build-2.2.3/src/windows.rs:

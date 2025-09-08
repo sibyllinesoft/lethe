@@ -1,0 +1,100 @@
+# Minimal test setup for demonstration
+version: '3.8'
+
+services:
+  # Simple test services that don't require heavy ML models
+  test_bm25:
+    image: python:3.11-slim
+    ports:
+      - "8081:8000"
+    command: >
+      bash -c "
+      pip install fastapi uvicorn &&
+      cat > /tmp/test_api.py << 'EOF' &&
+      from fastapi import FastAPI
+      import uvicorn
+      app = FastAPI()
+      @app.get('/health')
+      async def health(): return {'status': 'healthy', 'system': 'bm25_baseline'}
+      @app.post('/build_index') 
+      async def build_index(dataset: str): return {'index_id': f'bm25_{dataset}', 'status': 'built'}
+      @app.post('/search')
+      async def search(request: dict): 
+        return {
+          'candidates': [{'doc_id': f'doc_{i}', 'score': 0.7 - i*0.1} for i in range(request.get('k', 5))],
+          'timings': {'middleware_ms': 25.0},
+          'metadata': {'system': 'bm25_baseline'}
+        }
+      if __name__ == '__main__': uvicorn.run(app, host='0.0.0.0', port=8000)
+      EOF
+      python /tmp/test_api.py
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  test_vector:
+    image: python:3.11-slim
+    ports:
+      - "8082:8000"
+    command: >
+      bash -c "
+      pip install fastapi uvicorn &&
+      cat > /tmp/test_api.py << 'EOF' &&
+      from fastapi import FastAPI
+      import uvicorn
+      app = FastAPI()
+      @app.get('/health')
+      async def health(): return {'status': 'healthy', 'system': 'vector_baseline'}
+      @app.post('/build_index')
+      async def build_index(dataset: str): return {'index_id': f'vector_{dataset}', 'status': 'built'}
+      @app.post('/search')
+      async def search(request: dict):
+        return {
+          'candidates': [{'doc_id': f'doc_{i}', 'score': 0.75 - i*0.08} for i in range(request.get('k', 5))],
+          'timings': {'middleware_ms': 35.0},
+          'metadata': {'system': 'vector_baseline'}
+        }
+      if __name__ == '__main__': uvicorn.run(app, host='0.0.0.0', port=8000)
+      EOF
+      python /tmp/test_api.py
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  test_hybrid:
+    image: python:3.11-slim
+    ports:
+      - "8083:8000"
+    command: >
+      bash -c "
+      pip install fastapi uvicorn &&
+      cat > /tmp/test_api.py << 'EOF' &&
+      from fastapi import FastAPI
+      import uvicorn
+      app = FastAPI()
+      @app.get('/health')
+      async def health(): return {'status': 'healthy', 'system': 'hybrid_baseline'}
+      @app.post('/build_index')
+      async def build_index(dataset: str): return {'index_id': f'hybrid_{dataset}', 'status': 'built'}
+      @app.post('/search')
+      async def search(request: dict):
+        return {
+          'candidates': [{'doc_id': f'doc_{i}', 'score': 0.73 - i*0.09} for i in range(request.get('k', 5))],
+          'timings': {'middleware_ms': 42.0},
+          'metadata': {'system': 'hybrid_baseline'}
+        }
+      if __name__ == '__main__': uvicorn.run(app, host='0.0.0.0', port=8000)
+      EOF
+      python /tmp/test_api.py
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3

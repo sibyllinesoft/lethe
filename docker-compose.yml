@@ -1,0 +1,237 @@
+# Docker Compose for Competitor System Testing
+# Per TODO.md: "All run in Docker; each adapter exposes the interface above via a tiny HTTP shim"
+
+version: '3.8'
+
+services:
+  # Hybrid Vector DBs
+  weaviate:
+    image: cr.weaviate.io/semitechnologies/weaviate:1.25.0
+    ports:
+      - "8080:8080"
+    environment:
+      - QUERY_DEFAULTS_LIMIT=25
+      - AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED=true
+      - PERSISTENCE_DATA_PATH=/var/lib/weaviate
+      - DEFAULT_VECTORIZER_MODULE=none
+      - ENABLE_MODULES=text2vec-openai,generative-openai,qna-openai
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/v1/.well-known/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  milvus:
+    image: milvusdb/milvus:v2.3.0
+    ports:
+      - "19530:19530"
+    command: ["milvus", "run", "standalone"]
+    environment:
+      - ETCD_ENDPOINTS=etcd:2379
+      - MINIO_ADDRESS=minio:9000
+    depends_on:
+      - etcd
+      - minio
+    volumes:
+      - milvus_data:/var/lib/milvus
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:19530"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Milvus dependencies
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    ports:
+      - "2379:2379"
+    command: 
+      - etcd
+      - --advertise-client-urls=http://127.0.0.1:2379
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --data-dir=/etcd
+    volumes:
+      - etcd_data:/etcd
+
+  minio:
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: minio server /minio_data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/minio_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  vespa:
+    image: vespaengine/vespa:8.265.17
+    ports:
+      - "8081:8080"
+      - "19071:19071"
+    volumes:
+      - vespa_data:/opt/vespa/var
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:19071/status.html"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Learned Sparse / Late Interaction Systems
+  splade:
+    build:
+      context: ./adapters/splade
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8000"
+    environment:
+      - MODEL_NAME=naver/splade-cocondenser-ensembledistil
+      - DEVICE=cpu
+    volumes:
+      - splade_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  colbert:
+    build:
+      context: ./adapters/colbert
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8000"
+    environment:
+      - MODEL_NAME=colbert-ir/colbertv2.0
+      - DEVICE=cpu
+    volumes:
+      - colbert_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Rerankers (must use frozen pool)
+  bge_reranker:
+    build:
+      context: ./adapters/bge_reranker
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8000"
+    environment:
+      - MODEL_NAME=BAAI/bge-reranker-large
+      - DEVICE=cpu
+    volumes:
+      - bge_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  monot5:
+    build:
+      context: ./adapters/monot5
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8000"
+    environment:
+      - MODEL_NAME=castorini/monot5-base-msmarco
+      - DEVICE=cpu
+    volumes:
+      - monot5_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Code Search
+  zoekt:
+    build:
+      context: ./adapters/zoekt
+      dockerfile: Dockerfile
+    ports:
+      - "8086:8000"
+    volumes:
+      - zoekt_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Long-Context Algorithm  
+  streaming_llm:
+    build:
+      context: ./adapters/streaming_llm
+      dockerfile: Dockerfile
+    ports:
+      - "8087:8000"
+    environment:
+      - MODEL_NAME=microsoft/DialoGPT-medium
+      - DEVICE=cpu
+    volumes:
+      - streaming_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Orchestrator
+  harness:
+    build:
+      context: .
+      dockerfile: Dockerfile.harness
+    ports:
+      - "8088:8000"
+    depends_on:
+      - weaviate
+      - milvus
+      - vespa
+      - splade
+      - colbert
+      - bge_reranker
+      - monot5
+      - zoekt
+      - streaming_llm
+    volumes:
+      - ./results:/app/results
+      - ./datasets:/app/datasets
+    environment:
+      - WEAVIATE_URL=http://weaviate:8080
+      - MILVUS_URL=http://milvus:19530
+      - VESPA_URL=http://vespa:8080
+      - SPLADE_URL=http://splade:8000
+      - COLBERT_URL=http://colbert:8000
+      - BGE_RERANKER_URL=http://bge_reranker:8000
+      - MONOT5_URL=http://monot5:8000
+      - ZOEKT_URL=http://zoekt:8000
+      - STREAMING_LLM_URL=http://streaming_llm:8000
+
+volumes:
+  weaviate_data:
+  milvus_data:
+  etcd_data:
+  minio_data:
+  vespa_data:
+  splade_data:
+  colbert_data:
+  bge_data:
+  monot5_data:
+  zoekt_data:
+  streaming_data:
+
+networks:
+  default:
+    name: lethe_benchmarks

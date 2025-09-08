@@ -1,13 +1,15 @@
 {
   "name": "lethe",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*",
     "packages/devserver"
   ],
   "scripts": {
     "build": "lerna run build",
-    "start": "lerna run start --scope devserver"
+    "start": "lerna run start --scope devserver",
+    "analysis": "node comprehensive_analysis.js"
   },
   "devDependencies": {
     "lerna": "^8.1.2",

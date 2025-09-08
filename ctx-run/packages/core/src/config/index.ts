@@ -79,6 +79,24 @@ export interface CtxConfig {
     profiling_enabled: boolean;
     log_level: string;
   };
+  
+  lens?: {
+    enabled: boolean;
+    base_url: string;
+    connect_timeout_ms: number;
+    request_timeout_ms: number;
+    sla_recall_ms: number;
+    topic_fanout_k: number;
+    weight_cap: number;
+    max_tokens_per_response: number;
+    mode: 'auto' | 'earn-its-place' | 'disabled';
+    dpp_rank: number;
+    enable_facility_location: boolean;
+    enable_log_det_dpp: boolean;
+    lambda_multiplier: number;
+    mu_multiplier: number;
+    lens_tokens_cap: number;
+  };
 }
 
 /**
@@ -157,6 +175,24 @@ export const DEFAULT_CONFIG: CtxConfig = {
     debug_enabled: false,
     profiling_enabled: false,
     log_level: "info"
+  },
+  
+  lens: {
+    enabled: false, // Disabled by default for backward compatibility
+    base_url: 'http://localhost:8081',
+    connect_timeout_ms: 500,
+    request_timeout_ms: 150, // SLA-Recall@150ms constraint
+    sla_recall_ms: 150,
+    topic_fanout_k: 240, // Balanced between 120-320 range
+    weight_cap: 0.4, // Prevent semantic drowning
+    max_tokens_per_response: 4000,
+    mode: 'auto',
+    dpp_rank: 14, // Balanced between 12-16 range
+    enable_facility_location: true,
+    enable_log_det_dpp: true,
+    lambda_multiplier: 1.2, // Slightly higher cost for Lens tokens
+    mu_multiplier: 1.0, // Standard compute cost
+    lens_tokens_cap: 4000 // 2-4k range for small context
   }
 };
 
@@ -295,6 +331,11 @@ function mergeWithDefaults(loaded: Partial<CtxConfig>): CtxConfig {
     development: {
       ...DEFAULT_CONFIG.development!,
       ...loaded.development
+    },
+    
+    lens: {
+      ...DEFAULT_CONFIG.lens!,
+      ...loaded.lens
     }
   };
 }
@@ -361,6 +402,26 @@ export function validateConfig(config: CtxConfig): void {
     
     if (service.timeout_ms <= 0) {
       throw new Error('ml.prediction_service.timeout_ms must be positive');
+    }
+  }
+  
+  // Lens service validation
+  if (config.lens?.enabled) {
+    const lens = config.lens;
+    if (lens.sla_recall_ms <= 0 || lens.sla_recall_ms > 1000) {
+      throw new Error('lens.sla_recall_ms must be between 0 and 1000');
+    }
+    
+    if (lens.topic_fanout_k <= 0 || lens.topic_fanout_k > 1000) {
+      throw new Error('lens.topic_fanout_k must be between 0 and 1000');
+    }
+    
+    if (lens.weight_cap <= 0 || lens.weight_cap > 1.0) {
+      throw new Error('lens.weight_cap must be between 0 and 1.0');
+    }
+    
+    if (!lens.base_url || !lens.base_url.startsWith('http')) {
+      throw new Error('lens.base_url must be a valid HTTP URL');
     }
   }
   

@@ -1,0 +1,87 @@
+[
+  {
+    "category": "Multilingual Qa",
+    "scenario_count": 3,
+    "performance_highlights": {
+      "best_latency_ms": 7.803440093994141,
+      "best_relevance_score": 0.2025989294052124,
+      "average_tokens": 432,
+      "success_rate": "100%"
+    },
+    "competitive_advantage": "Lethe delivers Sub-8ms latency with good relevance (score: 0.203)",
+    "use_case_description": "Cross-language question answering with context-aware retrieval",
+    "technical_details": {
+      "fusion_method": "BM25 + Dense Embeddings (\u03b1=0.6)",
+      "budget_optimization": "Dynamic token allocation",
+      "architecture": "Hybrid retrieval with streaming optimization"
+    }
+  },
+  {
+    "category": "Code Debug",
+    "scenario_count": 3,
+    "performance_highlights": {
+      "best_latency_ms": 11.625289916992188,
+      "best_relevance_score": 0.834722327239205,
+      "average_tokens": 436,
+      "success_rate": "100%"
+    },
+    "competitive_advantage": "Lethe delivers Sub-12ms latency with high relevance (score: 0.835)",
+    "use_case_description": "Intelligent code analysis and debugging assistance",
+    "technical_details": {
+      "fusion_method": "BM25 + Dense Embeddings (\u03b1=0.6)",
+      "budget_optimization": "Dynamic token allocation",
+      "architecture": "Hybrid retrieval with streaming optimization"
+    }
+  },
+  {
+    "category": "Passkey Retrieval",
+    "scenario_count": 3,
+    "performance_highlights": {
+      "best_latency_ms": 12.014389038085938,
+      "best_relevance_score": 0.808077661491795,
+      "average_tokens": 334,
+      "success_rate": "100%"
+    },
+    "competitive_advantage": "Lethe delivers Sub-12ms latency with high relevance (score: 0.808)",
+    "use_case_description": "Precise information extraction from structured data",
+    "technical_details": {
+      "fusion_method": "BM25 + Dense Embeddings (\u03b1=0.6)",
+      "budget_optimization": "Dynamic token allocation",
+      "architecture": "Hybrid retrieval with streaming optimization"
+    }
+  },
+  {
+    "category": "Performance Optimization",
+    "scenario_count": 3,
+    "performance_highlights": {
+      "best_latency_ms": 11.821508407592773,
+      "best_relevance_score": 0.8633451910370578,
+      "average_tokens": 436,
+      "success_rate": "100%"
+    },
+    "competitive_advantage": "Lethe delivers Sub-12ms latency with exceptional relevance (score: 0.863)",
+    "use_case_description": "System optimization guidance and best practices",
+    "technical_details": {
+      "fusion_method": "BM25 + Dense Embeddings (\u03b1=0.6)",
+      "budget_optimization": "Dynamic token allocation",
+      "architecture": "Hybrid retrieval with streaming optimization"
+    }
+  },
+  {
+    "category": "Distributed Systems",
+    "scenario_count": 3,
+    "performance_highlights": {
+      "best_latency_ms": 11.620044708251953,
+      "best_relevance_score": 0.8160272570238253,
+      "average_tokens": 436,
+      "success_rate": "100%"
+    },
+    "competitive_advantage": "Lethe delivers Sub-12ms latency with high relevance (score: 0.816)",
+    "use_case_description": "Complex architectural and algorithmic consultation",
+    "technical_details": {
+      "fusion_method": "BM25 + Dense Embeddings (\u03b1=0.6)",
+      "budget_optimization": "Dynamic token allocation",
+      "architecture": "Hybrid retrieval with streaming optimization"
+    }
+  }
+]

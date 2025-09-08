@@ -1,0 +1,2 @@
+{"query": "config.database.host", "type": "key_lookup"}
+{"query": "API_KEY environment variable", "type": "env_lookup"}

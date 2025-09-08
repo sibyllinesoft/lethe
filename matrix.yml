@@ -1,0 +1,449 @@
+---
+# Lethe Benchmark Matrix Configuration
+# ===================================
+# Complete replication configuration for fork-proof verification
+
+metadata:
+  version: "1.0"
+  description: "Lethe comprehensive benchmark matrix for replication"
+  created_at: "2025-01-08T00:00:00Z"
+  frozen_pool: "pools/frozen_pool_v1.jsonl"
+  seeds: [42, 123, 456, 789, 999]
+  statistical_integrity: true
+  fairness_enforcement: true
+
+# System Under Test Configurations
+systems:
+  lethe-hybrid:
+    endpoint: "http://lethe-hybrid:8080/search"
+    config_path: "configs/lethe_hybrid.json"
+    warmup_queries: 10
+    timeout_ms: 30000
+    parameters:
+      alpha: 0.6                    # BM25 weight
+      beta: 0.4                     # Vector weight  
+      keep_ratio: 0.15              # Budget constraint
+      lambda: 0.5                   # Exploration parameter
+      mu: 0.7                       # Precision parameter
+      K2: 550                       # Context window
+      reranker_weight: 0.3          # Reranker contribution
+    expected_performance:
+      latency_ms: 14.02
+      p95_latency_ms: 21.72
+      relevance_score: 0.831
+      success_rate: 100.0
+
+  weaviate:
+    endpoint: "http://weaviate:8080/v1/graphql"
+    config_path: "configs/weaviate.json"
+    warmup_queries: 5
+    timeout_ms: 60000
+    parameters:
+      bm25_weight: 0.6
+      vector_weight: 0.4
+      embedding_model: "BGE-M3"
+      fusion_method: "ranked_fusion"
+    expected_performance:
+      latency_ms: 43.2
+      p95_latency_ms: 61.8
+      relevance_score: 0.735
+      success_rate: 97.1
+
+  milvus:
+    endpoint: "http://milvus:19530"
+    config_path: "configs/milvus.json"
+    warmup_queries: 5
+    timeout_ms: 60000
+    parameters:
+      index_type: "IVF_FLAT"
+      metric_type: "L2"
+      nprobe: 16
+      embedding_model: "BGE-M3"
+    expected_performance:
+      latency_ms: 48.6
+      p95_latency_ms: 68.9
+      relevance_score: 0.758
+      success_rate: 96.3
+
+  splade-v2:
+    endpoint: "http://splade:8080/search"
+    config_path: "configs/splade.json"
+    warmup_queries: 5
+    timeout_ms: 45000
+    parameters:
+      model: "SPLADE++_EfficientV1"
+      expansion_factor: 1.2
+      max_tokens: 512
+    expected_performance:
+      latency_ms: 36.4
+      p95_latency_ms: 51.2
+      relevance_score: 0.784
+      success_rate: 94.7
+
+  bge-reranker:
+    endpoint: "http://bge-reranker:8080/rerank"
+    config_path: "configs/bge_reranker.json"
+    warmup_queries: 3
+    timeout_ms: 120000
+    parameters:
+      model: "BAAI/bge-reranker-large"
+      batch_size: 8
+      max_length: 512
+    expected_performance:
+      latency_ms: 81.4
+      p95_latency_ms: 115.6
+      relevance_score: 0.806
+      success_rate: 91.8
+
+  zoekt:
+    endpoint: "http://zoekt:6070/search"
+    config_path: "configs/zoekt.json"
+    warmup_queries: 3
+    timeout_ms: 10000
+    parameters:
+      index_type: "trigram"
+      max_matches: 1000
+      context_lines: 3
+    expected_performance:
+      latency_ms: 26.9
+      p95_latency_ms: 37.8
+      relevance_score: 0.673
+      success_rate: 94.2
+
+  streaming-llm:
+    endpoint: "http://streaming-llm:8080/generate"
+    config_path: "configs/streaming_llm.json"
+    warmup_queries: 2
+    timeout_ms: 180000
+    parameters:
+      model: "gemma2-9b"
+      window_size: 4096
+      stride: 2048
+      sink_size: 4
+      temperature: 0.1
+    expected_performance:
+      latency_ms: 118.3
+      p95_latency_ms: 165.2
+      relevance_score: 0.698
+      success_rate: 88.4
+
+# Benchmark Scenarios  
+scenarios:
+  - name: "multilingual_qa"
+    description: "Cross-language question answering"
+    query_file: "pools/multilingual_qa_queries.jsonl"
+    expected_results: 50
+    metrics: ["latency", "relevance", "success_rate"]
+    keep_ratios: [0.08, 0.15, 0.30]
+    evaluation_criteria:
+      primary_metric: "macro_p5"
+      latency_weight: 0.3
+      quality_weight: 0.7
+    
+  - name: "code_debug"
+    description: "Intelligent code analysis and debugging"
+    query_file: "pools/code_debug_queries.jsonl" 
+    expected_results: 75
+    metrics: ["latency", "relevance", "success_rate", "exact_match"]
+    keep_ratios: [0.08, 0.15, 0.30]
+    evaluation_criteria:
+      primary_metric: "macro_p5"
+      exact_match_bonus: 0.1
+
+  - name: "passkey_retrieval"
+    description: "Precise information extraction"
+    query_file: "pools/passkey_queries.jsonl"
+    expected_results: 40
+    metrics: ["latency", "relevance", "exact_match"]
+    keep_ratios: [0.08, 0.15, 0.30]
+    evaluation_criteria:
+      primary_metric: "exact_match"
+      latency_penalty: 0.2
+
+  - name: "performance_optimization"
+    description: "System optimization guidance"
+    query_file: "pools/performance_queries.jsonl"
+    expected_results: 60
+    metrics: ["latency", "relevance", "success_rate"]
+    keep_ratios: [0.08, 0.15, 0.30]
+    evaluation_criteria:
+      primary_metric: "macro_p5"
+      
+  - name: "distributed_systems"
+    description: "Complex architectural consultation"
+    query_file: "pools/distributed_queries.jsonl"
+    expected_results: 55
+    metrics: ["latency", "relevance", "success_rate"]
+    keep_ratios: [0.08, 0.15, 0.30]
+    evaluation_criteria:
+      primary_metric: "macro_p5"
+
+# Validation Configuration
+validation:
+  strict_mode: true
+  fail_closed: true
+  tolerance:
+    latency_variance: 0.15        # 15% variance allowed
+    relevance_variance: 0.05      # 5% variance allowed  
+    success_rate_min: 0.90        # 90% minimum success rate
+  
+  required_metrics:
+    - "p95_latency"
+    - "macro_p5" 
+    - "success_rate"
+    - "paired_significance"
+  
+  statistical_integrity:
+    bootstrap_ci_brackets_mean: true
+    paired_permutation_tests: true
+    holm_correction: true
+    min_paired_slices: 15
+    
+  fairness_checks:
+    - "paired_pool_validation"
+    - "bootstrap_ci_integrity"
+    - "statistical_significance"
+    - "p99_p95_ratio_check"      # p99/p95 <= 2.5
+    - "pool_fingerprint_match"
+  
+  exclusion_criteria:
+    different_pools: "exclude_from_headline"
+    insufficient_samples: "exclude_from_analysis"
+    failed_health_checks: "exclude_from_comparison"
+
+# Adversarial Testing Suite
+adversarial:
+  enabled: true
+  fail_on_degradation: false     # Log but don't fail the build
+  
+  test_suites:
+    near_duplicate_storm:
+      description: "Flood with highly similar queries to test disambiguation"
+      parameters:
+        base_query: "How to optimize Python performance"
+        variations:
+          - "How to optimize Python performance?"
+          - "How can I optimize Python performance"
+          - "Ways to optimize Python performance"
+          - "Optimizing Python performance techniques"
+          - "Python performance optimization methods"
+          - "Best practices for Python performance"
+          - "Python code optimization strategies"
+        duplicate_ratio: 0.8
+        query_count: 20
+      degradation_threshold: 0.15  # 15% P@5 drop max
+      recovery_actions:
+        - "Increase λ (exploration) parameter by 15%"
+        - "Enable semantic deduplication in preprocessing"
+        - "Adjust K2 (context window) to +20%"
+    
+    symbol_chain_depth:
+      description: "Cross-package symbol references with deep nesting"
+      parameters:
+        min_depth: 4
+        max_depth: 6
+        packages: ["numpy", "pandas", "sklearn", "torch", "tensorflow", "matplotlib"]
+        chain_examples:
+          - "sklearn.model_selection.GridSearchCV.best_estimator_.predict"
+          - "torch.nn.functional.cross_entropy.backward.grad"
+          - "pandas.DataFrame.groupby.agg.apply.transform.reset_index"
+          - "numpy.random.RandomState.choice.flatten.reshape.astype"
+          - "tensorflow.keras.layers.Dense.get_weights.transpose"
+          - "matplotlib.pyplot.figure.add_subplot.plot.legend.set_title"
+        query_templates:
+          - "Find usage of {chain} in codebase"
+          - "Debug error in {chain}"
+          - "Optimize performance of {chain}"
+      degradation_threshold: 0.25
+      recovery_actions:
+        - "Increase μ (precision) parameter by 10%"
+        - "Enable cross-reference indexing"
+        - "Boost reranker weight (r) by 0.1"
+    
+    json_kv_needles:
+      description: "Precise key-value extraction from nested JSON"
+      parameters:
+        json_depth: 5
+        key_variants:
+          - "config.database.connection.pool.max_size"
+          - "metadata.user.preferences.theme.colors.primary"
+          - "api.endpoints.v1.auth.oauth.client_secret"
+          - "monitoring.alerts.thresholds.cpu.warning.percentage"
+          - "deployment.services.backend.replicas.min.count"
+        noise_ratio: 0.7
+        haystack_size: 1000
+      degradation_threshold: 0.20
+      recovery_actions:
+        - "Enable structured data preprocessing"
+        - "Increase K2 (context) for JSON parsing"
+        - "Add JSON-specific tokenization"
+    
+    bilingual_code_switch:
+      description: "Mixed English-Chinese technical queries"
+      parameters:
+        languages: ["en", "zh"]
+        code_switch_points: [0.3, 0.7]  # Switch at 30% and 70%
+        technical_terms: 
+          - "API"
+          - "数据库" 
+          - "performance"
+          - "优化"
+          - "algorithm"
+          - "算法"
+          - "microservice"
+          - "微服务"
+          - "container"
+          - "容器"
+        query_templates:
+          - "How to {en_term} Python {zh_term} 性能优化"
+          - "如何使用 {en_term} 进行 {zh_term} development"
+          - "{zh_term} 最佳实践 for {en_term} implementation"
+      degradation_threshold: 0.30
+      recovery_actions:
+        - "Switch to multilingual embedding model"
+        - "Increase λ parameter for exploration"
+        - "Add language-specific reranking"
+    
+    index_outage_scenario:
+      description: "Component failure resilience testing"
+      parameters:
+        outage_scenarios:
+          - name: "zoekt_down"
+            disabled_components: ["zoekt", "bm25"]
+            fallback_mode: "reranker_only"
+            timeout_ms: 5000
+          - name: "vector_db_down"
+            disabled_components: ["weaviate", "milvus", "vector_search"]
+            fallback_mode: "keyword_only"
+            timeout_ms: 3000
+          - name: "reranker_down"
+            disabled_components: ["bge_reranker", "cross_encoder"]
+            fallback_mode: "fusion_only"
+            timeout_ms: 2000
+          - name: "streaming_llm_down"
+            disabled_components: ["streaming_llm", "generation"]
+            fallback_mode: "retrieval_only"
+            timeout_ms: 1000
+      degradation_threshold: 0.40
+      recovery_actions:
+        - "Increase reranker timeout to 10s"
+        - "Enable semantic fallback mode"
+        - "Boost r (reranker weight) to 0.8"
+        - "Switch to degraded mode gracefully"
+
+# Throughput Testing
+throughput:
+  enabled: true
+  target_p95_ms: 50.0
+  duration_sec: 60
+  qps_range: [10, 25, 50, 100, 200, 500, 1000, 2000]
+  keep_ratios: [0.08, 0.15, 0.30]
+  
+  metrics:
+    - "qps_achieved" 
+    - "p95_latency_ms"
+    - "p99_latency_ms"
+    - "cpu_usage_percent"
+    - "memory_mb"
+    - "error_rate"
+    - "cbu_ops"            # (ΔCBU/1k) / ms
+  
+  success_criteria:
+    max_error_rate: 0.05   # 5% error rate max
+    min_qps_efficiency: 0.8 # 80% of target QPS minimum
+
+# Model Drift Testing
+drift_testing:
+  enabled: true
+  baseline_duration_hours: 2
+  test_duration_hours: 24
+  
+  model_pairs:
+    - old_model: "gemma2-9b"
+      new_model: "gemma3-27b" 
+      parameter_family: "gemma"
+    - old_model: "qwen2.5-14b"
+      new_model: "qwen3-20b"
+      parameter_family: "qwen"
+  
+  drift_metrics:
+    - "lambda_drift"        # Exploration parameter
+    - "mu_drift"           # Precision parameter  
+    - "curvature_drift"    # ĉ curvature
+    - "ece_delta"          # Expected Calibration Error change
+    - "recalibration_time_sec"
+  
+  stability_thresholds:
+    max_lambda_drift: 0.10  # 10% max drift
+    max_mu_drift: 0.10      # 10% max drift  
+    max_ece_delta: 0.01     # 1% max ECE change
+    max_recalibration_time: 300  # 5 minutes max
+  
+  promotion_criteria:
+    drift_within_bounds: true
+    recalibration_successful: true
+    stability_score_min: 0.90
+
+# Output Configuration
+output:
+  formats: ["json", "jsonl", "csv", "html"]
+  include_raw_results: true
+  include_plots: true
+  include_statistical_tests: true
+  
+  reports:
+    - "performance_summary"
+    - "adversarial_results" 
+    - "throughput_frontiers"
+    - "drift_analysis"
+    - "comprehensive_report"
+  
+  artifacts:
+    signed_manifest: true
+    pool_fingerprints: true
+    docker_image_hashes: true
+    configuration_checksums: true
+
+# Security & Integrity
+security:
+  signed_artifacts: true
+  hmac_key_required: true
+  pool_integrity_checks: true
+  
+  validation_signatures:
+    - "bootstrap_ci_integrity"
+    - "paired_aggregation_consistency"  
+    - "statistical_significance_validation"
+    - "fairness_invariant_checks"
+    - "artifact_checksum_validation"
+
+# Execution Configuration
+execution:
+  parallel_systems: false    # Run systems sequentially for fairness
+  randomize_order: true      # Randomize system execution order
+  cool_down_seconds: 30      # Cool down between systems
+  retry_failed_queries: 3    # Retry failed queries up to 3 times
+  
+  resource_limits:
+    max_memory_gb: 32
+    max_cpu_cores: 16
+    max_disk_gb: 100
+    timeout_multiplier: 1.5  # Apply 1.5x timeout under load
+
+# Monitoring & Debugging  
+monitoring:
+  enabled: true
+  metrics_endpoint: "http://prometheus:9090"
+  log_level: "INFO"
+  
+  alerts:
+    high_latency_ms: 1000
+    high_error_rate: 0.10
+    low_success_rate: 0.80
+    resource_exhaustion: 0.90
+  
+  debugging:
+    save_failed_queries: true
+    include_stack_traces: true
+    capture_system_metrics: true
+    profile_slow_queries: true

@@ -1,0 +1,80 @@
+{
+  "n_candidates": 4,
+  "score_stats": {
+    "mean": 18.14923673143055,
+    "std": 7.196423434108011,
+    "min": 9.761499670495935,
+    "max": 29.360543071608763,
+    "median": 16.73745209180875,
+    "q25": 13.578342333131458,
+    "q75": 21.308346490107837
+  },
+  "component_breakdown": {
+    "statistical": {
+      "mean": 66.15136940192743,
+      "std": 14.233961862683378,
+      "correlation_with_score": 0.8665949217390865
+    },
+    "sensitivity": {
+      "mean": 0.19398136760502818,
+      "std": 0.02951658893034429,
+      "correlation_with_score": 0.7671770258053033
+    },
+    "weight": {
+      "mean": 1.375,
+      "std": 0.171682847133894,
+      "correlation_with_score": 0.6952523941902005
+    },
+    "risk_penalty": {
+      "mean": 0.11062499999999999,
+      "std": 0.013889631924568775,
+      "correlation_with_score": 0.11415317830376924
+    }
+  },
+  "budget_tier_breakdown": {
+    "8": {
+      "count": 1,
+      "mean_score": 14.850623220676631,
+      "std_score": 0.0,
+      "top_candidate": "Zh.QA@8%"
+    },
+    "15": {
+      "count": 2,
+      "mean_score": 23.992412017274813,
+      "std_score": 5.368131054333951,
+      "top_candidate": "JSON.PassKey@15%"
+    },
+    "30": {
+      "count": 1,
+      "mean_score": 9.761499670495935,
+      "std_score": 0.0,
+      "top_candidate": "Retrieve.KV@30%"
+    }
+  },
+  "domain_breakdown": {
+    "JSON": {
+      "count": 1,
+      "mean_score": 29.360543071608763,
+      "std_score": 0.0,
+      "top_candidate": "JSON.PassKey@15%"
+    },
+    "Zh": {
+      "count": 1,
+      "mean_score": 14.850623220676631,
+      "std_score": 0.0,
+      "top_candidate": "Zh.QA@8%"
+    },
+    "Retrieve": {
+      "count": 1,
+      "mean_score": 9.761499670495935,
+      "std_score": 0.0,
+      "top_candidate": "Retrieve.KV@30%"
+    },
+    "Code": {
+      "count": 1,
+      "mean_score": 18.624280962940862,
+      "std_score": 0.0,
+      "top_candidate": "Code.Debug@15%"
+    }
+  }
+}

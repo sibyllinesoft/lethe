@@ -1,0 +1,162 @@
+{
+  "monitoring_configuration": {
+    "deployment_id": "lethe-hybrid-canary-20250907_192720",
+    "monitoring_start_time": "20250907_192720",
+    "evaluation_period_hours": 72,
+    "metrics_collection_interval_seconds": 10,
+    "alert_evaluation_interval_seconds": 30
+  },
+  
+  "core_metrics": {
+    "token_management": {
+      "lambda": {
+        "description": "Token budget parameter", 
+        "target_range": "dynamic",
+        "alert_threshold_drift": 0.15
+      },
+      "mu": {
+        "description": "Compute budget parameter",
+        "target_range": "dynamic", 
+        "alert_threshold_drift": 0.15
+      },
+      "tokens_in": {
+        "description": "Input token count",
+        "measurement_unit": "tokens"
+      },
+      "head_tokens": {
+        "description": "Lethe head token count",
+        "target_percentage": 12,
+        "measurement_unit": "tokens"
+      },
+      "tail_tokens": {
+        "description": "Streaming tail token count",
+        "measurement_unit": "tokens"
+      },
+      "keep_ratio_head": {
+        "description": "Head token retention ratio",
+        "target": 0.12,
+        "tolerance": 0.02
+      },
+      "keep_ratio_tail": {
+        "description": "Tail token retention ratio", 
+        "measurement_unit": "ratio"
+      }
+    },
+    
+    "optimization_parameters": {
+      "K1": {
+        "description": "Primary CE parameter",
+        "measurement_unit": "integer"
+      },
+      "K2": {
+        "description": "CE early-exit parameter",
+        "configured_value": 320,
+        "measurement_unit": "integer"
+      },
+      "r": {
+        "description": "DPP rank parameter",
+        "configured_value": 14,
+        "measurement_unit": "integer"
+      },
+      "CE_early_exit": {
+        "description": "Cross-encoder early exit rate",
+        "measurement_unit": "ratio"
+      },
+      "num_windows": {
+        "description": "Number of streaming windows",
+        "measurement_unit": "count"
+      },
+      "window_size": {
+        "description": "Streaming window size",
+        "configured_value": 6000,
+        "measurement_unit": "tokens"
+      },
+      "stride": {
+        "description": "Window stride",
+        "configured_value": 3000,
+        "measurement_unit": "tokens"
+      },
+      "sinks": {
+        "description": "Attention sink tokens",
+        "configured_value": 96,
+        "measurement_unit": "tokens"
+      }
+    },
+    
+    "performance_metrics": {
+      "KV_prefix_reuse": {
+        "description": "KV cache prefix reuse efficiency",
+        "target": "maximize",
+        "measurement_unit": "percentage",
+        "jaccard_alarm_threshold": -0.10
+      },
+      "middleware_p95": {
+        "description": "Middleware 95th percentile latency",
+        "target": "<=200ms",
+        "alert_threshold": ">300ms",
+        "measurement_unit": "milliseconds"
+      },
+      "LLM_p95": {
+        "description": "LLM 95th percentile latency", 
+        "constraint": "<=+1ms vs baseline",
+        "measurement_unit": "milliseconds"
+      },
+      "ΔCBU_per_1k": {
+        "description": "Delta CBU per 1k tokens improvement",
+        "target": "+8.36",
+        "promotion_threshold": ">0",
+        "measurement_unit": "CBU/1k"
+      },
+      "P_at_k": {
+        "description": "Precision at k metric",
+        "measurement_unit": "ratio"
+      },
+      "R_at_k": {
+        "description": "Recall at k metric", 
+        "measurement_unit": "ratio"
+      }
+    },
+    
+    "optimization_quality": {
+      "primal_dual_gap": {
+        "description": "Primal-dual optimization gap",
+        "target": "<0.5%",
+        "alert_threshold": ">1.0%",
+        "measurement_unit": "percentage"
+      },
+      "tail_CVaR_95": {
+        "description": "Tail Conditional Value at Risk (95%)",
+        "target": "minimize",
+        "measurement_unit": "compute_units"
+      }
+    }
+  },
+  
+  "alerting_rules": {
+    "lambda_mu_drift": {
+      "condition": "abs(λ_drift) > 15% OR abs(μ_drift) > 15% over 24h",
+      "severity": "warning",
+      "action": "parameter_adjustment"
+    },
+    "kv_prefix_jaccard_alarm": {
+      "condition": "KV_prefix_jaccard drops >10pp",
+      "severity": "warning", 
+      "action": "drop_H_by_2_3_percent"
+    },
+    "tail_evt_alarm": {
+      "condition": "EVT parameter ξ rises significantly",
+      "severity": "warning",
+      "action": "shrink_stride_first"
+    },
+    "performance_degradation": {
+      "condition": "p95_latency > baseline + 1ms",
+      "severity": "critical",
+      "action": "automatic_rollback"
+    },
+    "cbu_improvement_failure": {
+      "condition": "ΔCBU/1k < 0 for >1 hour",
+      "severity": "critical", 
+      "action": "rollback_evaluation"
+    }
+  }
+}

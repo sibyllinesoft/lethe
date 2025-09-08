@@ -1,0 +1,462 @@
+# Lethe Comprehensive Replication Environment
+# ===========================================
+# Complete Docker Compose setup for fork-proof replication testing
+
+version: '3.8'
+
+services:
+  # Core Lethe Hybrid System
+  lethe-hybrid:
+    build:
+      context: .
+      dockerfile: Dockerfile.lethe-hybrid
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./pools:/app/pools:ro
+      - ./configs:/app/configs:ro
+      - ./models:/app/models:ro
+    environment:
+      - LETHE_MODE=hybrid
+      - POOL_PATH=/app/pools/frozen_pool_v1.jsonl
+      - CONFIG_PATH=/app/configs/lethe_hybrid.json
+      - MODEL_PATH=/app/models/bge-m3
+      - LETHE_WORKERS=4
+      - LETHE_MAX_QPS=1000
+      - LETHE_TIMEOUT_MS=30000
+      - LETHE_LOG_LEVEL=INFO
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+          cpus: '4'
+        reservations:
+          memory: 4G
+          cpus: '2'
+    restart: unless-stopped
+    networks:
+      - lethe-network
+
+  # Weaviate Vector Database
+  weaviate:
+    image: weaviate/weaviate:1.25.0
+    ports:
+      - "8081:8080"
+    environment:
+      - QUERY_DEFAULTS_LIMIT=25
+      - AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED=true
+      - PERSISTENCE_DATA_PATH=/var/lib/weaviate
+      - DEFAULT_VECTORIZER_MODULE=none
+      - ENABLE_MODULES=text2vec-transformers,generative-openai
+      - CLUSTER_HOSTNAME=node1
+      - ASYNC_INDEXING=true
+      - INDEX_CHECK_STARTUP_COMPLETE=true
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+      - ./configs/weaviate.json:/etc/weaviate/weaviate.json:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/v1/meta"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 180s
+    deploy:
+      resources:
+        limits:
+          memory: 6G
+          cpus: '4'
+    restart: unless-stopped
+    networks:
+      - lethe-network
+
+  # Milvus Vector Database Stack
+  milvus-etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    volumes:
+      - etcd_data:/etcd
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - lethe-network
+
+  milvus-minio:
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    ports:
+      - "9001:9001"
+      - "9000:9000"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ':9001'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - lethe-network
+
+  milvus:
+    image: milvusdb/milvus:v2.3.0
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    environment:
+      - ETCD_ENDPOINTS=milvus-etcd:2379
+      - MINIO_ADDRESS=milvus-minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    volumes:
+      - milvus_data:/var/lib/milvus
+      - ./configs/milvus.yaml:/milvus/configs/milvus.yaml:ro
+    depends_on:
+      - milvus-etcd
+      - milvus-minio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+      start_period: 180s
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+          cpus: '4'
+    restart: unless-stopped
+    networks:
+      - lethe-network
+
+  # SPLADE v2 Sparse Retrieval
+  splade-v2:
+    build:
+      context: .
+      dockerfile: Dockerfile.splade
+    ports:
+      - "8082:8080"
+    environment:
+      - SPLADE_MODEL=SPLADE++_EfficientV1
+      - SPLADE_EXPANSION_FACTOR=1.2
+      - SPLADE_MAX_TOKENS=512
+      - SPLADE_BATCH_SIZE=8
+    volumes:
+      - ./models/splade:/app/models:ro
+      - ./pools:/app/pools:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2'
+    restart: unless-stopped
+    networks:
+      - lethe-network
+
+  # BGE Reranker
+  bge-reranker:
+    build:
+      context: .
+      dockerfile: Dockerfile.bge-reranker
+    ports:
+      - "8083:8080"
+    environment:
+      - BGE_MODEL=BAAI/bge-reranker-large
+      - BGE_BATCH_SIZE=8
+      - BGE_MAX_LENGTH=512
+      - BGE_DEVICE=cuda
+    volumes:
+      - ./models/bge-reranker:/app/models:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 120s
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+          cpus: '2'
+    restart: unless-stopped
+    networks:
+      - lethe-network
+
+  # Zoekt Code Search
+  zoekt-webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.zoekt
+    ports:
+      - "6070:6070"
+    volumes:
+      - zoekt_indexes:/data/index
+      - ./pools:/data/source:ro
+    environment:
+      - ZOEKT_INDEX_PATH=/data/index
+      - ZOEKT_MAX_MATCHES=1000
+      - ZOEKT_CONTEXT_LINES=3
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6070/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - lethe-network
+
+  zoekt-indexserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.zoekt
+      target: indexserver
+    volumes:
+      - zoekt_indexes:/data/index
+      - ./pools:/data/source:ro
+    environment:
+      - ZOEKT_INDEX_PATH=/data/index
+      - ZOEKT_SOURCE_PATH=/data/source
+    command: ["zoekt-index", "-index", "/data/index", "/data/source"]
+    restart: "no"
+    networks:
+      - lethe-network
+
+  # Streaming LLM Service  
+  streaming-llm:
+    build:
+      context: .
+      dockerfile: Dockerfile.streaming-llm
+    ports:
+      - "8084:8080"
+    environment:
+      - STREAMING_MODEL=gemma2-9b
+      - STREAMING_WINDOW_SIZE=4096
+      - STREAMING_STRIDE=2048
+      - STREAMING_SINK_SIZE=4
+      - STREAMING_TEMPERATURE=0.1
+      - STREAMING_DEVICE=cuda
+    volumes:
+      - ./models/streaming-llm:/app/models:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 45s
+      timeout: 30s
+      retries: 3
+      start_period: 300s
+    deploy:
+      resources:
+        limits:
+          memory: 16G
+          cpus: '4'
+    restart: unless-stopped
+    networks:
+      - lethe-network
+
+  # Monitoring & Observability
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - lethe-network
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - lethe-network
+
+  # Load Testing & Validation
+  validator:
+    build:
+      context: .
+      dockerfile: Dockerfile.validator
+    volumes:
+      - ./runs:/app/runs
+      - ./validators:/app/validators:ro
+      - ./pools:/app/pools:ro
+    environment:
+      - VALIDATION_MODE=strict
+      - VALIDATOR_LOG_LEVEL=INFO
+    command: ["python", "/app/validators/continuous_validator.py"]
+    depends_on:
+      - lethe-hybrid
+      - weaviate
+      - milvus
+    restart: unless-stopped
+    networks:
+      - lethe-network
+
+  load-tester:
+    build:
+      context: .
+      dockerfile: Dockerfile.load-tester
+    volumes:
+      - ./runs:/app/runs
+      - ./pools:/app/pools:ro
+      - ./configs:/app/configs:ro
+    environment:
+      - LOAD_TEST_DURATION=300
+      - LOAD_TEST_MAX_QPS=1000
+      - LOAD_TEST_RAMP_TIME=60
+    command: ["python", "/app/load_tester.py", "--config", "/app/configs/load_test.json"]
+    profiles:
+      - load-testing
+    networks:
+      - lethe-network
+
+  # Notebook Environment for Analysis
+  jupyter:
+    image: jupyter/datascience-notebook:python-3.11
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=lethe-analysis
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - ./runs:/home/jovyan/work/data/runs:ro
+      - ./pools:/home/jovyan/work/data/pools:ro
+    command: start-notebook.sh --NotebookApp.token='lethe-analysis'
+    profiles:
+      - analysis
+    networks:
+      - lethe-network
+
+  # Redis for Caching & Rate Limiting
+  redis:
+    image: redis:7.2-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 2gb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - lethe-network
+
+  # Message Queue for Async Processing
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=lethe
+      - RABBITMQ_DEFAULT_PASS=lethe-queue
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    profiles:
+      - async-processing
+    restart: unless-stopped
+    networks:
+      - lethe-network
+
+volumes:
+  weaviate_data:
+    driver: local
+  etcd_data:
+    driver: local
+  minio_data:
+    driver: local
+  milvus_data:
+    driver: local
+  zoekt_indexes:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  redis_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+
+networks:
+  lethe-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
+
+# Compose Profiles for Different Use Cases
+# ========================================
+#
+# Default profile (no --profile flag):
+#   All core services for basic replication
+#
+# docker-compose --profile load-testing up
+#   Includes load testing services
+#
+# docker-compose --profile analysis up  
+#   Includes Jupyter notebook for analysis
+#
+# docker-compose --profile async-processing up
+#   Includes RabbitMQ for async workflows
+#
+# docker-compose --profile all up
+#   All services including optional ones

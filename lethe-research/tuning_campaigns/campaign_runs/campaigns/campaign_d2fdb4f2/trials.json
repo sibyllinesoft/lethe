@@ -1,0 +1,10 @@
+[
+  {
+    "trial_id": "campaign_d2fdb4f2_trial_001",
+    "campaign_id": "campaign_d2fdb4f2",
+    "trial_number": 1,
+    "parameters": {
+      "re_isotonic": true,
+      "ce_early_exit_cap": 1.0,
+      "K2_multiplier": 1.0,
+      "r_dpp": 

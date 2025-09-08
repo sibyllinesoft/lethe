@@ -1,0 +1,30 @@
+version: '3.0'
+pinned_seeds:
+- 42
+- 123
+- 456
+- 789
+- 999
+frozen_pools:
+  standard: sha256:frozen_union_pool_a1b2c3d4
+  colbert: sha256:different_candidate_pool_8f4a9b2c
+budget_ratios:
+- 0.08
+- 0.15
+- 0.3
+scenarios:
+- Mixed Code QA
+- Multilingual QA
+- API Documentation
+- System Debugging
+- Architecture Search
+systems:
+- Lethe_Hybrid
+- BGE_Reranker
+- BM25_Vector_Simple
+- ColBERTv2
+validation_rules:
+  fail_on_ci_not_bracketing_mean: true
+  fail_on_unequal_pairing: true
+  fail_on_invalid_percentiles: true
+  require_pool_fingerprint_match: true

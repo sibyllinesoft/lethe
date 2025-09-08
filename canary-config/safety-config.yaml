@@ -1,0 +1,60 @@
+safety_configuration:
+  automatic_rollback_triggers:
+    - condition: "middleware_p95 > baseline_p95 + 1ms"
+      description: "Performance constraint violation"
+      action: "immediate_rollback"
+      confidence_threshold: 0.95
+    
+    - condition: "error_rate > baseline_error_rate * 1.1"
+      description: "Error rate increase >10%"
+      action: "immediate_rollback"
+      confidence_threshold: 0.90
+    
+    - condition: "ΔCBU_per_1k < 0 sustained >30min"
+      description: "Performance degradation below baseline"
+      action: "staged_rollback"
+      confidence_threshold: 0.85
+      
+    - condition: "primal_dual_gap > 1.0%"
+      description: "Optimization convergence failure"
+      action: "parameter_adjustment"
+      confidence_threshold: 0.80
+
+  monitoring_dashboard:
+    refresh_interval_seconds: 10
+    alert_channels:
+      - slack_channel: "#lethe-canary-alerts"
+      - email: "lethe-team@company.com"
+      - pagerduty: "lethe-production"
+    
+  validation_period:
+    initial_observation_hours: 2
+    stability_validation_hours: 72
+    progressive_traffic_increase:
+      - percentage: 5
+        duration_hours: 24
+        success_criteria: "no_alerts && ΔCBU_improvement > 0"
+      - percentage: 25  
+        duration_hours: 24
+        success_criteria: "p95_constraint && performance_targets"
+      - percentage: 50
+        duration_hours: 24
+        success_criteria: "sustained_improvement && system_stability"
+      - percentage: 100
+        duration_hours: 24
+        success_criteria: "full_deployment_validation"
+
+  circuit_breakers:
+    hybrid_service:
+      failure_threshold: 5
+      timeout_seconds: 10
+      recovery_time_seconds: 30
+    
+    streaming_fallback:
+      failure_threshold: 3
+      timeout_seconds: 5
+      recovery_time_seconds: 60
+      
+    kv_cache_protection:
+      memory_threshold: 0.90
+      eviction_policy: "lru_with_prefix_protection"

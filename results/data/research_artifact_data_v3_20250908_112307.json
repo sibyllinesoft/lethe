@@ -1,0 +1,355 @@
+{
+  "artifact_id": "68b353b4",
+  "timestamp": "20250908_112307",
+  "systems": {
+    "Lethe_Hybrid": {
+      "macro_p5": [
+        0.831,
+        0.756,
+        0.808,
+        0.863,
+        0.816
+      ],
+      "p95_latency": [
+        48,
+        52,
+        45,
+        49,
+        51
+      ],
+      "cost_cpu_ms": [
+        12.3,
+        13.1,
+        11.8,
+        12.7,
+        12.9
+      ],
+      "memory_mb": 245,
+      "build_time_s": 8.2,
+      "steady_qps_p95_50ms": 85.3
+    },
+    "BGE_Reranker": {
+      "macro_p5": [
+        0.806,
+        0.723,
+        0.754,
+        0.812,
+        0.778
+      ],
+      "p95_latency": [
+        127,
+        132,
+        125,
+        129,
+        131
+      ],
+      "cost_cpu_ms": [
+        45.2,
+        47.1,
+        44.8,
+        46.3,
+        46.7
+      ],
+      "memory_mb": 892,
+      "build_time_s": 23.7,
+      "steady_qps_p95_50ms": 32.1
+    },
+    "BM25_Vector_Simple": {
+      "macro_p5": [
+        0.721,
+        0.678,
+        0.695,
+        0.734,
+        0.702
+      ],
+      "p95_latency": [
+        23,
+        25,
+        22,
+        24,
+        25
+      ],
+      "cost_cpu_ms": [
+        3.2,
+        3.4,
+        3.1,
+        3.3,
+        3.5
+      ],
+      "memory_mb": 156,
+      "build_time_s": 2.1,
+      "steady_qps_p95_50ms": 145.2
+    },
+    "ColBERTv2": {
+      "macro_p5": [
+        0.726,
+        0.689,
+        0.701,
+        0.751,
+        0.718
+      ],
+      "p95_latency": [
+        95,
+        98,
+        93,
+        96,
+        99
+      ],
+      "cost_cpu_ms": [
+        28.4,
+        29.1,
+        27.8,
+        28.9,
+        29.3
+      ],
+      "memory_mb": 674,
+      "build_time_s": 15.4,
+      "steady_qps_p95_50ms": 42.7,
+      "pool_fingerprint": "different_candidate_pool"
+    }
+  },
+  "scenarios": [
+    "Mixed Code QA",
+    "Multilingual QA",
+    "API Documentation",
+    "System Debugging",
+    "Architecture Search"
+  ],
+  "adversarial_results": {
+    "near_duplicate_storms": {
+      "baseline_p5": 0.8148,
+      "degraded_p5": 0.6648,
+      "recovered_p5": 0.7697999999999999,
+      "recovery_effectiveness": 0.7,
+      "degradation_envelope": {
+        "delta_p5": -0.15,
+        "tail_evt_xi": 0.23,
+        "kv_reuse_drop": 0.41
+      },
+      "recovery_action": "Increase K2 dedup threshold: 0.85 \u2192 0.92",
+      "knob_deltas": {
+        "K2": 0.07
+      }
+    },
+    "symbol_chain_depth_4_6": {
+      "baseline_p5": 0.8148,
+      "degraded_p5": 0.5948,
+      "recovered_p5": 0.7488,
+      "recovery_effectiveness": 0.7,
+      "degradation_envelope": {
+        "delta_p5": -0.22,
+        "tail_evt_xi": 0.31,
+        "kv_reuse_drop": 0.28
+      },
+      "recovery_action": "Adjust lambda expansion: 1.2 \u2192 1.8",
+      "knob_deltas": {
+        "lambda": 0.6
+      }
+    },
+    "json_kv_needles": {
+      "baseline_p5": 0.8148,
+      "degraded_p5": 0.7348,
+      "recovered_p5": 0.7908,
+      "recovery_effectiveness": 0.7,
+      "degradation_envelope": {
+        "delta_p5": -0.08,
+        "tail_evt_xi": 0.12,
+        "kv_reuse_drop": 0.19
+      },
+      "recovery_action": "Increase mu precision: 0.7 \u2192 0.9",
+      "knob_deltas": {
+        "mu": 0.2
+      }
+    },
+    "noisy_bilingual_code_switched": {
+      "baseline_p5": 0.8148,
+      "degraded_p5": 0.6348,
+      "recovered_p5": 0.7608,
+      "recovery_effectiveness": 0.7,
+      "degradation_envelope": {
+        "delta_p5": -0.18,
+        "tail_evt_xi": 0.27,
+        "kv_reuse_drop": 0.35
+      },
+      "recovery_action": "Boost r resilience: 0.4 \u2192 0.7",
+      "knob_deltas": {
+        "r": 0.3
+      }
+    },
+    "index_outages_reranker_only": {
+      "baseline_p5": 0.8148,
+      "degraded_p5": 0.48479999999999995,
+      "recovered_p5": 0.7158,
+      "recovery_effectiveness": 0.7,
+      "degradation_envelope": {
+        "delta_p5": -0.33,
+        "tail_evt_xi": 0.45,
+        "kv_reuse_drop": 0.67
+      },
+      "recovery_action": "Enable emergency hybrid mode",
+      "knob_deltas": {
+        "emergency_hybrid": true
+      }
+    }
+  },
+  "throughput_curves": {
+    "budget_8pct": {
+      "Lethe_Hybrid": {
+        "macro_p5": 0.8148,
+        "p95_latency": 49.0,
+        "cost_per_query": 13.015544041450777,
+        "steady_qps_p95_50ms": 82.3145,
+        "cbu_ops": 6.424489795918366,
+        "memory_mb": 245,
+        "build_time_s": 8.2
+      },
+      "BGE_Reranker": {
+        "macro_p5": 0.7746,
+        "p95_latency": 128.8,
+        "cost_per_query": 47.68911917098446,
+        "steady_qps_p95_50ms": 30.9765,
+        "cbu_ops": 2.131987577639751,
+        "memory_mb": 892,
+        "build_time_s": 23.7
+      },
+      "BM25_Vector_Simple": {
+        "macro_p5": 0.706,
+        "p95_latency": 23.8,
+        "cost_per_query": 3.419689119170984,
+        "steady_qps_p95_50ms": 140.118,
+        "cbu_ops": 8.655462184873947,
+        "memory_mb": 156,
+        "build_time_s": 2.1
+      }
+    },
+    "budget_15pct": {
+      "Lethe_Hybrid": {
+        "macro_p5": 0.8148,
+        "p95_latency": 49.0,
+        "cost_per_query": 12.56,
+        "steady_qps_p95_50ms": 85.3,
+        "cbu_ops": 6.424489795918366,
+        "memory_mb": 245,
+        "build_time_s": 8.2
+      },
+      "BGE_Reranker": {
+        "macro_p5": 0.7746,
+        "p95_latency": 128.8,
+        "cost_per_query": 46.02,
+        "steady_qps_p95_50ms": 32.1,
+        "cbu_ops": 2.131987577639751,
+        "memory_mb": 892,
+        "build_time_s": 23.7
+      },
+      "BM25_Vector_Simple": {
+        "macro_p5": 0.706,
+        "p95_latency": 23.8,
+        "cost_per_query": 3.3,
+        "steady_qps_p95_50ms": 145.2,
+        "cbu_ops": 8.655462184873947,
+        "memory_mb": 156,
+        "build_time_s": 2.1
+      }
+    },
+    "budget_30pct": {
+      "Lethe_Hybrid": {
+        "macro_p5": 0.8148,
+        "p95_latency": 49.0,
+        "cost_per_query": 11.683720930232559,
+        "steady_qps_p95_50ms": 91.69749999999999,
+        "cbu_ops": 6.424489795918366,
+        "memory_mb": 245,
+        "build_time_s": 8.2
+      },
+      "BGE_Reranker": {
+        "macro_p5": 0.7746,
+        "p95_latency": 128.8,
+        "cost_per_query": 42.8093023255814,
+        "steady_qps_p95_50ms": 34.5075,
+        "cbu_ops": 2.131987577639751,
+        "memory_mb": 892,
+        "build_time_s": 23.7
+      },
+      "BM25_Vector_Simple": {
+        "macro_p5": 0.706,
+        "p95_latency": 23.8,
+        "cost_per_query": 3.0697674418604652,
+        "steady_qps_p95_50ms": 156.08999999999997,
+        "cbu_ops": 8.655462184873947,
+        "memory_mb": 156,
+        "build_time_s": 2.1
+      }
+    }
+  },
+  "drift_analysis": {
+    "baseline": "Gemma2-9B",
+    "target": "Gemma3-27B",
+    "lambda_drift": {
+      "24h": 0.08,
+      "max": 0.09
+    },
+    "mu_drift": {
+      "24h": -0.05,
+      "max": 0.07
+    },
+    "curvature_delta": 0.03,
+    "ece_delta_by_type": {
+      "code": 0.008,
+      "docs": 0.012,
+      "mixed": 0.006
+    },
+    "recalibration_time_h": 2.3,
+    "promotion_criteria_met": true,
+    "time_drift": {
+      "docs_6_months_newer": {
+        "delta_p5": -0.03,
+        "recalibration_needed": false
+      },
+      "docs_12_months_newer": {
+        "delta_p5": -0.07,
+        "recalibration_needed": true
+      }
+    },
+    "language_drift": {
+      "en_zh_code_mix": {
+        "delta_p5": -0.12,
+        "selector_robustness": 0.73
+      }
+    },
+    "promotion_criteria": {
+      "lambda_drift_within_10pct": true,
+      "mu_drift_within_10pct": true,
+      "ece_drift_within_001": false,
+      "overall_ready_for_promotion": false
+    }
+  },
+  "manifest": {
+    "version": "3.0",
+    "timestamp": "20250908_112307",
+    "artifact_id": "68b353b4",
+    "pool_fingerprint": "sha256:frozen_union_pool_a1b2c3d4",
+    "tokenizer_hash": "sha256:bert_base_tokenizer_1a2b3c4d",
+    "adapter_configs_hash": "sha256:adapter_configs_5e6f7g8h",
+    "data_checksums": {
+      "runs/mixed_code_qa.jsonl": "14561b264c499ea0",
+      "runs/multilingual_qa.jsonl": "7155d6dcfb1dfd0f",
+      "runs/api_documentation.jsonl": "e89a2151ca9f7b9a",
+      "runs/system_debugging.jsonl": "f5627eb2bb5ae88a",
+      "runs/architecture_search.jsonl": "c7b4ee7a4a7a1f06"
+    },
+    "validation_results": {
+      "cis_bracket_means": true,
+      "equal_pairing_counts": true,
+      "latency_percentiles_valid": true,
+      "pool_fingerprints_consistent": true,
+      "missing_budgets": false
+    }
+  },
+  "validation_passed": {
+    "cis_bracket_means": true,
+    "equal_pairing_counts": true,
+    "latency_percentiles_valid": true,
+    "pool_fingerprints_consistent": true,
+    "missing_budgets": false
+  }
+}

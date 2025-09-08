@@ -1,0 +1,171 @@
+{
+  "timestamp": "2025-09-07T13:28:47.861816",
+  "dataset": "code_run",
+  "samples_tested": 3,
+  "competitors_tested": [
+    "lethe",
+    "longnet",
+    "selective_context",
+    "llmlingua",
+    "h2o",
+    "streamingllm"
+  ],
+  "results": {
+    "lethe": {
+      "status": "completed",
+      "samples_processed": 0,
+      "samples_failed": 3,
+      "avg_processing_time_ms": 0.0,
+      "avg_compression_ratio": 0.0,
+      "avg_accuracy": 0.0,
+      "total_time_ms": 3.4990310668945312,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        },
+        {
+          "sample_id": 1,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        },
+        {
+          "sample_id": 2,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        }
+      ],
+      "requirements": []
+    },
+    "longnet": {
+      "status": "completed",
+      "samples_processed": 0,
+      "samples_failed": 3,
+      "avg_processing_time_ms": 0.0,
+      "avg_compression_ratio": 0.0,
+      "avg_accuracy": 0.0,
+      "total_time_ms": 9515.37275314331,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        },
+        {
+          "sample_id": 1,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        },
+        {
+          "sample_id": 2,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        }
+      ],
+      "requirements": [
+        "requests>=2.20.0"
+      ]
+    },
+    "selective_context": {
+      "status": "completed",
+      "samples_processed": 0,
+      "samples_failed": 3,
+      "avg_processing_time_ms": 0.0,
+      "avg_compression_ratio": 0.0,
+      "avg_accuracy": 0.0,
+      "total_time_ms": 4463.3471965789795,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        },
+        {
+          "sample_id": 1,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        },
+        {
+          "sample_id": 2,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        }
+      ],
+      "requirements": [
+        "requests>=2.20.0",
+        "sentence-transformers>=2.0.0",
+        "scikit-learn>=1.0.0"
+      ]
+    },
+    "llmlingua": {
+      "status": "unavailable",
+      "error": "Dependencies not installed",
+      "requirements": [
+        "llmlingua>=0.2.0",
+        "torch>=1.8.0",
+        "transformers>=4.20.0",
+        "accelerate>=0.20.0",
+        "sentencepiece>=0.1.90"
+      ]
+    },
+    "h2o": {
+      "status": "completed",
+      "samples_processed": 0,
+      "samples_failed": 3,
+      "avg_processing_time_ms": 0.0,
+      "avg_compression_ratio": 0.0,
+      "avg_accuracy": 0.0,
+      "total_time_ms": 8916.713237762451,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        },
+        {
+          "sample_id": 1,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        },
+        {
+          "sample_id": 2,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        }
+      ],
+      "requirements": [
+        "requests>=2.20.0"
+      ]
+    },
+    "streamingllm": {
+      "status": "completed",
+      "samples_processed": 0,
+      "samples_failed": 3,
+      "avg_processing_time_ms": 0.0,
+      "avg_compression_ratio": 0.0,
+      "avg_accuracy": 0.0,
+      "total_time_ms": 6467.663049697876,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        },
+        {
+          "sample_id": 1,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        },
+        {
+          "sample_id": 2,
+          "error": "'int' object has no attribute 'lower'",
+          "status": "failed"
+        }
+      ],
+      "requirements": [
+        "requests>=2.20.0"
+      ]
+    }
+  }
+}
