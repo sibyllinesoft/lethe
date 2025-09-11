@@ -6,13 +6,13 @@
       "LLM_Reranker_Core": {
         "implemented": true,
         "description": "Core LLM reranking implementation",
-        "file_path": "/home/nathan/Projects/lethe/ctx-run/packages/core/src/reranker/index.ts",
+        "file_path": "/home/nathan/Projects/lethe/lethe-monitor/packages/core/src/reranker/index.ts",
         "patterns_found": "3/3"
       },
       "LLM_Reranker_Package": {
         "implemented": true,
         "description": "Standalone LLM reranker package",
-        "file_path": "/home/nathan/Projects/lethe/ctx-run/packages/reranker/src/index.ts",
+        "file_path": "/home/nathan/Projects/lethe/lethe-monitor/packages/reranker/src/index.ts",
         "patterns_found": "3/3"
       },
       "Contradiction_Detection": {

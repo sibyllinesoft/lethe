@@ -1,0 +1,463 @@
+{
+  "metadata": {
+    "timestamp": "2025-09-11 10:47:40",
+    "data_file": "simple_extraction_data/extracted_samples_code.json",
+    "sample_count": 12,
+    "analysis_duration_seconds": 0.004981279373168945
+  },
+  "coverage_analysis": {
+    "total_samples": 12,
+    "span_coverage_rate": 0.0,
+    "symbol_coverage_rate": 0.0,
+    "extractive_success_rate": 0.0,
+    "coverage_details": [
+      {
+        "sample_id": "code_code_debug.jsonl_114",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 243,
+        "gold_answers": [
+          "Link.get_href"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_25",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 218,
+        "gold_answers": [
+          "to_ragged_array"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_281",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 165,
+        "gold_answers": [
+          "_DependencyList.__contains__"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_250",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 161,
+        "gold_answers": [
+          "set_opencensus_tracer"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_228",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 52,
+        "gold_answers": [
+          "MultiLineTreeView.h_collapse_tree"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_142",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 120,
+        "gold_answers": [
+          "_Scale.ascending"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_104",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 50,
+        "gold_answers": [
+          "An2Cn.__number_to_string"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_89",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 251,
+        "gold_answers": [
+          "Reassign.reassign"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_32",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 176,
+        "gold_answers": [
+          "Proj.get_factors"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_30",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 176,
+        "gold_answers": [
+          "_params_from_ellps_map"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_95",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 260,
+        "gold_answers": [
+          "ClassAnalyzer.validate_references"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_223",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 143,
+        "gold_answers": [
+          "fn_with_kwarg_and_defaults"
+        ]
+      }
+    ]
+  },
+  "selection_analysis": {
+    "avg_atoms_selected": 167.91666666666666,
+    "atom_selection_distribution": {},
+    "context_compression_ratios": [
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08
+    ],
+    "selection_patterns": [
+      {
+        "sample_id": "code_code_debug.jsonl_114",
+        "atoms_selected": 243,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "Dict of the extension ID to a tuple of optional list of STACObjectType which it was\n    removed for "
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_25",
+        "atoms_selected": 218,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "A polygon is a two-dimensional feature and has a non-zero area. It may\n    have one or more negative"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_281",
+        "atoms_selected": 165,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "Raises:\n            TypeError: When the json_string does not represent and object\n                of"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_250",
+        "atoms_selected": 161,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "Defines a Metric which has one or more timeseries."
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_228",
+        "atoms_selected": 52,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "def handle_input(self, _input):\n        \"\"\"Returns True if input has been dealt with, and no further"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_142",
+        "atoms_selected": 120,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "Write the name to the file and set the instrument if the instrument has\n    the attribute instrument"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_104",
+        "atoms_selected": 50,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "# Call ``realpath`` to prevent spurious warning from being emitted\n                # that the venv l"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_89",
+        "atoms_selected": 251,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "* :math:`b_1` and :math:`b_2`: the frequency band bin boundaries\n        * :math:`s_k`: the spectrum"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_32",
+        "atoms_selected": 176,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "File: pyproj/proj_dir/share/proj/deformation_model.schema.json\n{\n  \"$schema\": \"http://json-schema.or"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_30",
+        "atoms_selected": 176,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "File: pyproj/proj_dir/share/proj/deformation_model.schema.json\n{\n  \"$schema\": \"http://json-schema.or"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_95",
+        "atoms_selected": 260,
+        "compression_ratio": 0.08,
+        "first_atom_preview": ":param clazz: The dataclass type\n    :param qname: The namespace qualified name.\n    :param target_q"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_223",
+        "atoms_selected": 143,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "# Select unnamed args.\n  parsed_args = []\n  for index, arg in enumerate(fn_args):\n    value = kwargs"
+      }
+    ]
+  },
+  "extraction_analysis": {
+    "total_extractions": 12,
+    "successful_extractions": 0,
+    "failed_extractions": 12,
+    "extraction_patterns": [
+      {
+        "sample_id": "code_code_debug.jsonl_114",
+        "prediction": "pystac",
+        "score": 0.0,
+        "gold_answers": [
+          "Link.get_href"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_25",
+        "prediction": "A",
+        "score": 0.0,
+        "gold_answers": [
+          "to_ragged_array"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_281",
+        "prediction": "R",
+        "score": 0.0,
+        "gold_answers": [
+          "_DependencyList.__contains__"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_250",
+        "prediction": "D",
+        "score": 0.0,
+        "gold_answers": [
+          "set_opencensus_tracer"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_228",
+        "prediction": "curses",
+        "score": 0.0,
+        "gold_answers": [
+          "MultiLineTreeView.h_collapse_tree"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_142",
+        "prediction": "MidiFile()",
+        "score": 0.0,
+        "gold_answers": [
+          "_Scale.ascending"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_104",
+        "prediction": "of tempfile - the location is the same",
+        "score": 0.0,
+        "gold_answers": [
+          "An2Cn.__number_to_string"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_89",
+        "prediction": "m",
+        "score": 0.0,
+        "gold_answers": [
+          "Reassign.reassign"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_32",
+        "prediction": "ing from applying the deformation\"",
+        "score": 0.0,
+        "gold_answers": [
+          "Proj.get_factors"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_30",
+        "prediction": "ing from applying the deformation\"",
+        "score": 0.0,
+        "gold_answers": [
+          "_params_from_ellps_map"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_95",
+        "prediction": "to the output stream",
+        "score": 0.0,
+        "gold_answers": [
+          "ClassAnalyzer.validate_references"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_223",
+        "prediction": "[]",
+        "score": 0.0,
+        "gold_answers": [
+          "fn_with_kwarg_and_defaults"
+        ],
+        "success": false
+      }
+    ],
+    "common_failures": {}
+  },
+  "gold_analysis": {
+    "answer_types": {
+      "str": 12
+    },
+    "answer_lengths": [
+      13,
+      15,
+      28,
+      21,
+      33,
+      16,
+      24,
+      17,
+      16,
+      22,
+      33,
+      26
+    ],
+    "answer_patterns": [
+      {
+        "sample_id": "code_code_debug.jsonl_114",
+        "answers": [
+          "Link.get_href"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_25",
+        "answers": [
+          "to_ragged_array"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_281",
+        "answers": [
+          "_DependencyList.__contains__"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_250",
+        "answers": [
+          "set_opencensus_tracer"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_228",
+        "answers": [
+          "MultiLineTreeView.h_collapse_tree"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_142",
+        "answers": [
+          "_Scale.ascending"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_104",
+        "answers": [
+          "An2Cn.__number_to_string"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_89",
+        "answers": [
+          "Reassign.reassign"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_32",
+        "answers": [
+          "Proj.get_factors"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_30",
+        "answers": [
+          "_params_from_ellps_map"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_95",
+        "answers": [
+          "ClassAnalyzer.validate_references"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_223",
+        "answers": [
+          "fn_with_kwarg_and_defaults"
+        ],
+        "answer_count": 1
+      }
+    ]
+  },
+  "diagnosis": {
+    "primary_issue": "SELECTION_FAILURE",
+    "confidence": 0.95,
+    "evidence": [
+      "Extremely low span coverage (0.0%) and symbol coverage (0.0%)",
+      "This indicates the hybrid retrieval system is not selecting relevant context atoms"
+    ],
+    "recommended_actions": [
+      "1. Fix context atom selection - increase keep_ratio or improve hybrid scoring",
+      "2. Debug the hybrid method's relevance scoring algorithm",
+      "3. Verify InfiniteBench context segmentation is working correctly"
+    ],
+    "secondary_issues": []
+  }
+}

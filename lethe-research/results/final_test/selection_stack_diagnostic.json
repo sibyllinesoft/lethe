@@ -1,0 +1,440 @@
+{
+  "overall_status": "failed",
+  "failure_layer": "S2_reranking",
+  "summary_metrics": {
+    "total_execution_time_ms": 109.49087142944336,
+    "probe_pass_rate": 0.5,
+    "probes_total": 4,
+    "probes_passed": 2,
+    "probes_failed": 1,
+    "probes_warnings": 1,
+    "query_embedding_std": 0.2892623546173908,
+    "query_cosine_self_sim": 0.9999999976012178,
+    "max_similarity_mean": 0.8000000000000002,
+    "relevant_items_found": 20,
+    "ce_score_std": 0.018680995472317174,
+    "ce_score_range": 0.08571428571428574,
+    "entities_count_median": 2.0,
+    "symbols_count_median": 1.0
+  },
+  "recommended_fixes": [
+    "CE scores are constant - check tokenizer, model weights, or input format",
+    "CE scores are too similar - check model sensitivity and inputs",
+    "CE scores have minimal range - check model sensitivity"
+  ],
+  "parameter_recommendations": {
+    "K1_candidates": [
+      4000,
+      6000
+    ],
+    "K2_candidates": [
+      1000,
+      1500
+    ],
+    "dims_candidates": [
+      256,
+      768
+    ],
+    "diversity_delta": 0,
+    "facility_gamma": 0.8
+  },
+  "execution_time_ms": 111.5274429321289,
+  "probe_results": [
+    {
+      "probe_name": "Query Vector Probe",
+      "status": "pass",
+      "summary": "Query embeddings pass",
+      "details": {
+        "embeddings_analyzed": 20,
+        "embedding_dimension": 768,
+        "unique_hashes": 20,
+        "duplicate_rate": 0.0,
+        "norm_mean": 8.341009758638405,
+        "norm_std": 0.16982650501093247,
+        "norm_min": 8.084246065817224,
+        "norm_max": 8.63899791621818,
+        "avg_per_dim_std": 0.2892623546173908,
+        "per_dim_std_min": 0.16872903738170503,
+        "per_dim_std_max": 0.4364804923005601,
+        "avg_cosine_self_sim": 0.9999999976012178,
+        "cosine_self_sim_std": 4.869876431386695e-11,
+        "avg_cosine_to_atoms": 0.00045247338393443096,
+        "cosine_to_atoms_std": 0.0008712055915591167,
+        "pc_variances": [
+          4.626782213079935,
+          4.4754600752857945,
+          4.4027019627591315
+        ],
+        "sample_hashes": [
+          "6e44d737900cccb8",
+          "d3516227391065b4",
+          "25b484fbaf0fabdf",
+          "758284ca9bd00366",
+          "e4b5c68a5b4bcbf7",
+          "be56a9c79ec4ae6a",
+          "cb94f77d21ef672d",
+          "299e7b7057d3b84d",
+          "4b32dac8208cfc5a",
+          "42c8ef4a6267f926"
+        ],
+        "sample_norms": [
+          8.244170286701214,
+          8.49998469179098,
+          8.101880261774344,
+          8.499079147907425,
+          8.422590251768383,
+          8.25596587979429,
+          8.084246065817224,
+          8.111151138639261,
+          8.628279629277312,
+          8.43769816095541
+        ],
+        "sample_query_texts": [
+          "What is the purpose of function 0?",
+          "What is the purpose of function 1?",
+          "What is the purpose of function 2?",
+          "What is the purpose of function 3?",
+          "What is the purpose of function 4?"
+        ]
+      },
+      "fix_recommendations": [],
+      "execution_time_ms": 103.29270362854004
+    },
+    {
+      "probe_name": "Index Retrieval Probe",
+      "status": "warning",
+      "summary": "Index retrieval warning: 1 issues found",
+      "details": {
+        "queries_tested": 20,
+        "empty_results": 0,
+        "empty_result_ratio": 0.0,
+        "max_similarity_mean": 0.8000000000000002,
+        "max_similarity_std": 1.1102230246251565e-16,
+        "max_similarity_min": 0.8,
+        "max_similarity_max": 0.8,
+        "relevant_items_found": 20,
+        "relevance_ratio": 1.0,
+        "gold_overlap_mean": 0.0,
+        "span_hit_count": 0,
+        "span_hit_ratio": 0.0,
+        "symbol_hit_count": 0,
+        "symbol_hit_ratio": 0.0,
+        "query_encoder_hash": "05b74136987c1f40",
+        "index_model_hashes": [],
+        "alignment_status": "unknown",
+        "sample_results": [
+          {
+            "query_id": "query_0",
+            "query_text": "What is the purpose of function 0?",
+            "max_similarity": 0.8,
+            "top_similarities": [
+              0.8,
+              0.7000000000000001,
+              0.6000000000000001
+            ],
+            "retrieved_count": 5,
+            "gold_overlap": 0
+          },
+          {
+            "query_id": "query_1",
+            "query_text": "What is the purpose of function 1?",
+            "max_similarity": 0.8,
+            "top_similarities": [
+              0.8,
+              0.7000000000000001,
+              0.6000000000000001
+            ],
+            "retrieved_count": 5,
+            "gold_overlap": 0
+          },
+          {
+            "query_id": "query_2",
+            "query_text": "What is the purpose of function 2?",
+            "max_similarity": 0.8,
+            "top_similarities": [
+              0.8,
+              0.7000000000000001,
+              0.6000000000000001
+            ],
+            "retrieved_count": 5,
+            "gold_overlap": 0
+          },
+          {
+            "query_id": "query_3",
+            "query_text": "What is the purpose of function 3?",
+            "max_similarity": 0.8,
+            "top_similarities": [
+              0.8,
+              0.7000000000000001,
+              0.6000000000000001
+            ],
+            "retrieved_count": 5,
+            "gold_overlap": 0
+          },
+          {
+            "query_id": "query_4",
+            "query_text": "What is the purpose of function 4?",
+            "max_similarity": 0.8,
+            "top_similarities": [
+              0.8,
+              0.7000000000000001,
+              0.6000000000000001
+            ],
+            "retrieved_count": 5,
+            "gold_overlap": 0
+          },
+          {
+            "query_id": "query_5",
+            "query_text": "What is the purpose of function 5?",
+            "max_similarity": 0.8,
+            "top_similarities": [
+              0.8,
+              0.7000000000000001,
+              0.6000000000000001
+            ],
+            "retrieved_count": 5,
+            "gold_overlap": 0
+          },
+          {
+            "query_id": "query_6",
+            "query_text": "What is the purpose of function 6?",
+            "max_similarity": 0.8,
+            "top_similarities": [
+              0.8,
+              0.7000000000000001,
+              0.6000000000000001
+            ],
+            "retrieved_count": 5,
+            "gold_overlap": 0
+          },
+          {
+            "query_id": "query_7",
+            "query_text": "What is the purpose of function 7?",
+            "max_similarity": 0.8,
+            "top_similarities": [
+              0.8,
+              0.7000000000000001,
+              0.6000000000000001
+            ],
+            "retrieved_count": 5,
+            "gold_overlap": 0
+          },
+          {
+            "query_id": "query_8",
+            "query_text": "What is the purpose of function 8?",
+            "max_similarity": 0.8,
+            "top_similarities": [
+              0.8,
+              0.7000000000000001,
+              0.6000000000000001
+            ],
+            "retrieved_count": 5,
+            "gold_overlap": 0
+          },
+          {
+            "query_id": "query_9",
+            "query_text": "What is the purpose of function 9?",
+            "max_similarity": 0.8,
+            "top_similarities": [
+              0.8,
+              0.7000000000000001,
+              0.6000000000000001
+            ],
+            "retrieved_count": 5,
+            "gold_overlap": 0
+          }
+        ]
+      },
+      "fix_recommendations": [
+        "Add model hash metadata to index and verify encoder consistency"
+      ],
+      "execution_time_ms": 1.5170574188232422
+    },
+    {
+      "probe_name": "Cross-Encoder Probe",
+      "status": "fail",
+      "summary": "Cross-encoder fail: 3 issues found",
+      "details": {
+        "pairs_analyzed": 100,
+        "valid_scores": 100,
+        "valid_score_ratio": 1.0,
+        "empty_query_count": 0,
+        "empty_candidate_count": 0,
+        "identical_pair_count": 0,
+        "avg_query_length": 34.5,
+        "avg_candidate_length": 42.0,
+        "score_mean": 0.547142857142857,
+        "score_std": 0.018680995472317174,
+        "score_min": 0.5428571428571428,
+        "score_max": 0.6285714285714286,
+        "score_range": 0.08571428571428574,
+        "unique_scores": 2,
+        "lexical_correlation": 0.999999999999996,
+        "sample_inputs": [
+          {
+            "query": "What is the purpose of function 0?",
+            "candidate": "Mock document 0 about What is the purpose ",
+            "score": 0.6285714285714286
+          },
+          {
+            "query": "What is the purpose of function 0?",
+            "candidate": "Mock document 1 about What is the purpose ",
+            "score": 0.5428571428571428
+          },
+          {
+            "query": "What is the purpose of function 0?",
+            "candidate": "Mock document 2 about What is the purpose ",
+            "score": 0.5428571428571428
+          },
+          {
+            "query": "What is the purpose of function 0?",
+            "candidate": "Mock document 3 about What is the purpose ",
+            "score": 0.5428571428571428
+          },
+          {
+            "query": "What is the purpose of function 0?",
+            "candidate": "Mock document 4 about What is the purpose ",
+            "score": 0.5428571428571428
+          },
+          {
+            "query": "What is the purpose of function 1?",
+            "candidate": "Mock document 0 about What is the purpose ",
+            "score": 0.5428571428571428
+          },
+          {
+            "query": "What is the purpose of function 1?",
+            "candidate": "Mock document 1 about What is the purpose ",
+            "score": 0.6285714285714286
+          },
+          {
+            "query": "What is the purpose of function 1?",
+            "candidate": "Mock document 2 about What is the purpose ",
+            "score": 0.5428571428571428
+          },
+          {
+            "query": "What is the purpose of function 1?",
+            "candidate": "Mock document 3 about What is the purpose ",
+            "score": 0.5428571428571428
+          },
+          {
+            "query": "What is the purpose of function 1?",
+            "candidate": "Mock document 4 about What is the purpose ",
+            "score": 0.5428571428571428
+          }
+        ]
+      },
+      "fix_recommendations": [
+        "CE scores are constant - check tokenizer, model weights, or input format",
+        "CE scores are too similar - check model sensitivity and inputs",
+        "CE scores have minimal range - check model sensitivity"
+      ],
+      "execution_time_ms": 2.867460250854492
+    },
+    {
+      "probe_name": "Coverage Features Probe",
+      "status": "pass",
+      "summary": "Coverage features pass",
+      "details": {
+        "atoms_analyzed": 100,
+        "entities_median": 2.0,
+        "entities_mean": 2.2,
+        "entities_std": 1.16619037896906,
+        "entities_max": 4,
+        "atoms_with_entities": 100,
+        "entity_coverage_ratio": 1.0,
+        "top_entity_types": {
+          "ENTITY": 200,
+          "NUMBER": 20
+        },
+        "symbols_median": 1.0,
+        "symbols_mean": 0.95,
+        "symbols_std": 0.8046738469715541,
+        "symbols_max": 2,
+        "atoms_with_symbols": 65,
+        "symbol_coverage_ratio": 0.65,
+        "top_symbol_types": {
+          "FUNCTION": 95
+        },
+        "atoms_with_file_ids": 100,
+        "file_coverage_ratio": 1.0,
+        "unique_files": 10,
+        "sample_file_ids": [
+          "file_5.py",
+          "file_4.py",
+          "file_3.py",
+          "file_2.py",
+          "file_7.py",
+          "file_1.py",
+          "file_9.py",
+          "file_6.py",
+          "file_8.py",
+          "file_0.py"
+        ],
+        "sample_atoms": [
+          {
+            "entities_count": 1,
+            "symbols_count": 0,
+            "file_id": "file_0.py",
+            "content_length": 55
+          },
+          {
+            "entities_count": 1,
+            "symbols_count": 1,
+            "file_id": "file_1.py",
+            "content_length": 55
+          },
+          {
+            "entities_count": 2,
+            "symbols_count": 2,
+            "file_id": "file_2.py",
+            "content_length": 55
+          },
+          {
+            "entities_count": 3,
+            "symbols_count": 0,
+            "file_id": "file_3.py",
+            "content_length": 55
+          },
+          {
+            "entities_count": 4,
+            "symbols_count": 1,
+            "file_id": "file_4.py",
+            "content_length": 55
+          },
+          {
+            "entities_count": 1,
+            "symbols_count": 2,
+            "file_id": "file_5.py",
+            "content_length": 55
+          },
+          {
+            "entities_count": 1,
+            "symbols_count": 0,
+            "file_id": "file_6.py",
+            "content_length": 55
+          },
+          {
+            "entities_count": 2,
+            "symbols_count": 1,
+            "file_id": "file_7.py",
+            "content_length": 55
+          },
+          {
+            "entities_count": 3,
+            "symbols_count": 2,
+            "file_id": "file_8.py",
+            "content_length": 55
+          },
+          {
+            "entities_count": 4,
+            "symbols_count": 0,
+            "file_id": "file_9.py",
+            "content_length": 55
+          }
+        ]
+      },
+      "fix_recommendations": [],
+      "execution_time_ms": 1.813650131225586
+    }
+  ]
+}

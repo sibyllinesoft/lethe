@@ -1,0 +1,182 @@
+[
+  {
+    "id": "test_001",
+    "task_name": "kv_retrieval",
+    "question": "What is the value for key X?",
+    "context": "Here are some key-value pairs: A=123, B=456, X=789, C=999. The value for key X is 789.",
+    "ground_truth": "789",
+    "answer": "789"
+  },
+  {
+    "id": "test_002",
+    "task_name": "passkey",
+    "question": "Find the passkey",
+    "context": "Random text here. The passkey is 12345. More random text follows.",
+    "ground_truth": "12345",
+    "answer": "12345"
+  },
+  {
+    "id": "test_003",
+    "task_name": "longbook_qa_eng",
+    "question": "Who is the main character?",
+    "context": "In this story, Alice is the main character who goes through many adventures. She meets various people along the way.",
+    "ground_truth": [
+      "Alice"
+    ],
+    "answer": "Alice"
+  },
+  {
+    "id": "test_004",
+    "task_name": "code_debug",
+    "question": "What is the error in this code?",
+    "context": "def calculate(x, y):\n    return x + z  # Error: z is not defined\n",
+    "ground_truth": [
+      "z",
+      "undefined variable"
+    ],
+    "answer": "z"
+  },
+  {
+    "id": "test_005",
+    "task_name": "math_find",
+    "question": "What is the result?",
+    "context": "Calculate 15 + 27. The result is 42.",
+    "ground_truth": 42,
+    "answer": "42"
+  },
+  {
+    "id": "test_000_v2",
+    "task_name": "kv_retrieval",
+    "question": "What is the value for key X?",
+    "context": "Here are some key-value pairs: A=123, B=456, X=789, C=999. The value for key X is 789.",
+    "ground_truth": "789",
+    "answer": "789"
+  },
+  {
+    "id": "test_000_v3",
+    "task_name": "kv_retrieval",
+    "question": "What is the value for key X?",
+    "context": "Here are some key-value pairs: A=123, B=456, X=789, C=999. The value for key X is 789.",
+    "ground_truth": "789",
+    "answer": "789"
+  },
+  {
+    "id": "test_000_v4",
+    "task_name": "kv_retrieval",
+    "question": "What is the value for key X?",
+    "context": "Here are some key-value pairs: A=123, B=456, X=789, C=999. The value for key X is 789.",
+    "ground_truth": "789",
+    "answer": "789"
+  },
+  {
+    "id": "test_001_v2",
+    "task_name": "passkey",
+    "question": "Find the passkey",
+    "context": "Random text here. The passkey is 12345. More random text follows.",
+    "ground_truth": "12345",
+    "answer": "12345"
+  },
+  {
+    "id": "test_001_v3",
+    "task_name": "passkey",
+    "question": "Find the passkey",
+    "context": "Random text here. The passkey is 12345. More random text follows.",
+    "ground_truth": "12345",
+    "answer": "12345"
+  },
+  {
+    "id": "test_001_v4",
+    "task_name": "passkey",
+    "question": "Find the passkey",
+    "context": "Random text here. The passkey is 12345. More random text follows.",
+    "ground_truth": "12345",
+    "answer": "12345"
+  },
+  {
+    "id": "test_002_v2",
+    "task_name": "longbook_qa_eng",
+    "question": "Who is the main character?",
+    "context": "In this story, Alice is the main character who goes through many adventures. She meets various people along the way.",
+    "ground_truth": [
+      "Alice"
+    ],
+    "answer": "Alice"
+  },
+  {
+    "id": "test_002_v3",
+    "task_name": "longbook_qa_eng",
+    "question": "Who is the main character?",
+    "context": "In this story, Alice is the main character who goes through many adventures. She meets various people along the way.",
+    "ground_truth": [
+      "Alice"
+    ],
+    "answer": "Alice"
+  },
+  {
+    "id": "test_002_v4",
+    "task_name": "longbook_qa_eng",
+    "question": "Who is the main character?",
+    "context": "In this story, Alice is the main character who goes through many adventures. She meets various people along the way.",
+    "ground_truth": [
+      "Alice"
+    ],
+    "answer": "Alice"
+  },
+  {
+    "id": "test_003_v2",
+    "task_name": "code_debug",
+    "question": "What is the error in this code?",
+    "context": "def calculate(x, y):\n    return x + z  # Error: z is not defined\n",
+    "ground_truth": [
+      "z",
+      "undefined variable"
+    ],
+    "answer": "z"
+  },
+  {
+    "id": "test_003_v3",
+    "task_name": "code_debug",
+    "question": "What is the error in this code?",
+    "context": "def calculate(x, y):\n    return x + z  # Error: z is not defined\n",
+    "ground_truth": [
+      "z",
+      "undefined variable"
+    ],
+    "answer": "z"
+  },
+  {
+    "id": "test_003_v4",
+    "task_name": "code_debug",
+    "question": "What is the error in this code?",
+    "context": "def calculate(x, y):\n    return x + z  # Error: z is not defined\n",
+    "ground_truth": [
+      "z",
+      "undefined variable"
+    ],
+    "answer": "z"
+  },
+  {
+    "id": "test_004_v2",
+    "task_name": "math_find",
+    "question": "What is the result?",
+    "context": "Calculate 15 + 27. The result is 42.",
+    "ground_truth": 42,
+    "answer": "42"
+  },
+  {
+    "id": "test_004_v3",
+    "task_name": "math_find",
+    "question": "What is the result?",
+    "context": "Calculate 15 + 27. The result is 42.",
+    "ground_truth": 42,
+    "answer": "42"
+  },
+  {
+    "id": "test_004_v4",
+    "task_name": "math_find",
+    "question": "What is the result?",
+    "context": "Calculate 15 + 27. The result is 42.",
+    "ground_truth": 42,
+    "answer": "42"
+  }
+]

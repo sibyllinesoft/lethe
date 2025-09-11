@@ -1,0 +1,182 @@
+{
+  "total_samples": 20,
+  "tasks_analyzed": [
+    "kv_retrieval",
+    "passkey",
+    "longbook_qa_eng",
+    "code_debug",
+    "math_find"
+  ],
+  "task_summaries": {
+    "kv_retrieval": {
+      "num_samples": 4,
+      "span_coverage_rates": {
+        "at_1": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_5": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_10": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_20": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        }
+      },
+      "symbol_coverage_rates": {},
+      "avg_atoms_per_sample": 0.0
+    },
+    "passkey": {
+      "num_samples": 4,
+      "span_coverage_rates": {
+        "at_1": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_5": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_10": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_20": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        }
+      },
+      "symbol_coverage_rates": {},
+      "avg_atoms_per_sample": 0.0
+    },
+    "longbook_qa_eng": {
+      "num_samples": 4,
+      "span_coverage_rates": {
+        "at_1": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_5": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_10": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_20": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        }
+      },
+      "symbol_coverage_rates": {},
+      "avg_atoms_per_sample": 0.0
+    },
+    "code_debug": {
+      "num_samples": 4,
+      "span_coverage_rates": {
+        "at_1": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_5": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_10": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_20": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        }
+      },
+      "symbol_coverage_rates": {
+        "at_1": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_5": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_10": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_20": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        }
+      },
+      "avg_atoms_per_sample": 0.0
+    },
+    "math_find": {
+      "num_samples": 4,
+      "span_coverage_rates": {
+        "at_1": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_5": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_10": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        },
+        "at_20": {
+          "mean": 0.0,
+          "std": 0.0,
+          "samples": 4
+        }
+      },
+      "symbol_coverage_rates": {},
+      "avg_atoms_per_sample": 0.0
+    }
+  },
+  "overall_span_coverage_at_5": {
+    "mean": 0.0,
+    "std": 0.0,
+    "samples": 20
+  },
+  "diagnostic_insights": [
+    "\ud83d\udd34 CRITICAL: Very low span coverage at k=5 (0.0%). Selection/retrieval is failing.",
+    "\ud83d\udd34 Task 'kv_retrieval': Critical coverage failure (0.0% at k=5)",
+    "\ud83d\udd34 Task 'passkey': Critical coverage failure (0.0% at k=5)",
+    "\ud83d\udd34 Task 'longbook_qa_eng': Critical coverage failure (0.0% at k=5)",
+    "\ud83d\udd34 Task 'code_debug': Critical coverage failure (0.0% at k=5)",
+    "\ud83d\udd34 Task 'math_find': Critical coverage failure (0.0% at k=5)",
+    "\ud83d\udfe1 Code task 'code_debug': Poor symbol coverage (0.0% at k=5)"
+  ]
+}

@@ -1,0 +1,5 @@
+/home/nathan/Projects/lethe/lethe-research/monitoring-storybook/determinism-service/target/release/deps/colorchoice-0d3540b20dc7ff69.d: /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colorchoice-1.0.4/src/lib.rs
+
+/home/nathan/Projects/lethe/lethe-research/monitoring-storybook/determinism-service/target/release/deps/libcolorchoice-0d3540b20dc7ff69.rmeta: /home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colorchoice-1.0.4/src/lib.rs
+
+/home/nathan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colorchoice-1.0.4/src/lib.rs:

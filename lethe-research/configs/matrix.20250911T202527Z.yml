@@ -1,0 +1,52 @@
+adapters:
+- selector:last_k
+- selector:tfidf_topspans
+- selector:entropy_filter
+- selector:langchain_compress
+- selector:llamaindex_processors
+- selector:llmlingua_style
+- selector:zoekt_regex_symbols
+- rag:bm25
+- rag:vector_faiss_cosine
+- rag:hybrid_weaviate_50_50
+- rag:hybrid_milvus_50_50
+- rag:hybrid_vespa_50_50
+- rerank:bge_frozen_pool
+- long:sliding_window
+- long:streaming_llm
+- long:full_context_upper_bound
+- selector:random_within_type
+artifacts_dir: artifacts/full_matrix_outputs/20250911T202527Z
+budgets_keep_ratio:
+- 0.08
+- 0.15
+- 0.3
+datasets:
+- name: InfiniteBench
+  path: datasets/infinitebench
+- name: Conv-Set-A
+  path: datasets/conv_a
+- name: Conv-Set-B
+  path: datasets/conv_b
+generator: gemma3:27b
+guards:
+  invariance:
+    budget_monotonicity: true
+    shuffle_turns: true
+    tokenizer_swap_validate: true
+  leakage_minhash: true
+  power_analysis: true
+  seed_expand_on_contentious:
+    enabled: true
+    max_seeds: 5
+    pval_threshold: 0.2
+k_values:
+- 1
+- 5
+- 10
+manifest:
+  sign: sha256
+seeds:
+- 1
+- 2
+- 3

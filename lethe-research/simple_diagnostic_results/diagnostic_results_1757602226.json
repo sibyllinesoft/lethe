@@ -1,0 +1,1041 @@
+{
+  "metadata": {
+    "timestamp": "2025-09-11 10:50:26",
+    "data_file": "simple_extraction_data/extracted_samples_code.json",
+    "sample_count": 29,
+    "analysis_duration_seconds": 0.00989222526550293
+  },
+  "coverage_analysis": {
+    "total_samples": 29,
+    "span_coverage_rate": 0.0,
+    "symbol_coverage_rate": 0.0,
+    "extractive_success_rate": 0.0,
+    "coverage_details": [
+      {
+        "sample_id": "code_code_debug.jsonl_114",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 243,
+        "gold_answers": [
+          "Link.get_href"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_25",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 218,
+        "gold_answers": [
+          "to_ragged_array"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_281",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 165,
+        "gold_answers": [
+          "_DependencyList.__contains__"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_250",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 161,
+        "gold_answers": [
+          "set_opencensus_tracer"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_228",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 52,
+        "gold_answers": [
+          "MultiLineTreeView.h_collapse_tree"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_142",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 120,
+        "gold_answers": [
+          "_Scale.ascending"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_104",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 50,
+        "gold_answers": [
+          "An2Cn.__number_to_string"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_89",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 251,
+        "gold_answers": [
+          "Reassign.reassign"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_32",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 176,
+        "gold_answers": [
+          "Proj.get_factors"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_30",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 176,
+        "gold_answers": [
+          "_params_from_ellps_map"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_95",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 260,
+        "gold_answers": [
+          "ClassAnalyzer.validate_references"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_223",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 143,
+        "gold_answers": [
+          "fn_with_kwarg_and_defaults"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_238",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 150,
+        "gold_answers": [
+          "Aec.decode"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_27",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 218,
+        "gold_answers": [
+          "voronoi_diagram"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_203",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 97,
+        "gold_answers": [
+          "_legacy_key"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_225",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 52,
+        "gold_answers": [
+          "NPSAppManaged.switchForm"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_284",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 165,
+        "gold_answers": [
+          "Expr.__iter__"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_6",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 204,
+        "gold_answers": [
+          "RootFsDeviceFinder.ask_proc_partitions"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_163",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 143,
+        "gold_answers": [
+          "IocpProactor._result"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_348",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 122,
+        "gold_answers": [
+          "create_subscription_stmt"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_159",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 131,
+        "gold_answers": [
+          "IntegrationTest.testJavaGC"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_220",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 143,
+        "gold_answers": [
+          "_OneLineResult"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_344",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 194,
+        "gold_answers": [
+          "TestStartMethod.check_context"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_94",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 237,
+        "gold_answers": [
+          "Element._get_base_element"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_389",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 119,
+        "gold_answers": [
+          "Path.if_left"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_99",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 260,
+        "gold_answers": [
+          "strongly_connected_components"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_367",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 265,
+        "gold_answers": [
+          "Group.child"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_352",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 15,
+        "gold_answers": [
+          "LanguageTypeConverter.convert"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_270",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 146,
+        "gold_answers": [
+          "_TestConnectionPool._create_connection"
+        ]
+      }
+    ]
+  },
+  "selection_analysis": {
+    "avg_atoms_selected": 161.24137931034483,
+    "atom_selection_distribution": {},
+    "context_compression_ratios": [
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08,
+      0.08
+    ],
+    "selection_patterns": [
+      {
+        "sample_id": "code_code_debug.jsonl_114",
+        "atoms_selected": 243,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "Dict of the extension ID to a tuple of optional list of STACObjectType which it was\n    removed for "
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_25",
+        "atoms_selected": 218,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "A polygon is a two-dimensional feature and has a non-zero area. It may\n    have one or more negative"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_281",
+        "atoms_selected": 165,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "Raises:\n            TypeError: When the json_string does not represent and object\n                of"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_250",
+        "atoms_selected": 161,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "Defines a Metric which has one or more timeseries."
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_228",
+        "atoms_selected": 52,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "def handle_input(self, _input):\n        \"\"\"Returns True if input has been dealt with, and no further"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_142",
+        "atoms_selected": 120,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "Write the name to the file and set the instrument if the instrument has\n    the attribute instrument"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_104",
+        "atoms_selected": 50,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "# Call ``realpath`` to prevent spurious warning from being emitted\n                # that the venv l"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_89",
+        "atoms_selected": 251,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "* :math:`b_1` and :math:`b_2`: the frequency band bin boundaries\n        * :math:`s_k`: the spectrum"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_32",
+        "atoms_selected": 176,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "File: pyproj/proj_dir/share/proj/deformation_model.schema.json\n{\n  \"$schema\": \"http://json-schema.or"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_30",
+        "atoms_selected": 176,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "File: pyproj/proj_dir/share/proj/deformation_model.schema.json\n{\n  \"$schema\": \"http://json-schema.or"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_95",
+        "atoms_selected": 260,
+        "compression_ratio": 0.08,
+        "first_atom_preview": ":param clazz: The dataclass type\n    :param qname: The namespace qualified name.\n    :param target_q"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_223",
+        "atoms_selected": 143,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "# Select unnamed args.\n  parsed_args = []\n  for index, arg in enumerate(fn_args):\n    value = kwargs"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_238",
+        "atoms_selected": 150,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "8. Limitation of Liability. In no event and under no legal theory,\n      whether in tort (including "
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_27",
+        "atoms_selected": 218,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "A polygon is a two-dimensional feature and has a non-zero area. It may\n    have one or more negative"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_203",
+        "atoms_selected": 97,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "class Page(object):\n    \"\"\"\n    This class represents a scraped HTML page.\n    \"\"\"\n    # The followi"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_225",
+        "atoms_selected": 52,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "def handle_input(self, _input):\n        \"\"\"Returns True if input has been dealt with, and no further"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_284",
+        "atoms_selected": 165,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "Raises:\n            TypeError: When the json_string does not represent and object\n                of"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_6",
+        "atoms_selected": 204,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "# On SUNOS \"ps\" reads niceness /proc/pid/psinfo which returns an\n    # incorrect value (20); the rea"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_163",
+        "atoms_selected": 143,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "The solution on Windows is to use the SO_EXCLUSIVEADDRUSE socket option\n    instead of SO_REUSEADDR,"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_348",
+        "atoms_selected": 122,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "class OutputStream(StringIO):\n    \"A stream that has a concept of a *pending separator* between cons"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_159",
+        "atoms_selected": 131,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "A proxy has an internal class named `Java` with a member named\n       `implements` which is a list o"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_220",
+        "atoms_selected": 143,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "# Select unnamed args.\n  parsed_args = []\n  for index, arg in enumerate(fn_args):\n    value = kwargs"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_344",
+        "atoms_selected": 194,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "# serialize the data before acquiring the lock\n                        obj = _ForkingPickler.dumps(o"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_94",
+        "atoms_selected": 237,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "def get_orig_class(obj, default_to__class__=False):\n    \"\"\"Robust way to access `obj.__orig_class__`"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_389",
+        "atoms_selected": 119,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "The CYK algorithm was chosen because the Google\ndocstring format allows for ambiguous representation"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_99",
+        "atoms_selected": 260,
+        "compression_ratio": 0.08,
+        "first_atom_preview": ":param clazz: The dataclass type\n    :param qname: The namespace qualified name.\n    :param target_q"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_367",
+        "atoms_selected": 265,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "The :class:`nose2.session.Session` under which the plugin\n       has been loaded."
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_352",
+        "atoms_selected": 15,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "File: babelfish/data/iso-639-3.tab\nId    Part2B    Part2T    Part1    Scope    Language_Type    Ref_"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_270",
+        "atoms_selected": 146,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "# NOTE(sileht, cdent): If we don't want to use oslo.config global\n        # object there are two opt"
+      }
+    ]
+  },
+  "extraction_analysis": {
+    "total_extractions": 29,
+    "successful_extractions": 0,
+    "failed_extractions": 29,
+    "extraction_patterns": [
+      {
+        "sample_id": "code_code_debug.jsonl_114",
+        "prediction": "pystac",
+        "score": 0.0,
+        "gold_answers": [
+          "Link.get_href"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_25",
+        "prediction": "A",
+        "score": 0.0,
+        "gold_answers": [
+          "to_ragged_array"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_281",
+        "prediction": "R",
+        "score": 0.0,
+        "gold_answers": [
+          "_DependencyList.__contains__"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_250",
+        "prediction": "D",
+        "score": 0.0,
+        "gold_answers": [
+          "set_opencensus_tracer"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_228",
+        "prediction": "curses",
+        "score": 0.0,
+        "gold_answers": [
+          "MultiLineTreeView.h_collapse_tree"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_142",
+        "prediction": "MidiFile()",
+        "score": 0.0,
+        "gold_answers": [
+          "_Scale.ascending"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_104",
+        "prediction": "of tempfile - the location is the same",
+        "score": 0.0,
+        "gold_answers": [
+          "An2Cn.__number_to_string"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_89",
+        "prediction": "m",
+        "score": 0.0,
+        "gold_answers": [
+          "Reassign.reassign"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_32",
+        "prediction": "ing from applying the deformation\"",
+        "score": 0.0,
+        "gold_answers": [
+          "Proj.get_factors"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_30",
+        "prediction": "ing from applying the deformation\"",
+        "score": 0.0,
+        "gold_answers": [
+          "_params_from_ellps_map"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_95",
+        "prediction": "to the output stream",
+        "score": 0.0,
+        "gold_answers": [
+          "ClassAnalyzer.validate_references"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_223",
+        "prediction": "[]",
+        "score": 0.0,
+        "gold_answers": [
+          "fn_with_kwarg_and_defaults"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_238",
+        "prediction": "of this License or out of the use or inability to use the",
+        "score": 0.0,
+        "gold_answers": [
+          "Aec.decode"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_27",
+        "prediction": "A",
+        "score": 0.0,
+        "gold_answers": [
+          "voronoi_diagram"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_203",
+        "prediction": "s",
+        "score": 0.0,
+        "gold_answers": [
+          "_legacy_key"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_225",
+        "prediction": "curses",
+        "score": 0.0,
+        "gold_answers": [
+          "NPSAppManaged.switchForm"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_284",
+        "prediction": "R",
+        "score": 0.0,
+        "gold_answers": [
+          "Expr.__iter__"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_6",
+        "prediction": "ps('nice', self",
+        "score": 0.0,
+        "gold_answers": [
+          "RootFsDeviceFinder.ask_proc_partitions"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_163",
+        "prediction": "on Windows is to use the SO_EXCLUSIVEADDRUSE socket option",
+        "score": 0.0,
+        "gold_answers": [
+          "IocpProactor._result"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_348",
+        "prediction": "Stream(StringIO):",
+        "score": 0.0,
+        "gold_answers": [
+          "create_subscription_stmt"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_159",
+        "prediction": "(len(pList), len(jList))",
+        "score": 0.0,
+        "gold_answers": [
+          "IntegrationTest.testJavaGC"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_220",
+        "prediction": "[]",
+        "score": 0.0,
+        "gold_answers": [
+          "_OneLineResult"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_344",
+        "prediction": "_ForkingPickler",
+        "score": 0.0,
+        "gold_answers": [
+          "TestStartMethod.check_context"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_94",
+        "prediction": "False):",
+        "score": 0.0,
+        "gold_answers": [
+          "Element._get_base_element"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_389",
+        "prediction": "weight",
+        "score": 0.0,
+        "gold_answers": [
+          "Path.if_left"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_99",
+        "prediction": "to the output stream",
+        "score": 0.0,
+        "gold_answers": [
+          "strongly_connected_components"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_367",
+        "prediction": "T",
+        "score": 0.0,
+        "gold_answers": [
+          "Group.child"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_352",
+        "prediction": "/Kx'au//'ein",
+        "score": 0.0,
+        "gold_answers": [
+          "LanguageTypeConverter.convert"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_270",
+        "prediction": "[local_config_file] if local_config_file else None Data should be serialized before entering these f",
+        "score": 0.0,
+        "gold_answers": [
+          "_TestConnectionPool._create_connection"
+        ],
+        "success": false
+      }
+    ],
+    "common_failures": {}
+  },
+  "gold_analysis": {
+    "answer_types": {
+      "str": 29
+    },
+    "answer_lengths": [
+      13,
+      15,
+      28,
+      21,
+      33,
+      16,
+      24,
+      17,
+      16,
+      22,
+      33,
+      26,
+      10,
+      15,
+      11,
+      24,
+      13,
+      38,
+      20,
+      24,
+      26,
+      14,
+      29,
+      25,
+      12,
+      29,
+      11,
+      29,
+      38
+    ],
+    "answer_patterns": [
+      {
+        "sample_id": "code_code_debug.jsonl_114",
+        "answers": [
+          "Link.get_href"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_25",
+        "answers": [
+          "to_ragged_array"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_281",
+        "answers": [
+          "_DependencyList.__contains__"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_250",
+        "answers": [
+          "set_opencensus_tracer"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_228",
+        "answers": [
+          "MultiLineTreeView.h_collapse_tree"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_142",
+        "answers": [
+          "_Scale.ascending"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_104",
+        "answers": [
+          "An2Cn.__number_to_string"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_89",
+        "answers": [
+          "Reassign.reassign"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_32",
+        "answers": [
+          "Proj.get_factors"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_30",
+        "answers": [
+          "_params_from_ellps_map"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_95",
+        "answers": [
+          "ClassAnalyzer.validate_references"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_223",
+        "answers": [
+          "fn_with_kwarg_and_defaults"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_238",
+        "answers": [
+          "Aec.decode"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_27",
+        "answers": [
+          "voronoi_diagram"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_203",
+        "answers": [
+          "_legacy_key"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_225",
+        "answers": [
+          "NPSAppManaged.switchForm"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_284",
+        "answers": [
+          "Expr.__iter__"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_6",
+        "answers": [
+          "RootFsDeviceFinder.ask_proc_partitions"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_163",
+        "answers": [
+          "IocpProactor._result"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_348",
+        "answers": [
+          "create_subscription_stmt"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_159",
+        "answers": [
+          "IntegrationTest.testJavaGC"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_220",
+        "answers": [
+          "_OneLineResult"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_344",
+        "answers": [
+          "TestStartMethod.check_context"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_94",
+        "answers": [
+          "Element._get_base_element"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_389",
+        "answers": [
+          "Path.if_left"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_99",
+        "answers": [
+          "strongly_connected_components"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_367",
+        "answers": [
+          "Group.child"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_352",
+        "answers": [
+          "LanguageTypeConverter.convert"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_270",
+        "answers": [
+          "_TestConnectionPool._create_connection"
+        ],
+        "answer_count": 1
+      }
+    ]
+  },
+  "diagnosis": {
+    "primary_issue": "SELECTION_FAILURE",
+    "confidence": 0.95,
+    "evidence": [
+      "Extremely low span coverage (0.0%) and symbol coverage (0.0%)",
+      "This indicates the hybrid retrieval system is not selecting relevant context atoms"
+    ],
+    "recommended_actions": [
+      "1. Fix context atom selection - increase keep_ratio or improve hybrid scoring",
+      "2. Debug the hybrid method's relevance scoring algorithm",
+      "3. Verify InfiniteBench context segmentation is working correctly"
+    ],
+    "secondary_issues": []
+  }
+}

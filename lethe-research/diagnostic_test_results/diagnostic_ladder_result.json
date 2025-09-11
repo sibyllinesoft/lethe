@@ -1,0 +1,394 @@
+{
+  "config": {
+    "max_samples_per_rung": 5,
+    "mixed_task_sampling": true,
+    "random_seed": 42,
+    "rung0_enable": true,
+    "rung1_k_values": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "rung2_enable_all_extractors": false,
+    "rung3_oracle_budget": 10,
+    "rung4_curriculum_enable": false,
+    "rung5_keep_ratios": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.3,
+      0.5
+    ],
+    "fail_fast": true,
+    "parallel_samples": false,
+    "output_dir": "diagnostic_test_results",
+    "save_intermediate": true,
+    "ledger_db_path": "diagnostic_test_results/diagnostic_ledger.db"
+  },
+  "start_time": "2025-09-11T10:31:01.799834",
+  "end_time": "2025-09-11T10:31:01.805281",
+  "total_duration_seconds": 0.005446910858154297,
+  "rung_results": {
+    "0": {
+      "rung": 0,
+      "name": "Scoring Sanity",
+      "tests_passed": 3,
+      "total_tests": 3,
+      "overall_passed": true,
+      "results": {
+        "gold_echo": {
+          "test_name": "gold_echo",
+          "overall_perfect_rate": 1.0,
+          "total_samples": 5,
+          "task_summaries": {
+            "kv_retrieval": {
+              "mean_score": 1.0,
+              "perfect_rate": 1.0,
+              "num_samples": 1,
+              "min_score": 1.0,
+              "max_score": 1.0
+            },
+            "passkey": {
+              "mean_score": 1.0,
+              "perfect_rate": 1.0,
+              "num_samples": 1,
+              "min_score": 1.0,
+              "max_score": 1.0
+            },
+            "longbook_qa_eng": {
+              "mean_score": 1.0,
+              "perfect_rate": 1.0,
+              "num_samples": 1,
+              "min_score": 1.0,
+              "max_score": 1.0
+            },
+            "code_debug": {
+              "mean_score": 1.0,
+              "perfect_rate": 1.0,
+              "num_samples": 1,
+              "min_score": 1.0,
+              "max_score": 1.0
+            },
+            "math_find": {
+              "mean_score": 1.0,
+              "perfect_rate": 1.0,
+              "num_samples": 1,
+              "min_score": 1.0,
+              "max_score": 1.0
+            }
+          },
+          "passed": true,
+          "issues": []
+        },
+        "normalizer_probes": {
+          "test_name": "normalizer_probes",
+          "task_summaries": {
+            "kv_retrieval": {
+              "normalizer_scores": {
+                "strict": {
+                  "mean": 0.0,
+                  "std": 0.0
+                },
+                "punctuation_agnostic": {
+                  "mean": 0.5,
+                  "std": 0.0
+                },
+                "unicode_folded": {
+                  "mean": 0.5,
+                  "std": 0.0
+                },
+                "chinese_aware": {
+                  "mean": 0.0,
+                  "std": 0.0
+                }
+              },
+              "normalizer_deltas": {
+                "strict_vs_punctuation_agnostic": {
+                  "mean_delta": 0.5,
+                  "max_delta": 0.5
+                },
+                "strict_vs_unicode_folded": {
+                  "mean_delta": 0.5,
+                  "max_delta": 0.5
+                },
+                "strict_vs_chinese_aware": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "punctuation_agnostic_vs_unicode_folded": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "punctuation_agnostic_vs_chinese_aware": {
+                  "mean_delta": 0.5,
+                  "max_delta": 0.5
+                },
+                "unicode_folded_vs_chinese_aware": {
+                  "mean_delta": 0.5,
+                  "max_delta": 0.5
+                }
+              }
+            },
+            "passkey": {
+              "normalizer_scores": {
+                "strict": {
+                  "mean": 0.0,
+                  "std": 0.0
+                },
+                "punctuation_agnostic": {
+                  "mean": 0.5,
+                  "std": 0.0
+                },
+                "unicode_folded": {
+                  "mean": 0.5,
+                  "std": 0.0
+                },
+                "chinese_aware": {
+                  "mean": 0.0,
+                  "std": 0.0
+                }
+              },
+              "normalizer_deltas": {
+                "strict_vs_punctuation_agnostic": {
+                  "mean_delta": 0.5,
+                  "max_delta": 0.5
+                },
+                "strict_vs_unicode_folded": {
+                  "mean_delta": 0.5,
+                  "max_delta": 0.5
+                },
+                "strict_vs_chinese_aware": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "punctuation_agnostic_vs_unicode_folded": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "punctuation_agnostic_vs_chinese_aware": {
+                  "mean_delta": 0.5,
+                  "max_delta": 0.5
+                },
+                "unicode_folded_vs_chinese_aware": {
+                  "mean_delta": 0.5,
+                  "max_delta": 0.5
+                }
+              }
+            },
+            "longbook_qa_eng": {
+              "normalizer_scores": {
+                "strict": {
+                  "mean": 0.5,
+                  "std": 0.0
+                },
+                "punctuation_agnostic": {
+                  "mean": 0.5,
+                  "std": 0.0
+                },
+                "unicode_folded": {
+                  "mean": 0.5,
+                  "std": 0.0
+                },
+                "chinese_aware": {
+                  "mean": 0.5,
+                  "std": 0.0
+                }
+              },
+              "normalizer_deltas": {
+                "strict_vs_punctuation_agnostic": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "strict_vs_unicode_folded": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "strict_vs_chinese_aware": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "punctuation_agnostic_vs_unicode_folded": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "punctuation_agnostic_vs_chinese_aware": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "unicode_folded_vs_chinese_aware": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                }
+              }
+            },
+            "code_debug": {
+              "normalizer_scores": {
+                "strict": {
+                  "mean": 0.5,
+                  "std": 0.0
+                },
+                "punctuation_agnostic": {
+                  "mean": 0.5,
+                  "std": 0.0
+                },
+                "unicode_folded": {
+                  "mean": 0.5,
+                  "std": 0.0
+                },
+                "chinese_aware": {
+                  "mean": 0.5,
+                  "std": 0.0
+                }
+              },
+              "normalizer_deltas": {
+                "strict_vs_punctuation_agnostic": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "strict_vs_unicode_folded": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "strict_vs_chinese_aware": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "punctuation_agnostic_vs_unicode_folded": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "punctuation_agnostic_vs_chinese_aware": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "unicode_folded_vs_chinese_aware": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                }
+              }
+            },
+            "math_find": {
+              "normalizer_scores": {
+                "strict": {
+                  "mean": 0.0,
+                  "std": 0.0
+                },
+                "chinese_aware": {
+                  "mean": 0.0,
+                  "std": 0.0
+                }
+              },
+              "normalizer_deltas": {
+                "strict_vs_punctuation_agnostic": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "strict_vs_unicode_folded": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "strict_vs_chinese_aware": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "punctuation_agnostic_vs_unicode_folded": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "punctuation_agnostic_vs_chinese_aware": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                },
+                "unicode_folded_vs_chinese_aware": {
+                  "mean_delta": 0.0,
+                  "max_delta": 0.0
+                }
+              }
+            }
+          },
+          "passed": true,
+          "insights": [
+            "Task kv_retrieval: max delta 0.500",
+            "Task passkey: max delta 0.500",
+            "Task longbook_qa_eng: max delta 0.000",
+            "Task code_debug: max delta 0.000",
+            "Task math_find: max delta 0.000"
+          ]
+        },
+        "random_baseline": {
+          "test_name": "random_baseline",
+          "overall_random_score": 0.0,
+          "predictions_made": 5,
+          "task_summaries": {
+            "kv_retrieval": {
+              "mean_random_score": 0.0,
+              "std_random_score": 0.0,
+              "max_random_score": 0.0,
+              "num_samples": 1,
+              "expected_p5": 0.0
+            },
+            "passkey": {
+              "mean_random_score": 0.0,
+              "std_random_score": 0.0,
+              "max_random_score": 0.0,
+              "num_samples": 1,
+              "expected_p5": 0.0
+            },
+            "longbook_qa_eng": {
+              "mean_random_score": 0.0,
+              "std_random_score": 0.0,
+              "max_random_score": "0",
+              "num_samples": 1,
+              "expected_p5": 0.0
+            },
+            "code_debug": {
+              "mean_random_score": 0.0,
+              "std_random_score": 0.0,
+              "max_random_score": "0",
+              "num_samples": 1,
+              "expected_p5": 0.0
+            },
+            "math_find": {
+              "mean_random_score": 0.0,
+              "std_random_score": 0.0,
+              "max_random_score": 0.0,
+              "num_samples": 1,
+              "expected_p5": 0.0
+            }
+          },
+          "passed": "True",
+          "insights": [
+            "Task kv_retrieval: 0.000 random score",
+            "Task passkey: 0.000 random score",
+            "Task longbook_qa_eng: 0.000 random score",
+            "Task code_debug: 0.000 random score",
+            "Task math_find: 0.000 random score"
+          ]
+        }
+      },
+      "samples_tested": 5,
+      "summary": [
+        "\u2713 Scoring functions work correctly (100.0% perfect rate)",
+        "\u2139 Normalizer differences: max delta 0.500",
+        "\u2713 Random baseline established: 0.000 average score"
+      ]
+    }
+  },
+  "primary_diagnosis": "EXECUTION FAILURE: 'coverage_rate'",
+  "decision_trail": [
+    "Rung 0 PASSED: Scoring functions work correctly",
+    "EXECUTION ERROR: 'coverage_rate'"
+  ],
+  "recommended_actions": [
+    "1. Review detailed rung results for specific issues",
+    "2. Consider running additional diagnostic rungs",
+    "3. Examine per-task performance variations"
+  ],
+  "samples_processed": 5,
+  "ledger_entries_created": 0,
+  "rung_timings": {
+    "0": 0.004133939743041992
+  }
+}

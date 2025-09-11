@@ -1,0 +1,157 @@
+{
+  "metadata": {
+    "timestamp": "2025-09-11 10:47:19",
+    "data_file": "simple_extraction_data/extracted_samples_code.json",
+    "sample_count": 3,
+    "analysis_duration_seconds": 0.001982450485229492
+  },
+  "coverage_analysis": {
+    "total_samples": 3,
+    "span_coverage_rate": 0.0,
+    "symbol_coverage_rate": 0.0,
+    "extractive_success_rate": 0.0,
+    "coverage_details": [
+      {
+        "sample_id": "code_code_debug.jsonl_114",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 243,
+        "gold_answers": [
+          "Link.get_href"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_25",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 218,
+        "gold_answers": [
+          "to_ragged_array"
+        ]
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_281",
+        "span_coverage": false,
+        "symbol_coverage": false,
+        "extractive_score": 0.0,
+        "selected_atoms_count": 165,
+        "gold_answers": [
+          "_DependencyList.__contains__"
+        ]
+      }
+    ]
+  },
+  "selection_analysis": {
+    "avg_atoms_selected": 208.66666666666666,
+    "atom_selection_distribution": {},
+    "context_compression_ratios": [
+      0.08,
+      0.08,
+      0.08
+    ],
+    "selection_patterns": [
+      {
+        "sample_id": "code_code_debug.jsonl_114",
+        "atoms_selected": 243,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "Dict of the extension ID to a tuple of optional list of STACObjectType which it was\n    removed for "
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_25",
+        "atoms_selected": 218,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "A polygon is a two-dimensional feature and has a non-zero area. It may\n    have one or more negative"
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_281",
+        "atoms_selected": 165,
+        "compression_ratio": 0.08,
+        "first_atom_preview": "Raises:\n            TypeError: When the json_string does not represent and object\n                of"
+      }
+    ]
+  },
+  "extraction_analysis": {
+    "total_extractions": 3,
+    "successful_extractions": 0,
+    "failed_extractions": 3,
+    "extraction_patterns": [
+      {
+        "sample_id": "code_code_debug.jsonl_114",
+        "prediction": "pystac",
+        "score": 0.0,
+        "gold_answers": [
+          "Link.get_href"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_25",
+        "prediction": "A",
+        "score": 0.0,
+        "gold_answers": [
+          "to_ragged_array"
+        ],
+        "success": false
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_281",
+        "prediction": "R",
+        "score": 0.0,
+        "gold_answers": [
+          "_DependencyList.__contains__"
+        ],
+        "success": false
+      }
+    ],
+    "common_failures": {}
+  },
+  "gold_analysis": {
+    "answer_types": {
+      "str": 3
+    },
+    "answer_lengths": [
+      13,
+      15,
+      28
+    ],
+    "answer_patterns": [
+      {
+        "sample_id": "code_code_debug.jsonl_114",
+        "answers": [
+          "Link.get_href"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_25",
+        "answers": [
+          "to_ragged_array"
+        ],
+        "answer_count": 1
+      },
+      {
+        "sample_id": "code_code_debug.jsonl_281",
+        "answers": [
+          "_DependencyList.__contains__"
+        ],
+        "answer_count": 1
+      }
+    ]
+  },
+  "diagnosis": {
+    "primary_issue": "SELECTION_FAILURE",
+    "confidence": 0.95,
+    "evidence": [
+      "Extremely low span coverage (0.0%) and symbol coverage (0.0%)",
+      "This indicates the hybrid retrieval system is not selecting relevant context atoms"
+    ],
+    "recommended_actions": [
+      "1. Fix context atom selection - increase keep_ratio or improve hybrid scoring",
+      "2. Debug the hybrid method's relevance scoring algorithm",
+      "3. Verify InfiniteBench context segmentation is working correctly"
+    ],
+    "secondary_issues": []
+  }
+}

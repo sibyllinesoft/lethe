@@ -1,0 +1,53 @@
+{
+  "embeddings_analyzed": 20,
+  "embedding_dimension": 768,
+  "unique_hashes": 20,
+  "duplicate_rate": 0.0,
+  "norm_mean": 8.246663581135746,
+  "norm_std": 0.15865141820781342,
+  "norm_min": 7.962104280818676,
+  "norm_max": 8.546009683867553,
+  "avg_per_dim_std": 0.2861443790984374,
+  "per_dim_std_min": 0.15681089172051596,
+  "per_dim_std_max": 0.4595577910804792,
+  "avg_cosine_self_sim": 0.9999999975738809,
+  "cosine_self_sim_std": 4.657454252564983e-11,
+  "avg_cosine_to_atoms": 0.00024412562748763578,
+  "cosine_to_atoms_std": 0.0008758770934021824,
+  "pc_variances": [
+    4.747946621692886,
+    4.502210691310352,
+    4.171958702005183
+  ],
+  "sample_hashes": [
+    "f60599eb08fb4d8f",
+    "c2fd3202f7d71619",
+    "34e6cfb7d2f693b1",
+    "4aeb6e2df8032301",
+    "097214adeaf5e62d",
+    "78b1d7a095313cd7",
+    "e984a08cb7a67bad",
+    "7444a943fd348a80",
+    "d39b076d5a33f43a",
+    "9df24757c11e27bb"
+  ],
+  "sample_norms": [
+    8.104807860956369,
+    8.300647552876937,
+    8.301236277944735,
+    8.080868478486675,
+    8.222492833192058,
+    8.157981677035728,
+    8.256127027645928,
+    8.524078038009664,
+    8.392962159698397,
+    8.197523162042955
+  ],
+  "sample_query_texts": [
+    "What is the purpose of function 0?",
+    "What is the purpose of function 1?",
+    "What is the purpose of function 2?",
+    "What is the purpose of function 3?",
+    "What is the purpose of function 4?"
+  ]
+}

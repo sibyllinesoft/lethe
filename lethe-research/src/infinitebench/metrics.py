@@ -103,7 +103,7 @@ class InfiniteBenchMetrics:
         
         return f1, precision, recall
     
-    def exact_match(self, predictions: List[str], references: List[str]) -> MetricResult:
+    def exact_match(self, predictions: List[Union[str, List]], references: List[Union[str, List]]) -> MetricResult:
         """
         Calculate Exact Match score.
         
@@ -139,7 +139,7 @@ class InfiniteBenchMetrics:
             sample_scores=sample_scores
         )
     
-    def f1_score(self, predictions: List[str], references: List[str]) -> MetricResult:
+    def f1_score(self, predictions: List[Union[str, List]], references: List[Union[str, List]]) -> MetricResult:
         """
         Calculate token-level F1 score.
         
@@ -200,7 +200,7 @@ class InfiniteBenchMetrics:
             sample_scores=sample_scores
         )
     
-    def rouge_l(self, predictions: List[str], references: List[str]) -> MetricResult:
+    def rouge_l(self, predictions: List[Union[str, List]], references: List[Union[str, List]]) -> MetricResult:
         """
         Calculate ROUGE-L score.
         
@@ -299,7 +299,7 @@ class InfiniteBenchMetrics:
             sample_scores=sample_scores
         )
     
-    def accuracy(self, predictions: List[str], references: List[str]) -> MetricResult:
+    def accuracy(self, predictions: List[Union[str, List]], references: List[Union[str, List]]) -> MetricResult:
         """
         Calculate classification accuracy.
         
@@ -315,9 +315,9 @@ class InfiniteBenchMetrics:
         
         sample_scores = []
         for pred, ref in zip(predictions, references):
-            # Normalize for comparison
-            pred_norm = str(pred).strip().lower()
-            ref_norm = str(ref).strip().lower()
+            # Normalize for comparison using the updated normalize method
+            pred_norm = self._normalize_text(pred)
+            ref_norm = self._normalize_text(ref)
             
             score = 1.0 if pred_norm == ref_norm else 0.0
             sample_scores.append(score)
@@ -336,8 +336,8 @@ class InfiniteBenchMetrics:
         )
     
     def long_context_metrics(self,
-                           predictions: List[str],
-                           references: List[str], 
+                           predictions: List[Union[str, List]],
+                           references: List[Union[str, List]], 
                            contexts: List[str]) -> Dict[str, MetricResult]:
         """
         Calculate comprehensive long-context specific metrics.
@@ -409,8 +409,8 @@ class InfiniteBenchMetrics:
         return results
     
     def evaluate_task(self,
-                     predictions: List[str],
-                     references: List[str],
+                     predictions: List[Union[str, List]],
+                     references: List[Union[str, List]],
                      task_name: str,
                      contexts: Optional[List[str]] = None) -> EvaluationSummary:
         """
@@ -469,8 +469,20 @@ class InfiniteBenchMetrics:
             overall_score=overall_score
         )
     
-    def _normalize_text(self, text: str) -> str:
-        """Normalize text for comparison."""
+    def _normalize_text(self, text: Union[str, List, int, float]) -> str:
+        """Normalize text for comparison, handling various input types."""
+        # Handle different input types
+        if isinstance(text, list):
+            if not text:
+                return ""
+            # Take first element if list, convert to string
+            text = str(text[0])
+        elif text is None:
+            return ""
+        else:
+            # Convert to string (handles int, float, etc.)
+            text = str(text)
+        
         if not text:
             return ""
         
@@ -485,8 +497,8 @@ class InfiniteBenchMetrics:
         
         return text
     
-    def _tokenize(self, text: str) -> List[str]:
-        """Tokenize text into words."""
+    def _tokenize(self, text: Union[str, List, int, float]) -> List[str]:
+        """Tokenize text into words, handling various input types."""
         if not text:
             return []
         

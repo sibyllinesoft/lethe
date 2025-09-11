@@ -3,7 +3,7 @@
     "name": "LetheBench",
     "version": "1.0.0",
     "created": "2025-08-23T06:27:47.086088+00:00",
-    "examples_source": "/home/nathan/Projects/lethe/ctx-run/examples",
+    "examples_source": "/home/nathan/Projects/lethe/lethe-monitor/examples",
     "total_examples": 3,
     "total_queries": 139,
     "domains": [
@@ -20,7 +20,7 @@
     {
       "id": "24754286ed3e",
       "name": "sample-tool-conversation",
-      "path": "/home/nathan/Projects/lethe/ctx-run/examples/sample-tool-conversation.json",
+      "path": "/home/nathan/Projects/lethe/lethe-monitor/examples/sample-tool-conversation.json",
       "domain": "cli",
       "type": "conversation",
       "session_id": "cli_troubleshooting_2024_002",
@@ -272,7 +272,7 @@
         }
       ],
       "metadata": {
-        "source_file": "/home/nathan/Projects/lethe/ctx-run/examples/sample-tool-conversation.json",
+        "source_file": "/home/nathan/Projects/lethe/lethe-monitor/examples/sample-tool-conversation.json",
         "conversation_length": 13,
         "timestamp_range": {
           "start": 1703110800,
@@ -284,7 +284,7 @@
     {
       "id": "f7b2f2b2b6a3",
       "name": "sample-prose-conversation",
-      "path": "/home/nathan/Projects/lethe/ctx-run/examples/sample-prose-conversation.json",
+      "path": "/home/nathan/Projects/lethe/lethe-monitor/examples/sample-prose-conversation.json",
       "domain": "web",
       "type": "conversation",
       "session_id": "architecture_planning_2024_003",
@@ -573,7 +573,7 @@
         }
       ],
       "metadata": {
-        "source_file": "/home/nathan/Projects/lethe/ctx-run/examples/sample-prose-conversation.json",
+        "source_file": "/home/nathan/Projects/lethe/lethe-monitor/examples/sample-prose-conversation.json",
         "conversation_length": 20,
         "timestamp_range": {
           "start": 1703120400,
@@ -585,7 +585,7 @@
     {
       "id": "522c7b322102",
       "name": "sample-code-conversation",
-      "path": "/home/nathan/Projects/lethe/ctx-run/examples/sample-code-conversation.json",
+      "path": "/home/nathan/Projects/lethe/lethe-monitor/examples/sample-code-conversation.json",
       "domain": "web",
       "type": "conversation",
       "session_id": "code_debug_session_2024_001",
@@ -774,7 +774,7 @@
         }
       ],
       "metadata": {
-        "source_file": "/home/nathan/Projects/lethe/ctx-run/examples/sample-code-conversation.json",
+        "source_file": "/home/nathan/Projects/lethe/lethe-monitor/examples/sample-code-conversation.json",
         "conversation_length": 14,
         "timestamp_range": {
           "start": 1703097600,

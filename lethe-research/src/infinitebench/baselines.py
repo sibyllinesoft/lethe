@@ -32,6 +32,7 @@ class RetrievalResult:
     context_used: str
     processing_time_ms: float
     metadata: Dict[str, Any]
+    response: str = ""  # LLM response - added for evaluation
 
 class BaselineMethod(ABC):
     """Abstract base class for baseline retrieval methods."""

@@ -1,0 +1,99 @@
+{
+  "atoms_analyzed": 100,
+  "entities_median": 2.0,
+  "entities_mean": 2.2,
+  "entities_std": 1.16619037896906,
+  "entities_max": 4,
+  "atoms_with_entities": 100,
+  "entity_coverage_ratio": 1.0,
+  "top_entity_types": {
+    "ENTITY": 200,
+    "NUMBER": 20
+  },
+  "symbols_median": 1.0,
+  "symbols_mean": 0.95,
+  "symbols_std": 0.8046738469715541,
+  "symbols_max": 2,
+  "atoms_with_symbols": 65,
+  "symbol_coverage_ratio": 0.65,
+  "top_symbol_types": {
+    "FUNCTION": 95
+  },
+  "atoms_with_file_ids": 100,
+  "file_coverage_ratio": 1.0,
+  "unique_files": 10,
+  "sample_file_ids": [
+    "file_5.py",
+    "file_4.py",
+    "file_3.py",
+    "file_2.py",
+    "file_7.py",
+    "file_1.py",
+    "file_9.py",
+    "file_6.py",
+    "file_8.py",
+    "file_0.py"
+  ],
+  "sample_atoms": [
+    {
+      "entities_count": 1,
+      "symbols_count": 0,
+      "file_id": "file_0.py",
+      "content_length": 55
+    },
+    {
+      "entities_count": 1,
+      "symbols_count": 1,
+      "file_id": "file_1.py",
+      "content_length": 55
+    },
+    {
+      "entities_count": 2,
+      "symbols_count": 2,
+      "file_id": "file_2.py",
+      "content_length": 55
+    },
+    {
+      "entities_count": 3,
+      "symbols_count": 0,
+      "file_id": "file_3.py",
+      "content_length": 55
+    },
+    {
+      "entities_count": 4,
+      "symbols_count": 1,
+      "file_id": "file_4.py",
+      "content_length": 55
+    },
+    {
+      "entities_count": 1,
+      "symbols_count": 2,
+      "file_id": "file_5.py",
+      "content_length": 55
+    },
+    {
+      "entities_count": 1,
+      "symbols_count": 0,
+      "file_id": "file_6.py",
+      "content_length": 55
+    },
+    {
+      "entities_count": 2,
+      "symbols_count": 1,
+      "file_id": "file_7.py",
+      "content_length": 55
+    },
+    {
+      "entities_count": 3,
+      "symbols_count": 2,
+      "file_id": "file_8.py",
+      "content_length": 55
+    },
+    {
+      "entities_count": 4,
+      "symbols_count": 0,
+      "file_id": "file_9.py",
+      "content_length": 55
+    }
+  ]
+}
