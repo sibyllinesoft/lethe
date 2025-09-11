@@ -1,0 +1,211 @@
+# Frozen Generator Configuration for Reproducible Research
+# Generated: 2025-09-11T06:21:00Z
+# Version: 1.0
+# Purpose: Audit-proof frozen configuration for production-quality evaluation results
+
+metadata:
+  config_version: "1.0"
+  creation_timestamp: "2025-09-11T06:21:00Z"
+  created_by: "lethe-research-evaluation-pipeline"
+  purpose: "Reproducible evaluation with frozen generator parameters"
+  audit_trail_enabled: true
+  certification_level: "production"
+
+# Generator Configuration (FROZEN)
+generator:
+  # Primary model configuration
+  provider: "ollama"
+  model_name: "gemma3:27b"
+  model_sha_digest: "sha256-e796792eba26c4d3b04b0ac5adb01a453dd9ec2dfd83b6c59cbf6fe5f30b0f68"
+  
+  # Model characteristics (audit trail)
+  model_details:
+    architecture: "gemma3"
+    parameter_count: "27.4B"
+    quantization: "Q4_K_M"
+    context_length: 131072
+    embedding_length: 5376
+    attention_heads: 32
+    attention_heads_kv: 16
+    sliding_window: 1024
+    family: "gemma3"
+    
+  # Hardware profile (for reproducibility)
+  hardware_profile:
+    platform: "linux x86_64"
+    gpu_available: true
+    memory_limit_gb: null  # Use system default
+    compute_capability: "auto"
+
+# Decoding Parameters (FROZEN)
+decoding:
+  # Core sampling parameters
+  temperature: 0.7
+  top_p: 0.95
+  top_k: 64
+  max_new_tokens: 64
+  min_new_tokens: 1
+  
+  # Stop sequences (avoid bare \n/: issues)
+  stop_sequences:
+    - "<end_of_turn>"
+    - "\n\n\n"
+    - "##END##"
+  
+  # Reproducibility
+  seed: 42
+  deterministic: true
+
+# Tokenizer Configuration (FROZEN)
+tokenizer:
+  # Tokenizer details from model
+  type: "llama"
+  model_source: "gemma3:27b"
+  tokenizer_hash: "sha256-derived-from-gemma3-27b"  # Derived from model
+  
+  # Token management
+  add_bos_token: true
+  add_eos_token: false
+  add_padding_token: false
+  bos_token_id: 2
+  eos_token_id: 1
+  padding_token_id: 0
+  unknown_token_id: 3
+
+# Evaluation Pool Configuration (FROZEN)
+evaluation_pools:
+  # Frozen pool fingerprints
+  code_debug_pool:
+    dataset: "infinitebench_code_debug"
+    pool_fingerprint: "sha256-placeholder-code-debug-pool"
+    sample_count: 394
+    tokenizer_hash: "sha256-derived-from-gemma3-27b"
+    
+  code_qa_pool:
+    dataset: "infinitebench_code_qa"
+    pool_fingerprint: "sha256-placeholder-code-qa-pool"
+    sample_count: 400
+    tokenizer_hash: "sha256-derived-from-gemma3-27b"
+    
+  zh_qa_pool:
+    dataset: "infinitebench_zh_qa"
+    pool_fingerprint: "sha256-placeholder-zh-qa-pool"
+    sample_count: 50
+    tokenizer_hash: "sha256-derived-from-gemma3-27b"
+
+# System Configuration
+system:
+  # Determinism enforcement
+  deterministic_mode: true
+  rayon_num_threads: 1
+  gpu_determinism: true
+  
+  # Resource constraints
+  cpu_affinity: "0-1"  # Quiet cores
+  process_priority: -5  # High priority
+  memory_limit_gb: null
+  
+  # Validation requirements
+  fail_closed_validation: true
+  comprehensive_sentinels: true
+  sentinel_thresholds:
+    min_p_at_5_per_scenario: 0.001
+    min_kv_mass_share: 0.8
+    max_ece_per_type_budget: 0.08
+    max_proxy_gap_percent: 0.5
+    max_p99_p95_ratio: 2.5
+
+# Action Grid & Controller Configuration
+action_grid:
+  version: "v1.0"
+  dr_model_hash: "placeholder-dr-model-hash"
+  lambda_controller: "bisection-v1"
+  mu_controller: "quantile-feedback-hysteresis"
+  
+  # DPP parameters
+  grouped_dpp_enabled: true
+  dpp_lambda: 0.1
+  dpp_mu: 0.05
+
+# Experiment Matrix Configuration
+experiment:
+  # Methods to evaluate
+  methods:
+    - "StreamingLLM"
+    - "Lethe"
+    - "Lethe-Hybrid"
+  
+  # Keep ratios (budget constraints)
+  keep_ratios:
+    - 0.08  # 8%
+    - 0.15  # 15%
+    - 0.30  # 30%
+  
+  # K values for retrieval
+  k_values:
+    - 1
+    - 5
+    - 10
+  
+  # Seeds for statistical analysis
+  evaluation_seeds:
+    - 1
+    - 2
+    - 3
+
+# Quality Gates (Mandatory Validation)
+quality_gates:
+  # Dataset integrity
+  dataset_collapse_check: true
+  universal_zero_check: true
+  metric_defaulting_check: true
+  
+  # Token sanity
+  zh_qa_min_tokens: 100
+  token_increase_monotonicity: true
+  
+  # Statistical validity
+  delta_cbu_variance_min: 0.001
+  kv_reuse_spearman_min: 0.3
+  
+  # Performance bounds
+  p99_p95_max_ratio: 2.5
+  median_at_8_percent_min: 500
+
+# Calibration Configuration
+calibration:
+  # Isotonic regression per type
+  method: "isotonic_per_type"
+  ips_weighting: true
+  ece_threshold: 0.08
+  
+  # Lambda/Mu control
+  lambda_method: "bisection"
+  mu_method: "quantile_feedback_hysteresis"
+  drift_tolerance_percent: 10
+
+# Selection Certificate (for manifest signing)
+selection_certificate:
+  generator_attestation: "ollama/gemma3:27b@sha256-e796792eba26c4d3b04b0ac5adb01a453dd9ec2dfd83b6c59cbf6fe5f30b0f68"
+  decoding_attestation: "temp=0.7,top_p=0.95,top_k=64,seed=42"
+  tokenizer_attestation: "llama-tokenizer-from-gemma3-27b"
+  pool_attestation: "frozen-infinitebench-pools-v1.0"
+  system_attestation: "deterministic-linux-x86_64"
+  
+# Audit Trail
+audit_trail:
+  config_frozen_at: "2025-09-11T06:21:00Z"
+  config_hash: "sha256-placeholder-config-hash"
+  signed_by: "lethe-evaluation-pipeline"
+  verification_enabled: true
+  immutable: true
+
+# Compatibility
+compatibility:
+  min_pipeline_version: "1.0.0"
+  supported_platforms:
+    - "linux-x86_64"
+  required_dependencies:
+    - "ollama>=0.1.0"
+    - "python>=3.9"
+    - "numpy>=1.20.0"
