@@ -276,3 +276,37 @@ web_modules/
 # Development Reports
 # =============================================================================
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Rust Build Artifacts
+# =============================================================================
+target/
+Cargo.lock
+
+# Large Research Data & Benchmarks
+# =============================================================================
+*.jsonl
+data.zip
+benchmarks/*/data/
+benchmarks/longbench/
+benchmarks/infinitebench/
+benchmarks/ruler/
+
+# Package-Specific Build Artifacts
+# =============================================================================
+packages/*/target/
+packages/*/node_modules/
+packages/*/dist/
+packages/*/build/
+
+# Research Results & Artifacts  
+# =============================================================================
+artifacts/retro_*/
+results/archive/
+results/checkpoints/
+research_consolidated/
+
+# Application Builds
+# =============================================================================
+apps/*/dist/
+apps/*/build/
+apps/*/.next/
