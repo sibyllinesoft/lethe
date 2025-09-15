@@ -1,0 +1,21 @@
+{
+  "name": "@lethe/llm-analyzer-shared",
+  "version": "0.1.0",
+  "description": "Shared TypeScript types for LLM Analyzer",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": ["llm", "analyzer", "types", "shared"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "files": [
+    "dist"
+  ]
+}
