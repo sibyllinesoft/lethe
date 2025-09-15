@@ -290,6 +290,18 @@ benchmarks/*/data/
 benchmarks/longbench/
 benchmarks/infinitebench/
 benchmarks/ruler/
+benchmarks/l-eval/
+benchmarks/loogle/
+benchmarks/loong/
+
+# Benchmark Runner Apps (Large Datasets)
+# =============================================================================
+apps/benchmark-runner/infinitebench/
+apps/benchmark-runner/l-eval/
+apps/benchmark-runner/longbench/
+apps/benchmark-runner/loogle/
+apps/benchmark-runner/loong/
+apps/benchmark-runner/ruler/
 
 # Package-Specific Build Artifacts
 # =============================================================================
