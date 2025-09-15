@@ -1,0 +1,320 @@
+{
+  "validation_timestamp": 1757634928.6630418,
+  "test_configuration": {
+    "sample_size": 100,
+    "backends": [
+      "faiss",
+      "milvus"
+    ],
+    "k_vec": 200,
+    "k_bm25": 200,
+    "rerank_k": 50,
+    "float_tolerance": 1e-06,
+    "statistical_significance": 0.05
+  },
+  "parity_validation": {
+    "total_queries": 100,
+    "successful_parity": 0,
+    "parity_success_rate": 0.0,
+    "parity_threshold": "FAIL"
+  },
+  "checksum_validation": {
+    "union_checksum_consistency": 1.0,
+    "vector_checksum_consistency": 0.0,
+    "bm25_checksum_consistency": 0.0,
+    "overall_consistency": 0.3333333333333333,
+    "total_comparisons": 100
+  },
+  "performance_impact": {
+    "recall_impact": "HIGH",
+    "latency_impact": "MINIMAL",
+    "overall_assessment": "CONCERNING"
+  },
+  "performance_metrics": {
+    "recall_analysis": {
+      "faiss": {
+        "mean_recall": 0.8042857142857143,
+        "std_recall": 0.19544915210231514,
+        "min_recall": 0.42857142857142855,
+        "p95_recall": 1.0,
+        "samples": 100
+      },
+      "milvus": {
+        "mean_recall": 0.7738095238095238,
+        "std_recall": 0.19898906185894713,
+        "min_recall": 0.42857142857142855,
+        "p95_recall": 1.0,
+        "samples": 100
+      }
+    },
+    "latency_analysis": {
+      "faiss": {
+        "baseline_mean": 0.24108047073241323,
+        "baseline_p95": 0.33349746663589025,
+        "aligned_mean": 1.0986457392573357,
+        "aligned_p95": 1.311805032310076,
+        "delta_mean": 0.8575652685249224,
+        "delta_p95": 0.9783075656741858,
+        "samples": 100
+      },
+      "milvus": {
+        "baseline_mean": 0.2409888501279056,
+        "baseline_p95": 0.271441350923851,
+        "aligned_mean": 1.0902778687886894,
+        "aligned_p95": 1.3042618229519576,
+        "delta_mean": 0.8492890186607838,
+        "delta_p95": 1.0328204720281065,
+        "samples": 100
+      }
+    },
+    "union_consistency": {
+      "faiss": {
+        "mean_union_size": 340,
+        "std_union_size": 0.0,
+        "min_union_size": 340,
+        "max_union_size": 340
+      },
+      "milvus": {
+        "mean_union_size": 340,
+        "std_union_size": 0.0,
+        "min_union_size": 340,
+        "max_union_size": 340
+      }
+    },
+    "statistical_tests": {
+      "union_size_ttest": {
+        "t_statistic": NaN,
+        "p_value": NaN,
+        "significant": "False",
+        "interpretation": "Union sizes are consistent"
+      }
+    }
+  },
+  "detailed_parity_failures": [
+    {
+      "query_id": "test_query_000",
+      "backends_compared": [
+        "faiss",
+        "milvus"
+      ],
+      "union_sizes_match": true,
+      "union_checksums_match": true,
+      "overlap_counts_match": true,
+      "vector_means_match": "False",
+      "vector_stds_match": false,
+      "bm25_means_match": false,
+      "bm25_stds_match": false,
+      "float_tolerance": 1e-06,
+      "checksum_match": true,
+      "union_size_diff": 0,
+      "vector_mean_diff": -6.737154171662652e-05,
+      "vector_std_diff": 0.00020315543114610146,
+      "bm25_mean_diff": -0.011491285270639029,
+      "bm25_std_diff": -0.026545196090887124,
+      "full_parity_achieved": false
+    },
+    {
+      "query_id": "test_query_001",
+      "backends_compared": [
+        "faiss",
+        "milvus"
+      ],
+      "union_sizes_match": true,
+      "union_checksums_match": true,
+      "overlap_counts_match": true,
+      "vector_means_match": "False",
+      "vector_stds_match": false,
+      "bm25_means_match": false,
+      "bm25_stds_match": false,
+      "float_tolerance": 1e-06,
+      "checksum_match": true,
+      "union_size_diff": 0,
+      "vector_mean_diff": -0.0006667386190191138,
+      "vector_std_diff": -1.366622284118546e-05,
+      "bm25_mean_diff": -0.14704855030122754,
+      "bm25_std_diff": -0.376011252080954,
+      "full_parity_achieved": false
+    },
+    {
+      "query_id": "test_query_002",
+      "backends_compared": [
+        "faiss",
+        "milvus"
+      ],
+      "union_sizes_match": true,
+      "union_checksums_match": true,
+      "overlap_counts_match": true,
+      "vector_means_match": "False",
+      "vector_stds_match": false,
+      "bm25_means_match": false,
+      "bm25_stds_match": false,
+      "float_tolerance": 1e-06,
+      "checksum_match": true,
+      "union_size_diff": 0,
+      "vector_mean_diff": -0.0008230797133489398,
+      "vector_std_diff": -0.00034547782861993337,
+      "bm25_mean_diff": 0.19357425308359533,
+      "bm25_std_diff": 0.22618920183025715,
+      "full_parity_achieved": false
+    },
+    {
+      "query_id": "test_query_003",
+      "backends_compared": [
+        "faiss",
+        "milvus"
+      ],
+      "union_sizes_match": true,
+      "union_checksums_match": true,
+      "overlap_counts_match": true,
+      "vector_means_match": "False",
+      "vector_stds_match": false,
+      "bm25_means_match": false,
+      "bm25_stds_match": false,
+      "float_tolerance": 1e-06,
+      "checksum_match": true,
+      "union_size_diff": 0,
+      "vector_mean_diff": -7.955574993931402e-05,
+      "vector_std_diff": -0.0007592070829649522,
+      "bm25_mean_diff": 0.12779495976327127,
+      "bm25_std_diff": 0.3956383542765862,
+      "full_parity_achieved": false
+    },
+    {
+      "query_id": "test_query_004",
+      "backends_compared": [
+        "faiss",
+        "milvus"
+      ],
+      "union_sizes_match": true,
+      "union_checksums_match": true,
+      "overlap_counts_match": true,
+      "vector_means_match": "False",
+      "vector_stds_match": false,
+      "bm25_means_match": false,
+      "bm25_stds_match": false,
+      "float_tolerance": 1e-06,
+      "checksum_match": true,
+      "union_size_diff": 0,
+      "vector_mean_diff": -0.0013256025834726126,
+      "vector_std_diff": -0.001964704971658654,
+      "bm25_mean_diff": 0.002904171621863405,
+      "bm25_std_diff": 0.1308289386810424,
+      "full_parity_achieved": false
+    },
+    {
+      "query_id": "test_query_005",
+      "backends_compared": [
+        "faiss",
+        "milvus"
+      ],
+      "union_sizes_match": true,
+      "union_checksums_match": true,
+      "overlap_counts_match": true,
+      "vector_means_match": "False",
+      "vector_stds_match": false,
+      "bm25_means_match": false,
+      "bm25_stds_match": false,
+      "float_tolerance": 1e-06,
+      "checksum_match": true,
+      "union_size_diff": 0,
+      "vector_mean_diff": -0.0007171065708611035,
+      "vector_std_diff": -0.0009719019892996394,
+      "bm25_mean_diff": -0.06173588567442012,
+      "bm25_std_diff": -0.21913697177977598,
+      "full_parity_achieved": false
+    },
+    {
+      "query_id": "test_query_006",
+      "backends_compared": [
+        "faiss",
+        "milvus"
+      ],
+      "union_sizes_match": true,
+      "union_checksums_match": true,
+      "overlap_counts_match": true,
+      "vector_means_match": "False",
+      "vector_stds_match": false,
+      "bm25_means_match": false,
+      "bm25_stds_match": false,
+      "float_tolerance": 1e-06,
+      "checksum_match": true,
+      "union_size_diff": 0,
+      "vector_mean_diff": -0.0007287829874248475,
+      "vector_std_diff": -0.0005442884743929732,
+      "bm25_mean_diff": 0.20809949814872386,
+      "bm25_std_diff": 0.3574259953381178,
+      "full_parity_achieved": false
+    },
+    {
+      "query_id": "test_query_007",
+      "backends_compared": [
+        "faiss",
+        "milvus"
+      ],
+      "union_sizes_match": true,
+      "union_checksums_match": true,
+      "overlap_counts_match": true,
+      "vector_means_match": "False",
+      "vector_stds_match": false,
+      "bm25_means_match": false,
+      "bm25_stds_match": false,
+      "float_tolerance": 1e-06,
+      "checksum_match": true,
+      "union_size_diff": 0,
+      "vector_mean_diff": -0.0001926927331199757,
+      "vector_std_diff": -0.0001290095074682196,
+      "bm25_mean_diff": -0.22449086420507225,
+      "bm25_std_diff": -0.20866395660241022,
+      "full_parity_achieved": false
+    },
+    {
+      "query_id": "test_query_008",
+      "backends_compared": [
+        "faiss",
+        "milvus"
+      ],
+      "union_sizes_match": true,
+      "union_checksums_match": true,
+      "overlap_counts_match": true,
+      "vector_means_match": "False",
+      "vector_stds_match": false,
+      "bm25_means_match": false,
+      "bm25_stds_match": false,
+      "float_tolerance": 1e-06,
+      "checksum_match": true,
+      "union_size_diff": 0,
+      "vector_mean_diff": -0.000616402783701786,
+      "vector_std_diff": -0.0017255039469234457,
+      "bm25_mean_diff": 0.2875846046191417,
+      "bm25_std_diff": 0.5197952501894356,
+      "full_parity_achieved": false
+    },
+    {
+      "query_id": "test_query_009",
+      "backends_compared": [
+        "faiss",
+        "milvus"
+      ],
+      "union_sizes_match": true,
+      "union_checksums_match": true,
+      "overlap_counts_match": true,
+      "vector_means_match": "False",
+      "vector_stds_match": false,
+      "bm25_means_match": false,
+      "bm25_stds_match": false,
+      "float_tolerance": 1e-06,
+      "checksum_match": true,
+      "union_size_diff": 0,
+      "vector_mean_diff": -0.0005320800686078875,
+      "vector_std_diff": -0.0008357940578598844,
+      "bm25_mean_diff": -0.036711856687999145,
+      "bm25_std_diff": -0.03681494894083226,
+      "full_parity_achieved": false
+    }
+  ],
+  "recommendations": [
+    "CRITICAL: Only 0.0% parity success rate. Investigate alignment algorithm implementation.",
+    "CRITICAL: Significant performance impact detected. Consider optimization before production deployment.",
+    "WARNING: Checksum consistency at 33.3%. Verify deterministic behavior in score generation."
+  ]
+}

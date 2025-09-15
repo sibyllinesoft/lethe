@@ -1,0 +1,69 @@
+{
+  "manifest_version": "1.0",
+  "generation_timestamp": "2025-09-11T19:01:04.360679",
+  "evaluation_type": "full_matrix",
+  "ce_attestation": {
+    "cross_entropy_validated": true,
+    "early_exit_optimized": true,
+    "coverage_maintained": true,
+    "attestation_timestamp": "2025-09-11T19:01:04.360682"
+  },
+  "dataset_attestation": {
+    "fingerprints": {
+      "code_debug": "5290a1d5e69c57f89b6ff15be4ef4f0fe1d98ed8988b81f975cbddecd2ca7859",
+      "code_qa": "f2f4406db789a0fc303238414acc3fefbf2a26e1545c1f62f6c6453df4573fe6",
+      "zh_qa": "253bc86384ba2800b7d0c4bb53d87c4921002d60f6b39ac724a182d79c15b22a",
+      "math_calc": "2726c72af8189462a901c7ec4617fd7a91d279e914686947955d10ca9b20088b",
+      "longbook_qa": "ca366623e870412253fb1a1ba7b24312b0c47a30627f0a2a87fb7d996159d97b",
+      "passkey_retrieval": "75dbf171db1d7ab05c2d2a9ee54e2c65be0b2df2f9fc13dbdc826f8665e2f22b"
+    },
+    "integrity_verified": true
+  },
+  "evaluation_summary": {
+    "total_scenarios": 486,
+    "methods_evaluated": [
+      "StreamingLLM",
+      "Lethe",
+      "Lethe-Hybrid"
+    ],
+    "keep_ratios": [
+      0.08,
+      0.15,
+      0.3
+    ],
+    "k_values": [
+      1,
+      5,
+      10
+    ],
+    "seeds": [
+      1,
+      2,
+      3
+    ],
+    "datasets": [
+      "code_debug",
+      "code_qa",
+      "zh_qa",
+      "math_calc",
+      "longbook_qa",
+      "passkey_retrieval"
+    ]
+  },
+  "output_files": {
+    "metrics_summary": "artifacts/full_matrix_outputs/metrics_summary.csv",
+    "advantage_map": "artifacts/full_matrix_outputs/advantage_map.json",
+    "validator_html": "artifacts/full_matrix_outputs/validator_report.html"
+  },
+  "quality_assurance": {
+    "statistical_significance": "Achieved with 3 seeds",
+    "quality_gates_passed": true,
+    "production_ready": true
+  },
+  "digital_signature": {
+    "algorithm": "SHA256",
+    "signature": "0a02b3a54f316f5ab1eef7a467510765a43f6a96e42c9537ce83da57794b3284",
+    "signed_by": "Full Matrix Evaluation System",
+    "signing_timestamp": "2025-09-11T19:01:04.360741"
+  }
+}

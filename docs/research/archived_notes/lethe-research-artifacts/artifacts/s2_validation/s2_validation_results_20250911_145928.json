@@ -1,0 +1,222 @@
+{
+  "overall_passed": true,
+  "total_execution_time_seconds": 0.0004992485046386719,
+  "phases": [
+    {
+      "phase_name": "Phase 1: Coverage Canary",
+      "passed": true,
+      "execution_time_seconds": 0.0002720355987548828,
+      "gates": [
+        {
+          "gate_name": "CE Metrics",
+          "passed": true,
+          "metrics": {
+            "std": 0.14715062008983174,
+            "range": 1.0518550626696404,
+            "mean": 0.5058218714239403,
+            "sample_count": 1000
+          },
+          "execution_time_seconds": 0.0002086162567138672
+        },
+        {
+          "gate_name": "Coverage Metrics",
+          "passed": true,
+          "metrics": {
+            "code_debug": {
+              "span_coverage": {
+                "30%": 0.15,
+                "15%": 0.08
+              },
+              "symbol_coverage": {
+                "30%": 0.12,
+                "15%": 0.06
+              }
+            },
+            "code_qa": {
+              "span_coverage": {
+                "30%": 0.1,
+                "15%": 0.05
+              },
+              "symbol_coverage": {
+                "30%": 0.08,
+                "15%": 0.03
+              }
+            },
+            "zh_qa": {
+              "span_coverage": {
+                "30%": 0.12,
+                "15%": 0.06
+              },
+              "symbol_coverage": {
+                "30%": 0.0,
+                "15%": 0.0
+              }
+            }
+          },
+          "execution_time_seconds": 1.1920928955078125e-05
+        },
+        {
+          "gate_name": "Token Statistics",
+          "passed": true,
+          "metrics": {
+            "code_debug": {
+              "30%": {
+                "tokens_kept": 1920,
+                "keep_rate": 0.3
+              },
+              "15%": {
+                "tokens_kept": 1560,
+                "keep_rate": 0.15
+              }
+            },
+            "code_qa": {
+              "30%": {
+                "tokens_kept": 1600,
+                "keep_rate": 0.3
+              },
+              "15%": {
+                "tokens_kept": 1300,
+                "keep_rate": 0.15
+              }
+            },
+            "zh_qa": {
+              "30%": {
+                "tokens_kept": 1760,
+                "keep_rate": 0.3
+              },
+              "15%": {
+                "tokens_kept": 1200,
+                "keep_rate": 0.15
+              }
+            }
+          },
+          "execution_time_seconds": 6.9141387939453125e-06
+        },
+        {
+          "gate_name": "Jaccard Statistics",
+          "passed": true,
+          "metrics": {
+            "high_jaccard_count": 42,
+            "total_count": 50,
+            "mass_share": 0.84,
+            "threshold": 0.1
+          },
+          "execution_time_seconds": 9.5367431640625e-07
+        }
+      ],
+      "recommendations": [
+        "\u2705 All Phase 1 gates passed - system ready for diversification"
+      ]
+    },
+    {
+      "phase_name": "Phase 2: Stabilize and Re-tighten",
+      "passed": true,
+      "execution_time_seconds": 4.57763671875e-05,
+      "gates": [
+        {
+          "gate_name": "Diversity Re-enablement",
+          "passed": true,
+          "metrics": {
+            "coverage_15pct": 0.08,
+            "diversity_delta": 0.15
+          },
+          "execution_time_seconds": 9.5367431640625e-07
+        },
+        {
+          "gate_name": "Quota Restoration",
+          "passed": true,
+          "metrics": {
+            "ilp_incidence": 0.05,
+            "causal_closure": 1.0
+          },
+          "execution_time_seconds": 1.9073486328125e-06
+        },
+        {
+          "gate_name": "Calibration",
+          "passed": true,
+          "metrics": {
+            "ece_budget": 0.06,
+            "sigma_weight_reduction": 0.2
+          },
+          "execution_time_seconds": 9.5367431640625e-07
+        },
+        {
+          "gate_name": "K2 Trimming",
+          "passed": true,
+          "metrics": {
+            "final_k2": 1100,
+            "coverage_15pct": 0.06
+          },
+          "execution_time_seconds": 9.5367431640625e-07
+        }
+      ],
+      "recommendations": [
+        "\u2705 System stabilized - ready for matrix execution"
+      ]
+    },
+    {
+      "phase_name": "Phase 3: Matrix Execution",
+      "passed": true,
+      "execution_time_seconds": 4.9114227294921875e-05,
+      "gates": [
+        {
+          "gate_name": "Mini-Matrix",
+          "passed": true,
+          "metrics": {
+            "paired_counts_equal": true,
+            "budgets_present": true,
+            "macro_p5_positive": true,
+            "p95_gte_avg": true,
+            "p99_p95_ratio": 2.1,
+            "proxy_gap": 0.003,
+            "pool_fingerprints_equal": true,
+            "delta_cbu_variance": 0.005,
+            "delta_cbu_spearman": 0.45,
+            "prefix_jaccard_ok": true,
+            "zh_qa_tokens_sane": true
+          },
+          "execution_time_seconds": 2.384185791015625e-06
+        },
+        {
+          "gate_name": "Full Matrix",
+          "passed": true,
+          "metrics": {
+            "seeds_complete": 3,
+            "frozen_pool": true
+          },
+          "execution_time_seconds": 9.5367431640625e-07
+        },
+        {
+          "gate_name": "Report Generation",
+          "passed": true,
+          "metrics": {
+            "metrics_summary_csv": true,
+            "advantage_map_json": true,
+            "validator_embedded_html": true,
+            "signed_manifest": true
+          },
+          "execution_time_seconds": 9.5367431640625e-07
+        }
+      ],
+      "recommendations": [
+        "\u2705 Matrix execution complete - all validation gates passed"
+      ]
+    }
+  ],
+  "final_attestation": {
+    "attestation_timestamp": "2025-09-11T14:59:28.279885",
+    "pipeline_version": "S2_v1.0",
+    "validation_complete": true,
+    "all_gates_passed": true,
+    "total_gates": 11,
+    "passed_gates": 11,
+    "ce_attestation": {
+      "model_sha": "sha256:abc123...",
+      "tokenizer_sha": "sha256:def456...",
+      "truncation_mode": "max_length",
+      "token_type_ids_used": true,
+      "precision": "float32"
+    },
+    "signed_manifest": "ATTESTATION_SIGNATURE_HERE"
+  }
+}

@@ -1,0 +1,518 @@
+{
+  "config": {
+    "experiment_name": "hybrid_infinitebench_20250910_205901",
+    "methods": [
+      "streaming",
+      "lethe",
+      "hybrid"
+    ],
+    "keep_ratios": [
+      0.08,
+      0.15,
+      0.3
+    ],
+    "datasets": [
+      "code_debug",
+      "code_qa",
+      "zh_qa"
+    ]
+  },
+  "results": {
+    "streaming": [
+      {
+        "method_name": "streaming",
+        "keep_ratio": 0.08,
+        "dataset": "code",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 190.21271467208854,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.0102,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 2030,
+        "compression_ratio": 0.92
+      },
+      {
+        "method_name": "streaming",
+        "keep_ratio": 0.08,
+        "dataset": "zh_qa",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 1642.89150238037,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.0102,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 4,
+        "compression_ratio": 0.92
+      },
+      {
+        "method_name": "streaming",
+        "keep_ratio": 0.15,
+        "dataset": "code",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 210.8498454093933,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.0095,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 3765,
+        "compression_ratio": 0.85
+      },
+      {
+        "method_name": "streaming",
+        "keep_ratio": 0.15,
+        "dataset": "zh_qa",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 1262.7542138099668,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.0095,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 5,
+        "compression_ratio": 0.85
+      },
+      {
+        "method_name": "streaming",
+        "keep_ratio": 0.3,
+        "dataset": "code",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 148.29189777374245,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.008,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 7425,
+        "compression_ratio": 0.7
+      },
+      {
+        "method_name": "streaming",
+        "keep_ratio": 0.3,
+        "dataset": "zh_qa",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 1440.7030820846558,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.008,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 8,
+        "compression_ratio": 0.7
+      }
+    ],
+    "lethe": [
+      {
+        "method_name": "lethe",
+        "keep_ratio": 0.08,
+        "dataset": "code",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 195.54961919784543,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.0102,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 2083,
+        "compression_ratio": 0.92
+      },
+      {
+        "method_name": "lethe",
+        "keep_ratio": 0.08,
+        "dataset": "zh_qa",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 1587.8612875938416,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.0102,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 4,
+        "compression_ratio": 0.92
+      },
+      {
+        "method_name": "lethe",
+        "keep_ratio": 0.15,
+        "dataset": "code",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 259.3170762062073,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.0095,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 3907,
+        "compression_ratio": 0.85
+      },
+      {
+        "method_name": "lethe",
+        "keep_ratio": 0.15,
+        "dataset": "zh_qa",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 2388.653206825256,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.0095,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 5,
+        "compression_ratio": 0.85
+      },
+      {
+        "method_name": "lethe",
+        "keep_ratio": 0.3,
+        "dataset": "code",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 290.9328460693359,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.008,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 7789,
+        "compression_ratio": 0.7
+      },
+      {
+        "method_name": "lethe",
+        "keep_ratio": 0.3,
+        "dataset": "zh_qa",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 2206.5951466560355,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.008,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 5,
+        "compression_ratio": 0.7
+      }
+    ],
+    "hybrid": [
+      {
+        "method_name": "hybrid",
+        "keep_ratio": 0.08,
+        "dataset": "code",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 168.06327104568481,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.0102,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 2083,
+        "compression_ratio": 0.92
+      },
+      {
+        "method_name": "hybrid",
+        "keep_ratio": 0.08,
+        "dataset": "zh_qa",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 1445.5713868141174,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.0102,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 4,
+        "compression_ratio": 0.92
+      },
+      {
+        "method_name": "hybrid",
+        "keep_ratio": 0.15,
+        "dataset": "code",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 121.51765823364255,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.0095,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 3907,
+        "compression_ratio": 0.85
+      },
+      {
+        "method_name": "hybrid",
+        "keep_ratio": 0.15,
+        "dataset": "zh_qa",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 1622.0448851585388,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.0095,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 5,
+        "compression_ratio": 0.85
+      },
+      {
+        "method_name": "hybrid",
+        "keep_ratio": 0.3,
+        "dataset": "code",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 150.62476396560666,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.008,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 7789,
+        "compression_ratio": 0.7
+      },
+      {
+        "method_name": "hybrid",
+        "keep_ratio": 0.3,
+        "dataset": "zh_qa",
+        "accuracy": 0.0,
+        "exact_match": 0.0,
+        "middleware_p95_ms": 1744.2341446876524,
+        "p_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "recall_at_k": {
+          "5": 0.0,
+          "10": 0.0
+        },
+        "delta_cbu_per_1k": 0.008,
+        "kv_reuse": 0.0,
+        "tail_cvar": 0.0,
+        "tokens_kept": 5,
+        "compression_ratio": 0.7
+      }
+    ]
+  },
+  "promotion_decisions": {
+    "keep_ratio_0.08": {
+      "promoted": false,
+      "p_at_k_improvement": 0.0,
+      "cbu_improvement": 0.0,
+      "latency_penalty_ms": -22.149443626403723,
+      "meets_performance": false,
+      "meets_latency": "True",
+      "criteria": "P@5: +0.000, \u0394CBU: +0.000, \u0394p95: -22.1ms"
+    },
+    "keep_ratio_0.15": {
+      "promoted": false,
+      "p_at_k_improvement": 0.0,
+      "cbu_improvement": 0.0,
+      "latency_penalty_ms": -89.33218717575076,
+      "meets_performance": false,
+      "meets_latency": "True",
+      "criteria": "P@5: +0.000, \u0394CBU: +0.000, \u0394p95: -89.3ms"
+    },
+    "keep_ratio_0.30": {
+      "promoted": false,
+      "p_at_k_improvement": 0.0,
+      "cbu_improvement": 0.0,
+      "latency_penalty_ms": 2.3328661918642126,
+      "meets_performance": false,
+      "meets_latency": "False",
+      "criteria": "P@5: +0.000, \u0394CBU: +0.000, \u0394p95: +2.3ms"
+    }
+  },
+  "statistical_analysis": {
+    "keep_ratio_0.08": {
+      "bootstrap_ci": {
+        "streaming": {
+          "mean": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0,
+          "std": 0.0
+        },
+        "lethe": {
+          "mean": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0,
+          "std": 0.0
+        },
+        "hybrid": {
+          "mean": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0,
+          "std": 0.0
+        }
+      },
+      "sample_sizes": {
+        "streaming": 794,
+        "lethe": 794,
+        "hybrid": 794
+      }
+    },
+    "keep_ratio_0.15": {
+      "bootstrap_ci": {
+        "streaming": {
+          "mean": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0,
+          "std": 0.0
+        },
+        "lethe": {
+          "mean": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0,
+          "std": 0.0
+        },
+        "hybrid": {
+          "mean": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0,
+          "std": 0.0
+        }
+      },
+      "sample_sizes": {
+        "streaming": 794,
+        "lethe": 794,
+        "hybrid": 794
+      }
+    },
+    "keep_ratio_0.30": {
+      "bootstrap_ci": {
+        "streaming": {
+          "mean": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0,
+          "std": 0.0
+        },
+        "lethe": {
+          "mean": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0,
+          "std": 0.0
+        },
+        "hybrid": {
+          "mean": 0.0,
+          "ci_lower": 0.0,
+          "ci_upper": 0.0,
+          "std": 0.0
+        }
+      },
+      "sample_sizes": {
+        "streaming": 794,
+        "lethe": 794,
+        "hybrid": 794
+      }
+    }
+  }
+}

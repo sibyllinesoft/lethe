@@ -1,0 +1,19 @@
+{
+  "run_id": "20250911T202527Z",
+  "created_utc": "2025-09-11T20:37:23Z",
+  "generator": "gemma3:27b",
+  "guards": [
+    "leakage_minhash",
+    "invariance", 
+    "power",
+    "placebo",
+    "seed_expand"
+  ],
+  "artifacts": {
+    "metrics_summary.csv": "96ab60682f8aa373b3ac86f1dc8e5d465909c014a9a76cd0298625ebb68f192a",
+    "advantage_map.json": "22f2d7eff558d088c22a2a094f2a35393fbc9febba39e6915a7a00dcae180c89",
+    "validator_report.html": "219bf65aaf72a72afec6212acd8551211ebeba3af41fa6e79e0635a0df3b7bcd",
+    "leakage_attestation.json": "3e7a92bdd0e16df35cd956f4ded332ae87bc5faa5327e77278d3709a935d9043"
+  },
+  "fingerprints_path": "artifacts/fingerprints/20250911T202527Z.sha256"
+}

@@ -1,0 +1,221 @@
+# Lethe Grid Search Configuration
+# Factorial experimental design for parameter optimization
+
+experiment:
+  name: "lethe_parameter_optimization"
+  version: "1.0"
+  seed: 42
+  replications: 3
+
+parameters:
+  # Core retrieval parameters
+  alpha:
+    type: float
+    values: [0.1, 0.3, 0.5, 0.7, 0.9]
+    default: 0.7
+    description: "BM25 vs vector search weighting (0=vector only, 1=BM25 only)"
+    
+  beta:
+    type: float
+    values: [0.1, 0.3, 0.5, 0.7, 0.9]
+    default: 0.5
+    description: "Cross-encoder reranking influence"
+    
+  # Chunking strategy
+  chunk_size:
+    type: int
+    values: [128, 256, 320, 512]
+    default: 320
+    description: "Target tokens per document chunk"
+    
+  overlap:
+    type: int
+    values: [16, 32, 64, 128]
+    default: 64
+    description: "Overlap tokens between adjacent chunks"
+    
+  # Retrieval scope
+  k_initial:
+    type: int
+    values: [10, 20, 50, 100]
+    default: 30
+    description: "Initial hybrid retrieval candidates"
+    
+  k_final:
+    type: int
+    values: [5, 10, 15, 20]
+    default: 10
+    description: "Final reranked and diversified results"
+    
+  # Diversification parameters
+  diversify_pack_size:
+    type: int
+    values: [5, 10, 15, 25]
+    default: 10
+    description: "Size of diversified result pack"
+    
+  # HyDE configuration  
+  hyde_k:
+    type: int
+    values: [1, 2, 3, 5]
+    default: 3
+    description: "Number of hypothetical document queries"
+    
+  # Planning strategy
+  planning_strategy:
+    type: categorical
+    values: ["adaptive", "exploit", "explore", "random"]
+    default: "adaptive"
+    description: "Plan selection strategy for query processing"
+
+# Experimental conditions
+conditions:
+  domains:
+    - name: "code_heavy"
+      description: "Technical conversations with code snippets and APIs"
+      weight: 0.25
+      
+    - name: "chatty_prose" 
+      description: "Natural language discussions and explanations"
+      weight: 0.25
+      
+    - name: "tool_results"
+      description: "Tool outputs, logs, and structured data"
+      weight: 0.25
+      
+    - name: "mixed"
+      description: "Combined content types in single sessions"
+      weight: 0.25
+
+  query_complexity:
+    - name: "simple"
+      description: "Direct factual queries"
+      weight: 0.3
+      
+    - name: "medium"
+      description: "Multi-step analytical queries"
+      weight: 0.5
+      
+    - name: "complex"
+      description: "Cross-domain synthesis queries"
+      weight: 0.2
+
+  session_length:
+    - name: "short"
+      turns: 5
+      description: "Brief focused interactions"
+      weight: 0.4
+      
+    - name: "medium"
+      turns: 15
+      description: "Extended conversations"
+      weight: 0.4
+      
+    - name: "long"
+      turns: 50
+      description: "Comprehensive deep dives"
+      weight: 0.2
+
+# Baseline configurations
+baselines:
+  window:
+    name: "Recency Window"
+    params:
+      strategy: "recency_only"
+      window_size: 10
+      
+  bm25_only:
+    name: "BM25 Only"
+    params:
+      alpha: 1.0
+      beta: 0.0
+      rerank: false
+      diversify: false
+      
+  vector_only:
+    name: "Vector Only"
+    params:
+      alpha: 0.0
+      beta: 0.0
+      rerank: false
+      diversify: false
+      
+  bm25_vector_simple:
+    name: "BM25+Vector Simple"
+    params:
+      alpha: 0.5
+      beta: 0.0
+      rerank: false
+      diversify: false
+      
+  cross_encoder:
+    name: "Cross-encoder Rerank"
+    params:
+      alpha: 1.0
+      beta: 0.8
+      rerank: true
+      diversify: false
+      initial_method: "bm25"
+      
+  faiss_ivf:
+    name: "FAISS IVF-Flat"
+    params:
+      backend: "faiss"
+      index_type: "ivf_flat"
+      nlist: 100
+      
+  mmr_baseline:
+    name: "MMR Diversification"
+    params:
+      alpha: 0.5
+      beta: 0.0
+      rerank: false
+      diversify: true
+      diversify_method: "mmr"
+      lambda_param: 0.7
+
+# Evaluation metrics
+metrics:
+  quality:
+    ndcg_at_k: [5, 10, 20]
+    recall_at_k: [5, 10, 20]
+    mrr_at_k: [10]
+    precision_at_k: [5, 10]
+    
+  efficiency:
+    latency_percentiles: [50, 90, 95, 99]
+    memory_usage: ["peak_mb", "avg_mb"]
+    throughput: ["queries_per_second"]
+    
+  coverage:
+    entity_coverage_at_n: [10, 20, 50]
+    topic_diversity: ["simpson_index", "shannon_entropy"]
+    result_uniqueness: ["jaccard_similarity"]
+    
+  consistency:
+    contradiction_rate: "percentage"
+    hallucination_score: "0_to_1_scale"
+    consistency_index: "cosine_similarity"
+
+# Statistical analysis
+statistics:
+  significance_level: 0.05
+  confidence_intervals: "bootstrap_95"
+  effect_size_measures: ["cohens_d", "hedges_g"]
+  multiple_comparisons: "bonferroni"
+  minimum_effect_size: 0.1
+  
+# Resource constraints
+resources:
+  max_concurrent_runs: 4
+  timeout_per_query: "30s"
+  timeout_per_session: "5min"
+  max_memory_per_run: "2GB"
+  
+# Output configuration
+output:
+  artifacts_dir: "../artifacts"
+  results_format: ["json", "csv", "parquet"]
+  visualizations: ["plots", "heatmaps", "tables"]
+  log_level: "INFO"
+  save_intermediate: true

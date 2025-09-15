@@ -1,0 +1,133 @@
+# Lethe Proxy Logging Configuration for Benchmarking
+# This configuration enables comprehensive LLM request/response logging
+# during benchmark execution for analysis and debugging
+
+[proxy]
+enabled = true
+
+# Benchmark-specific logging configuration
+[proxy.logging]
+# Log levels: "off", "basic", "detailed", "debug"  
+# Use "detailed" for benchmarks to capture full request/response data
+level = "detailed"
+
+# Include full request/response payloads in logs 
+include_payloads = true
+
+# Enable automatic redaction of sensitive content
+redact_sensitive = true
+
+# Custom regex patterns for redacting sensitive content
+redaction_patterns = [
+    "sk-[A-Za-z0-9]{48}",                    # OpenAI API keys
+    "Bearer\\s+[A-Za-z0-9._-]+",             # Bearer tokens
+    "x-api-key:\\s*[A-Za-z0-9._-]+",         # Anthropic API keys  
+    "\"password\":\\s*\"[^\"]*\"",           # Password fields
+    "\"api_key\":\\s*\"[^\"]*\"",            # Generic API keys
+    "\"secret\":\\s*\"[^\"]*\"",             # Generic secrets
+    "\"token\":\\s*\"[^\"]*\""               # Generic tokens
+]
+
+# Log destinations: "stdout", "file", "structured" 
+# Use "structured" for benchmark analysis
+destination = "structured"
+
+# Enable correlation IDs for request tracing across benchmark runs
+enable_correlation_ids = true
+
+# Log performance metrics (timing, size changes, transformations)
+log_performance_metrics = true
+
+# Benchmark-specific metadata to include in logs
+[proxy.logging.benchmark]
+include_benchmark_metadata = true
+benchmark_run_id_header = "X-Benchmark-Run-Id"
+benchmark_query_id_header = "X-Benchmark-Query-Id"
+benchmark_provider_header = "X-Benchmark-Provider"
+
+[proxy.openai]
+base_url = "https://api.openai.com"
+
+[proxy.anthropic]  
+base_url = "https://api.anthropic.com"
+
+[proxy.groq]
+base_url = "https://api.groq.com"
+
+[proxy.deepseek]
+base_url = "https://api.deepseek.com"
+
+[proxy.mistral]
+base_url = "https://api.mistral.ai"
+
+[proxy.openrouter]
+base_url = "https://openrouter.ai/api"
+
+[proxy.auth]
+mode = "inject"  # Inject API keys automatically
+
+[proxy.auth.inject]
+# API keys will be injected from environment variables
+# Set these before running benchmarks:
+# export OPENAI_API_KEY="your-key"
+# export ANTHROPIC_API_KEY="your-key" 
+# export GROQ_API_KEY="your-key"
+# etc.
+
+[proxy.rewrite]
+enabled = true
+max_request_bytes = 8000000  # 8MB for large benchmark contexts
+
+# Add benchmark identification to system messages
+prelude_system = "You are an AI assistant participating in a Lethe benchmark evaluation. Respond accurately and completely to the given task."
+
+[proxy.security]
+allowed_providers = ["openai", "anthropic", "groq", "deepseek", "mistral", "openrouter", "cohere"]
+max_request_size_mb = 8
+rate_limit_requests_per_minute = 1000
+
+[proxy.timeouts]  
+connect_ms = 10000   # 10 seconds
+read_ms = 300000     # 5 minutes for long benchmark queries
+
+# Logging output structure for benchmark analysis:
+#
+# Each logged event will contain:
+# {
+#   "timestamp": "2024-09-09T14:15:30Z",
+#   "level": "INFO", 
+#   "event": "proxy_request_transform",
+#   "request_id": "benchmark-run-123-query-456",
+#   "benchmark_metadata": {
+#     "run_id": "competitive-benchmark-20240909-141530",
+#     "query_id": "infinitebench-kv-retrieval-001",
+#     "provider": "openai",
+#     "benchmark_type": "competitive",
+#     "dataset": "infinitebench_kv_retrieval"
+#   },
+#   "provider": "openai",
+#   "path": "/v1/chat/completions", 
+#   "method": "POST",
+#   "transform": {
+#     "enabled": true,
+#     "duration_ms": 8,
+#     "changes": ["system_prelude_added", "benchmark_metadata_added"],
+#     "size_change_percent": 5.2
+#   },
+#   "pre_transform": {
+#     "size_bytes": 15432,
+#     "token_estimate": 3858,
+#     "payload": { /* original request */ }
+#   },
+#   "post_transform": {
+#     "size_bytes": 16234,
+#     "token_estimate": 4058, 
+#     "payload": { /* transformed request */ }
+#   },
+#   "performance": {
+#     "transform_duration_ms": 8,
+#     "total_request_duration_ms": 2341,
+#     "response_tokens": 156,
+#     "response_time_ms": 2333
+#   }
+# }

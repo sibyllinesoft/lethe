@@ -1,0 +1,203 @@
+{
+  "test_start": 1755936016.7519298,
+  "configurations": {
+    "llm-enabled": {
+      "name": "llm-enabled",
+      "description": "LLM reranking with contradiction awareness",
+      "queries": {
+        "query_1": {
+          "query": "How to implement async/await in TypeScript with proper error handling?",
+          "test_type": "technical_quality",
+          "latency_ms": 1294.2047119140625,
+          "success": true,
+          "llm_calls": 2,
+          "contradictions": 0,
+          "timeout_occurred": false,
+          "fallback_used": false,
+          "validation_details": {
+            "success": true,
+            "issues": []
+          }
+        },
+        "query_2": {
+          "query": "Compare React hooks vs class components for state management",
+          "test_type": "contradiction_detection",
+          "latency_ms": 1327.6760578155518,
+          "success": true,
+          "llm_calls": 2,
+          "contradictions": 2,
+          "timeout_occurred": false,
+          "fallback_used": false,
+          "validation_details": {
+            "success": true,
+            "issues": []
+          }
+        },
+        "query_3": {
+          "query": "Python FastAPI vs Express.js performance benchmarks",
+          "test_type": "complex_comparison",
+          "latency_ms": 1256.845474243164,
+          "success": true,
+          "llm_calls": 2,
+          "contradictions": 2,
+          "timeout_occurred": false,
+          "fallback_used": false,
+          "validation_details": {
+            "success": true,
+            "issues": []
+          }
+        }
+      },
+      "performance": {
+        "avg_latency": 1292.908747990926,
+        "max_latency": 1327.6760578155518,
+        "timeout_count": 0,
+        "success_count": 3,
+        "timeout_rate": 0.0
+      },
+      "llm_stats": {
+        "calls_made": 6,
+        "timeouts": 0,
+        "contradictions_found": 4,
+        "fallbacks_used": 0
+      }
+    },
+    "contradiction-only": {
+      "name": "contradiction-only",
+      "description": "Cross-encoder with contradiction awareness",
+      "queries": {
+        "query_1": {
+          "query": "How to implement async/await in TypeScript with proper error handling?",
+          "test_type": "technical_quality",
+          "latency_ms": 825.8075714111328,
+          "success": true,
+          "llm_calls": 0,
+          "contradictions": 0,
+          "timeout_occurred": false,
+          "fallback_used": false,
+          "validation_details": {
+            "success": true,
+            "issues": []
+          }
+        },
+        "query_2": {
+          "query": "Compare React hooks vs class components for state management",
+          "test_type": "contradiction_detection",
+          "latency_ms": 984.990119934082,
+          "success": true,
+          "llm_calls": 0,
+          "contradictions": 0,
+          "timeout_occurred": false,
+          "fallback_used": false,
+          "validation_details": {
+            "success": true,
+            "issues": []
+          }
+        },
+        "query_3": {
+          "query": "Python FastAPI vs Express.js performance benchmarks",
+          "test_type": "complex_comparison",
+          "latency_ms": 1073.3897686004639,
+          "success": true,
+          "llm_calls": 0,
+          "contradictions": 0,
+          "timeout_occurred": false,
+          "fallback_used": false,
+          "validation_details": {
+            "success": true,
+            "issues": []
+          }
+        }
+      },
+      "performance": {
+        "avg_latency": 961.3958199818929,
+        "max_latency": 1073.3897686004639,
+        "timeout_count": 0,
+        "success_count": 3,
+        "timeout_rate": 0.0
+      },
+      "llm_stats": {
+        "calls_made": 0,
+        "timeouts": 0,
+        "contradictions_found": 0,
+        "fallbacks_used": 0
+      }
+    },
+    "baseline": {
+      "name": "baseline",
+      "description": "Iteration 3 baseline",
+      "queries": {
+        "query_1": {
+          "query": "How to implement async/await in TypeScript with proper error handling?",
+          "test_type": "technical_quality",
+          "latency_ms": 728.792667388916,
+          "success": true,
+          "llm_calls": 0,
+          "contradictions": 0,
+          "timeout_occurred": false,
+          "fallback_used": false,
+          "validation_details": {
+            "success": true,
+            "issues": []
+          }
+        },
+        "query_2": {
+          "query": "Compare React hooks vs class components for state management",
+          "test_type": "contradiction_detection",
+          "latency_ms": 665.3220653533936,
+          "success": true,
+          "llm_calls": 0,
+          "contradictions": 0,
+          "timeout_occurred": false,
+          "fallback_used": false,
+          "validation_details": {
+            "success": true,
+            "issues": []
+          }
+        },
+        "query_3": {
+          "query": "Python FastAPI vs Express.js performance benchmarks",
+          "test_type": "complex_comparison",
+          "latency_ms": 874.2220401763916,
+          "success": true,
+          "llm_calls": 0,
+          "contradictions": 0,
+          "timeout_occurred": false,
+          "fallback_used": false,
+          "validation_details": {
+            "success": true,
+            "issues": []
+          }
+        }
+      },
+      "performance": {
+        "avg_latency": 756.112257639567,
+        "max_latency": 874.2220401763916,
+        "timeout_count": 0,
+        "success_count": 3,
+        "timeout_rate": 0.0
+      },
+      "llm_stats": {
+        "calls_made": 0,
+        "timeouts": 0,
+        "contradictions_found": 0,
+        "fallbacks_used": 0
+      }
+    }
+  },
+  "summary": {
+    "total_tests": 9,
+    "passed": 9,
+    "failed": 0,
+    "timeout_rate": 0.0,
+    "avg_latency": 1003.4722752041287,
+    "llm_call_stats": {
+      "total_calls": 6,
+      "successful_calls": 6,
+      "timeout_calls": 0,
+      "fallback_calls": 0
+    }
+  },
+  "test_end": 1755936025.7856488,
+  "test_duration": 9.033719062805176
+}

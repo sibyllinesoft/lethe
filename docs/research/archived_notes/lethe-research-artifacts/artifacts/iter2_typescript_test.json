@@ -1,0 +1,127 @@
+{
+  "timestamp": 1755934489.1568975,
+  "test_type": "iteration_2_typescript_integration",
+  "summary": {
+    "total_queries": 5,
+    "success_rate": 1.0,
+    "avg_total_time_ms": 75.6,
+    "avg_qu_time_ms": 63.2,
+    "rewrite_success_rate": 0.0,
+    "decompose_success_rate": 0.0,
+    "avg_llm_calls": 1.0,
+    "avg_hyde_queries": 1.0,
+    "latency_within_budget": true
+  },
+  "results": [
+    {
+      "query": "async error handling in TypeScript",
+      "success": true,
+      "test_time_s": 1.66534423828125,
+      "queryUnderstanding": {
+        "canonical_query": "async error handling in TypeScript",
+        "rewrite_success": false,
+        "decompose_success": false,
+        "llm_calls_made": 1,
+        "errors": [
+          "Rewrite: HTTP 404: Not Found"
+        ]
+      },
+      "duration": {
+        "total": 72,
+        "queryUnderstanding": 60,
+        "retrieval": 7
+      },
+      "hydeQueries": [
+        "async error handling in TypeScript"
+      ]
+    },
+    {
+      "query": "React component optimization techniques",
+      "success": true,
+      "test_time_s": 1.6614255905151367,
+      "queryUnderstanding": {
+        "canonical_query": "React component optimization techniques",
+        "rewrite_success": false,
+        "decompose_success": false,
+        "llm_calls_made": 1,
+        "errors": [
+          "Rewrite: HTTP 404: Not Found"
+        ]
+      },
+      "duration": {
+        "total": 71,
+        "queryUnderstanding": 59,
+        "retrieval": 6
+      },
+      "hydeQueries": [
+        "React component optimization techniques"
+      ]
+    },
+    {
+      "query": "database indexing and performance tuning",
+      "success": true,
+      "test_time_s": 1.6573641300201416,
+      "queryUnderstanding": {
+        "canonical_query": "database indexing and performance tuning",
+        "rewrite_success": false,
+        "decompose_success": false,
+        "llm_calls_made": 1,
+        "errors": [
+          "Rewrite: HTTP 404: Not Found"
+        ]
+      },
+      "duration": {
+        "total": 76,
+        "queryUnderstanding": 64,
+        "retrieval": 8
+      },
+      "hydeQueries": [
+        "database indexing and performance tuning"
+      ]
+    },
+    {
+      "query": "authentication middleware implementation",
+      "success": true,
+      "test_time_s": 1.6773943901062012,
+      "queryUnderstanding": {
+        "canonical_query": "authentication middleware implementation",
+        "rewrite_success": false,
+        "decompose_success": false,
+        "llm_calls_made": 1,
+        "errors": [
+          "Rewrite: HTTP 404: Not Found"
+        ]
+      },
+      "duration": {
+        "total": 83,
+        "queryUnderstanding": 71,
+        "retrieval": 7
+      },
+      "hydeQueries": [
+        "authentication middleware implementation"
+      ]
+    },
+    {
+      "query": "microservices communication patterns",
+      "success": true,
+      "test_time_s": 1.663278341293335,
+      "queryUnderstanding": {
+        "canonical_query": "microservices communication patterns",
+        "rewrite_success": false,
+        "decompose_success": false,
+        "llm_calls_made": 1,
+        "errors": [
+          "Rewrite: HTTP 404: Not Found"
+        ]
+      },
+      "duration": {
+        "total": 76,
+        "queryUnderstanding": 62,
+        "retrieval": 7
+      },
+      "hydeQueries": [
+        "microservices communication patterns"
+      ]
+    }
+  ]
+}

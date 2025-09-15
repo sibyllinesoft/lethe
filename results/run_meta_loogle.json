@@ -1,0 +1,9 @@
+{
+  "mock": false,
+  "endpoint": "http://localhost:11434/v1/chat/completions",
+  "model": "gemma2:9b",
+  "suite": "loogle",
+  "timestamp": "2025-09-15T02:45:56.041165+00:00",
+  "validation_passed": true,
+  "environment_hash": -1793956145482880128
+}

@@ -1,0 +1,368 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Lethe Evaluation - Validator Report</title>
+            
+        <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: #f8f9fa; 
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background-color: white; 
+            padding: 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        h1, h2, h3 { 
+            color: #2c3e50; 
+            margin-top: 0; 
+        }
+        h1 { 
+            border-bottom: 3px solid #3498db; 
+            padding-bottom: 10px; 
+        }
+        .method-label {
+            font-weight: 600;
+            color: #2c3e50;
+            cursor: help;
+            position: relative;
+        }
+        .method-label:hover {
+            color: #3498db;
+        }
+        .engine-badge {
+            font-weight: 400;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        }
+        .metrics-table th, .metrics-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .metrics-table th {
+            background-color: #34495e;
+            color: white;
+            font-weight: 600;
+        }
+        .metrics-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .metrics-table tr:hover {
+            background-color: #e8f4fd;
+        }
+        .score-high { color: #27ae60; font-weight: 600; }
+        .score-medium { color: #f39c12; font-weight: 600; }
+        .score-low { color: #e74c3c; font-weight: 600; }
+        .timestamp {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+        .summary-box {
+            background-color: #ecf0f1;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .warning-box {
+            background-color: #fdf2e9;
+            border-left: 4px solid #e67e22;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .validation-passed {
+            background-color: #d5f4e6;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .validation-failed {
+            background-color: #fadbd8;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        </style>
+        
+        </head>
+        <body>
+            <div class="container">
+                <h1>Lethe Evaluation - Validator Report</h1>
+                
+                
+            <div class="validation-passed">
+                <h3>✅ Label Validation: PASSED</h3>
+                <p>All forbidden label patterns have been successfully removed.</p>
+                <p>Methods processed: 8</p>
+                <p>Primary labels found: Hybrid 50/50, Vector, BM25, All Context (Upper Bound), Streaming Context, Sliding Window, Rerank (BGE), Contextual Compression</p>
+            </div>
+            
+                
+                <h2>Method Performance Comparison</h2>
+                
+        <table class="metrics-table">
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Engine</th>
+                    <th>Type</th>
+                    <th>Precision</th>
+                    <th>Recall</th>
+                    <th>F1 Score</th>
+                    <th>Efficiency</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            <tr>
+                <td><span class="method-label" title="Engine: Milvus | Type: Vector Database">Hybrid 50/50</span></td>
+                <td>Milvus</td>
+                <td>Vector Database</td>
+                <td><span class="score-high">0.850</span></td>
+                <td><span class="score-medium">0.780</span></td>
+                <td><span class="score-high">0.810</span></td>
+                <td><span class="score-medium">0.720</span></td>
+            </tr>
+            
+            <tr>
+                <td><span class="method-label" title="Engine: Faiss | Type: Vector Database">Vector <span class="engine-badge">— Lethe Engine</span></span></td>
+                <td>Faiss</td>
+                <td>Vector Database</td>
+                <td><span class="score-high">0.820</span></td>
+                <td><span class="score-medium">0.750</span></td>
+                <td><span class="score-medium">0.780</span></td>
+                <td><span class="score-medium">0.690</span></td>
+            </tr>
+            
+            <tr>
+                <td><span class="method-label" title="Engine: Elasticsearch | Type: Text Search">BM25</span></td>
+                <td>Elasticsearch</td>
+                <td>Text Search</td>
+                <td><span class="score-medium">0.710</span></td>
+                <td><span class="score-medium">0.680</span></td>
+                <td><span class="score-medium">0.690</span></td>
+                <td><span class="score-low">0.450</span></td>
+            </tr>
+            
+            <tr>
+                <td><span class="method-label" title="Engine: Direct | Type: Baseline">All Context (Upper Bound)</span></td>
+                <td>Direct</td>
+                <td>Baseline</td>
+                <td><span class="score-high">0.950</span></td>
+                <td><span class="score-high">0.920</span></td>
+                <td><span class="score-high">0.930</span></td>
+                <td><span class="score-high">0.890</span></td>
+            </tr>
+            
+            <tr>
+                <td><span class="method-label" title="Engine: Custom | Type: Context Management">Streaming Context</span></td>
+                <td>Custom</td>
+                <td>Context Management</td>
+                <td><span class="score-medium">0.730</span></td>
+                <td><span class="score-medium">0.710</span></td>
+                <td><span class="score-medium">0.720</span></td>
+                <td><span class="score-low">0.520</span></td>
+            </tr>
+            
+            <tr>
+                <td><span class="method-label" title="Engine: Custom | Type: Context Management">Sliding Window</span></td>
+                <td>Custom</td>
+                <td>Context Management</td>
+                <td><span class="score-medium">0.690</span></td>
+                <td><span class="score-medium">0.650</span></td>
+                <td><span class="score-medium">0.670</span></td>
+                <td><span class="score-low">0.480</span></td>
+            </tr>
+            
+            <tr>
+                <td><span class="method-label" title="Engine: BGE | Type: Reranking Model">Rerank (BGE)</span></td>
+                <td>BGE</td>
+                <td>Reranking Model</td>
+                <td><span class="score-medium">0.790</span></td>
+                <td><span class="score-medium">0.740</span></td>
+                <td><span class="score-medium">0.760</span></td>
+                <td><span class="score-medium">0.610</span></td>
+            </tr>
+            
+            <tr>
+                <td><span class="method-label" title="Engine: Custom | Type: Compression">Contextual Compression</span></td>
+                <td>Custom</td>
+                <td>Compression</td>
+                <td><span class="score-medium">0.770</span></td>
+                <td><span class="score-medium">0.720</span></td>
+                <td><span class="score-medium">0.740</span></td>
+                <td><span class="score-low">0.580</span></td>
+            </tr>
+            
+            </tbody>
+        </table>
+        
+                
+                <h2>Label Mapping Verification</h2>
+                
+        <table class="metrics-table">
+            <thead>
+                <tr>
+                    <th>Internal Key</th>
+                    <th>Display Label</th>
+                    <th>Engine</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            <tr>
+                <td><code>hybrid_50_50_milvus</code></td>
+                <td><strong>Hybrid 50/50</strong></td>
+                <td>Milvus</td>
+                <td>Vector Database</td>
+            </tr>
+            
+            <tr>
+                <td><code>hybrid_milvus</code></td>
+                <td><strong>Hybrid 50/50</strong></td>
+                <td>Milvus</td>
+                <td>Vector Database</td>
+            </tr>
+            
+            <tr>
+                <td><code>vector_faiss_lethe</code></td>
+                <td><strong>Vector</strong> — Lethe Engine</td>
+                <td>Faiss</td>
+                <td>Vector Database</td>
+            </tr>
+            
+            <tr>
+                <td><code>vector_faiss</code></td>
+                <td><strong>Vector</strong> — Lethe Engine</td>
+                <td>Faiss</td>
+                <td>Vector Database</td>
+            </tr>
+            
+            <tr>
+                <td><code>bm25</code></td>
+                <td><strong>BM25</strong></td>
+                <td>Elasticsearch</td>
+                <td>Text Search</td>
+            </tr>
+            
+            <tr>
+                <td><code>all_context_upper_bound</code></td>
+                <td><strong>All Context (Upper Bound)</strong></td>
+                <td>Direct</td>
+                <td>Baseline</td>
+            </tr>
+            
+            <tr>
+                <td><code>streaming_context</code></td>
+                <td><strong>Streaming Context</strong></td>
+                <td>Custom</td>
+                <td>Context Management</td>
+            </tr>
+            
+            <tr>
+                <td><code>sliding_window</code></td>
+                <td><strong>Sliding Window</strong></td>
+                <td>Custom</td>
+                <td>Context Management</td>
+            </tr>
+            
+            <tr>
+                <td><code>rerank_bge</code></td>
+                <td><strong>Rerank (BGE)</strong></td>
+                <td>BGE</td>
+                <td>Reranking Model</td>
+            </tr>
+            
+            <tr>
+                <td><code>contextual_compression</code></td>
+                <td><strong>Contextual Compression</strong></td>
+                <td>Custom</td>
+                <td>Compression</td>
+            </tr>
+            
+            </tbody>
+        </table>
+        
+                
+                <h2>Engine Information</h2>
+                
+        <table class="metrics-table">
+            <thead>
+                <tr>
+                    <th>Engine</th>
+                    <th>Type</th>
+                    <th>Methods Using This Engine</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            <tr>
+                <td><strong>Milvus</strong></td>
+                <td>Vector Database</td>
+                <td>Hybrid 50/50, Hybrid 50/50</td>
+                <td>2</td>
+            </tr>
+            
+            <tr>
+                <td><strong>Faiss</strong></td>
+                <td>Vector Database</td>
+                <td>Vector, Vector</td>
+                <td>2</td>
+            </tr>
+            
+            <tr>
+                <td><strong>Elasticsearch</strong></td>
+                <td>Text Search</td>
+                <td>BM25</td>
+                <td>1</td>
+            </tr>
+            
+            <tr>
+                <td><strong>Direct</strong></td>
+                <td>Baseline</td>
+                <td>All Context (Upper Bound)</td>
+                <td>1</td>
+            </tr>
+            
+            <tr>
+                <td><strong>Custom</strong></td>
+                <td>Context Management</td>
+                <td>Streaming Context, Sliding Window, Contextual Compression</td>
+                <td>3</td>
+            </tr>
+            
+            <tr>
+                <td><strong>BGE</strong></td>
+                <td>Reranking Model</td>
+                <td>Rerank (BGE)</td>
+                <td>1</td>
+            </tr>
+            
+            </tbody>
+        </table>
+        
+                
+                <div class="timestamp">
+                    Report generated: 2025-09-11 20:11:36 UTC
+                </div>
+            </div>
+        </body>
+        </html>
+        

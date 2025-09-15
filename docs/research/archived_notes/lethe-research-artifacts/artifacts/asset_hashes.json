@@ -1,0 +1,61 @@
+{
+  "benchmarks": {
+    "base_path": "datasets/benchmarks",
+    "datasets": {
+      "test-dataset": {
+        "directories": {},
+        "directory_hash": "38123dc447cb99c6acb92467195eb76247dd273430338123404f4af1eb59a761",
+        "files": {
+          "data.txt": {
+            "hashes": {
+              "md5": "81cf8ec8d986ae71a01c1a3aa504130e",
+              "sha256": "006a5ca80b19fd3d263848cfc26becd704d361ba77ae776ec86fae7c4548786a"
+            },
+            "modified": 1756131219.604433,
+            "size": 20
+          }
+        },
+        "path": "datasets/benchmarks/test-dataset",
+        "total_files": 1,
+        "total_size": 20
+      }
+    },
+    "manifest_hash": "18ca4d6c2a75e0fc2d001832d17afb4b77ff6aebccc3e40e4dc904ce0453b06b",
+    "type": "benchmarks"
+  },
+  "generated_at": "2025-08-25T10:13:43.903488",
+  "generator": {
+    "script": "/home/nathan/Projects/lethe/lethe-research/scripts/hash_assets.py",
+    "version": "1.0.0"
+  },
+  "hash_algorithms": [
+    "sha256",
+    "md5"
+  ],
+  "manifest_hash": "eaa3ee505a91b84a1557428d77a9b3c1dbc11d09951e5df27f878fbbd240da0f",
+  "manifest_version": "1.0.0",
+  "models": {
+    "base_path": "models/checkpoints",
+    "manifest_hash": "f5dbd1099bdc8b7a8258e46004903f3b4fed14df57d1f6186368be45371d58a2",
+    "models": {
+      "test-model": {
+        "directories": {},
+        "directory_hash": "dceab2b8857669b095e718b4c484d1b9bda52387a2db11c7889657b4740551c9",
+        "files": {
+          "weights.bin": {
+            "hashes": {
+              "md5": "16eea1a47910dd18f6c26ddcca54830d",
+              "sha256": "0fbee1f6a7a34f22bd4b8764495a6cd33ca883d6bfeaaa4b1194c607e647a2b3"
+            },
+            "modified": 1756131219.604433,
+            "size": 19
+          }
+        },
+        "path": "models/checkpoints/test-model",
+        "total_files": 1,
+        "total_size": 19
+      }
+    },
+    "type": "models"
+  }
+}

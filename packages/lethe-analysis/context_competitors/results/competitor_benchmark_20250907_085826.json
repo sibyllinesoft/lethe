@@ -1,0 +1,31 @@
+{
+  "timestamp": "2025-09-07T08:58:24.119174",
+  "competitors_tested": [
+    "llmlingua",
+    "h2o"
+  ],
+  "test_cases": 4,
+  "results": {
+    "llmlingua": {
+      "status": "unavailable",
+      "error": "Dependencies not installed",
+      "requirements": [
+        "llmlingua>=0.2.0",
+        "torch>=1.8.0",
+        "transformers>=4.20.0",
+        "accelerate>=0.20.0",
+        "sentencepiece>=0.1.90"
+      ]
+    },
+    "h2o": {
+      "status": "unavailable",
+      "error": "Dependencies not installed",
+      "requirements": [
+        "torch>=1.8.0",
+        "transformers>=4.20.0",
+        "accelerate>=0.20.0",
+        "sentencepiece>=0.1.90"
+      ]
+    }
+  }
+}

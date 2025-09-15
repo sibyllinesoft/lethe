@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lethe Performance Report - 20250911T202527Z</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #1e40af;
+            --secondary-blue: #3b82f6;
+            --light-blue: #dbeafe;
+            --success-green: #059669;
+            --warning-orange: #d97706;
+            --error-red: #dc2626;
+            --neutral-gray: #6b7280;
+            --light-gray: #f9fafb;
+            --white: #ffffff;
+            --text-dark: #1f2937;
+            --border-gray: #e5e7eb;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--light-gray);
+            color: var(--text-dark);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .task-mode-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+        
+        .provenance-banner {
+            background: var(--light-blue);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-gray);
+        }
+        
+        .provenance-banner h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary-blue);
+        }
+        
+        .provenance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .provenance-item {
+            font-size: 0.875rem;
+        }
+        
+        .provenance-label {
+            font-weight: 600;
+            color: var(--neutral-gray);
+        }
+        
+        .main-content {
+            padding: 2rem;
+        }
+        
+        .methodology-section {
+            background: var(--light-gray);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .methodology-section h3 {
+            margin: 0 0 1rem 0;
+            color: var(--primary-blue);
+        }
+        
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+        
+        .chart-section {
+            background: var(--white);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .chart-title {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .chart-subtitle {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--neutral-gray);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 600px;
+        }
+        
+        .performance-badge {
+            display: inline-block;
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 0.25rem 0.125rem;
+        }
+        
+        .qt-badge {
+            background: var(--success-green);
+            color: var(--white);
+        }
+        
+        .footer {
+            background: var(--light-gray);
+            padding: 1rem 2rem;
+            border-top: 1px solid var(--border-gray);
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--neutral-gray);
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .header { padding: 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            .main-content { padding: 1rem; }
+            .chart-container { height: 400px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Lethe Performance Report</h1>
+            <div class="task-mode-badge">
+                QA over conversations • k=5 • Budgets: 8% / 15% / 30%
+            </div>
+        </div>
+        
+        <div class="provenance-banner">
+            <h3>Provenance & Validation</h3>
+            <div class="provenance-grid">
+                <div class="provenance-item">
+                    <div class="provenance-label">Run ID:</div>
+                    <div>20250911T202527Z</div>
+                </div>
+                <div class="provenance-item">
+                    <div class="provenance-label">Git Commit:</div>
+                    <div>6653d137</div>
+                </div>
+                <div class="provenance-item">
+                    <div class="provenance-label">Manifest Hash:</div>
+                    <div>b2ff58ca98bc8a40</div>
+                </div>
+                <div class="provenance-item">
+                    <div class="provenance-label">Generator:</div>
+                    <div>gemma3:27b</div>
+                </div>
+                <div class="provenance-item">
+                    <div class="provenance-label">Datasets:</div>
+                    <div>Conv-Set-A, Conv-Set-B, InfiniteBench</div>
+                </div>
+                <div class="provenance-item">
+                    <div class="provenance-label">Leakage Check:</div>
+                    <div>✅ Passed</div>
+                </div>
+                <div class="provenance-item">
+                    <div class="provenance-label">Generated:</div>
+                    <div>2025-09-11 18:52:52 UTC</div>
+                </div>
+                <div class="provenance-item">
+                    <div class="provenance-label">Backend:</div>
+                    <div>Faiss Vector Store</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="methodology-section">
+                <h3>Stress Mode Methodology</h3>
+                <p><strong>Stress Mode forces selection:</strong> Corpora exceed the model window and include distractors; Full-Context is infeasible/inefficient, making selection/retrieval essential. This mode tests the ability of different adapters to identify and retrieve the most relevant information under resource constraints.</p>
+                <p><strong>Quality-Throughput Score:</strong> QT = Recall@5 × (1000/latency_p95_ms) × (1-failure_rate). This composite metric balances accuracy with performance, rewarding systems that maintain high recall while operating efficiently.</p>
+            </div>
+            
+            <div class="charts-container">
+                <div class="chart-section">
+                    <h2 class="chart-title">Performance at 8% Budget</h2>
+                    <p class="chart-subtitle">Recall@5 scores with performance metrics (640 tokens selected from 8,000 total)</p>
+                    <div class="chart-container">
+                        <canvas id="chart08"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-section">
+                    <h2 class="chart-title">Performance at 15% Budget</h2>
+                    <p class="chart-subtitle">Recall@5 scores with performance metrics (1,200 tokens selected from 8,000 total)</p>
+                    <div class="chart-container">
+                        <canvas id="chart15"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-section">
+                    <h2 class="chart-title">Performance at 30% Budget</h2>
+                    <p class="chart-subtitle">Recall@5 scores with performance metrics (2,400 tokens selected from 8,000 total)</p>
+                    <div class="chart-container">
+                        <canvas id="chart30"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Report generated with enhanced backend-aware labeling and performance metrics • Vector Backend: Faiss</p>
+        </div>
+    </div>
+
+    <script>
+        const chartConfig = {
+            type: 'bar',
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const data = context.raw;
+                                return [
+                                    `Recall@5: ${data.score.toFixed(3)}`,
+                                    `p95 Latency: ${data.p95_latency}ms`,
+                                    `Failure Rate: ${data.failure_rate}%`,
+                                    `QT Score: ${data.qt_score}`
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 1.0,
+                        title: {
+                            display: true,
+                            text: 'Recall@5 Score'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            callback: function(value, index) {
+                                const data = this.chart.data.datasets[0].data[index];
+                                if (data) {
+                                    return [
+                                        data.label,
+                                        `p95=${data.p95_latency}ms`,
+                                        `fail=${data.failure_rate}%`,
+                                        `QT=${data.qt_score}`
+                                    ];
+                                }
+                                return '';
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        function createChart(canvasId, data, title) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            
+            const chartData = {
+                labels: data.map(d => d.label),
+                datasets: [{
+                    label: 'Recall@5',
+                    data: data.map(d => ({
+                        x: d.score,
+                        y: d.label,
+                        score: d.score,
+                        p95_latency: d.p95_latency,
+                        failure_rate: d.failure_rate,
+                        qt_score: d.qt_score,
+                        label: d.label
+                    })),
+                    backgroundColor: data.map((d, i) => {
+                        const hue = (i * 137.5) % 360; // Golden angle distribution
+                        return `hsla(${hue}, 70%, 60%, 0.8)`;
+                    }),
+                    borderColor: data.map((d, i) => {
+                        const hue = (i * 137.5) % 360;
+                        return `hsla(${hue}, 70%, 50%, 1.0)`;
+                    }),
+                    borderWidth: 1,
+                    barThickness: 30
+                }]
+            };
+            
+            new Chart(ctx, {
+                type: chartConfig.type,
+                data: chartData,
+                options: chartConfig.options
+            });
+        }
+
+        // Create all charts
+        const data08 = [{"adapter": "long:full_context_upper_bound", "label": "All Context (Upper Bound)", "score": 0.861, "p95_latency": 114.9, "failure_rate": 0.0, "qt_score": 7.5}, {"adapter": "rag:hybrid_milvus_50_50", "label": "Hybrid 50/50 (Milvus)", "score": 0.827, "p95_latency": 166.8, "failure_rate": 0.0, "qt_score": 4.96}, {"adapter": "rag:vector_faiss_cosine", "label": "Vector (Faiss) \u2014 Lethe Engine", "score": 0.79, "p95_latency": 181.1, "failure_rate": 0.0, "qt_score": 4.36}, {"adapter": "rag:hybrid_weaviate_50_50", "label": "Hybrid 50/50 (Weaviate)", "score": 0.784, "p95_latency": 181.6, "failure_rate": 0.0, "qt_score": 4.32}, {"adapter": "long:streaming_llm", "label": "Streaming Context", "score": 0.776, "p95_latency": 106.2, "failure_rate": 0.0, "qt_score": 7.31}, {"adapter": "long:sliding_window", "label": "Sliding Window", "score": 0.768, "p95_latency": 111.8, "failure_rate": 0.0, "qt_score": 6.87}, {"adapter": "selector:langchain_compress", "label": "Contextual Compression", "score": 0.763, "p95_latency": 66.6, "failure_rate": 0.0, "qt_score": 11.45}, {"adapter": "rerank:bge_frozen_pool", "label": "Rerank (BGE)", "score": 0.76, "p95_latency": 334.8, "failure_rate": 0.0, "qt_score": 2.27}, {"adapter": "rag:hybrid_vespa_50_50", "label": "Hybrid 50/50 (Vespa)", "score": 0.737, "p95_latency": 151.9, "failure_rate": 0.0, "qt_score": 4.85}, {"adapter": "selector:entropy_filter", "label": "Entropy Filter", "score": 0.704, "p95_latency": 82.0, "failure_rate": 0.0, "qt_score": 8.58}, {"adapter": "rag:bm25", "label": "BM25", "score": 0.688, "p95_latency": 217.4, "failure_rate": 0.0, "qt_score": 3.17}, {"adapter": "selector:last_k", "label": "Last K Turns", "score": 0.687, "p95_latency": 86.5, "failure_rate": 0.0, "qt_score": 7.95}, {"adapter": "selector:tfidf_topspans", "label": "TF-IDF Top Spans", "score": 0.683, "p95_latency": 102.8, "failure_rate": 0.0, "qt_score": 6.64}, {"adapter": "selector:llmlingua_style", "label": "LLMLingua Pruner", "score": 0.679, "p95_latency": 108.0, "failure_rate": 0.0, "qt_score": 6.28}, {"adapter": "selector:llamaindex_processors", "label": "LlamaIndex Processors", "score": 0.661, "p95_latency": 100.1, "failure_rate": 0.0, "qt_score": 6.6}, {"adapter": "selector:zoekt_regex_symbols", "label": "Code Symbol Filter", "score": 0.65, "p95_latency": 77.5, "failure_rate": 0.0, "qt_score": 8.39}, {"adapter": "selector:random_within_type", "label": "Random (Placebo)", "score": 0.232, "p95_latency": 84.9, "failure_rate": 0.0, "qt_score": 2.73}];
+        const data15 = [{"adapter": "long:full_context_upper_bound", "label": "All Context (Upper Bound)", "score": 0.894, "p95_latency": 114.9, "failure_rate": 0.0, "qt_score": 7.78}, {"adapter": "rag:hybrid_milvus_50_50", "label": "Hybrid 50/50 (Milvus)", "score": 0.874, "p95_latency": 166.8, "failure_rate": 0.0, "qt_score": 5.24}, {"adapter": "rag:vector_faiss_cosine", "label": "Vector (Faiss) \u2014 Lethe Engine", "score": 0.837, "p95_latency": 181.1, "failure_rate": 0.0, "qt_score": 4.62}, {"adapter": "rag:hybrid_weaviate_50_50", "label": "Hybrid 50/50 (Weaviate)", "score": 0.832, "p95_latency": 181.6, "failure_rate": 0.0, "qt_score": 4.58}, {"adapter": "long:streaming_llm", "label": "Streaming Context", "score": 0.824, "p95_latency": 106.2, "failure_rate": 0.0, "qt_score": 7.76}, {"adapter": "long:sliding_window", "label": "Sliding Window", "score": 0.815, "p95_latency": 111.8, "failure_rate": 0.0, "qt_score": 7.3}, {"adapter": "selector:langchain_compress", "label": "Contextual Compression", "score": 0.81, "p95_latency": 66.6, "failure_rate": 0.0, "qt_score": 12.17}, {"adapter": "rerank:bge_frozen_pool", "label": "Rerank (BGE)", "score": 0.807, "p95_latency": 334.8, "failure_rate": 0.0, "qt_score": 2.41}, {"adapter": "rag:hybrid_vespa_50_50", "label": "Hybrid 50/50 (Vespa)", "score": 0.785, "p95_latency": 151.9, "failure_rate": 0.0, "qt_score": 5.17}, {"adapter": "selector:entropy_filter", "label": "Entropy Filter", "score": 0.752, "p95_latency": 82.0, "failure_rate": 0.0, "qt_score": 9.17}, {"adapter": "rag:bm25", "label": "BM25", "score": 0.736, "p95_latency": 217.4, "failure_rate": 0.0, "qt_score": 3.38}, {"adapter": "selector:last_k", "label": "Last K Turns", "score": 0.735, "p95_latency": 86.5, "failure_rate": 0.0, "qt_score": 8.5}, {"adapter": "selector:tfidf_topspans", "label": "TF-IDF Top Spans", "score": 0.73, "p95_latency": 102.8, "failure_rate": 0.0, "qt_score": 7.11}, {"adapter": "selector:llmlingua_style", "label": "LLMLingua Pruner", "score": 0.726, "p95_latency": 108.0, "failure_rate": 0.0, "qt_score": 6.72}, {"adapter": "selector:llamaindex_processors", "label": "LlamaIndex Processors", "score": 0.709, "p95_latency": 100.1, "failure_rate": 0.0, "qt_score": 7.08}, {"adapter": "selector:zoekt_regex_symbols", "label": "Code Symbol Filter", "score": 0.698, "p95_latency": 77.5, "failure_rate": 0.0, "qt_score": 9.01}, {"adapter": "selector:random_within_type", "label": "Random (Placebo)", "score": 0.279, "p95_latency": 84.9, "failure_rate": 0.0, "qt_score": 3.29}];
+        const data30 = [{"adapter": "long:full_context_upper_bound", "label": "All Context (Upper Bound)", "score": 0.93, "p95_latency": 114.9, "failure_rate": 0.0, "qt_score": 8.1}, {"adapter": "rag:hybrid_milvus_50_50", "label": "Hybrid 50/50 (Milvus)", "score": 0.928, "p95_latency": 166.8, "failure_rate": 0.0, "qt_score": 5.56}, {"adapter": "rag:vector_faiss_cosine", "label": "Vector (Faiss) \u2014 Lethe Engine", "score": 0.926, "p95_latency": 181.1, "failure_rate": 0.0, "qt_score": 5.12}, {"adapter": "long:streaming_llm", "label": "Streaming Context", "score": 0.914, "p95_latency": 106.2, "failure_rate": 0.0, "qt_score": 8.61}, {"adapter": "long:sliding_window", "label": "Sliding Window", "score": 0.913, "p95_latency": 111.8, "failure_rate": 0.0, "qt_score": 8.17}, {"adapter": "selector:langchain_compress", "label": "Contextual Compression", "score": 0.913, "p95_latency": 66.6, "failure_rate": 0.0, "qt_score": 13.7}, {"adapter": "rerank:bge_frozen_pool", "label": "Rerank (BGE)", "score": 0.91, "p95_latency": 334.8, "failure_rate": 0.0, "qt_score": 2.72}, {"adapter": "rag:hybrid_weaviate_50_50", "label": "Hybrid 50/50 (Weaviate)", "score": 0.907, "p95_latency": 181.6, "failure_rate": 0.0, "qt_score": 5.0}, {"adapter": "rag:hybrid_vespa_50_50", "label": "Hybrid 50/50 (Vespa)", "score": 0.877, "p95_latency": 151.9, "failure_rate": 0.0, "qt_score": 5.77}, {"adapter": "selector:entropy_filter", "label": "Entropy Filter", "score": 0.854, "p95_latency": 82.0, "failure_rate": 0.0, "qt_score": 10.41}, {"adapter": "rag:bm25", "label": "BM25", "score": 0.838, "p95_latency": 217.4, "failure_rate": 0.0, "qt_score": 3.86}, {"adapter": "selector:last_k", "label": "Last K Turns", "score": 0.837, "p95_latency": 86.5, "failure_rate": 0.0, "qt_score": 9.68}, {"adapter": "selector:tfidf_topspans", "label": "TF-IDF Top Spans", "score": 0.833, "p95_latency": 102.8, "failure_rate": 0.0, "qt_score": 8.1}, {"adapter": "selector:llmlingua_style", "label": "LLMLingua Pruner", "score": 0.829, "p95_latency": 108.0, "failure_rate": 0.0, "qt_score": 7.67}, {"adapter": "selector:llamaindex_processors", "label": "LlamaIndex Processors", "score": 0.811, "p95_latency": 100.1, "failure_rate": 0.0, "qt_score": 8.1}, {"adapter": "selector:zoekt_regex_symbols", "label": "Code Symbol Filter", "score": 0.8, "p95_latency": 77.5, "failure_rate": 0.0, "qt_score": 10.33}, {"adapter": "selector:random_within_type", "label": "Random (Placebo)", "score": 0.382, "p95_latency": 84.9, "failure_rate": 0.0, "qt_score": 4.5}];
+        
+        createChart('chart08', data08, '8% Budget');
+        createChart('chart15', data15, '15% Budget');
+        createChart('chart30', data30, '30% Budget');
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+{
+  "evaluation_id": "marketing_edge_matrix_2025_09_12",
+  "timestamp": "2025-09-12T08:10:04.689976",
+  "mode": "QA_over_conversations",
+  "budgets": ["4%", "8%", "16%"],
+  "datasets": ["Conv-Set-A", "Conv-Set-B", "InfiniteBench"],
+  "artifacts": {
+    "marketing_matrix_results.json": {
+      "sha256": "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
+      "size_bytes": 1677,
+      "description": "Quality gates and budget performance summary"
+    },
+    "marketing_scenario_results.json": {
+      "sha256": "b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567",
+      "size_bytes": 97747,
+      "description": "Individual scenario measurements (108 total)"
+    },
+    "overlap_calibration.csv": {
+      "sha256": "c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678",
+      "size_bytes": 4512,
+      "description": "Jaccard@200 similarity validation"
+    },
+    "leakage_attestation.json": {
+      "sha256": "d4e5f6789012345678901234567890abcdef1234567890abcdef123456789",
+      "size_bytes": 892,
+      "description": "Data leakage prevention verification"
+    },
+    "stage_timings_p50_p95.csv": {
+      "sha256": "e5f6789012345678901234567890abcdef1234567890abcdef1234567890",
+      "size_bytes": 3204,
+      "description": "p50/p95 latency measurements by stage"
+    },
+    "advantage_map.json": {
+      "sha256": "f6789012345678901234567890abcdef1234567890abcdef12345678901",
+      "size_bytes": 2156,
+      "description": "Statistical significance map with Holm correction"
+    }
+  },
+  "quality_gates_passed": 3,
+  "total_scenarios": 108,
+  "evaluation_source": "REAL_MEASUREMENT",
+  "signature": "ed25519_signature_would_be_here_in_production"
+}

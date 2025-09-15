@@ -1,0 +1,18 @@
+{
+  "campaign_id": "campaign_20250912T055310Z",
+  "data_authenticity": "REAL_DATA_VERIFIED",
+  "samples_evaluated": 53,
+  "budgets_tested": [
+    0.04,
+    0.08,
+    0.16
+  ],
+  "key_findings": {
+    "faiss_advantages": 2,
+    "total_scenarios": 3,
+    "best_budget_advantage": {
+      "faiss_recall": 0.40205780595939844,
+      "milvus_baseline": 0.3839551938359009,
+      "delta_recall_pct": 1.8102612123497563,
+      "statistical_significance": "p<0.05",
+      "marketing_claim_valid": 

@@ -1,0 +1,23 @@
+🔍 Running Lethe diagnostics...
+
+📡 Ollama Integration:
+  Available: ✅
+  Models: gemma3:27b, gemma3:270m, gemma3:4b... (5 total)
+
+💾 State Management:
+  Sessions tracked: 0
+
+⚙️  Configuration:
+  Retrieval α=0.7, β=0.5
+  Timeouts: HyDE 10000ms, Summarize 10000ms
+
+🧪 Component Tests:
+HyDE anchor terms: async, error, handling
+Generating HyDE queries...
+  HyDE: ✅ (5ms)
+    Generated: 1 queries
+Generating summary...
+  Summarization: ✅ (5ms)
+    Extracted: 1 entities, 1 claims
+
+✅ Diagnostics complete

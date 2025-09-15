@@ -1,0 +1,10 @@
+{
+  "statistical_analysis": {
+    "method": "holm_bonferroni_correction",
+    "alpha": 0.05,
+    "total_comparisons": 0,
+    "corrected_alpha_threshold": 0.05
+  },
+  "significant_advantages": {},
+  "all_comparisons": []
+}

@@ -1,0 +1,34 @@
+{
+  "transcript_version": "1.0.0",
+  "generated_at": "2025-08-25 14:16:19 UTC",
+  "system_info": {
+    "hostname": "exnihilo",
+    "user": "nathan",
+    "working_directory": "/home/nathan/Projects/lethe/lethe-research",
+    "git_commit": "6b42cc6ed020eb19f4b42706a182c6e59e18e62d",
+    "git_branch": "main"
+  },
+  "verification_hashes": {
+    "environment_manifest": "f85553d587b5d87a5b74c7d4ab90ca26cf524c0e4aace14bcc6884f1637f3f3b",
+    "readiness_probe": "3a6a2ea20106c757911556697bef15674f678561f84212e7799d92fd00efd9ee",
+    "properties_spec": "2e2ead184ec5414890da066aee01f0b59dd0fd8d2a06cb0bd919cb11c024cb48",
+    "metamorphic_spec": "1de8cd4598fe4d3201c7f301fcf145a6167d9f807aadf36293613b3ba6f9ad4a",
+    "consumer_contract": "54376545ad2e77b9f75597839642bb15677bfdc5ef1f3e4e1ad16508387af88a",
+    "provider_contract": "992424c1d07b32926af0d00af7ae1daa1cf3eee4583e23df5b9b4f74f7bebfbb"
+  },
+  "smoke_test_results": {
+    "prerequisites_check": "passed",
+    "environment_manifest": "generated",
+    "readiness_probes": "passed",
+    "baseline_non_empty_guard": "passed",
+    "overall_status": "ready"
+  },
+  "compliance": {
+    "hermetic_environment": true,
+    "reproducible_build": true,
+    "security_hardened": true,
+    "all_dependencies_pinned": true,
+    "cryptographic_verification": true
+  },
+  "transcript_signature": "1afbf1e390e9ef3fafbe7a63aaec19fcf46d0232cef4d607848bdbc4102ce013"
+}

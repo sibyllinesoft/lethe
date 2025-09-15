@@ -1,0 +1,38 @@
+{
+  "timestamp": 1755935142.9537723,
+  "test_type": "iteration_3_integration",
+  "ml_models": {
+    "trained": "True",
+    "loaded": false,
+    "performance_metrics": {
+      "fusion_alpha_mse": 0.031735571054317464,
+      "fusion_beta_mse": 0.025990112271330544,
+      "plan_accuracy": 0.47,
+      "avg_prediction_time_ms": 0.4364490509033203,
+      "max_prediction_time_ms": 0.5881786346435547,
+      "load_success": true,
+      "speed_requirement_met": "True"
+    }
+  },
+  "typescript_integration": {
+    "success": false,
+    "test_queries": []
+  },
+  "performance_validation": {
+    "load_time_ms": 2.2041797637939453,
+    "load_success": true,
+    "avg_prediction_time_ms": 0.5311012268066406,
+    "max_prediction_time_ms": 1.0457038879394531,
+    "p95_prediction_time_ms": 1.0457038879394531,
+    "speed_success": true,
+    "avg_speed_success": true,
+    "prediction_times": [
+      1.0457038879394531,
+      0.6093978881835938,
+      0.35881996154785156,
+      0.33092498779296875,
+      0.31065940856933594
+    ]
+  },
+  "overall_success": false
+}

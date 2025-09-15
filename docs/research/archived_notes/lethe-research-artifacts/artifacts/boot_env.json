@@ -1,0 +1,585 @@
+{
+  "critical_files": {},
+  "cuda": {
+    "available": true,
+    "nvidia_smi": "NVIDIA GeForce RTX 3090 Ti, 24564 MiB, 575.64.03"
+  },
+  "environment_variables": {
+    "HOME": "/home/nathan",
+    "LANG": "en_US.UTF-8",
+    "LC_ADDRESS": "en_US.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "LC_IDENTIFICATION": "en_US.UTF-8",
+    "LC_MEASUREMENT": "en_US.UTF-8",
+    "LC_MONETARY": "en_US.UTF-8",
+    "LC_NAME": "en_US.UTF-8",
+    "LC_NUMERIC": "en_US.UTF-8",
+    "LC_PAPER": "en_US.UTF-8",
+    "LC_TELEPHONE": "en_US.UTF-8",
+    "LC_TIME": "en_US.UTF-8",
+    "PATH": "/home/nathan/Projects/lethe/lethe-research/venv/bin:/home/nathan/.nix-profile/bin:/home/nathan/.local/share/pnpm:/home/nathan/.bun/bin:/home/nathan/.local/bin:/snap/ghostty/current/bin:/snap/ghostty/current/usr/bin:/home/nathan/.nix-profile/bin:/home/nathan/.cargo/bin:/home/nathan/.atuin/bin:/home/nathan/.local/bin:/home/nathan/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/ghostty/103/bin",
+    "SHELL": "/bin/bash",
+    "USER": "nathan"
+  },
+  "generated_at": "2025-08-25T14:16:02.953799+00:00",
+  "generator": {
+    "script": "/home/nathan/Projects/lethe/lethe-research/scripts/record_env_manifest.py",
+    "version": "1.0.0"
+  },
+  "git_info": {
+    "branch": "main",
+    "commit_hash": "6b42cc6ed020eb19f4b42706a182c6e59e18e62d",
+    "is_dirty": true,
+    "remote_url": "https://github.com/sibyllinesoft/lethe.git",
+    "short_hash": "6b42cc6e"
+  },
+  "manifest_hash": "5359630b01ec7af371d785c98ed81799fbbac99f96772ab1e19d9b2c04916ba1",
+  "manifest_version": "1.0.0",
+  "nodejs": {
+    "available": true,
+    "node_version": "v20.18.1",
+    "npm_version": "9.2.0"
+  },
+  "python": {
+    "build": [
+      "main",
+      "Aug 14 2025 11:53:40"
+    ],
+    "compiler": "GCC 14.2.0",
+    "exec_prefix": "/home/nathan/Projects/lethe/lethe-research/venv",
+    "executable": "/home/nathan/Projects/lethe/lethe-research/venv/bin/python3",
+    "implementation": "CPython",
+    "installed_packages": {
+      "Flask": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "blinker>=1.9.0",
+          "click>=8.1.3",
+          "importlib-metadata>=3.6.0; python_version < '3.10'",
+          "itsdangerous>=2.2.0",
+          "jinja2>=3.1.2",
+          "markupsafe>=2.1.1",
+          "werkzeug>=3.1.0",
+          "asgiref>=3.2 ; extra == \"async\"",
+          "python-dotenv ; extra == \"dotenv\""
+        ],
+        "version": "3.1.2"
+      },
+      "Jinja2": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "MarkupSafe>=2.0",
+          "Babel>=2.7 ; extra == \"i18n\""
+        ],
+        "version": "3.1.6"
+      },
+      "MarkupSafe": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "3.0.2"
+      },
+      "PyYAML": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "6.0.2"
+      },
+      "Werkzeug": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "MarkupSafe>=2.1.1",
+          "watchdog>=2.3 ; extra == \"watchdog\""
+        ],
+        "version": "3.1.3"
+      },
+      "attrs": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "cloudpickle; (platform_python_implementation == 'CPython') and extra == 'benchmark'",
+          "hypothesis; extra == 'benchmark'",
+          "mypy>=1.11.1; (platform_python_implementation == 'CPython' and python_version >= '3.10') and extra == 'benchmark'",
+          "pympler; extra == 'benchmark'",
+          "pytest-codspeed; extra == 'benchmark'",
+          "pytest-mypy-plugins; (platform_python_implementation == 'CPython' and python_version >= '3.10') and extra == 'benchmark'",
+          "pytest-xdist[psutil]; extra == 'benchmark'",
+          "pytest>=4.3.0; extra == 'benchmark'",
+          "cloudpickle; (platform_python_implementation == 'CPython') and extra == 'cov'",
+          "coverage[toml]>=5.3; extra == 'cov'",
+          "hypothesis; extra == 'cov'",
+          "mypy>=1.11.1; (platform_python_implementation == 'CPython' and python_version >= '3.10') and extra == 'cov'",
+          "pympler; extra == 'cov'",
+          "pytest-mypy-plugins; (platform_python_implementation == 'CPython' and python_version >= '3.10') and extra == 'cov'",
+          "pytest-xdist[psutil]; extra == 'cov'",
+          "pytest>=4.3.0; extra == 'cov'",
+          "cloudpickle; (platform_python_implementation == 'CPython') and extra == 'dev'",
+          "hypothesis; extra == 'dev'",
+          "mypy>=1.11.1; (platform_python_implementation == 'CPython' and python_version >= '3.10') and extra == 'dev'",
+          "pre-commit-uv; extra == 'dev'",
+          "pympler; extra == 'dev'",
+          "pytest-mypy-plugins; (platform_python_implementation == 'CPython' and python_version >= '3.10') and extra == 'dev'",
+          "pytest-xdist[psutil]; extra == 'dev'",
+          "pytest>=4.3.0; extra == 'dev'",
+          "cogapp; extra == 'docs'",
+          "furo; extra == 'docs'",
+          "myst-parser; extra == 'docs'",
+          "sphinx; extra == 'docs'",
+          "sphinx-notfound-page; extra == 'docs'",
+          "sphinxcontrib-towncrier; extra == 'docs'",
+          "towncrier; extra == 'docs'",
+          "cloudpickle; (platform_python_implementation == 'CPython') and extra == 'tests'",
+          "hypothesis; extra == 'tests'",
+          "mypy>=1.11.1; (platform_python_implementation == 'CPython' and python_version >= '3.10') and extra == 'tests'",
+          "pympler; extra == 'tests'",
+          "pytest-mypy-plugins; (platform_python_implementation == 'CPython' and python_version >= '3.10') and extra == 'tests'",
+          "pytest-xdist[psutil]; extra == 'tests'",
+          "pytest>=4.3.0; extra == 'tests'",
+          "mypy>=1.11.1; (platform_python_implementation == 'CPython' and python_version >= '3.10') and extra == 'tests-mypy'",
+          "pytest-mypy-plugins; (platform_python_implementation == 'CPython' and python_version >= '3.10') and extra == 'tests-mypy'"
+        ],
+        "version": "25.3.0"
+      },
+      "blinker": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "1.9.0"
+      },
+      "certifi": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "2025.8.3"
+      },
+      "cffi": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "pycparser"
+        ],
+        "version": "1.17.1"
+      },
+      "charset-normalizer": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "3.4.3"
+      },
+      "click": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "colorama; platform_system == 'Windows'"
+        ],
+        "version": "8.2.1"
+      },
+      "cryptography": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "cffi>=1.14 ; platform_python_implementation != 'PyPy'",
+          "bcrypt>=3.1.5 ; extra == 'ssh'",
+          "nox>=2024.4.15 ; extra == 'nox'",
+          "nox[uv]>=2024.3.2 ; python_full_version >= '3.8' and extra == 'nox'",
+          "cryptography-vectors==45.0.6 ; extra == 'test'",
+          "pytest>=7.4.0 ; extra == 'test'",
+          "pytest-benchmark>=4.0 ; extra == 'test'",
+          "pytest-cov>=2.10.1 ; extra == 'test'",
+          "pytest-xdist>=3.5.0 ; extra == 'test'",
+          "pretend>=0.7 ; extra == 'test'",
+          "certifi>=2024 ; extra == 'test'",
+          "pytest-randomly ; extra == 'test-randomorder'",
+          "sphinx>=5.3.0 ; extra == 'docs'",
+          "sphinx-rtd-theme>=3.0.0 ; python_full_version >= '3.8' and extra == 'docs'",
+          "sphinx-inline-tabs ; python_full_version >= '3.8' and extra == 'docs'",
+          "pyenchant>=3 ; extra == 'docstest'",
+          "readme-renderer>=30.0 ; extra == 'docstest'",
+          "sphinxcontrib-spelling>=7.3.1 ; extra == 'docstest'",
+          "build>=1.0.0 ; extra == 'sdist'",
+          "ruff>=0.3.6 ; extra == 'pep8test'",
+          "mypy>=1.4 ; extra == 'pep8test'",
+          "check-sdist ; python_full_version >= '3.8' and extra == 'pep8test'",
+          "click>=8.0.1 ; extra == 'pep8test'"
+        ],
+        "version": "45.0.6"
+      },
+      "idna": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "ruff >= 0.6.2 ; extra == \"all\"",
+          "mypy >= 1.11.2 ; extra == \"all\"",
+          "pytest >= 8.3.2 ; extra == \"all\"",
+          "flake8 >= 7.1.1 ; extra == \"all\""
+        ],
+        "version": "3.10"
+      },
+      "itsdangerous": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "2.2.0"
+      },
+      "joblib": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "1.5.1"
+      },
+      "jsonschema": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "attrs>=22.2.0",
+          "jsonschema-specifications>=2023.03.6",
+          "referencing>=0.28.4",
+          "rpds-py>=0.7.1",
+          "fqdn; extra == 'format'",
+          "idna; extra == 'format'",
+          "isoduration; extra == 'format'",
+          "jsonpointer>1.13; extra == 'format'",
+          "rfc3339-validator; extra == 'format'",
+          "rfc3987; extra == 'format'",
+          "uri-template; extra == 'format'",
+          "webcolors>=1.11; extra == 'format'",
+          "fqdn; extra == 'format-nongpl'",
+          "idna; extra == 'format-nongpl'",
+          "isoduration; extra == 'format-nongpl'",
+          "jsonpointer>1.13; extra == 'format-nongpl'",
+          "rfc3339-validator; extra == 'format-nongpl'",
+          "rfc3986-validator>0.1.0; extra == 'format-nongpl'",
+          "rfc3987-syntax>=1.1.0; extra == 'format-nongpl'",
+          "uri-template; extra == 'format-nongpl'",
+          "webcolors>=24.6.0; extra == 'format-nongpl'"
+        ],
+        "version": "4.25.1"
+      },
+      "jsonschema-specifications": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "referencing>=0.31.0"
+        ],
+        "version": "2025.4.1"
+      },
+      "numpy": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "2.3.2"
+      },
+      "pandas": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "numpy>=1.22.4; python_version < \"3.11\"",
+          "numpy>=1.23.2; python_version == \"3.11\"",
+          "numpy>=1.26.0; python_version >= \"3.12\"",
+          "python-dateutil>=2.8.2",
+          "pytz>=2020.1",
+          "tzdata>=2022.7",
+          "hypothesis>=6.46.1; extra == \"test\"",
+          "pytest>=7.3.2; extra == \"test\"",
+          "pytest-xdist>=2.2.0; extra == \"test\"",
+          "pyarrow>=10.0.1; extra == \"pyarrow\"",
+          "bottleneck>=1.3.6; extra == \"performance\"",
+          "numba>=0.56.4; extra == \"performance\"",
+          "numexpr>=2.8.4; extra == \"performance\"",
+          "scipy>=1.10.0; extra == \"computation\"",
+          "xarray>=2022.12.0; extra == \"computation\"",
+          "fsspec>=2022.11.0; extra == \"fss\"",
+          "s3fs>=2022.11.0; extra == \"aws\"",
+          "gcsfs>=2022.11.0; extra == \"gcp\"",
+          "pandas-gbq>=0.19.0; extra == \"gcp\"",
+          "odfpy>=1.4.1; extra == \"excel\"",
+          "openpyxl>=3.1.0; extra == \"excel\"",
+          "python-calamine>=0.1.7; extra == \"excel\"",
+          "pyxlsb>=1.0.10; extra == \"excel\"",
+          "xlrd>=2.0.1; extra == \"excel\"",
+          "xlsxwriter>=3.0.5; extra == \"excel\"",
+          "pyarrow>=10.0.1; extra == \"parquet\"",
+          "pyarrow>=10.0.1; extra == \"feather\"",
+          "tables>=3.8.0; extra == \"hdf5\"",
+          "pyreadstat>=1.2.0; extra == \"spss\"",
+          "SQLAlchemy>=2.0.0; extra == \"postgresql\"",
+          "psycopg2>=2.9.6; extra == \"postgresql\"",
+          "adbc-driver-postgresql>=0.8.0; extra == \"postgresql\"",
+          "SQLAlchemy>=2.0.0; extra == \"mysql\"",
+          "pymysql>=1.0.2; extra == \"mysql\"",
+          "SQLAlchemy>=2.0.0; extra == \"sql-other\"",
+          "adbc-driver-postgresql>=0.8.0; extra == \"sql-other\"",
+          "adbc-driver-sqlite>=0.8.0; extra == \"sql-other\"",
+          "beautifulsoup4>=4.11.2; extra == \"html\"",
+          "html5lib>=1.1; extra == \"html\"",
+          "lxml>=4.9.2; extra == \"html\"",
+          "lxml>=4.9.2; extra == \"xml\"",
+          "matplotlib>=3.6.3; extra == \"plot\"",
+          "jinja2>=3.1.2; extra == \"output-formatting\"",
+          "tabulate>=0.9.0; extra == \"output-formatting\"",
+          "PyQt5>=5.15.9; extra == \"clipboard\"",
+          "qtpy>=2.3.0; extra == \"clipboard\"",
+          "zstandard>=0.19.0; extra == \"compression\"",
+          "dataframe-api-compat>=0.1.7; extra == \"consortium-standard\"",
+          "adbc-driver-postgresql>=0.8.0; extra == \"all\"",
+          "adbc-driver-sqlite>=0.8.0; extra == \"all\"",
+          "beautifulsoup4>=4.11.2; extra == \"all\"",
+          "bottleneck>=1.3.6; extra == \"all\"",
+          "dataframe-api-compat>=0.1.7; extra == \"all\"",
+          "fastparquet>=2022.12.0; extra == \"all\"",
+          "fsspec>=2022.11.0; extra == \"all\"",
+          "gcsfs>=2022.11.0; extra == \"all\"",
+          "html5lib>=1.1; extra == \"all\"",
+          "hypothesis>=6.46.1; extra == \"all\"",
+          "jinja2>=3.1.2; extra == \"all\"",
+          "lxml>=4.9.2; extra == \"all\"",
+          "matplotlib>=3.6.3; extra == \"all\"",
+          "numba>=0.56.4; extra == \"all\"",
+          "numexpr>=2.8.4; extra == \"all\"",
+          "odfpy>=1.4.1; extra == \"all\"",
+          "openpyxl>=3.1.0; extra == \"all\"",
+          "pandas-gbq>=0.19.0; extra == \"all\"",
+          "psycopg2>=2.9.6; extra == \"all\"",
+          "pyarrow>=10.0.1; extra == \"all\"",
+          "pymysql>=1.0.2; extra == \"all\"",
+          "PyQt5>=5.15.9; extra == \"all\"",
+          "pyreadstat>=1.2.0; extra == \"all\"",
+          "pytest>=7.3.2; extra == \"all\"",
+          "pytest-xdist>=2.2.0; extra == \"all\"",
+          "python-calamine>=0.1.7; extra == \"all\"",
+          "pyxlsb>=1.0.10; extra == \"all\"",
+          "qtpy>=2.3.0; extra == \"all\"",
+          "scipy>=1.10.0; extra == \"all\"",
+          "s3fs>=2022.11.0; extra == \"all\"",
+          "SQLAlchemy>=2.0.0; extra == \"all\"",
+          "tables>=3.8.0; extra == \"all\"",
+          "tabulate>=0.9.0; extra == \"all\"",
+          "xarray>=2022.12.0; extra == \"all\"",
+          "xlrd>=2.0.1; extra == \"all\"",
+          "xlsxwriter>=3.0.5; extra == \"all\"",
+          "zstandard>=0.19.0; extra == \"all\""
+        ],
+        "version": "2.3.2"
+      },
+      "pip": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "25.0"
+      },
+      "psutil": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "pytest ; extra == 'dev'",
+          "pytest-xdist ; extra == 'dev'",
+          "setuptools ; extra == 'dev'",
+          "abi3audit ; extra == 'dev'",
+          "black (==24.10.0) ; extra == 'dev'",
+          "check-manifest ; extra == 'dev'",
+          "coverage ; extra == 'dev'",
+          "packaging ; extra == 'dev'",
+          "pylint ; extra == 'dev'",
+          "pyperf ; extra == 'dev'",
+          "pypinfo ; extra == 'dev'",
+          "pytest-cov ; extra == 'dev'",
+          "requests ; extra == 'dev'",
+          "rstcheck ; extra == 'dev'",
+          "ruff ; extra == 'dev'",
+          "sphinx ; extra == 'dev'",
+          "sphinx-rtd-theme ; extra == 'dev'",
+          "toml-sort ; extra == 'dev'",
+          "twine ; extra == 'dev'",
+          "virtualenv ; extra == 'dev'",
+          "vulture ; extra == 'dev'",
+          "wheel ; extra == 'dev'",
+          "pytest ; extra == 'test'",
+          "pytest-xdist ; extra == 'test'",
+          "setuptools ; extra == 'test'"
+        ],
+        "version": "7.0.0"
+      },
+      "pycparser": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "2.22"
+      },
+      "python-dateutil": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "six >=1.5"
+        ],
+        "version": "2.9.0.post0"
+      },
+      "pytz": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "2025.2"
+      },
+      "referencing": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "attrs>=22.2.0",
+          "rpds-py>=0.7.0",
+          "typing-extensions>=4.4.0; python_version < '3.13'"
+        ],
+        "version": "0.36.2"
+      },
+      "requests": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "charset_normalizer<4,>=2",
+          "idna<4,>=2.5",
+          "urllib3<3,>=1.21.1",
+          "certifi>=2017.4.17",
+          "PySocks!=1.5.7,>=1.5.6; extra == \"socks\"",
+          "chardet<6,>=3.0.2; extra == \"use-chardet-on-py3\""
+        ],
+        "version": "2.32.5"
+      },
+      "rpds-py": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "0.27.0"
+      },
+      "scikit-learn": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "numpy>=1.22.0",
+          "scipy>=1.8.0",
+          "joblib>=1.2.0",
+          "threadpoolctl>=3.1.0",
+          "numpy>=1.22.0; extra == \"build\"",
+          "scipy>=1.8.0; extra == \"build\"",
+          "cython>=3.0.10; extra == \"build\"",
+          "meson-python>=0.17.1; extra == \"build\"",
+          "numpy>=1.22.0; extra == \"install\"",
+          "scipy>=1.8.0; extra == \"install\"",
+          "joblib>=1.2.0; extra == \"install\"",
+          "threadpoolctl>=3.1.0; extra == \"install\"",
+          "matplotlib>=3.5.0; extra == \"benchmark\"",
+          "pandas>=1.4.0; extra == \"benchmark\"",
+          "memory_profiler>=0.57.0; extra == \"benchmark\"",
+          "matplotlib>=3.5.0; extra == \"docs\"",
+          "scikit-image>=0.19.0; extra == \"docs\"",
+          "pandas>=1.4.0; extra == \"docs\"",
+          "seaborn>=0.9.0; extra == \"docs\"",
+          "memory_profiler>=0.57.0; extra == \"docs\"",
+          "sphinx>=7.3.7; extra == \"docs\"",
+          "sphinx-copybutton>=0.5.2; extra == \"docs\"",
+          "sphinx-gallery>=0.17.1; extra == \"docs\"",
+          "numpydoc>=1.2.0; extra == \"docs\"",
+          "Pillow>=8.4.0; extra == \"docs\"",
+          "pooch>=1.6.0; extra == \"docs\"",
+          "sphinx-prompt>=1.4.0; extra == \"docs\"",
+          "sphinxext-opengraph>=0.9.1; extra == \"docs\"",
+          "plotly>=5.14.0; extra == \"docs\"",
+          "polars>=0.20.30; extra == \"docs\"",
+          "sphinx-design>=0.5.0; extra == \"docs\"",
+          "sphinx-design>=0.6.0; extra == \"docs\"",
+          "sphinxcontrib-sass>=0.3.4; extra == \"docs\"",
+          "pydata-sphinx-theme>=0.15.3; extra == \"docs\"",
+          "sphinx-remove-toctrees>=1.0.0.post1; extra == \"docs\"",
+          "towncrier>=24.8.0; extra == \"docs\"",
+          "matplotlib>=3.5.0; extra == \"examples\"",
+          "scikit-image>=0.19.0; extra == \"examples\"",
+          "pandas>=1.4.0; extra == \"examples\"",
+          "seaborn>=0.9.0; extra == \"examples\"",
+          "pooch>=1.6.0; extra == \"examples\"",
+          "plotly>=5.14.0; extra == \"examples\"",
+          "matplotlib>=3.5.0; extra == \"tests\"",
+          "scikit-image>=0.19.0; extra == \"tests\"",
+          "pandas>=1.4.0; extra == \"tests\"",
+          "pytest>=7.1.2; extra == \"tests\"",
+          "pytest-cov>=2.9.0; extra == \"tests\"",
+          "ruff>=0.11.7; extra == \"tests\"",
+          "mypy>=1.15; extra == \"tests\"",
+          "pyamg>=4.2.1; extra == \"tests\"",
+          "polars>=0.20.30; extra == \"tests\"",
+          "pyarrow>=12.0.0; extra == \"tests\"",
+          "numpydoc>=1.2.0; extra == \"tests\"",
+          "pooch>=1.6.0; extra == \"tests\"",
+          "conda-lock==3.0.1; extra == \"maintenance\""
+        ],
+        "version": "1.7.1"
+      },
+      "scipy": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "numpy<2.6,>=1.25.2",
+          "pytest; extra == \"test\"",
+          "pytest-cov; extra == \"test\"",
+          "pytest-timeout; extra == \"test\"",
+          "pytest-xdist; extra == \"test\"",
+          "asv; extra == \"test\"",
+          "mpmath; extra == \"test\"",
+          "gmpy2; extra == \"test\"",
+          "threadpoolctl; extra == \"test\"",
+          "scikit-umfpack; extra == \"test\"",
+          "pooch; extra == \"test\"",
+          "hypothesis>=6.30; extra == \"test\"",
+          "array-api-strict>=2.3.1; extra == \"test\"",
+          "Cython; extra == \"test\"",
+          "meson; extra == \"test\"",
+          "ninja; sys_platform != \"emscripten\" and extra == \"test\"",
+          "sphinx<8.2.0,>=5.0.0; extra == \"doc\"",
+          "intersphinx_registry; extra == \"doc\"",
+          "pydata-sphinx-theme>=0.15.2; extra == \"doc\"",
+          "sphinx-copybutton; extra == \"doc\"",
+          "sphinx-design>=0.4.0; extra == \"doc\"",
+          "matplotlib>=3.5; extra == \"doc\"",
+          "numpydoc; extra == \"doc\"",
+          "jupytext; extra == \"doc\"",
+          "myst-nb>=1.2.0; extra == \"doc\"",
+          "pooch; extra == \"doc\"",
+          "jupyterlite-sphinx>=0.19.1; extra == \"doc\"",
+          "jupyterlite-pyodide-kernel; extra == \"doc\"",
+          "linkify-it-py; extra == \"doc\"",
+          "mypy==1.10.0; extra == \"dev\"",
+          "typing_extensions; extra == \"dev\"",
+          "types-psutil; extra == \"dev\"",
+          "pycodestyle; extra == \"dev\"",
+          "ruff>=0.0.292; extra == \"dev\"",
+          "cython-lint>=0.12.2; extra == \"dev\"",
+          "rich-click; extra == \"dev\"",
+          "doit>=0.36.0; extra == \"dev\"",
+          "pydevtool; extra == \"dev\""
+        ],
+        "version": "1.16.1"
+      },
+      "six": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "1.17.0"
+      },
+      "threadpoolctl": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "3.6.0"
+      },
+      "tzdata": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [],
+        "version": "2025.2"
+      },
+      "urllib3": {
+        "location": "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages",
+        "requires": [
+          "brotli>=1.0.9; (platform_python_implementation == 'CPython') and extra == 'brotli'",
+          "brotlicffi>=0.8.0; (platform_python_implementation != 'CPython') and extra == 'brotli'",
+          "h2<5,>=4; extra == 'h2'",
+          "pysocks!=1.5.7,<2.0,>=1.5.6; extra == 'socks'",
+          "zstandard>=0.18.0; extra == 'zstd'"
+        ],
+        "version": "2.5.0"
+      }
+    },
+    "path": [
+      "/home/nathan/Projects/lethe/lethe-research/scripts",
+      "/usr/lib/python313.zip",
+      "/usr/lib/python3.13",
+      "/usr/lib/python3.13/lib-dynload",
+      "/home/nathan/Projects/lethe/lethe-research/venv/lib/python3.13/site-packages"
+    ],
+    "prefix": "/home/nathan/Projects/lethe/lethe-research/venv",
+    "version": "3.13.3"
+  },
+  "system": {
+    "architecture": [
+      "64bit",
+      "ELF"
+    ],
+    "cpu_count": 16,
+    "hostname": "exnihilo",
+    "machine": "x86_64",
+    "platform": "Linux-6.14.0-28-generic-x86_64-with-glibc2.41",
+    "processor": "x86_64",
+    "python_version": "3.13.3",
+    "release": "6.14.0-28-generic",
+    "system": "Linux",
+    "user": "nathan",
+    "version": "#28-Ubuntu SMP PREEMPT_DYNAMIC Wed Jul 23 12:05:14 UTC 2025"
+  }
+}

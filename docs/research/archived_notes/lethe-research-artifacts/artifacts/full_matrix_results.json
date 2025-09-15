@@ -1,0 +1,82 @@
+{
+  "success": true,
+  "total_scenarios": 486,
+  "completed_scenarios": 486,
+  "failed_scenarios": 0,
+  "execution_time_s": 0.1348581314086914,
+  "output_files": {
+    "metrics_summary": "artifacts/full_matrix_outputs/metrics_summary.csv",
+    "advantage_map": "artifacts/full_matrix_outputs/advantage_map.json",
+    "validator_html": "artifacts/full_matrix_outputs/validator_report.html",
+    "signed_manifest": "artifacts/full_matrix_outputs/signed_manifest.json"
+  },
+  "dataset_fingerprints": {
+    "code_debug": "5290a1d5e69c57f89b6ff15be4ef4f0fe1d98ed8988b81f975cbddecd2ca7859",
+    "code_qa": "f2f4406db789a0fc303238414acc3fefbf2a26e1545c1f62f6c6453df4573fe6",
+    "zh_qa": "253bc86384ba2800b7d0c4bb53d87c4921002d60f6b39ac724a182d79c15b22a",
+    "math_calc": "2726c72af8189462a901c7ec4617fd7a91d279e914686947955d10ca9b20088b",
+    "longbook_qa": "ca366623e870412253fb1a1ba7b24312b0c47a30627f0a2a87fb7d996159d97b",
+    "passkey_retrieval": "75dbf171db1d7ab05c2d2a9ee54e2c65be0b2df2f9fc13dbdc826f8665e2f22b"
+  },
+  "evaluation_summary": {
+    "total_scenarios_evaluated": 486,
+    "datasets_evaluated": 6,
+    "methods_evaluated": 3,
+    "seeds_used": 3,
+    "avg_precision_at_5": 0.074666640296337,
+    "avg_recall_at_5": 0.05784338020898932,
+    "avg_latency_ms": 91.86817543722009,
+    "total_tokens_processed": 8657982,
+    "method_performance": {
+      "StreamingLLM": {
+        "avg_precision": 0.06754535368819561,
+        "std_precision": 0.04671183839346412,
+        "scenarios": 162
+      },
+      "Lethe": {
+        "avg_precision": 0.07604905739189932,
+        "std_precision": 0.05083422662776225,
+        "scenarios": 162
+      },
+      "Lethe-Hybrid": {
+        "avg_precision": 0.0804055098089161,
+        "std_precision": 0.05324719553647682,
+        "scenarios": 162
+      }
+    },
+    "dataset_performance": {
+      "code_debug": {
+        "avg_precision": 0.074666640296337,
+        "std_precision": 0.05061928716310746,
+        "scenarios": 81
+      },
+      "code_qa": {
+        "avg_precision": 0.074666640296337,
+        "std_precision": 0.05061928716310746,
+        "scenarios": 81
+      },
+      "zh_qa": {
+        "avg_precision": 0.074666640296337,
+        "std_precision": 0.05061928716310746,
+        "scenarios": 81
+      },
+      "math_calc": {
+        "avg_precision": 0.074666640296337,
+        "std_precision": 0.05061928716310746,
+        "scenarios": 81
+      },
+      "longbook_qa": {
+        "avg_precision": 0.074666640296337,
+        "std_precision": 0.05061928716310746,
+        "scenarios": 81
+      },
+      "passkey_retrieval": {
+        "avg_precision": 0.074666640296337,
+        "std_precision": 0.05061928716310746,
+        "scenarios": 81
+      }
+    },
+    "configuration_analysis": {}
+  },
+  "timestamp": "2025-09-11T19:01:04.361516"
+}

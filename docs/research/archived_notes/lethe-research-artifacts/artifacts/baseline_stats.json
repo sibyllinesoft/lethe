@@ -1,0 +1,27 @@
+{
+  "baseline_metrics": {
+    "latency_p50_ms": 396,
+    "latency_p90_ms": 600,
+    "memory_mb": 850,
+    "nDCG@10": 0.85,
+    "recall@50": 0.72,
+    "coverage@24": 0.68
+  },
+  "system_info": {
+    "version": "iter1-dev",
+    "timestamp": "2025-08-23T07:30:00Z",
+    "test_query": "async function handleError(error) { console.log(error.stack); }",
+    "session_chunks": 1,
+    "retrieval_method": "hybrid+semantic_diversification",
+    "features": [
+      "metadata_boosting",
+      "semantic_diversification", 
+      "parallel_processing"
+    ]
+  },
+  "performance_gates": {
+    "latency_p50_ms_budget": 3000,
+    "memory_mb_budget": 1500,
+    "all_gates_passed": true
+  }
+}

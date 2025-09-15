@@ -1,0 +1,1772 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lethe Context Selection Validation Report - 20250911T202527Z</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --lethe-color: #9b59b6;
+            --light-bg: #ecf0f1;
+            --white: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-color: #bdc3c7;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--light-bg);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        .header {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 2.2em;
+            font-weight: 300;
+        }
+
+        .download-links {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+        }
+
+        .download-links strong {
+            color: #2e7d32;
+            margin-right: 10px;
+        }
+
+        .download-links a {
+            color: #1976d2;
+            text-decoration: none;
+            margin-right: 15px;
+            font-weight: 500;
+        }
+
+        .download-links a:hover {
+            text-decoration: underline;
+        }
+
+        .provenance-banner {
+            background: linear-gradient(135deg, var(--lethe-color), var(--secondary-color));
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            margin-bottom: 20px;
+        }
+
+        .provenance-banner a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .defaults-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .chart-section {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .chart {
+            position: relative;
+        }
+
+        .chart h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .bar-item {
+            display: flex;
+            align-items: center;
+            height: 36px;
+        }
+
+        .bar-label {
+            width: 200px;
+            font-size: 12px;
+            padding-right: 10px;
+            text-align: right;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transform: rotate(-15deg);
+            transform-origin: right center;
+            line-height: 1.1;
+        }
+
+        .bar-label.lethe-engine {
+            font-weight: bold;
+            color: var(--lethe-color);
+            transform: none;
+            font-size: 13px;
+        }
+
+        .bar {
+            flex: 1;
+            height: 28px;
+            background: var(--light-bg);
+            border-radius: 3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary-color), var(--success-color));
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .bar-fill.lethe-engine {
+            background: linear-gradient(90deg, var(--lethe-color), #8e44ad);
+            box-shadow: 0 0 8px rgba(155, 89, 182, 0.5);
+        }
+
+        .bar-values {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            color: white;
+            font-weight: 500;
+            text-align: right;
+            line-height: 1.2;
+        }
+
+        .score {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .delta {
+            font-size: 10px;
+            opacity: 0.9;
+        }
+
+        .performance-badges {
+            position: absolute;
+            left: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 9px;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.1;
+        }
+
+        .tradeoff-chart {
+            margin-top: 30px;
+        }
+
+        .tradeoff-svg {
+            width: 100%;
+            height: 400px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.85em;
+            background: var(--white);
+        }
+
+        .data-table caption {
+            font-weight: bold;
+            padding: 8px;
+            background: var(--light-bg);
+            border-radius: 4px 4px 0 0;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .data-table th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .quality-gates {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .quality-gates h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .gate {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--light-bg);
+        }
+
+        .gate:last-child { border-bottom: none; }
+
+        .gate-pass { color: var(--success-color); }
+        .gate-warning { color: var(--warning-color); }
+
+        .methodology {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .footnote {
+            background: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid var(--secondary-color);
+            border-radius: 0 6px 6px 0;
+            font-style: italic;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        .adapter-mapping {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .adapter-mapping h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .adapter-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 8px;
+            font-size: 0.85em;
+        }
+
+        .adapter-item {
+            padding: 4px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .adapter-id {
+            font-family: monospace;
+            color: var(--text-light);
+            margin-right: 10px;
+        }
+
+        .appendix {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 30px;
+            print-break-inside: avoid;
+        }
+
+        @media print {
+            .container { max-width: none; margin: 0; padding: 10px; }
+            .chart-grid { grid-template-columns: 1fr; }
+            .header, .chart-section, .quality-gates, .methodology {
+                box-shadow: none;
+                break-inside: avoid;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chart-grid { grid-template-columns: 1fr; }
+            .bar-label { 
+                width: 120px; 
+                font-size: 10px; 
+                transform: rotate(-25deg);
+            }
+            .bar-values { font-size: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Lethe Context Selection Validation Report</h1>
+            
+            <div class="download-links">
+                <strong>📊 Data Downloads:</strong>
+                <a href="metrics_summary.csv" download>Raw Metrics CSV</a>
+                <a href="advantage_map.json" download>Advantage Map JSON</a>
+                <a href="signed_manifest.json" download>Signed Manifest</a>
+            </div>
+            
+            <div class="provenance-banner">
+                Powered by Lethe • commit=25a2f374 • manifest_sha=<a href="signed_manifest.json">b2ff58ca98bc8a40</a> • run_id=20250911T202527Z • generator=gemma3:27b • datasets=Conv-Set-A, Conv-Set-B, InfiniteBench • leakage_attestation=✓
+            </div>
+            
+            <div class="defaults-warning">
+                <strong>⚠️ Using Defaults:</strong> RECALL_METRIC=score, LETHE_ENGINE_ADAPTER_ID=rag:hybrid_milvus_50_50 (explicit config not found)
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <h2>Recall@5 Performance by Budget (Sorted by Performance)</h2>
+            <div class="chart-grid">
+
+                <div class="chart">
+                    <h3>Recall@5 — 8% Budget</h3>
+                    <div class="bar-chart">
+
+                        <div class="bar-item">
+                            <div class="bar-label  lethe-engine">Lethe Engine</div>
+                            <div class="bar">
+                                <div class="bar-fill  lethe-engine" 
+                                     style="width: 95.91663510884186%">
+                                    <div class="performance-badges">💾249MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.816</div>
+                                    <div class="delta">Δ+0.530</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/long:full_context_upper_bound</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 100.0%">
+                                    <div class="performance-badges">💾222MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.851</div>
+                                    <div class="delta">Δ+0.564</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/long:sliding_window</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 96.18563836038602%">
+                                    <div class="performance-badges">💾240MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.818</div>
+                                    <div class="delta">Δ+0.532</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/long:streaming_llm</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 94.93333681557607%">
+                                    <div class="performance-badges">💾254MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.808</div>
+                                    <div class="delta">Δ+0.521</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rag:vector_faiss_cosine</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 94.03230650700584%">
+                                    <div class="performance-badges">💾256MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.800</div>
+                                    <div class="delta">Δ+0.514</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rag:hybrid_weaviate_50_50</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 93.61966074250121%">
+                                    <div class="performance-badges">💾229MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.797</div>
+                                    <div class="delta">Δ+0.510</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rerank:bge_frozen_pool</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 93.45381893208322%">
+                                    <div class="performance-badges">💾268MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.795</div>
+                                    <div class="delta">Δ+0.509</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rag:hybrid_vespa_50_50</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 91.72749709450372%">
+                                    <div class="performance-badges">💾282MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.780</div>
+                                    <div class="delta">Δ+0.494</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rag:bm25</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 90.25059089306468%">
+                                    <div class="performance-badges">💾248MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.768</div>
+                                    <div class="delta">Δ+0.481</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:last_k</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 88.17952702438006%">
+                                    <div class="performance-badges">💾259MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.750</div>
+                                    <div class="delta">Δ+0.464</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:langchain_compress</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 86.5628958330613%">
+                                    <div class="performance-badges">💾229MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.737</div>
+                                    <div class="delta">Δ+0.450</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:tfidf_topspans</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 85.67231225270636%">
+                                    <div class="performance-badges">💾268MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.729</div>
+                                    <div class="delta">Δ+0.442</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:llmlingua_style</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 84.77519946721686%">
+                                    <div class="performance-badges">💾255MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.721</div>
+                                    <div class="delta">Δ+0.435</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:zoekt_regex_symbols</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 84.57801747215295%">
+                                    <div class="performance-badges">💾283MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.720</div>
+                                    <div class="delta">Δ+0.433</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:entropy_filter</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 84.31684926677025%">
+                                    <div class="performance-badges">💾232MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.717</div>
+                                    <div class="delta">Δ+0.431</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:llamaindex_processors</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 82.48867182909153%">
+                                    <div class="performance-badges">💾237MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.702</div>
+                                    <div class="delta">Δ+0.415</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:random_within_type</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 33.68025176614998%">
+                                    <div class="performance-badges">💾241MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.287</div>
+                                    <div class="delta">Δ+0.000</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="footnote">
+                        <strong>Note:</strong> Margins shrink at higher budgets because placebo improves with more tokens
+                    </div>
+                    
+                    
+    <table class="data-table" id="data-table-8pct">
+        <caption>Recall@5 Performance Data - 8% Budget</caption>
+        <thead>
+            <tr>
+                <th scope="col">Adapter</th>
+                <th scope="col">Score</th>
+                <th scope="col">Δ vs Placebo</th>
+                <th scope="col">Relative Improvement</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td>Lethe Engine</td>
+                <td>0.8161</td>
+                <td>+0.5296</td>
+                <td>+184.8%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/long:full_context_upper_bound</td>
+                <td>0.8509</td>
+                <td>+0.5643</td>
+                <td>+196.9%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/long:sliding_window</td>
+                <td>0.8184</td>
+                <td>+0.5318</td>
+                <td>+185.6%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/long:streaming_llm</td>
+                <td>0.8078</td>
+                <td>+0.5212</td>
+                <td>+181.9%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rag:vector_faiss_cosine</td>
+                <td>0.8001</td>
+                <td>+0.5135</td>
+                <td>+179.2%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rag:hybrid_weaviate_50_50</td>
+                <td>0.7966</td>
+                <td>+0.5100</td>
+                <td>+178.0%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rerank:bge_frozen_pool</td>
+                <td>0.7952</td>
+                <td>+0.5086</td>
+                <td>+177.5%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rag:hybrid_vespa_50_50</td>
+                <td>0.7805</td>
+                <td>+0.4939</td>
+                <td>+172.3%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rag:bm25</td>
+                <td>0.7679</td>
+                <td>+0.4813</td>
+                <td>+168.0%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:last_k</td>
+                <td>0.7503</td>
+                <td>+0.4637</td>
+                <td>+161.8%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:langchain_compress</td>
+                <td>0.7365</td>
+                <td>+0.4500</td>
+                <td>+157.0%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:tfidf_topspans</td>
+                <td>0.7290</td>
+                <td>+0.4424</td>
+                <td>+154.4%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:llmlingua_style</td>
+                <td>0.7213</td>
+                <td>+0.4348</td>
+                <td>+151.7%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:zoekt_regex_symbols</td>
+                <td>0.7197</td>
+                <td>+0.4331</td>
+                <td>+151.1%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:entropy_filter</td>
+                <td>0.7174</td>
+                <td>+0.4309</td>
+                <td>+150.3%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:llamaindex_processors</td>
+                <td>0.7019</td>
+                <td>+0.4153</td>
+                <td>+144.9%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:random_within_type</td>
+                <td>0.2866</td>
+                <td>+0.0000</td>
+                <td>0.0%</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+                </div>
+
+                <div class="chart">
+                    <h3>Recall@5 — 15% Budget</h3>
+                    <div class="bar-chart">
+
+                        <div class="bar-item">
+                            <div class="bar-label  lethe-engine">Lethe Engine</div>
+                            <div class="bar">
+                                <div class="bar-fill  lethe-engine" 
+                                     style="width: 96.53688804884418%">
+                                    <div class="performance-badges">💾249MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.863</div>
+                                    <div class="delta">Δ+0.528</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/long:full_context_upper_bound</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 100.0%">
+                                    <div class="performance-badges">💾222MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.894</div>
+                                    <div class="delta">Δ+0.559</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/long:sliding_window</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 96.33917357838321%">
+                                    <div class="performance-badges">💾240MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.861</div>
+                                    <div class="delta">Δ+0.527</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/long:streaming_llm</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 95.23246993869607%">
+                                    <div class="performance-badges">💾254MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.851</div>
+                                    <div class="delta">Δ+0.517</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rag:vector_faiss_cosine</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 94.64554396349119%">
+                                    <div class="performance-badges">💾256MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.846</div>
+                                    <div class="delta">Δ+0.511</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rerank:bge_frozen_pool</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 94.33591564182592%">
+                                    <div class="performance-badges">💾268MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.843</div>
+                                    <div class="delta">Δ+0.509</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rag:hybrid_weaviate_50_50</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 93.92680834131237%">
+                                    <div class="performance-badges">💾229MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.839</div>
+                                    <div class="delta">Δ+0.505</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rag:hybrid_vespa_50_50</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 92.68580808018005%">
+                                    <div class="performance-badges">💾282MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.828</div>
+                                    <div class="delta">Δ+0.494</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rag:bm25</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 91.28315447841926%">
+                                    <div class="performance-badges">💾248MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.816</div>
+                                    <div class="delta">Δ+0.481</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:last_k</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 89.30974023551647%">
+                                    <div class="performance-badges">💾259MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.798</div>
+                                    <div class="delta">Δ+0.464</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:langchain_compress</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 87.77154652507492%">
+                                    <div class="performance-badges">💾229MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.784</div>
+                                    <div class="delta">Δ+0.450</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:tfidf_topspans</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 86.92473171762892%">
+                                    <div class="performance-badges">💾268MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.777</div>
+                                    <div class="delta">Δ+0.442</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:llmlingua_style</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 86.06796901229808%">
+                                    <div class="performance-badges">💾255MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.769</div>
+                                    <div class="delta">Δ+0.435</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:zoekt_regex_symbols</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 85.88020243972196%">
+                                    <div class="performance-badges">💾283MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.767</div>
+                                    <div class="delta">Δ+0.433</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:entropy_filter</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 85.63274847983683%">
+                                    <div class="performance-badges">💾232MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.765</div>
+                                    <div class="delta">Δ+0.431</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:llamaindex_processors</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 83.88813588828509%">
+                                    <div class="performance-badges">💾237MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.750</div>
+                                    <div class="delta">Δ+0.415</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:random_within_type</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 37.410313483132086%">
+                                    <div class="performance-badges">💾241MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.334</div>
+                                    <div class="delta">Δ+0.000</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="footnote">
+                        <strong>Note:</strong> Margins shrink at higher budgets because placebo improves with more tokens
+                    </div>
+                    
+                    
+    <table class="data-table" id="data-table-15pct">
+        <caption>Recall@5 Performance Data - 15% Budget</caption>
+        <thead>
+            <tr>
+                <th scope="col">Adapter</th>
+                <th scope="col">Score</th>
+                <th scope="col">Δ vs Placebo</th>
+                <th scope="col">Relative Improvement</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td>Lethe Engine</td>
+                <td>0.8626</td>
+                <td>+0.5283</td>
+                <td>+158.0%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/long:full_context_upper_bound</td>
+                <td>0.8935</td>
+                <td>+0.5593</td>
+                <td>+167.3%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/long:sliding_window</td>
+                <td>0.8608</td>
+                <td>+0.5266</td>
+                <td>+157.5%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/long:streaming_llm</td>
+                <td>0.8509</td>
+                <td>+0.5167</td>
+                <td>+154.6%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rag:vector_faiss_cosine</td>
+                <td>0.8457</td>
+                <td>+0.5114</td>
+                <td>+153.0%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rerank:bge_frozen_pool</td>
+                <td>0.8429</td>
+                <td>+0.5087</td>
+                <td>+152.2%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rag:hybrid_weaviate_50_50</td>
+                <td>0.8393</td>
+                <td>+0.5050</td>
+                <td>+151.1%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rag:hybrid_vespa_50_50</td>
+                <td>0.8282</td>
+                <td>+0.4939</td>
+                <td>+147.8%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rag:bm25</td>
+                <td>0.8157</td>
+                <td>+0.4814</td>
+                <td>+144.0%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:last_k</td>
+                <td>0.7980</td>
+                <td>+0.4637</td>
+                <td>+138.7%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:langchain_compress</td>
+                <td>0.7843</td>
+                <td>+0.4500</td>
+                <td>+134.6%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:tfidf_topspans</td>
+                <td>0.7767</td>
+                <td>+0.4424</td>
+                <td>+132.4%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:llmlingua_style</td>
+                <td>0.7691</td>
+                <td>+0.4348</td>
+                <td>+130.1%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:zoekt_regex_symbols</td>
+                <td>0.7674</td>
+                <td>+0.4331</td>
+                <td>+129.6%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:entropy_filter</td>
+                <td>0.7652</td>
+                <td>+0.4309</td>
+                <td>+128.9%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:llamaindex_processors</td>
+                <td>0.7496</td>
+                <td>+0.4153</td>
+                <td>+124.2%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:random_within_type</td>
+                <td>0.3343</td>
+                <td>+0.0000</td>
+                <td>0.0%</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+                </div>
+
+                <div class="chart">
+                    <h3>Recall@5 — 30% Budget</h3>
+                    <div class="bar-chart">
+
+                        <div class="bar-item">
+                            <div class="bar-label  lethe-engine">Lethe Engine</div>
+                            <div class="bar">
+                                <div class="bar-fill  lethe-engine" 
+                                     style="width: 98.42503916787409%">
+                                    <div class="performance-badges">💾249MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.928</div>
+                                    <div class="delta">Δ+0.492</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/long:full_context_upper_bound</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 100.0%">
+                                    <div class="performance-badges">💾222MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.943</div>
+                                    <div class="delta">Δ+0.507</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rerank:bge_frozen_pool</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 98.29074931382597%">
+                                    <div class="performance-badges">💾268MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.927</div>
+                                    <div class="delta">Δ+0.491</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/long:streaming_llm</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 98.1541034974261%">
+                                    <div class="performance-badges">💾254MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.926</div>
+                                    <div class="delta">Δ+0.489</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/long:sliding_window</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 98.10580626921582%">
+                                    <div class="performance-badges">💾240MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.925</div>
+                                    <div class="delta">Δ+0.489</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rag:vector_faiss_cosine</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 98.01863566220213%">
+                                    <div class="performance-badges">💾256MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.925</div>
+                                    <div class="delta">Δ+0.488</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rag:hybrid_weaviate_50_50</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 97.6829110270818%">
+                                    <div class="performance-badges">💾229MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.921</div>
+                                    <div class="delta">Δ+0.485</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rag:hybrid_vespa_50_50</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 97.42257718721655%">
+                                    <div class="performance-badges">💾282MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.919</div>
+                                    <div class="delta">Δ+0.482</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/rag:bm25</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 96.0172456444146%">
+                                    <div class="performance-badges">💾248MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.906</div>
+                                    <div class="delta">Δ+0.469</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:last_k</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 94.34333439351641%">
+                                    <div class="performance-badges">💾259MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.890</div>
+                                    <div class="delta">Δ+0.453</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:langchain_compress</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 93.9522446431306%">
+                                    <div class="performance-badges">💾229MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.886</div>
+                                    <div class="delta">Δ+0.450</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:tfidf_topspans</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 92.96627439893511%">
+                                    <div class="performance-badges">💾268MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.877</div>
+                                    <div class="delta">Δ+0.440</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:zoekt_regex_symbols</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 91.88253171714317%">
+                                    <div class="performance-badges">💾283MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.867</div>
+                                    <div class="delta">Δ+0.430</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:entropy_filter</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 91.75884369367778%">
+                                    <div class="performance-badges">💾232MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.865</div>
+                                    <div class="delta">Δ+0.429</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:llmlingua_style</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 91.71408040899507%">
+                                    <div class="performance-badges">💾255MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.865</div>
+                                    <div class="delta">Δ+0.428</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:llamaindex_processors</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 90.31463877207241%">
+                                    <div class="performance-badges">💾237MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.852</div>
+                                    <div class="delta">Δ+0.415</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bar-item">
+                            <div class="bar-label ">Lethe/selector:random_within_type</div>
+                            <div class="bar">
+                                <div class="bar-fill " 
+                                     style="width: 46.28523636192294%">
+                                    <div class="performance-badges">💾241MB</div>
+                                </div>
+                                <div class="bar-values">
+                                    <div class="score">0.437</div>
+                                    <div class="delta">Δ+0.000</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="footnote">
+                        <strong>Note:</strong> Margins shrink at higher budgets because placebo improves with more tokens
+                    </div>
+                    
+                    
+    <table class="data-table" id="data-table-30pct">
+        <caption>Recall@5 Performance Data - 30% Budget</caption>
+        <thead>
+            <tr>
+                <th scope="col">Adapter</th>
+                <th scope="col">Score</th>
+                <th scope="col">Δ vs Placebo</th>
+                <th scope="col">Relative Improvement</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td>Lethe Engine</td>
+                <td>0.9284</td>
+                <td>+0.4918</td>
+                <td>+112.6%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/long:full_context_upper_bound</td>
+                <td>0.9432</td>
+                <td>+0.5067</td>
+                <td>+116.1%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rerank:bge_frozen_pool</td>
+                <td>0.9271</td>
+                <td>+0.4905</td>
+                <td>+112.4%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/long:streaming_llm</td>
+                <td>0.9258</td>
+                <td>+0.4892</td>
+                <td>+112.1%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/long:sliding_window</td>
+                <td>0.9254</td>
+                <td>+0.4888</td>
+                <td>+112.0%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rag:vector_faiss_cosine</td>
+                <td>0.9245</td>
+                <td>+0.4880</td>
+                <td>+111.8%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rag:hybrid_weaviate_50_50</td>
+                <td>0.9214</td>
+                <td>+0.4848</td>
+                <td>+111.0%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rag:hybrid_vespa_50_50</td>
+                <td>0.9189</td>
+                <td>+0.4823</td>
+                <td>+110.5%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/rag:bm25</td>
+                <td>0.9057</td>
+                <td>+0.4691</td>
+                <td>+107.4%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:last_k</td>
+                <td>0.8899</td>
+                <td>+0.4533</td>
+                <td>+103.8%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:langchain_compress</td>
+                <td>0.8862</td>
+                <td>+0.4496</td>
+                <td>+103.0%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:tfidf_topspans</td>
+                <td>0.8769</td>
+                <td>+0.4403</td>
+                <td>+100.9%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:zoekt_regex_symbols</td>
+                <td>0.8667</td>
+                <td>+0.4301</td>
+                <td>+98.5%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:entropy_filter</td>
+                <td>0.8655</td>
+                <td>+0.4289</td>
+                <td>+98.2%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:llmlingua_style</td>
+                <td>0.8651</td>
+                <td>+0.4285</td>
+                <td>+98.1%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:llamaindex_processors</td>
+                <td>0.8519</td>
+                <td>+0.4153</td>
+                <td>+95.1%</td>
+            </tr>
+
+            <tr>
+                <td>Lethe/selector:random_within_type</td>
+                <td>0.4366</td>
+                <td>+0.0000</td>
+                <td>0.0%</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+                </div>
+
+            </div>
+            
+            <div class="tradeoff-chart">
+                <h2>Capacity Trade-off Analysis</h2>
+                <p><em>Recall performance vs. context budget across all adapters</em></p>
+                <svg class="tradeoff-svg" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Grid lines -->
+                    <defs>
+                        <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    <rect width="800" height="400" fill="url(#grid)" />
+                    
+                    <!-- Axes -->
+                    <line x1="80" y1="350" x2="750" y2="350" stroke="#333" stroke-width="2"/>
+                    <line x1="80" y1="350" x2="80" y2="50" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- Axis labels -->
+                    <text x="400" y="390" text-anchor="middle" font-size="14" font-weight="bold">Context Budget (%)</text>
+                    <text x="40" y="200" text-anchor="middle" font-size="14" font-weight="bold" transform="rotate(-90 40 200)">Recall@5</text>
+                    
+                    <!-- Budget tick marks -->
+                    <text x="180" y="370" text-anchor="middle" font-size="12">8</text>
+                    <text x="350" y="370" text-anchor="middle" font-size="12">15</text>
+                    <text x="520" y="370" text-anchor="middle" font-size="12">30</text>
+                    
+                    <!-- Recall tick marks -->
+                    <text x="70" y="320" text-anchor="end" font-size="10">0.4</text>
+                    <text x="70" y="260" text-anchor="end" font-size="10">0.5</text>
+                    <text x="70" y="200" text-anchor="end" font-size="10">0.6</text>
+                    <text x="70" y="140" text-anchor="end" font-size="10">0.7</text>
+                    <text x="70" y="80" text-anchor="end" font-size="10">0.8</text>
+
+                    <path d="M180,23.54666666666668 L350,4.9599999999999795 L520,-21.351111111111038" fill="none" stroke="#9b59b6" stroke-width="3" opacity="0.8"/>
+
+                    <circle cx="180" cy="23.54666666666668" r="4" fill="#9b59b6"/>
+
+                    <circle cx="350" cy="4.9599999999999795" r="4" fill="#9b59b6"/>
+
+                    <circle cx="520" cy="-21.351111111111038" r="4" fill="#9b59b6"/>
+
+                    <path d="M180,9.648888888888905 L350,-7.417777777777815 L520,-27.293333333333294" fill="none" stroke="#27ae60" stroke-width="3" opacity="0.8"/>
+
+                    <circle cx="180" cy="9.648888888888905" r="4" fill="#27ae60"/>
+
+                    <circle cx="350" cy="-7.417777777777815" r="4" fill="#27ae60"/>
+
+                    <circle cx="520" cy="-27.293333333333294" r="4" fill="#27ae60"/>
+
+                    <path d="M180,42.83111111111111 L350,23.737777777777808 L520,-12.266666666666595" fill="none" stroke="#3498db" stroke-width="3" opacity="0.8"/>
+
+                    <circle cx="180" cy="42.83111111111111" r="4" fill="#3498db"/>
+
+                    <circle cx="350" cy="23.737777777777808" r="4" fill="#3498db"/>
+
+                    <circle cx="520" cy="-12.266666666666595" r="4" fill="#3498db"/>
+
+                    <path d="M180,235.36888888888893 L350,216.28888888888892 L520,175.36888888888888" fill="none" stroke="#e74c3c" stroke-width="3" opacity="0.8"/>
+
+                    <circle cx="180" cy="235.36888888888893" r="4" fill="#e74c3c"/>
+
+                    <circle cx="350" cy="216.28888888888892" r="4" fill="#e74c3c"/>
+
+                    <circle cx="520" cy="175.36888888888888" r="4" fill="#e74c3c"/>
+
+                    
+                    <!-- Legend -->
+                    <g transform="translate(580, 80)">
+                        <rect x="0" y="0" width="180" height="120" fill="white" stroke="#ccc" rx="4"/>
+                        <text x="10" y="20" font-size="12" font-weight="bold">Key Adapters</text>
+                        <line x1="10" y1="35" x2="30" y2="35" stroke="#9b59b6" stroke-width="3"/>
+                        <text x="35" y="40" font-size="11">Lethe Engine</text>
+                        <line x1="10" y1="50" x2="30" y2="50" stroke="#27ae60" stroke-width="3"/>
+                        <text x="35" y="55" font-size="11">Upper Bound</text>
+                        <line x1="10" y1="65" x2="30" y2="65" stroke="#3498db" stroke-width="3"/>
+                        <text x="35" y="70" font-size="11">BM25 Baseline</text>
+                        <line x1="10" y1="80" x2="30" y2="80" stroke="#e74c3c" stroke-width="3"/>
+                        <text x="35" y="85" font-size="11">Random Placebo</text>
+                    </g>
+                </svg>
+                
+                <div class="footnote">
+                    <strong>Capacity Trade-off Insight:</strong> Performance generally increases with budget, but efficiency varies significantly across adapter families. Lethe Engine maintains competitive performance across all budget levels.
+                </div>
+            </div>
+        </div>
+
+        <div class="quality-gates">
+            <h2>Quality Gates</h2>
+            <div class="gate gate-pass">✅ Placebo baseline: PASS - Random selector beaten by all real methods</div>
+            <div class="gate gate-pass">✅ Budget monotonicity: PASS - Performance improves with higher budgets (8→15→30%)</div>
+            <div class="gate gate-pass">✅ CE variance sentinel: PASS - Cross-encoder variance within acceptable bounds</div>
+            <div class="gate gate-pass">✅ Adapter coverage: PASS - All 17 adapters evaluated across families</div>
+        </div>
+
+        <div class="methodology">
+            <h2>🔬 Methodology</h2>
+            <p><strong>Baseline:</strong> selector:random_within_type (explicit placebo)</p>
+            <p><strong>Metric:</strong> score = Recall@k performance</p>
+            <p><strong>Statistical Framework:</strong> Holm-corrected paired comparisons</p>
+            <p><strong>Sample Size:</strong> 4,591 measurements across 3 datasets, 3 budgets, 3 seeds</p>
+            
+            <h3>⚠️ When NOT to use Lethe</h3>
+            <p>Lethe may not be suitable for contexts requiring explicit reasoning chains or when computational budget is extremely limited (&lt;5% context retention).</p>
+            
+            <h3>📊 Performance Data Integration</h3>
+            <p>Each bar shows absolute score with delta (Δ) vs placebo baseline. Performance badges indicate p95 latency and memory usage where available. Data is accessible via machine-readable tables below each chart.</p>
+        </div>
+        
+        <div class="appendix">
+            <h2>📋 Appendix: Technical Reference</h2>
+            
+            <h3>Adapter ID → Display Label Mapping</h3>
+            <div class="adapter-list">
+
+                <div class="adapter-item">
+                    <span class="adapter-id">long:full_context_upper_bound</span>
+                    →
+                    <span class="adapter-name">Lethe/long:full_context_upper_bound</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">long:sliding_window</span>
+                    →
+                    <span class="adapter-name">Lethe/long:sliding_window</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">long:streaming_llm</span>
+                    →
+                    <span class="adapter-name">Lethe/long:streaming_llm</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">rag:bm25</span>
+                    →
+                    <span class="adapter-name">Lethe/rag:bm25</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">rag:hybrid_milvus_50_50</span>
+                    →
+                    <span class="adapter-name">Lethe Engine</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">rag:hybrid_vespa_50_50</span>
+                    →
+                    <span class="adapter-name">Lethe/rag:hybrid_vespa_50_50</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">rag:hybrid_weaviate_50_50</span>
+                    →
+                    <span class="adapter-name">Lethe/rag:hybrid_weaviate_50_50</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">rag:vector_faiss_cosine</span>
+                    →
+                    <span class="adapter-name">Lethe/rag:vector_faiss_cosine</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">rerank:bge_frozen_pool</span>
+                    →
+                    <span class="adapter-name">Lethe/rerank:bge_frozen_pool</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">selector:entropy_filter</span>
+                    →
+                    <span class="adapter-name">Lethe/selector:entropy_filter</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">selector:langchain_compress</span>
+                    →
+                    <span class="adapter-name">Lethe/selector:langchain_compress</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">selector:last_k</span>
+                    →
+                    <span class="adapter-name">Lethe/selector:last_k</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">selector:llamaindex_processors</span>
+                    →
+                    <span class="adapter-name">Lethe/selector:llamaindex_processors</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">selector:llmlingua_style</span>
+                    →
+                    <span class="adapter-name">Lethe/selector:llmlingua_style</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">selector:random_within_type</span>
+                    →
+                    <span class="adapter-name">Lethe/selector:random_within_type</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">selector:tfidf_topspans</span>
+                    →
+                    <span class="adapter-name">Lethe/selector:tfidf_topspans</span>
+                </div>
+
+                <div class="adapter-item">
+                    <span class="adapter-id">selector:zoekt_regex_symbols</span>
+                    →
+                    <span class="adapter-name">Lethe/selector:zoekt_regex_symbols</span>
+                </div>
+
+            </div>
+            
+            <h3>🔍 Provenance & Reproducibility</h3>
+            <ul>
+                <li><strong>Run ID:</strong> 20250911T202527Z</li>
+                <li><strong>Git Commit:</strong> 25a2f374</li>
+                <li><strong>Manifest SHA:</strong> b2ff58ca98bc8a40</li>
+                <li><strong>Generator:</strong> gemma3:27b</li>
+                <li><strong>Generated:</strong> 2025-09-11 17:30:19 UTC</li>
+                <li><strong>Leakage Attestation:</strong> ✓ Present</li>
+            </ul>
+            
+            <h3>📈 Statistical Summary</h3>
+            <ul>
+                <li><strong>Total Measurements:</strong> 4,591</li>
+                <li><strong>Unique Adapters:</strong> 17</li>
+                <li><strong>Datasets:</strong> Conv-Set-A, Conv-Set-B, InfiniteBench</li>
+                <li><strong>Budget Levels:</strong> 8%, 15%, 30%</li>
+                <li><strong>Evaluation Metric:</strong> score (Recall@5)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

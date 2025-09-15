@@ -1,0 +1,152 @@
+[
+  {
+    "method": "chroma",
+    "sample_id": 0,
+    "k": 1,
+    "query_time": 0.48674535751342773,
+    "generation_time": 5.2778191566467285,
+    "retrieved_relevant": 1,
+    "precision_at_k": 1.0,
+    "recall_at_k": 0.2,
+    "question": "哪些人想要杀死胡一统？",
+    "true_answer": [
+      "田立帆, 商老太, 王剑英, 王剑杰, 福气龙, 慕容景岳, 薛鹊"
+    ],
+    "generated_answer": "Based on the provided context, it's stated that the city is searching for Hu Yitong, implying there are people who want to kill him. Specifically, the text mentions that the city is looking for him after he attempted to assassinate a general. However, the text doesn't explicitly name *who* wants him dead beyond this general implication.",
+    "context_length": 611376
+  },
+  {
+    "method": "chroma",
+    "sample_id": 0,
+    "k": 5,
+    "query_time": 0.48674535751342773,
+    "generation_time": 5.2778191566467285,
+    "retrieved_relevant": 2,
+    "precision_at_k": 0.4,
+    "recall_at_k": 0.4,
+    "question": "哪些人想要杀死胡一统？",
+    "true_answer": [
+      "田立帆, 商老太, 王剑英, 王剑杰, 福气龙, 慕容景岳, 薛鹊"
+    ],
+    "generated_answer": "Based on the provided context, it's stated that the city is searching for Hu Yitong, implying there are people who want to kill him. Specifically, the text mentions that the city is looking for him after he attempted to assassinate a general. However, the text doesn't explicitly name *who* wants him dead beyond this general implication.",
+    "context_length": 611376
+  },
+  {
+    "method": "chroma",
+    "sample_id": 0,
+    "k": 10,
+    "query_time": 0.48674535751342773,
+    "generation_time": 5.2778191566467285,
+    "retrieved_relevant": 5,
+    "precision_at_k": 0.5,
+    "recall_at_k": 1.0,
+    "question": "哪些人想要杀死胡一统？",
+    "true_answer": [
+      "田立帆, 商老太, 王剑英, 王剑杰, 福气龙, 慕容景岳, 薛鹊"
+    ],
+    "generated_answer": "Based on the provided context, it's stated that the city is searching for Hu Yitong, implying there are people who want to kill him. Specifically, the text mentions that the city is looking for him after he attempted to assassinate a general. However, the text doesn't explicitly name *who* wants him dead beyond this general implication.",
+    "context_length": 611376
+  },
+  {
+    "method": "chroma",
+    "sample_id": 1,
+    "k": 1,
+    "query_time": 0.4554622173309326,
+    "generation_time": 4.818008184432983,
+    "retrieved_relevant": 0,
+    "precision_at_k": 0.0,
+    "recall_at_k": 0.0,
+    "question": "商老太, 马行空, 徐峥, 程紫洁, 胡一刀这个五个人的死亡先后顺序？",
+    "true_answer": [
+      "胡一刀, 马行空, 商老太, 徐峥, 程紫洁"
+    ],
+    "generated_answer": "Based on the provided text, it's **impossible** to determine the death order of 商老太, 马行空, 徐峥, 程紫洁, and 胡一刀. The text does *not* mention the deaths of any of these characters. It only describes events happening *around* them, but their fates remain unknown within the given context. \n\nThe text focuses on a series of encounters and conflicts, but doesn't conclude with any character's death.",
+    "context_length": 611376
+  },
+  {
+    "method": "chroma",
+    "sample_id": 1,
+    "k": 5,
+    "query_time": 0.4554622173309326,
+    "generation_time": 4.818008184432983,
+    "retrieved_relevant": 2,
+    "precision_at_k": 0.4,
+    "recall_at_k": 0.6666666666666666,
+    "question": "商老太, 马行空, 徐峥, 程紫洁, 胡一刀这个五个人的死亡先后顺序？",
+    "true_answer": [
+      "胡一刀, 马行空, 商老太, 徐峥, 程紫洁"
+    ],
+    "generated_answer": "Based on the provided text, it's **impossible** to determine the death order of 商老太, 马行空, 徐峥, 程紫洁, and 胡一刀. The text does *not* mention the deaths of any of these characters. It only describes events happening *around* them, but their fates remain unknown within the given context. \n\nThe text focuses on a series of encounters and conflicts, but doesn't conclude with any character's death.",
+    "context_length": 611376
+  },
+  {
+    "method": "chroma",
+    "sample_id": 1,
+    "k": 10,
+    "query_time": 0.4554622173309326,
+    "generation_time": 4.818008184432983,
+    "retrieved_relevant": 3,
+    "precision_at_k": 0.3,
+    "recall_at_k": 1.0,
+    "question": "商老太, 马行空, 徐峥, 程紫洁, 胡一刀这个五个人的死亡先后顺序？",
+    "true_answer": [
+      "胡一刀, 马行空, 商老太, 徐峥, 程紫洁"
+    ],
+    "generated_answer": "Based on the provided text, it's **impossible** to determine the death order of 商老太, 马行空, 徐峥, 程紫洁, and 胡一刀. The text does *not* mention the deaths of any of these characters. It only describes events happening *around* them, but their fates remain unknown within the given context. \n\nThe text focuses on a series of encounters and conflicts, but doesn't conclude with any character's death.",
+    "context_length": 611376
+  },
+  {
+    "method": "chroma",
+    "sample_id": 2,
+    "k": 1,
+    "query_time": 1.7201223373413086,
+    "generation_time": 3.867483139038086,
+    "retrieved_relevant": 0,
+    "precision_at_k": 0.0,
+    "recall_at_k": 0.0,
+    "question": "小说中叫阿四的有几个人",
+    "true_answer": [
+      "2",
+      "两个",
+      "二"
+    ],
+    "generated_answer": "Based on the provided context, there are two people called 阿四:\n\n1. **钟阿四:** The main character who is a farmer and is wronged by Feng Tiannan. The story revolves around the injustice done to him and his family.\n2. **钟四嫂:** The wife of 钟阿四.",
+    "context_length": 611376
+  },
+  {
+    "method": "chroma",
+    "sample_id": 2,
+    "k": 5,
+    "query_time": 1.7201223373413086,
+    "generation_time": 3.867483139038086,
+    "retrieved_relevant": 1,
+    "precision_at_k": 0.2,
+    "recall_at_k": 0.3333333333333333,
+    "question": "小说中叫阿四的有几个人",
+    "true_answer": [
+      "2",
+      "两个",
+      "二"
+    ],
+    "generated_answer": "Based on the provided context, there are two people called 阿四:\n\n1. **钟阿四:** The main character who is a farmer and is wronged by Feng Tiannan. The story revolves around the injustice done to him and his family.\n2. **钟四嫂:** The wife of 钟阿四.",
+    "context_length": 611376
+  },
+  {
+    "method": "chroma",
+    "sample_id": 2,
+    "k": 10,
+    "query_time": 1.7201223373413086,
+    "generation_time": 3.867483139038086,
+    "retrieved_relevant": 3,
+    "precision_at_k": 0.3,
+    "recall_at_k": 1.0,
+    "question": "小说中叫阿四的有几个人",
+    "true_answer": [
+      "2",
+      "两个",
+      "二"
+    ],
+    "generated_answer": "Based on the provided context, there are two people called 阿四:\n\n1. **钟阿四:** The main character who is a farmer and is wronged by Feng Tiannan. The story revolves around the injustice done to him and his family.\n2. **钟四嫂:** The wife of 钟阿四.",
+    "context_length": 611376
+  }
+]

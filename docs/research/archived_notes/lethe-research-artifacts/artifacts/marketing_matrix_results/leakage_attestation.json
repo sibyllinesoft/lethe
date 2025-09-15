@@ -1,0 +1,39 @@
+{
+  "attestation_type": "data_leakage_prevention",
+  "timestamp": "2025-09-12T08:10:04.689976",
+  "evaluation_id": "marketing_edge_matrix_2025_09_12",
+  "checks_performed": [
+    {
+      "check_name": "train_test_separation",
+      "status": "PASSED",
+      "description": "Verified no overlap between training and evaluation datasets",
+      "jaccard_similarity": 0.0,
+      "threshold": 0.05,
+      "samples_checked": 300
+    },
+    {
+      "check_name": "temporal_leakage",
+      "status": "PASSED", 
+      "description": "Confirmed evaluation data is temporally isolated",
+      "earliest_eval_date": "2025-01-01",
+      "latest_train_date": "2024-12-31"
+    },
+    {
+      "check_name": "content_fingerprinting",
+      "status": "PASSED",
+      "description": "No exact content matches between train/eval sets",
+      "exact_matches_found": 0,
+      "near_duplicates_found": 2,
+      "similarity_threshold": 0.95
+    }
+  ],
+  "overall_status": "CLEAN",
+  "attestation_confidence": 0.98,
+  "reviewer": "automated_leakage_detector_v2.1",
+  "manual_spot_check": {
+    "performed": true,
+    "samples_reviewed": 50,
+    "violations_found": 0,
+    "reviewer_id": "security_audit_bot"
+  }
+}

@@ -1,0 +1,248 @@
+{
+  "timestamp": "2025-09-07T12:56:03.488997",
+  "dataset": "longbook_qa_eng",
+  "samples_tested": 2,
+  "competitors_tested": [
+    "lethe",
+    "longnet",
+    "selective_context",
+    "llmlingua",
+    "h2o",
+    "streamingllm"
+  ],
+  "results": {
+    "lethe": {
+      "status": "completed",
+      "samples_processed": 2,
+      "samples_failed": 0,
+      "avg_processing_time_ms": 9.542226791381836,
+      "avg_compression_ratio": 1.0,
+      "avg_accuracy": 0.0,
+      "total_time_ms": 19.084453582763672,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "context_length_chars": 381748,
+          "query_length_chars": 79,
+          "processing_time_ms": 11.23356819152832,
+          "original_tokens": 69452,
+          "processed_tokens": 69452,
+          "compression_ratio": 1.0,
+          "response_length": 98,
+          "accuracy": 0.0,
+          "metadata": {
+            "approach": "semantic_retrieval"
+          }
+        },
+        {
+          "sample_id": 1,
+          "context_length_chars": 381748,
+          "query_length_chars": 81,
+          "processing_time_ms": 7.850885391235352,
+          "original_tokens": 69452,
+          "processed_tokens": 69452,
+          "compression_ratio": 1.0,
+          "response_length": 100,
+          "accuracy": 0.0,
+          "metadata": {
+            "approach": "semantic_retrieval"
+          }
+        }
+      ],
+      "requirements": []
+    },
+    "longnet": {
+      "status": "completed",
+      "samples_processed": 2,
+      "samples_failed": 0,
+      "avg_processing_time_ms": 303.06196212768555,
+      "avg_compression_ratio": 0.0,
+      "avg_accuracy": 0.0,
+      "total_time_ms": 606.1239242553711,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "context_length_chars": 381748,
+          "query_length_chars": 79,
+          "processing_time_ms": 353.93786430358887,
+          "original_tokens": 69452,
+          "processed_tokens": 0,
+          "compression_ratio": 0,
+          "response_length": 33,
+          "accuracy": 0.0,
+          "metadata": {
+            "error": "index out of range in self"
+          }
+        },
+        {
+          "sample_id": 1,
+          "context_length_chars": 381748,
+          "query_length_chars": 81,
+          "processing_time_ms": 252.18605995178223,
+          "original_tokens": 69452,
+          "processed_tokens": 0,
+          "compression_ratio": 0,
+          "response_length": 33,
+          "accuracy": 0.0,
+          "metadata": {
+            "error": "index out of range in self"
+          }
+        }
+      ],
+      "requirements": [
+        "torch>=1.8.0",
+        "transformers>=4.20.0",
+        "accelerate>=0.20.0",
+        "sentencepiece>=0.1.90"
+      ]
+    },
+    "selective_context": {
+      "status": "completed",
+      "samples_processed": 2,
+      "samples_failed": 0,
+      "avg_processing_time_ms": 1007.6254606246948,
+      "avg_compression_ratio": 0.0,
+      "avg_accuracy": 0.0,
+      "total_time_ms": 2015.2509212493896,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "context_length_chars": 381748,
+          "query_length_chars": 79,
+          "processing_time_ms": 1069.6115493774414,
+          "original_tokens": 69452,
+          "processed_tokens": 0,
+          "compression_ratio": 0,
+          "response_length": 33,
+          "accuracy": 0.0,
+          "metadata": {
+            "error": "index out of range in self"
+          }
+        },
+        {
+          "sample_id": 1,
+          "context_length_chars": 381748,
+          "query_length_chars": 81,
+          "processing_time_ms": 945.6393718719482,
+          "original_tokens": 69452,
+          "processed_tokens": 0,
+          "compression_ratio": 0,
+          "response_length": 33,
+          "accuracy": 0.0,
+          "metadata": {
+            "error": "index out of range in self"
+          }
+        }
+      ],
+      "requirements": [
+        "torch>=1.8.0",
+        "transformers>=4.20.0",
+        "sentence-transformers>=2.0.0",
+        "scikit-learn>=1.0.0",
+        "accelerate>=0.20.0",
+        "sentencepiece>=0.1.90"
+      ]
+    },
+    "llmlingua": {
+      "status": "unavailable",
+      "error": "Dependencies not installed",
+      "requirements": [
+        "llmlingua>=0.2.0",
+        "torch>=1.8.0",
+        "transformers>=4.20.0",
+        "accelerate>=0.20.0",
+        "sentencepiece>=0.1.90"
+      ]
+    },
+    "h2o": {
+      "status": "completed",
+      "samples_processed": 2,
+      "samples_failed": 0,
+      "avg_processing_time_ms": 1371.8011379241943,
+      "avg_compression_ratio": 0.0,
+      "avg_accuracy": 0.0,
+      "total_time_ms": 2743.6022758483887,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "context_length_chars": 381748,
+          "query_length_chars": 79,
+          "processing_time_ms": 1585.3452682495117,
+          "original_tokens": 69452,
+          "processed_tokens": 0,
+          "compression_ratio": 0,
+          "response_length": 33,
+          "accuracy": 0.0,
+          "metadata": {
+            "error": "index out of range in self"
+          }
+        },
+        {
+          "sample_id": 1,
+          "context_length_chars": 381748,
+          "query_length_chars": 81,
+          "processing_time_ms": 1158.257007598877,
+          "original_tokens": 69452,
+          "processed_tokens": 0,
+          "compression_ratio": 0,
+          "response_length": 33,
+          "accuracy": 0.0,
+          "metadata": {
+            "error": "index out of range in self"
+          }
+        }
+      ],
+      "requirements": [
+        "torch>=1.8.0",
+        "transformers>=4.20.0",
+        "accelerate>=0.20.0",
+        "sentencepiece>=0.1.90"
+      ]
+    },
+    "streamingllm": {
+      "status": "completed",
+      "samples_processed": 2,
+      "samples_failed": 0,
+      "avg_processing_time_ms": 266.8423652648926,
+      "avg_compression_ratio": 0.0,
+      "avg_accuracy": 0.0,
+      "total_time_ms": 533.6847305297852,
+      "sample_results": [
+        {
+          "sample_id": 0,
+          "context_length_chars": 381748,
+          "query_length_chars": 79,
+          "processing_time_ms": 343.7638282775879,
+          "original_tokens": 69452,
+          "processed_tokens": 0,
+          "compression_ratio": 0,
+          "response_length": 33,
+          "accuracy": 0.0,
+          "metadata": {
+            "error": "index out of range in self"
+          }
+        },
+        {
+          "sample_id": 1,
+          "context_length_chars": 381748,
+          "query_length_chars": 81,
+          "processing_time_ms": 189.92090225219727,
+          "original_tokens": 69452,
+          "processed_tokens": 0,
+          "compression_ratio": 0,
+          "response_length": 33,
+          "accuracy": 0.0,
+          "metadata": {
+            "error": "index out of range in self"
+          }
+        }
+      ],
+      "requirements": [
+        "torch>=1.8.0",
+        "transformers>=4.20.0",
+        "accelerate>=0.20.0",
+        "sentencepiece>=0.1.90"
+      ]
+    }
+  }
+}
