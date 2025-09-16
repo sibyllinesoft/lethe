@@ -1,6 +1,28 @@
 import { useState } from 'react';
-import type { LLMCall, CallComparison } from '@lethe/llm-analyzer-shared';
-import { DiffViewer } from './DiffViewer';
+import DiffViewer from './DiffViewer';
+
+// Using local types instead of shared package for now
+interface LLMCall {
+  id: string;
+  provider: string;
+  model: string;
+  duration: number;
+  totalTokens?: number;
+  cost?: number;
+  status: number;
+  requestBody: Record<string, any>;
+  responseBody: Record<string, any>;
+}
+
+interface CallComparison {
+  metricsDiff: {
+    duration: { difference: number; percentageChange: number };
+    totalTokens?: { difference: number; percentageChange: number };
+    cost?: { difference: number; percentageChange: number };
+  };
+  requestDiff?: any;
+  responseDiff?: any;
+}
 
 interface CompareViewProps {
   calls: LLMCall[];
@@ -201,10 +223,10 @@ export function CompareView({ calls, comparison, onClose }: CompareViewProps) {
           <div>
             {comparison.requestDiff ? (
               <DiffViewer
-                originalContent={JSON.stringify(calls[0]?.requestBody, null, 2)}
-                modifiedContent={JSON.stringify(calls[1]?.requestBody, null, 2)}
+                original={JSON.stringify(calls[0]?.requestBody, null, 2)}
+                modified={JSON.stringify(calls[1]?.requestBody, null, 2)}
                 language="json"
-                height="600px"
+                height={600}
               />
             ) : (
               <div className="text-center py-12 text-gray-500">
@@ -218,10 +240,10 @@ export function CompareView({ calls, comparison, onClose }: CompareViewProps) {
           <div>
             {comparison.responseDiff ? (
               <DiffViewer
-                originalContent={JSON.stringify(calls[0]?.responseBody, null, 2)}
-                modifiedContent={JSON.stringify(calls[1]?.responseBody, null, 2)}
+                original={JSON.stringify(calls[0]?.responseBody, null, 2)}
+                modified={JSON.stringify(calls[1]?.responseBody, null, 2)}
                 language="json"
-                height="600px"
+                height={600}
               />
             ) : (
               <div className="text-center py-12 text-gray-500">

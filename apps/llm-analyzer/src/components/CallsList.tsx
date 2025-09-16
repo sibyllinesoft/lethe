@@ -1,6 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Virtuoso } from 'react-virtuoso'
 import { format } from 'date-fns'
 import { useCalls, useStats } from '../hooks/api'
 import { useUIStore } from '../store/ui'
@@ -48,7 +47,7 @@ export default function CallsList({ onCallSelect, selectedCallId }: CallsListPro
     }
   }
 
-  const renderCallItem = (index: number, call: CallPair) => {
+  const renderCallItem = (_index: number, call: CallPair) => {
     const isSelected = selectedCallIds.includes(call.id) || call.id === selectedCallId
     
     return (
@@ -118,7 +117,7 @@ export default function CallsList({ onCallSelect, selectedCallId }: CallsListPro
   }
 
   if (error) {
-    return <div className="error">Error loading calls: {error.message}</div>
+    return <div className="error">Error loading calls: {error instanceof Error ? error.message : String(error)}</div>
   }
 
   return (

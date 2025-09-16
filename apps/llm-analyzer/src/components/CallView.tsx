@@ -1,6 +1,27 @@
 import { useState } from 'react';
-import type { LLMCall } from '@lethe/llm-analyzer-shared';
-import { DiffViewer } from './DiffViewer';
+import { ContentViewer } from './DiffViewer';
+
+// Using local types instead of shared package for now
+interface LLMCall {
+  id: string;
+  provider: string;
+  model: string;
+  endpoint: string;
+  method: string;
+  duration: number;
+  totalTokens?: number;
+  inputTokens?: number;
+  outputTokens?: number;
+  cost?: number;
+  status: number;
+  timestamp: string;
+  tags: string[];
+  error?: { message: string; stack?: string };
+  requestHeaders: Record<string, any>;
+  requestBody: Record<string, any>;
+  responseHeaders: Record<string, any>;
+  responseBody: Record<string, any>;
+}
 
 interface CallViewProps {
   call: LLMCall;
@@ -184,18 +205,16 @@ export function CallView({ call, onClose }: CallViewProps) {
           <div className="space-y-4">
             <div>
               <h4 className="text-sm font-medium text-gray-900 mb-2">Headers</h4>
-              <DiffViewer
+              <ContentViewer
                 content={JSON.stringify(call.requestHeaders, null, 2)}
                 language="json"
-                readOnly
               />
             </div>
             <div>
               <h4 className="text-sm font-medium text-gray-900 mb-2">Body</h4>
-              <DiffViewer
+              <ContentViewer
                 content={JSON.stringify(call.requestBody, null, 2)}
                 language="json"
-                readOnly
               />
             </div>
           </div>
@@ -205,18 +224,16 @@ export function CallView({ call, onClose }: CallViewProps) {
           <div className="space-y-4">
             <div>
               <h4 className="text-sm font-medium text-gray-900 mb-2">Headers</h4>
-              <DiffViewer
+              <ContentViewer
                 content={JSON.stringify(call.responseHeaders, null, 2)}
                 language="json"
-                readOnly
               />
             </div>
             <div>
               <h4 className="text-sm font-medium text-gray-900 mb-2">Body</h4>
-              <DiffViewer
+              <ContentViewer
                 content={JSON.stringify(call.responseBody, null, 2)}
                 language="json"
-                readOnly
               />
             </div>
           </div>
@@ -224,10 +241,9 @@ export function CallView({ call, onClose }: CallViewProps) {
 
         {activeTab === 'raw' && (
           <div>
-            <DiffViewer
+            <ContentViewer
               content={JSON.stringify(call, null, 2)}
               language="json"
-              readOnly
             />
           </div>
         )}

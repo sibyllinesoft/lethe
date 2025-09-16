@@ -1,6 +1,6 @@
 import { useSearchParams } from 'react-router-dom'
 import { useCallComparison, useCall } from '../hooks/api'
-import DiffViewer, { JsonDiff, TextDiff } from '../components/DiffViewer'
+import { JsonDiff } from '../components/DiffViewer'
 import { useState } from 'react'
 
 export default function CompareViewPage() {
@@ -111,11 +111,14 @@ export default function CompareViewPage() {
             <div className="mb-6">
               <h4 className="font-medium mb-2">Pre-Transform Context</h4>
               {comparison.context_diff?.pre?.hasChanges ? (
-                <JsonDiff
-                  obj1={callA?.pre_context || []}
-                  obj2={callB?.pre_context || []}
-                  title="Pre-Transform Context Diff"
-                />
+                <div style={{ minHeight: '800px' }}>
+                  <JsonDiff
+                    obj1={callA?.pre_context || []}
+                    obj2={callB?.pre_context || []}
+                    title="Pre-Transform Context Diff"
+                    height={800}
+                  />
+                </div>
               ) : (
                 <div className="text-gray-600 p-4 bg-gray-50 rounded">No differences in pre-transform context</div>
               )}
@@ -124,11 +127,14 @@ export default function CompareViewPage() {
             <div>
               <h4 className="font-medium mb-2">Post-Transform Context</h4>
               {comparison.context_diff?.post?.hasChanges ? (
-                <JsonDiff
-                  obj1={callA?.post_context || []}
-                  obj2={callB?.post_context || []}
-                  title="Post-Transform Context Diff"
-                />
+                <div style={{ minHeight: '800px' }}>
+                  <JsonDiff
+                    obj1={callA?.post_context || []}
+                    obj2={callB?.post_context || []}
+                    title="Post-Transform Context Diff"
+                    height={800}
+                  />
+                </div>
               ) : (
                 <div className="text-gray-600 p-4 bg-gray-50 rounded">No differences in post-transform context</div>
               )}

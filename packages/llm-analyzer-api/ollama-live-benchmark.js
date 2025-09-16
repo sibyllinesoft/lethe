@@ -182,7 +182,8 @@ function generateProxyLog(promptData, ollamaResult, runId, index) {
         eval_duration_ns: ollamaResult.eval_duration
       }
     },
-    response_preview: ollamaResult.response.substring(0, 100) + (ollamaResult.response.length > 100 ? '...' : '')
+    response_preview: ollamaResult.response.substring(0, 100) + (ollamaResult.response.length > 100 ? '...' : ''),
+    response_full: ollamaResult.response
   }
 
   return [requestLog, responseLog]

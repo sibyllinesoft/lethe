@@ -90,8 +90,8 @@ export class LogParser {
       const userMessages = preMessages.filter(m => m.role === 'user')
       const prompt = userMessages.length > 0 ? userMessages[userMessages.length - 1].content : ''
       
-      // Get completion from response
-      const completion = response?.response_preview || (response ? 'Response content not captured in logs' : undefined)
+      // Get completion from response - prefer full response over preview for accuracy checking
+      const completion = response?.response_full || response?.response_preview || (response ? 'Response content not captured in logs' : undefined)
       
       const callPair: CallPair = {
         id: requestId,
@@ -139,17 +139,50 @@ export class LogParser {
   // For demo purposes, use the most recent logs
   async loadSampleLogs(): Promise<CallPair[]> {
     try {
-      // Look for live benchmark logs first
+      // Look for live proxy logs first (highest priority - real transformations)
       const files = await fs.readdir(process.cwd())
-      const logFiles = files
+      const liveProxyFiles = files
+        .filter(file => file.startsWith('live-proxy-') && file.endsWith('.jsonl'))
+        .sort()
+        .reverse() // most recent first
+        
+      // Then InfiniteBench logs (substantial dataset)
+      const infiniteBenchFiles = files
+        .filter(file => file.startsWith('infinitebench-proxy-') && file.endsWith('.jsonl'))
+        .sort()
+        .reverse() // most recent first
+      
+      // Then live benchmark logs
+      const liveLogFiles = files
         .filter(file => file.startsWith('ollama-live-') && file.endsWith('.jsonl'))
         .sort()
         .reverse() // most recent first
       
       let logPath: string
-      if (logFiles.length > 0) {
-        logPath = path.join(process.cwd(), logFiles[0])
-        console.log(`Loading live benchmark logs: ${logFiles[0]}`)
+      if (liveProxyFiles.length > 0) {
+        // Check if live proxy has substantial data (>10 entries)
+        const liveProxyPath = path.join(process.cwd(), liveProxyFiles[0])
+        const liveContent = await fs.readFile(liveProxyPath, 'utf-8')
+        const liveEntryCount = liveContent.trim().split('\n').length
+        
+        if (liveEntryCount >= 10) {
+          logPath = liveProxyPath
+          console.log(`Loading live proxy logs: ${liveProxyFiles[0]} (${Math.floor(liveEntryCount/2)} calls, REAL transformations)`)
+        } else if (infiniteBenchFiles.length > 0) {
+          logPath = path.join(process.cwd(), infiniteBenchFiles[0])
+          const stats = await fs.stat(logPath)
+          console.log(`Loading InfiniteBench dataset: ${infiniteBenchFiles[0]} (${Math.round(stats.size / (1024*1024))}MB) - live proxy has only ${Math.floor(liveEntryCount/2)} calls`)
+        } else {
+          logPath = liveProxyPath
+          console.log(`Loading live proxy logs: ${liveProxyFiles[0]} (${Math.floor(liveEntryCount/2)} calls, REAL transformations)`)
+        }
+      } else if (infiniteBenchFiles.length > 0) {
+        logPath = path.join(process.cwd(), infiniteBenchFiles[0])
+        const stats = await fs.stat(logPath)
+        console.log(`Loading InfiniteBench dataset: ${infiniteBenchFiles[0]} (${Math.round(stats.size / (1024*1024))}MB)`)
+      } else if (liveLogFiles.length > 0) {
+        logPath = path.join(process.cwd(), liveLogFiles[0])
+        console.log(`Loading live benchmark logs: ${liveLogFiles[0]}`)
       } else {
         // Fallback to original demo logs
         logPath = path.join(process.cwd(), 'ollama-benchmark-ollama-demo-20250915T154208.jsonl')

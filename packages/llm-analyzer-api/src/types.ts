@@ -67,6 +67,8 @@ export interface ProxyResponse extends ProxyLogEntry {
   provider: string;
   status_code: number;
   response_size_bytes: number;
+  response_preview?: string;
+  response_full?: string;
   performance: {
     transform_duration_ms: number;
     total_request_duration_ms: number;

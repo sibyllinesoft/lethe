@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react'
-import { Editor } from '@monaco-editor/react'
+import { useRef } from 'react'
+import { DiffEditor } from '@monaco-editor/react'
 import * as monaco from 'monaco-editor'
 
 interface DiffViewerProps {
@@ -8,6 +8,7 @@ interface DiffViewerProps {
   language?: string
   title?: string
   height?: number
+  disableCompression?: boolean
 }
 
 export default function DiffViewer({ 
@@ -15,7 +16,8 @@ export default function DiffViewer({
   modified, 
   language = 'json', 
   title,
-  height = 400 
+  height = 600,
+  disableCompression = false
 }: DiffViewerProps) {
   const diffEditorRef = useRef<monaco.editor.IStandaloneDiffEditor | null>(null)
 
@@ -37,19 +39,73 @@ export default function DiffViewer({
       glyphMargin: false,
       lineDecorationsWidth: 10,
       lineNumbersMinChars: 3,
+      renderWhitespace: 'boundary',
+      trimAutoWhitespace: false,
+      renderLineHighlight: 'all',
     })
   }
 
-  // Format JSON for better readability
+  // Format JSON and compress large contexts for better readability
   const formatContent = (content: string, lang: string) => {
     if (lang === 'json') {
       try {
-        return JSON.stringify(JSON.parse(content), null, 2)
+        const parsed = JSON.parse(content)
+        const processed = disableCompression ? parsed : compressLargeContexts(parsed)
+        return JSON.stringify(processed, null, 2)
       } catch {
         return content
       }
     }
+    // For plaintext, ensure newlines are preserved
+    if (lang === 'plaintext' || lang === 'text') {
+      return content
+    }
     return content
+  }
+
+  // Compress large text fields to show placeholders with size info
+  const compressLargeContexts = (obj: any): any => {
+    if (typeof obj === 'string') {
+      if (obj.length > 5000) {
+        const sizeKB = (obj.length / 1024).toFixed(1)
+        const preview = obj.substring(0, 200)
+        const suffix = obj.substring(obj.length - 200)
+        return `${preview}\n\n[... COMPRESSED CONTEXT (${sizeKB}KB total) ...]\n\n${suffix}`
+      }
+      return obj
+    }
+    
+    if (Array.isArray(obj)) {
+      return obj.map(compressLargeContexts)
+    }
+    
+    if (obj && typeof obj === 'object') {
+      const compressed: any = {}
+      for (const [key, value] of Object.entries(obj)) {
+        if (key === 'content' && typeof value === 'string' && value.length > 5000) {
+          const sizeKB = (value.length / 1024).toFixed(1)
+          const preview = value.substring(0, 200)
+          const suffix = value.substring(value.length - 200)
+          compressed[key] = `${preview}\n\n[... COMPRESSED CONTEXT (${sizeKB}KB) - Question: ${extractQuestion(value)} ...]\n\n${suffix}`
+        } else {
+          compressed[key] = compressLargeContexts(value)
+        }
+      }
+      return compressed
+    }
+    
+    return obj
+  }
+
+  // Extract question from context for better understanding
+  const extractQuestion = (content: string): string => {
+    const questionMatch = content.match(/Question[:\s]*([^?\n]+\?)/i)
+    if (questionMatch) return questionMatch[1].trim()
+    
+    const whichMatch = content.match(/Which\s+[^?\n]{10,60}\?/i)
+    if (whichMatch) return whichMatch[0].trim()
+    
+    return "InfiniteBench code_debug task"
   }
 
   const formattedOriginal = formatContent(original, language)
@@ -62,9 +118,9 @@ export default function DiffViewer({
           <h3 className="text-sm font-medium">{title}</h3>
         </div>
       )}
-      <div className="diff-content" style={{ height: height }}>
-        <Editor
-          height="100%"
+      <div className="diff-content" style={{ height: height, overflow: 'visible', flex: 'none' }}>
+        <DiffEditor
+          height={height}
           theme="vs"
           language={language}
           original={formattedOriginal}
@@ -84,6 +140,9 @@ export default function DiffViewer({
             glyphMargin: false,
             lineDecorationsWidth: 10,
             lineNumbersMinChars: 3,
+            renderWhitespace: 'boundary',
+            trimAutoWhitespace: false,
+            renderLineHighlight: 'all',
           }}
         />
       </div>
@@ -112,9 +171,11 @@ interface JsonDiffProps {
   obj1: any
   obj2: any
   title?: string
+  height?: number
+  disableCompression?: boolean
 }
 
-export function JsonDiff({ obj1, obj2, title }: JsonDiffProps) {
+export function JsonDiff({ obj1, obj2, title, height = 600, disableCompression = false }: JsonDiffProps) {
   const json1 = typeof obj1 === 'string' ? obj1 : JSON.stringify(obj1, null, 2)
   const json2 = typeof obj2 === 'string' ? obj2 : JSON.stringify(obj2, null, 2)
 
@@ -124,6 +185,8 @@ export function JsonDiff({ obj1, obj2, title }: JsonDiffProps) {
       modified={json2}
       language="json"
       title={title}
+      height={height}
+      disableCompression={disableCompression}
     />
   )
 }
@@ -138,6 +201,24 @@ export function InlineDiff({ text, className }: InlineDiffProps) {
     <div 
       className={`inline-diff ${className || ''}`}
       dangerouslySetInnerHTML={{ __html: text }}
+    />
+  )
+}
+
+interface ContentViewerProps {
+  content: string
+  language?: string
+  readOnly?: boolean
+  height?: number
+}
+
+export function ContentViewer({ content, language = 'json', height = 300 }: ContentViewerProps) {
+  return (
+    <DiffViewer
+      original=""
+      modified={content}
+      language={language}
+      height={height}
     />
   )
 }

@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import callsRouter from './routes/calls.js'
 import compareRouter from './routes/compare.js'
+import proxyRouter from './routes/proxy.js'
 
 const app = express()
 const PORT = process.env.PORT || 3002
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 // Routes
 app.use('/api/calls', callsRouter)
 app.use('/api/compare', compareRouter)
+app.use('/', proxyRouter) // Mount proxy routes at root for /v1/chat/completions
 
 // Health check
 app.get('/api/health', (req, res) => {
