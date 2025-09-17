@@ -24,6 +24,7 @@ ndarray.workspace = true
 regex.workspace = true
 sha2.workspace = true
 hex.workspace = true
+walkdir.workspace = true
 
 # Async traits
 async-trait = "0.1"

@@ -111,6 +111,9 @@ pub struct LetheConfig {
     pub ml: Option<MlConfig>,
     pub development: Option<DevelopmentConfig>,
     pub lens: Option<LensConfig>,
+    pub database: DatabaseConfig,
+    pub embedding: EmbeddingConfig,
+    pub repository_preloading: Option<RepositoryPreloadingConfig>,
 }
 
 /// Retrieval algorithm configuration
@@ -536,6 +539,173 @@ impl Default for LensConfig {
     }
 }
 
+/// Database configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DatabaseConfig {
+    #[serde(default = "default_database_url")]
+    pub url: String,
+    #[serde(default = "default_max_connections")]
+    pub max_connections: u32,
+    #[serde(default = "default_min_connections")]
+    pub min_connections: u32,
+}
+
+fn default_database_url() -> String {
+    "postgresql://lethe:lethe@localhost/lethe".to_string()
+}
+
+fn default_max_connections() -> u32 { 20 }
+fn default_min_connections() -> u32 { 5 }
+
+impl DatabaseConfig {
+    pub fn connection_url(&self) -> String {
+        self.url.clone()
+    }
+}
+
+impl Default for DatabaseConfig {
+    fn default() -> Self {
+        Self {
+            url: default_database_url(),
+            max_connections: default_max_connections(),
+            min_connections: default_min_connections(),
+        }
+    }
+}
+
+/// Embedding service provider
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "lowercase")]
+pub enum EmbeddingProvider {
+    Ollama {
+        base_url: String,
+        model: String,
+    },
+    Fallback,
+}
+
+impl Default for EmbeddingProvider {
+    fn default() -> Self {
+        Self::Ollama {
+            base_url: "http://localhost:11434".to_string(),
+            model: "nomic-embed-text".to_string(),
+        }
+    }
+}
+
+/// Embedding service configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EmbeddingConfig {
+    #[serde(default)]
+    pub provider: EmbeddingProvider,
+    #[serde(default = "default_embedding_dimension")]
+    pub dimension: usize,
+    #[serde(default = "default_embedding_timeout")]
+    pub timeout_ms: u64,
+}
+
+fn default_embedding_dimension() -> usize { 768 }
+fn default_embedding_timeout() -> u64 { 10000 }
+
+impl Default for EmbeddingConfig {
+    fn default() -> Self {
+        Self {
+            provider: EmbeddingProvider::default(),
+            dimension: default_embedding_dimension(),
+            timeout_ms: default_embedding_timeout(),
+        }
+    }
+}
+
+/// Repository preloading configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RepositoryPreloadingConfig {
+    #[serde(default)]
+    pub enabled: bool,
+    #[serde(default)]
+    pub repositories: Vec<RepositoryConfig>,
+    #[serde(default = "default_max_concurrent_repos")]
+    pub max_concurrent_repos: usize,
+    #[serde(default = "default_true")]
+    pub fail_on_error: bool,
+    #[serde(default)]
+    pub file_patterns: Vec<String>,
+    #[serde(default)]
+    pub exclude_patterns: Vec<String>,
+}
+
+fn default_max_concurrent_repos() -> usize { 4 }
+
+impl Default for RepositoryPreloadingConfig {
+    fn default() -> Self {
+        Self {
+            enabled: false,
+            repositories: Vec::new(),
+            max_concurrent_repos: default_max_concurrent_repos(),
+            fail_on_error: false,
+            file_patterns: vec![
+                "*.rs".to_string(),
+                "*.py".to_string(),
+                "*.js".to_string(),
+                "*.ts".to_string(),
+                "*.java".to_string(),
+                "*.cpp".to_string(),
+                "*.c".to_string(),
+                "*.h".to_string(),
+                "*.md".to_string(),
+                "*.txt".to_string(),
+            ],
+            exclude_patterns: vec![
+                "target/**".to_string(),
+                "node_modules/**".to_string(),
+                ".git/**".to_string(),
+                "*.lock".to_string(),
+                "*.log".to_string(),
+            ],
+        }
+    }
+}
+
+/// Individual repository configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RepositoryConfig {
+    pub path: String,
+    pub name: Option<String>,
+    #[serde(default)]
+    pub enabled: bool,
+    #[serde(default)]
+    pub file_patterns: Option<Vec<String>>,
+    #[serde(default)]
+    pub exclude_patterns: Option<Vec<String>>,
+}
+
+impl RepositoryConfig {
+    pub fn new<S: Into<String>>(path: S) -> Self {
+        Self {
+            path: path.into(),
+            name: None,
+            enabled: true,
+            file_patterns: None,
+            exclude_patterns: None,
+        }
+    }
+
+    pub fn with_name<S: Into<String>>(mut self, name: S) -> Self {
+        self.name = Some(name.into());
+        self
+    }
+
+    pub fn with_patterns(mut self, patterns: Vec<String>) -> Self {
+        self.file_patterns = Some(patterns);
+        self
+    }
+
+    pub fn with_excludes(mut self, excludes: Vec<String>) -> Self {
+        self.exclude_patterns = Some(excludes);
+        self
+    }
+}
+
 impl Default for LetheConfig {
     fn default() -> Self {
         Self {
@@ -549,6 +719,9 @@ impl Default for LetheConfig {
             ml: Some(MlConfig::default()),
             development: Some(DevelopmentConfig::default()),
             lens: Some(LensConfig::default()),
+            database: DatabaseConfig::default(),
+            embedding: EmbeddingConfig::default(),
+            repository_preloading: Some(RepositoryPreloadingConfig::default()),
         }
     }
 }
@@ -559,8 +732,18 @@ impl LetheConfig {
         let content = std::fs::read_to_string(path)
             .map_err(|e| LetheError::config(format!("Failed to read config file: {}", e)))?;
         
-        let config: Self = serde_json::from_str(&content)
-            .map_err(|e| LetheError::config(format!("Failed to parse config: {}", e)))?;
+        let extension = path.extension()
+            .and_then(|s| s.to_str())
+            .unwrap_or("json");
+        
+        let config: Self = match extension.to_lowercase().as_str() {
+            "toml" => toml::from_str(&content)
+                .map_err(|e| LetheError::config(format!("Failed to parse TOML config: {}", e)))?,
+            "yaml" | "yml" => serde_yaml::from_str(&content)
+                .map_err(|e| LetheError::config(format!("Failed to parse YAML config: {}", e)))?,
+            "json" | _ => serde_json::from_str(&content)
+                .map_err(|e| LetheError::config(format!("Failed to parse JSON config: {}", e)))?,
+        };
         
         config.validate()?;
         Ok(config)

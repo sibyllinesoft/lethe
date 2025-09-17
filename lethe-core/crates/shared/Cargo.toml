@@ -17,6 +17,10 @@ regex.workspace = true
 sha2.workspace = true
 hex.workspace = true
 
+# Configuration formats
+toml.workspace = true
+serde_yaml.workspace = true
+
 # Additional dependencies needed by error types
 reqwest.workspace = true
 sqlx.workspace = true

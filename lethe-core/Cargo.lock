@@ -1489,6 +1489,7 @@ dependencies = [
  "tracing",
  "uuid",
  "validator 0.16.1",
+ "walkdir",
 ]
 
 [[package]]
@@ -1522,9 +1523,11 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "serde_yaml",
  "sha2",
  "sqlx",
  "thiserror 1.0.69",
+ "toml",
  "uuid",
  "validator 0.16.1",
 ]

@@ -2,13 +2,13 @@ use axum::http::Method;
 use lethe_api::{create_app, AppState};
 use lethe_domain::{
     EmbeddingServiceFactory, OllamaEmbeddingService, FallbackEmbeddingService,
-    PipelineFactory, PipelineConfig,
+    PipelineFactory, PipelineConfig, RepositoryIndexerFactory, RepositoryIndexer,
 };
 use lethe_infrastructure::{
     DatabaseManager, PgMessageRepository, PgChunkRepository, 
     PgEmbeddingRepository, PgSessionRepository,
 };
-use lethe_shared::{LetheConfig, EmbeddingConfig, EmbeddingProvider};
+use lethe_shared::{LetheConfig, EmbeddingConfig, EmbeddingProvider, RepositoryConfig};
 use std::{net::SocketAddr, sync::Arc};
 use tokio::net::TcpListener;
 use tower::ServiceBuilder;
@@ -38,6 +38,18 @@ struct Args {
     /// Configuration file path
     #[arg(long)]
     config: Option<String>,
+    
+    /// Preload multiple repositories (comma-separated paths)
+    #[arg(long, value_delimiter = ',')]
+    preload_repos: Vec<String>,
+    
+    /// Preload a single repository (can be used multiple times)
+    #[arg(long)]
+    preload_repo: Vec<String>,
+    
+    /// Skip repository preloading even if configured
+    #[arg(long)]
+    skip_preload: bool,
 }
 
 #[tokio::main]
@@ -58,7 +70,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing::info!("Starting Lethe API server...");
 
     // Load configuration
-    let config = load_configuration(args.config.as_deref()).await?;
+    let mut config = load_configuration(args.config.as_deref()).await?;
+    
+    // Merge command line repository arguments
+    merge_cli_repos(&mut config, &args)?;
+    
     let config = Arc::new(config);
 
     // Initialize database
@@ -122,6 +138,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
+    // Perform repository preloading if enabled and not skipped
+    if !args.skip_preload {
+        if let Err(e) = preload_repositories(&config, chunk_repository.clone(), message_repository.clone()).await {
+            tracing::error!(error = %e, "Repository preloading failed");
+            if config.repository_preloading.as_ref().map(|r| r.fail_on_error).unwrap_or(false) {
+                return Err(e.into());
+            }
+        }
+    } else {
+        tracing::info!("Repository preloading skipped due to --skip-preload flag");
+    }
+
     // Create application
     let app = create_app(app_state)
         .layer(
@@ -148,13 +176,147 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 async fn load_configuration(config_path: Option<&str>) -> Result<LetheConfig, Box<dyn std::error::Error>> {
     if let Some(path) = config_path {
         tracing::info!(path = %path, "Loading configuration from file");
-        let content = tokio::fs::read_to_string(path).await?;
-        let config: LetheConfig = serde_json::from_str(&content)?;
+        let path_buf = std::path::PathBuf::from(path);
+        let config = LetheConfig::from_file(&path_buf)?;
         Ok(config)
     } else {
         tracing::info!("Using default configuration");
         Ok(LetheConfig::default())
     }
+}
+
+/// Merge command line repository arguments into configuration
+fn merge_cli_repos(config: &mut LetheConfig, args: &Args) -> Result<(), Box<dyn std::error::Error>> {
+    // Collect all repository paths from command line
+    let mut repo_paths = Vec::new();
+    
+    // Add from --preload-repos (comma-separated)
+    repo_paths.extend(args.preload_repos.iter().cloned());
+    
+    // Add from --preload-repo (multiple flags)
+    repo_paths.extend(args.preload_repo.iter().cloned());
+    
+    if !repo_paths.is_empty() {
+        tracing::info!(repos = ?repo_paths, "Adding repositories from command line");
+        
+        // Ensure repository preloading config exists
+        if config.repository_preloading.is_none() {
+            config.repository_preloading = Some(lethe_shared::RepositoryPreloadingConfig::default());
+        }
+        
+        let preload_config = config.repository_preloading.as_mut().unwrap();
+        
+        // Enable preloading if repositories are specified
+        preload_config.enabled = true;
+        
+        // Add command line repositories
+        for repo_path in repo_paths {
+            let repo_config = RepositoryConfig::new(repo_path);
+            preload_config.repositories.push(repo_config);
+        }
+    }
+    
+    Ok(())
+}
+
+/// Preload repositories if configured
+async fn preload_repositories(
+    config: &LetheConfig,
+    chunk_repository: Arc<lethe_infrastructure::PgChunkRepository>,
+    message_repository: Arc<lethe_infrastructure::PgMessageRepository>,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let preload_config = match &config.repository_preloading {
+        Some(config) if config.enabled => config,
+        _ => {
+            tracing::info!("Repository preloading disabled");
+            return Ok(());
+        }
+    };
+    
+    if preload_config.repositories.is_empty() {
+        tracing::info!("No repositories configured for preloading");
+        return Ok(());
+    }
+    
+    tracing::info!(
+        repository_count = preload_config.repositories.len(),
+        max_concurrent = preload_config.max_concurrent_repos,
+        "Starting repository preloading"
+    );
+    
+    // Create chunking config from global config
+    let chunking_config = lethe_domain::RepositoryChunkingConfig {
+        target_tokens: config.chunking.target_tokens.value(),
+        overlap: config.chunking.overlap,
+    };
+    
+    // Create repository indexer
+    let indexer = RepositoryIndexerFactory::create_indexer(
+        chunking_config,
+        preload_config,
+    )?;
+    
+    // Index repositories in parallel
+    let results = indexer.index_repositories(
+        preload_config,
+        chunk_repository,
+        message_repository,
+    ).await?;
+    
+    // Log summary
+    let total_files: usize = results.iter().map(|r| r.indexed_files).sum();
+    let total_chunks: usize = results.iter().map(|r| r.total_chunks).sum();
+    let total_errors: usize = results.iter().map(|r| r.errors.len()).sum();
+    let total_duration: u64 = results.iter().map(|r| r.duration_ms).max().unwrap_or(0);
+    
+    tracing::info!(
+        repositories = results.len(),
+        total_files,
+        total_chunks,
+        total_errors,
+        duration_ms = total_duration,
+        "Repository preloading completed"
+    );
+    
+    // Log individual repository results
+    for result in &results {
+        if result.errors.is_empty() {
+            tracing::info!(
+                repository = %result.repository_path,
+                files = result.indexed_files,
+                chunks = result.total_chunks,
+                duration_ms = result.duration_ms,
+                "Repository indexed successfully"
+            );
+        } else {
+            tracing::warn!(
+                repository = %result.repository_path,
+                files = result.indexed_files,
+                chunks = result.total_chunks,
+                errors = result.errors.len(),
+                duration_ms = result.duration_ms,
+                "Repository indexed with errors"
+            );
+            
+            // Log first few errors as examples
+            for error in result.errors.iter().take(3) {
+                tracing::warn!(
+                    file = %error.file_path,
+                    error = %error.error,
+                    "File indexing error"
+                );
+            }
+            
+            if result.errors.len() > 3 {
+                tracing::warn!(
+                    additional_errors = result.errors.len() - 3,
+                    "Additional errors not shown"
+                );
+            }
+        }
+    }
+    
+    Ok(())
 }
 
 /// Create embedding service from configuration
