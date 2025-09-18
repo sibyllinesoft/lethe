@@ -1,20 +1,27 @@
 {
   "name": "@lethe/api-server",
-  "version": "1.0.0",
-  "description": "API server for Lethe LLM analyzer",
-  "main": "dist/index.js",
+  "version": "0.2.0",
+  "description": "Bun-powered API server that feeds the Lethe analyzer UI",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "scripts": {
-    "dev": "bun run --watch src/index.ts",
-    "build": "bun build ./src/index.ts --outdir ./dist --target bun",
-    "start": "bun run dist/index.js",
-    "lint": "bunx eslint .",
+    "build": "bun build ./src/index.ts --outdir ./dist --minify",
+    "dev": "bun --watch ./src/dev.ts",
+    "lint": "bunx tsc --noEmit",
+    "start": "bun run ./src/dev.ts",
     "test": "bun test"
   },
   "dependencies": {
-    "@lethe/types": "workspace:*",
-    "elysia": "^1.0.0"
+    "@lethe/types": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "typescript": "^5.5.0"
   }
 }

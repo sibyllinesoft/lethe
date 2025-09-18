@@ -1,70 +1,36 @@
-/**
- * API Server tests
- */
-import { expect, test, describe } from "bun:test";
+import { describe, expect, test } from 'bun:test';
+import { createApp } from '@lethe/api-server';
 
-describe("API Server", () => {
-  describe("Route Configuration", () => {
-    test("ping endpoint structure", () => {
-      const pingResponse = {
-        status: "ok",
-        timestamp: Date.now()
-      };
-      
-      expect(pingResponse.status).toBe("ok");
-      expect(typeof pingResponse.timestamp).toBe("number");
-      expect(pingResponse.timestamp).toBeGreaterThan(0);
-    });
+const app = createApp();
 
-    test("bundle save endpoint structure", () => {
-      const bundleSaveRequest = {
-        bundleId: "test-bundle-123",
-        data: { test: "data" },
-        timestamp: Date.now()
-      };
-      
-      const bundleSaveResponse = {
-        success: true,
-        id: bundleSaveRequest.bundleId
-      };
-      
-      expect(bundleSaveResponse.success).toBe(true);
-      expect(bundleSaveResponse.id).toBe(bundleSaveRequest.bundleId);
-    });
+async function request(path: string, init?: RequestInit) {
+  const url = new URL(path, 'http://localhost');
+  return app.handle(new Request(url.toString(), init));
+}
 
-    test("shutdown endpoint structure", () => {
-      const shutdownResponse = {
-        message: "Server shutting down..."
-      };
-      
-      expect(shutdownResponse.message).toContain("shutting down");
-    });
+describe('API server', () => {
+  test('responds to ping', async () => {
+    const response = await request('/api/ping');
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.status).toBe('ok');
   });
 
-  describe("Request Validation", () => {
-    test("validates bundle save requests", () => {
-      const validRequest = {
-        bundleId: "valid-id-123",
-        data: { valid: true }
-      };
-      
-      const isValid = validRequest.bundleId && 
-                     validRequest.bundleId.length > 0 &&
-                     typeof validRequest.data === "object";
-      
-      expect(isValid).toBe(true);
-    });
+  test('lists calls with metadata', async () => {
+    const response = await request('/api/calls');
+    const body = await response.json();
+    expect(Array.isArray(body.calls)).toBe(true);
+    expect(body.calls[0]).toHaveProperty('provider');
+  });
 
-    test("rejects invalid bundle requests", () => {
-      const invalidRequest = {
-        data: { test: true }
-        // Missing bundleId
-      };
-      
-      const isValid = invalidRequest.bundleId && 
-                     invalidRequest.bundleId.length > 0;
-      
-      expect(isValid).toBeFalsy();
-    });
+  test('computes comparison diff', async () => {
+    const callsResponse = await request('/api/calls');
+    const calls = await callsResponse.json();
+    const [first, second] = calls.calls;
+
+    const diffResponse = await request(`/api/compare?call_id_a=${first.id}&call_id_b=${second.id}`);
+    expect(diffResponse.status).toBe(200);
+    const diff = await diffResponse.json();
+    expect(diff).toHaveProperty('prompt_diff');
   });
 });

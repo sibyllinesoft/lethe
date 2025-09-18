@@ -1,103 +1,97 @@
-# Lethe
+# Lethe Monorepo
 
-A modern context-aware retrieval system built with TypeScript and Bun.
+Lethe is a feature-oriented monorepo for context-aware developer tooling. It contains:
 
-## Project Structure
+- `@lethe/core` – the orchestration engine that builds conversation-aware context packs.
+- `@lethe/cli` – a Bun-powered CLI for initializing workspaces, ingesting transcripts, querying context, and launching the API.
+- `@lethe/api-server` – a minimal HTTP API that powers the web-based analyzer experience.
+- `@lethe/llm-analyzer` – a React UI for exploring LLM call history and comparing prompts.
+- `@lethe/tokenizer` and `@lethe/types` – shared utilities that keep implementations consistent.
 
-This is a clean, feature-based monorepo organized for maintainability and modern development workflows:
+## Prerequisites
 
-```
-lethe/
-├── api-server/          # Lightweight API server for the analyzer UI
-├── cli/                 # Command-line interface
-├── core/                # Core retrieval logic and algorithms
-├── llm-analyzer/        # React frontend for LLM call analysis
-├── tokenizer/           # Standalone tokenizer utilities
-├── types/               # Shared TypeScript types
-├── tests/               # Centralized testing (unit/integration/e2e)
-├── deployment/          # Deployment configurations
-├── .github/workflows/   # CI/CD pipelines
-├── bunfig.toml          # Bun workspace configuration
-└── Makefile             # Development automation
-```
+- [Bun](https://bun.sh/) 1.1+
+- `make` (installed by default on most UNIX-like systems)
+- Docker (only required when running `make ci-local` with `act`)
 
-## Quick Start
-
-### Prerequisites
-
-- [Bun](https://bun.sh/) - Fast all-in-one JavaScript runtime
-- [Docker](https://docker.com/) - For local CI testing (optional)
-- [act](https://github.com/nektos/act) - Local GitHub Actions testing (optional)
-
-### Development Setup
+## Getting Started
 
 ```bash
-# Install all dependencies
-make install
+# Install all workspace dependencies
+bun install
+# (or run `make install`, which simply wraps the same command)
 
-# Build all packages
+# Run the full lint/build/test pipeline
+make lint
 make build
-
-# Run tests
 make test
 
-# Lint code
-make lint
+# Launch the API server and analyzer UI during development
+bun run --cwd api-server src/dev.ts
+bun run --cwd llm-analyzer dev
+```
 
-# Run local CI pipeline
+The CLI can bootstrap a local workspace and experiment with the core orchestration pipeline:
+
+```bash
+# Create a workspace in the current directory
+bun run --cwd cli src/index.ts init
+
+# Ingest a JSON transcript (array of { role, text })
+bun run --cwd cli src/index.ts ingest --file ./transcript.json --session demo
+
+# Ask for a context pack
+bun run --cwd cli src/index.ts query demo "latency metrics"
+
+# Start the API server through the CLI wrapper
+bun run --cwd cli src/index.ts serve --port 3001
+```
+
+## Tests & Quality
+
+The repository uses Bun's built-in test runner. Tests live under the top-level `tests/` directory and cover:
+
+- Context orchestration behaviour (`tests/unit/core`)
+- Tokenizer utilities (`tests/unit/tokenizer`)
+- Workspace helpers and CLI entry points (`tests/unit/cli`)
+- HTTP endpoints exposed by the API server (`tests/unit/api-server`)
+- Shape checks for the shared `@lethe/types` package (`tests/unit/types`)
+
+Run everything with:
+
+```bash
+make test
+```
+
+## Repository Layout
+
+```
+.
+├── api-server/         # Bun + Elysia API serving the analyzer
+├── cli/                # CLI for local workflows
+├── core/               # Retrieval, scoring, and summarisation logic
+├── llm-analyzer/       # React UI powered by the API server
+├── tokenizer/          # Shared tokenizer utilities
+├── types/              # Shared TypeScript interfaces
+├── tests/              # Centralised test suites
+├── deployment/         # Deployment assets (e.g. canary configs)
+├── bunfig.toml         # Bun workspace configuration
+└── Makefile            # Project automation entry points
+```
+
+## Continuous Integration
+
+GitHub Actions runs the same steps as `make lint`, `make build`, and `make test`. You can execute the workflow locally with:
+
+```bash
 make ci-local
 ```
 
-### Package Development
+## Contributing
 
-Each package can be developed independently:
+1. Fork the repository and create a feature branch.
+2. Install dependencies via `make install`.
+3. Add or update tests in `tests/` for any behaviour change.
+4. Run `make build` and `make test` before opening a pull request.
 
-```bash
-# Core package
-cd core/
-bun dev
-
-# CLI package  
-cd cli/
-bun dev
-
-# API server
-cd api-server/
-bun dev
-
-# LLM analyzer (React app)
-cd llm-analyzer/
-bun dev
-```
-
-## Architecture
-
-### Core Packages
-
-- **@lethe/core** - Context retrieval algorithms and processing pipelines
-- **@lethe/cli** - Command-line interface for context management
-- **@lethe/api-server** - Lightweight server for the analyzer frontend
-- **@lethe/llm-analyzer** - React application for analyzing LLM calls
-- **@lethe/tokenizer** - Text tokenization utilities
-- **@lethe/types** - Shared TypeScript type definitions
-
-### Key Features
-
-- **Modern Tooling** - Built with Bun for speed and simplicity
-- **Type Safety** - Full TypeScript coverage with shared type definitions
-- **Workspace Management** - Efficient dependency management across packages
-- **Automated Testing** - Centralized test suite with coverage reporting
-- **Local CI** - Test GitHub Actions locally with `act`
-- **Clean Architecture** - Feature-based organization, no language silos
-
-## Development Workflow
-
-1. **Make Changes** - Edit code in any package
-2. **Test Locally** - `make test` runs all tests
-3. **Build** - `make build` compiles all packages
-4. **Local CI** - `make ci-local` runs the full pipeline
-5. **Commit** - Standard git workflow
-
-## License
-
-MIT License - see [LICENSE](LICENSE) for details.
+See `CONTRIBUTING.md` for additional guidance.

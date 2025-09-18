@@ -28,8 +28,11 @@ export default function CompareViewPage() {
   }
 
   if (error || !comparison) {
-    return <div className="error">Error loading comparison: {error?.message || 'Comparison failed'}</div>
+    const message = error instanceof Error ? error.message : 'Comparison failed'
+    return <div className="error">Error loading comparison: {message}</div>
   }
+
+  const comparisonData = comparison as Record<string, any>
 
   return (
     <div className="container">
@@ -44,19 +47,19 @@ export default function CompareViewPage() {
         <div className="bg-white rounded border p-4">
           <h3 className="font-medium mb-2">Call A</h3>
           <div className="text-sm space-y-1">
-            <div>ID: {comparison.metadata?.callA?.id}</div>
-            <div>Provider: {comparison.metadata?.callA?.provider}</div>
-            <div>Model: {comparison.metadata?.callA?.model}</div>
-            <div>Time: {new Date(comparison.metadata?.callA?.timestamp).toLocaleString()}</div>
+            <div>ID: {comparisonData.metadata?.callA?.id}</div>
+            <div>Provider: {comparisonData.metadata?.callA?.provider}</div>
+            <div>Model: {comparisonData.metadata?.callA?.model}</div>
+            <div>Time: {new Date(comparisonData.metadata?.callA?.timestamp).toLocaleString()}</div>
           </div>
         </div>
         <div className="bg-white rounded border p-4">
           <h3 className="font-medium mb-2">Call B</h3>
           <div className="text-sm space-y-1">
-            <div>ID: {comparison.metadata?.callB?.id}</div>
-            <div>Provider: {comparison.metadata?.callB?.provider}</div>
-            <div>Model: {comparison.metadata?.callB?.model}</div>
-            <div>Time: {new Date(comparison.metadata?.callB?.timestamp).toLocaleString()}</div>
+            <div>ID: {comparisonData.metadata?.callB?.id}</div>
+            <div>Provider: {comparisonData.metadata?.callB?.provider}</div>
+            <div>Model: {comparisonData.metadata?.callB?.model}</div>
+            <div>Time: {new Date(comparisonData.metadata?.callB?.timestamp).toLocaleString()}</div>
           </div>
         </div>
       </div>
@@ -89,17 +92,17 @@ export default function CompareViewPage() {
       </div>
 
       <div className="main-content">
-        {activeTab === 'prompts' && comparison.prompt_diff && (
+        {activeTab === 'prompts' && comparisonData.prompt_diff && (
           <div className="p-6">
             <h3 className="text-lg font-medium mb-4">Prompt Comparison</h3>
             <div className="bg-gray-50 p-4 mb-4 rounded">
               <div className="text-sm">
-                Similarity: <span className="font-medium">{comparison.prompt_diff.similarity?.toFixed(1)}%</span>
+                Similarity: <span className="font-medium">{comparisonData.prompt_diff?.similarity?.toFixed(1)}%</span>
               </div>
             </div>
             <div 
               className="border rounded p-4 text-sm"
-              dangerouslySetInnerHTML={{ __html: comparison.prompt_diff.text || 'No differences' }}
+              dangerouslySetInnerHTML={{ __html: comparisonData.prompt_diff?.text || 'No differences' }}
             />
           </div>
         )}
@@ -110,7 +113,7 @@ export default function CompareViewPage() {
             
             <div className="mb-6">
               <h4 className="font-medium mb-2">Pre-Transform Context</h4>
-              {comparison.context_diff?.pre?.hasChanges ? (
+              {comparisonData.context_diff?.pre?.hasChanges ? (
                 <div style={{ minHeight: '800px' }}>
                   <JsonDiff
                     obj1={callA?.pre_context || []}
@@ -126,7 +129,7 @@ export default function CompareViewPage() {
 
             <div>
               <h4 className="font-medium mb-2">Post-Transform Context</h4>
-              {comparison.context_diff?.post?.hasChanges ? (
+              {comparisonData.context_diff?.post?.hasChanges ? (
                 <div style={{ minHeight: '800px' }}>
                   <JsonDiff
                     obj1={callA?.post_context || []}
@@ -142,12 +145,12 @@ export default function CompareViewPage() {
           </div>
         )}
 
-        {activeTab === 'params' && comparison.params_diff && (
+        {activeTab === 'params' && comparisonData.params_diff && (
           <div className="p-6">
             <h3 className="text-lg font-medium mb-4">Parameter Comparison</h3>
-            {comparison.params_diff.hasChanges ? (
+            {comparisonData.params_diff?.hasChanges ? (
               <div className="bg-gray-50 p-4 rounded">
-                <pre className="text-sm">{JSON.stringify(comparison.params_diff.delta, null, 2)}</pre>
+                <pre className="text-sm">{JSON.stringify(comparisonData.params_diff?.delta, null, 2)}</pre>
               </div>
             ) : (
               <div className="text-gray-600 p-4 bg-gray-50 rounded">No parameter differences</div>
@@ -155,12 +158,12 @@ export default function CompareViewPage() {
           </div>
         )}
 
-        {activeTab === 'performance' && comparison.performance_diff && (
+        {activeTab === 'performance' && comparisonData.performance_diff && (
           <div className="p-6">
             <h3 className="text-lg font-medium mb-4">Performance Comparison</h3>
-            {comparison.performance_diff.hasChanges ? (
+            {comparisonData.performance_diff?.hasChanges ? (
               <div className="bg-gray-50 p-4 rounded">
-                <pre className="text-sm">{JSON.stringify(comparison.performance_diff.delta, null, 2)}</pre>
+                <pre className="text-sm">{JSON.stringify(comparisonData.performance_diff?.delta, null, 2)}</pre>
               </div>
             ) : (
               <div className="text-gray-600 p-4 bg-gray-50 rounded">No performance differences</div>

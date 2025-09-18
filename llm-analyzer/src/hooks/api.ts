@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '../lib/api'
-import { CallsFilters } from '../types'
+import { CallsFilters, DiffResult } from '../types'
 
 // Query keys
 export const queryKeys = {

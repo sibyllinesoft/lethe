@@ -1,6 +1,6 @@
-import { CallPair, CallsFilters, CallsListResponse } from '../types'
+import { CallPair, CallsFilters, CallsListResponse, DiffResult, PrePostDiff } from '../types'
 
-const API_BASE = 'http://localhost:3002/api'
+const API_BASE = '/api'
 
 class ApiClient {
   private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
@@ -43,28 +43,28 @@ class ApiClient {
     return this.request<CallPair>(`/calls/${id}`)
   }
 
-  async getPrePostDiff(id: string): Promise<any> {
-    return this.request<any>(`/calls/${id}/pre-post-diff`)
+  async getPrePostDiff(id: string): Promise<PrePostDiff> {
+    return this.request(`/calls/${id}/pre-post-diff`)
   }
 
-  async compareCallsQuery(callIdA: string, callIdB: string): Promise<any> {
+  async compareCallsQuery(callIdA: string, callIdB: string): Promise<DiffResult> {
     const params = new URLSearchParams({ call_id_a: callIdA, call_id_b: callIdB })
-    return this.request<any>(`/compare?${params}`)
+    return this.request(`/compare?${params}`)
   }
 
-  async compareCalls(callIdA: string, callIdB: string): Promise<any> {
-    return this.request<any>('/compare', {
+  async compareCalls(callIdA: string, callIdB: string): Promise<DiffResult> {
+    return this.request('/compare', {
       method: 'POST',
       body: JSON.stringify({ call_id_a: callIdA, call_id_b: callIdB }),
     })
   }
 
-  async getRunPairs(runId: string): Promise<any> {
-    return this.request<any>(`/compare/runs/${runId}`)
+  async getRunPairs(runId: string): Promise<{ run_id: string; call_ids: string[] }> {
+    return this.request(`/compare/runs/${runId}`)
   }
 
-  async getStats(): Promise<any> {
-    return this.request<any>('/calls/stats')
+  async getStats(): Promise<{ total_calls: number; providers: string[]; models: string[]; average_latency_ms: number }> {
+    return this.request('/calls/stats')
   }
 
   async getRuns(): Promise<{ run_ids: string[] }> {
@@ -72,7 +72,7 @@ class ApiClient {
   }
 
   async getHealth(): Promise<{ status: string; timestamp: string }> {
-    return this.request<{ status: string; timestamp: string }>('/health')
+    return this.request('/health')
   }
 }
 

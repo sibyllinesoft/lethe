@@ -1,84 +1,52 @@
-/**
- * CLI functionality tests
- */
-import { expect, test, describe } from "bun:test";
+import { afterEach, describe, expect, test } from 'bun:test';
+import { mkdtemp, rm, writeFile } from 'fs/promises';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import { Workspace } from '@lethe/cli/workspace';
+import { ingestCommand } from '@lethe/cli/commands/ingest';
+import { initCommand } from '@lethe/cli/commands/init';
+import type { MessageRole } from '@lethe/types';
 
-describe("CLI Package", () => {
-  describe("Command Parsing", () => {
-    test("parses basic commands", () => {
-      const command = "lethe search";
-      const parts = command.split(" ");
-      
-      expect(parts[0]).toBe("lethe");
-      expect(parts[1]).toBe("search");
-    });
+let workspaceDir: string;
+const originalCwd = process.cwd();
 
-    test("parses commands with flags", () => {
-      const command = "lethe search --query 'test query' --limit 10";
-      const args = command.split(" ");
-      
-      expect(args).toContain("--query");
-      expect(args).toContain("--limit");
-      expect(args).toContain("10");
-    });
+async function setupTempWorkspace() {
+  workspaceDir = await mkdtemp(join(tmpdir(), 'lethe-cli-'));
+  process.chdir(workspaceDir);
+}
 
-    test("validates command structure", () => {
-      const validCommands = ["search", "index", "serve", "help"];
-      const testCommand = "search";
-      
-      expect(validCommands).toContain(testCommand);
-    });
+afterEach(async () => {
+  if (workspaceDir) {
+    await rm(workspaceDir, { recursive: true, force: true });
+  }
+  process.chdir(originalCwd);
+});
+
+describe('CLI workspace helpers', () => {
+  test('init command creates workspace file', async () => {
+    await setupTempWorkspace();
+    await initCommand({ directory: workspaceDir });
+    const workspace = new Workspace(workspaceDir);
+    const data = await workspace.load();
+    expect(Object.keys(data.sessions)).toHaveLength(0);
   });
 
-  describe("Configuration Handling", () => {
-    test("creates default config", () => {
-      const defaultConfig = {
-        retrieval: {
-          strategy: "hybrid",
-          topK: 10
-        },
-        server: {
-          port: 3000
-        }
-      };
-      
-      expect(defaultConfig.retrieval.strategy).toBe("hybrid");
-      expect(defaultConfig.server.port).toBe(3000);
-    });
+  test('ingest command appends messages to workspace', async () => {
+    await setupTempWorkspace();
+    await initCommand({ directory: workspaceDir });
 
-    test("validates config values", () => {
-      const config = {
-        retrieval: { topK: 5 },
-        server: { port: 8080 }
-      };
-      
-      const isValidTopK = config.retrieval.topK > 0 && config.retrieval.topK <= 100;
-      const isValidPort = config.server.port > 1000 && config.server.port < 65536;
-      
-      expect(isValidTopK).toBe(true);
-      expect(isValidPort).toBe(true);
-    });
-  });
+    const payload = [
+      { role: 'user' as MessageRole, text: 'Any incidents overnight?' },
+      { role: 'assistant' as MessageRole, text: 'No incidents recorded.' },
+    ];
 
-  describe("Output Formatting", () => {
-    test("formats search results", () => {
-      const results = [
-        { id: "1", score: 0.9, text: "Result 1" },
-        { id: "2", score: 0.7, text: "Result 2" }
-      ];
-      
-      const formatted = results.map(r => `${r.id}: ${r.text} (score: ${r.score})`);
-      
-      expect(formatted[0]).toContain("Result 1");
-      expect(formatted[0]).toContain("0.9");
-      expect(formatted).toHaveLength(2);
-    });
+    const file = join(workspaceDir, 'messages.json');
+    await writeFile(file, JSON.stringify(payload));
 
-    test("handles empty results", () => {
-      const results: any[] = [];
-      const message = results.length === 0 ? "No results found" : "Results found";
-      
-      expect(message).toBe("No results found");
-    });
+    await ingestCommand({ file, session: 'demo' });
+
+    const workspace = new Workspace(workspaceDir);
+    const data = await workspace.load();
+    expect(data.sessions.demo.messages).toHaveLength(2);
   });
 });

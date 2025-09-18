@@ -1,33 +1,27 @@
-/**
- * Tokenizer package tests
- */
-import { expect, test, describe } from "bun:test";
+import { describe, expect, test } from 'bun:test';
+import { analyzeTokens, countTokens, tokenRatio, tokenize } from '@lethe/tokenizer';
 
-describe("Tokenizer Package", () => {
-  test("basic tokenization works", () => {
-    const text = "hello world test";
-    const words = text.split(" ");
-    
-    expect(words).toHaveLength(3);
-    expect(words[0]).toBe("hello");
-    expect(words[1]).toBe("world");
-    expect(words[2]).toBe("test");
+describe('Tokenizer', () => {
+  test('splits tokens case-insensitively', () => {
+    const tokens = tokenize('Latency P95 is 210ms.');
+    expect(tokens).toEqual(['latency', 'p95', 'is', '210ms']);
   });
 
-  test("token counting", () => {
-    const text = "This is a test sentence with multiple words.";
-    const wordCount = text.split(/\s+/).length;
-    
-    expect(wordCount).toBeGreaterThan(0);
-    expect(typeof wordCount).toBe("number");
+  test('tokenRatio highlights overlap', () => {
+    const ratio = tokenRatio('Latency p95 improved to 210ms', 'latency budget metrics');
+    expect(ratio).toBeGreaterThan(0);
+    expect(ratio).toBeLessThan(1);
   });
 
-  test("GPT token estimation", () => {
-    const text = "Hello world";
-    const words = text.split(/\s+/);
-    const estimatedTokens = Math.ceil(words.length * 0.75);
-    
-    expect(estimatedTokens).toBeGreaterThan(0);
-    expect(estimatedTokens).toBeLessThanOrEqual(words.length);
+  test('analyzeTokens returns counts and ranking', () => {
+    const breakdown = analyzeTokens('a a b c c c');
+    expect(breakdown.totalTokens).toBe(6);
+    expect(breakdown.uniqueTokens).toBe(3);
+    expect(breakdown.topTokens[0].token).toBe('c');
+  });
+
+  test('countTokens matches tokenize length', () => {
+    const text = 'Incident response needed immediately';
+    expect(countTokens(text)).toBe(tokenize(text).length);
   });
 });

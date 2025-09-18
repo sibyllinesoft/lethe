@@ -1,0 +1,13 @@
+{
+  "name": "lethe-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "api-server",
+    "cli",
+    "core",
+    "llm-analyzer",
+    "tokenizer",
+    "types"
+  ]
+}

@@ -1,66 +1,25 @@
-# Dependencies
-node_modules/
-**/node_modules/
+# General OS/editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
 
-# Build outputs
-dist/
-build/
-**/dist/
-**/build/
+# Bun / Node outputs
+node_modules/
+bun.lockb
+npm-debug.log*
+yarn-debug.log*
+
+# Build artifacts
+*.tsbuildinfo
+/dist/
+/build/
+coverage/
 
 # Environment files
 .env
-.env.local
-.env.production
-.env.test
+.env.*
 
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Runtime data
-pids/
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
-
-# nyc test coverage
-.nyc_output
-
-# TypeScript
-*.tsbuildinfo
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Temporary files
-*.tmp
-*.temp
-
-# Test databases
-*.db-wal
-*.db-shm
-test_*.db
-
-# Bun
-.bun/
-bun.lockb
+# Local workspace state
+.lethe/

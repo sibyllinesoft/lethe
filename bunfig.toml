@@ -1,9 +1,7 @@
-# Lethe monorepo workspace configuration
-
 [workspaces]
 packages = [
   "api-server",
-  "cli", 
+  "cli",
   "core",
   "llm-analyzer",
   "tokenizer",
@@ -11,14 +9,12 @@ packages = [
 ]
 
 [install]
-# Faster installs with hard linking
 frozenLockfile = false
-exact = false
-
-[run]
-# Shell to use for running scripts  
-shell = "system"
 
 [test]
-# Test configuration
+root = "tests"
 coverage = true
+importmap = "./import-map.json"
+
+[run]
+importmap = "./import-map.json"

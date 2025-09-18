@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@lethe/types": ["types/src/index.ts"],
+      "@lethe/types/*": ["types/src/*"],
+      "@lethe/core": ["core/src/index.ts"],
+      "@lethe/core/*": ["core/src/*"],
+      "@lethe/tokenizer": ["tokenizer/src/index.ts"],
+      "@lethe/tokenizer/*": ["tokenizer/src/*"],
+      "@lethe/api-server": ["api-server/src/index.ts"],
+      "@lethe/api-server/*": ["api-server/src/*"],
+      "@lethe/cli": ["cli/src/index.ts"],
+      "@lethe/cli/*": ["cli/src/*"]
+    }
+  }
+}

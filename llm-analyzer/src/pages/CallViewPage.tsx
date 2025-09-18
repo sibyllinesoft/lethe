@@ -85,13 +85,15 @@ export default function CallViewPage() {
   
   const { data: call, isLoading, error } = useCall(id!)
   const { data: prePostDiff } = usePrePostDiff(id!)
+  const diffDetails = (prePostDiff ?? {}) as Record<string, any>
 
   if (isLoading) {
     return <div className="loading">Loading call details...</div>
   }
 
   if (error || !call) {
-    return <div className="error">Error loading call: {error?.message || 'Call not found'}</div>
+    const message = error instanceof Error ? error.message : 'Call not found'
+    return <div className="error">Error loading call: {message}</div>
   }
 
   return (
@@ -216,16 +218,16 @@ export default function CallViewPage() {
             <div className="mb-6">
               <h4 className="font-medium mb-2">Size Changes</h4>
               <div className="bg-gray-50 p-3 rounded">
-                <div>Before: {prePostDiff.size_diff?.pre_bytes} bytes</div>
-                <div>After: {prePostDiff.size_diff?.post_bytes} bytes</div>
-                <div>Change: +{prePostDiff.size_diff?.change_bytes} bytes ({prePostDiff.size_diff?.change_percent}%)</div>
+                <div>Before: {diffDetails.size_diff?.pre_bytes} bytes</div>
+                <div>After: {diffDetails.size_diff?.post_bytes} bytes</div>
+                <div>Change: +{diffDetails.size_diff?.change_bytes} bytes ({diffDetails.size_diff?.change_percent}%)</div>
               </div>
             </div>
 
             <div className="mb-6">
               <h4 className="font-medium mb-2">Applied Transformations</h4>
               <div className="flex gap-2">
-                {prePostDiff.transformations?.map((transform: string, i: number) => (
+                {(diffDetails.transformations as string[] | undefined)?.map((transform, i) => (
                   <span key={i} className="pill">
                     {transform}
                   </span>
@@ -233,7 +235,7 @@ export default function CallViewPage() {
               </div>
             </div>
 
-            {prePostDiff.payload_diff && (
+            {diffDetails.payload_diff && (
               <div style={{ minHeight: '800px' }}>
                 <JsonDiff
                   obj1={call.request?.pre_transform?.payload}

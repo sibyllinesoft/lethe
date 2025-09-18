@@ -2,17 +2,17 @@
   "name": "@lethe/types",
   "version": "1.0.0",
   "description": "Shared TypeScript types for Lethe monorepo",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "scripts": {
     "build": "bun build ./src/index.ts --outdir ./dist --target bun",
-    "lint": "bunx eslint .",
+    "lint": "bunx tsc --noEmit",
     "test": "bun test"
   },
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
     }
   }
 }

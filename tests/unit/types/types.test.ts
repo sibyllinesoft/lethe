@@ -1,46 +1,100 @@
-/**
- * Types package tests
- */
-import { expect, test, describe } from "bun:test";
+import { describe, expect, test } from 'bun:test';
+import type {
+  CallPair,
+  ContextPack,
+  RetrievalCandidate,
+  SessionMessage,
+} from '@lethe/types';
 
-describe("Types Package", () => {
-  test("basic type definitions exist", () => {
-    // Test that we can import types from the types package
-    const config: any = {
-      models: {
-        embed: "test-embed",
-        rerank: "test-rerank"
-      },
-      retrieval: {
-        alpha: 0.5,
-        beta: 0.5,
-        gamma_kind_boost: {
-          tool_result: 1.0,
-          user_code: 1.1,
-          prose: 1.0,
-          code: 1.2
-        },
-        variant: "hybrid" as const
-      }
+const message: SessionMessage = {
+  id: 'm-1',
+  sessionId: 's-1',
+  role: 'assistant',
+  text: 'Rollback completed successfully.',
+  timestamp: Date.now(),
+};
+
+const candidate: RetrievalCandidate = {
+  message,
+  lexicalScore: 0.6,
+  semanticScore: 0.7,
+  diversityScore: 0.2,
+  hybridScore: 0.58,
+  highlights: [{ start: 0, end: 8 }],
+};
+
+describe('Shared types', () => {
+  test('ContextPack shape matches expectations', () => {
+    const pack: ContextPack = {
+      id: 'pack-1',
+      sessionId: 's-1',
+      query: 'deployment status',
+      summary: 'Deployment healthy',
+      createdAt: Date.now(),
+      messages: [candidate],
     };
-    
-    expect(config.models.embed).toBe("test-embed");
-    expect(config.retrieval.variant).toBe("hybrid");
+
+    expect(pack.messages[0].message).toBe(message);
+    expect(pack.messages[0].highlights[0].start).toBe(0);
   });
 
-  test("candidate type structure", () => {
-    const candidate: any = {
-      id: "test-id",
-      text: "test text",
-      messageId: "msg-123",
-      kind: "prose" as const,
-      bm25Score: 0.8,
-      vectorScore: 0.9,
-      hybridScore: 0.85
+  test('CallPair supports analyzer fields', () => {
+    const call: CallPair = {
+      id: 'call-1',
+      timestamp: new Date().toISOString(),
+      run_id: 'run-1',
+      query_id: 'query-1',
+      provider: 'openai',
+      model: 'gpt-4o',
+      status: 'success',
+      input_tokens: 120,
+      output_tokens: 25,
+      latency_ms: 240,
+      temperature: 0,
+      max_tokens: 256,
+      transform_changes: ['hydrate_context'],
+      prompt: 'Summarize deployment health.',
+      completion: 'Deployment is healthy with low latency.',
+      pre_context: ['last deploy status'],
+      post_context: ['summary delivered'],
+      request: {
+        event: 'proxy_request_transform',
+        timestamp: new Date().toISOString(),
+        level: 'info',
+        request_id: 'req-1',
+        provider: 'openai',
+        path: '/v1/chat/completions',
+        method: 'POST',
+        transform: {
+          enabled: true,
+          duration_ms: 10,
+          changes: ['attach_context'],
+          size_change_percent: -10,
+        },
+        pre_transform: {
+          size_bytes: 1024,
+          token_estimate: 200,
+          payload: {
+            model: 'gpt-4o',
+            messages: [],
+            temperature: 0,
+            max_tokens: 256,
+          },
+        },
+        post_transform: {
+          size_bytes: 900,
+          token_estimate: 180,
+          payload: {
+            model: 'gpt-4o',
+            messages: [],
+            temperature: 0,
+            max_tokens: 256,
+          },
+        },
+      },
     };
 
-    expect(candidate.id).toBe("test-id");
-    expect(candidate.kind).toBe("prose");
-    expect(typeof candidate.bm25Score).toBe("number");
+    expect(call.transform_changes.length).toBe(1);
+    expect(call.status).toBe('success');
   });
 });
