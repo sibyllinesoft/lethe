@@ -16,6 +16,7 @@ Thumbs.db
 
 # IDE configurations
 .vscode/
+.vscode/ipch/
 !.vscode/extensions.json
 !.vscode/settings.json
 .idea/
@@ -36,6 +37,8 @@ logs/
 *.orig
 temp/
 tmp/
+*.swp~
+service.log
 
 # Node.js/TypeScript/JavaScript
 # =============================================================================
