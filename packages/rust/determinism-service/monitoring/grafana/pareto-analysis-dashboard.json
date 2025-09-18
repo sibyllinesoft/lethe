@@ -1,0 +1,464 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "lethe-pareto-analysis",
+    "title": "Lethe Determinism Service - Pareto Frontier Analysis",
+    "description": "Real-time analysis of complexity vs K2 coefficient Pareto frontier optimization",
+    "tags": ["lethe", "pareto", "complexity", "optimization"],
+    "timezone": "UTC",
+    "schemaVersion": 30,
+    "version": 1,
+    "refresh": "10s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"]
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Pareto Frontier Evolution",
+        "description": "Real-time visualization of the complexity vs K2 Pareto frontier",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "pareto_frontier_points",
+            "legendFormat": "Pareto Optimal Points",
+            "interval": "10s"
+          },
+          {
+            "expr": "pareto_dominated_points", 
+            "legendFormat": "Dominated Points",
+            "interval": "10s"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "points",
+              "pointSize": 5,
+              "showPoints": "always"
+            },
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "short"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Pareto Optimal Points"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "green"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {
+            "displayMode": "table",
+            "placement": "bottom",
+            "values": ["value", "mean", "lastNotNull"]
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "gridPos": {
+          "h": 12,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "Complexity Distribution",
+        "description": "Histogram of transform complexity scores",
+        "type": "histogram",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, complexity_histogram_bucket)",
+            "legendFormat": "P50 Complexity"
+          },
+          {
+            "expr": "histogram_quantile(0.95, complexity_histogram_bucket)",
+            "legendFormat": "P95 Complexity"
+          },
+          {
+            "expr": "histogram_quantile(0.99, complexity_histogram_bucket)",
+            "legendFormat": "P99 Complexity"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "short",
+            "min": 0,
+            "max": 1
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 12
+        }
+      },
+      {
+        "id": 3,
+        "title": "K2 Coefficient Distribution",
+        "description": "Histogram of K2 coefficient scores",
+        "type": "histogram", 
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, k2_coefficient_histogram_bucket)",
+            "legendFormat": "P50 K2 Coefficient"
+          },
+          {
+            "expr": "histogram_quantile(0.95, k2_coefficient_histogram_bucket)",
+            "legendFormat": "P95 K2 Coefficient"
+          },
+          {
+            "expr": "histogram_quantile(0.99, k2_coefficient_histogram_bucket)",
+            "legendFormat": "P99 K2 Coefficient"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "short",
+            "min": 0,
+            "max": 1
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 12
+        }
+      },
+      {
+        "id": 4,
+        "title": "Provider Performance Comparison",
+        "description": "Pareto efficiency by provider (OpenAI, Anthropic, Google)",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "pareto_efficiency_by_provider{provider=\"openai\"}",
+            "legendFormat": "OpenAI"
+          },
+          {
+            "expr": "pareto_efficiency_by_provider{provider=\"anthropic\"}", 
+            "legendFormat": "Anthropic"
+          },
+          {
+            "expr": "pareto_efficiency_by_provider{provider=\"google\"}",
+            "legendFormat": "Google"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "yellow", 
+                  "value": 0.7
+                },
+                {
+                  "color": "green",
+                  "value": 0.85
+                }
+              ]
+            },
+            "unit": "percentunit",
+            "min": 0,
+            "max": 1
+          }
+        },
+        "options": {
+          "orientation": "horizontal",
+          "displayMode": "basic"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 0,
+          "y": 20
+        }
+      },
+      {
+        "id": 5,
+        "title": "Model Size Analysis", 
+        "description": "256 vs 768 dimension model performance in Pareto space",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "pareto_optimal_count_by_model_size{model_size=\"256\"}",
+            "legendFormat": "256-dim"
+          },
+          {
+            "expr": "pareto_optimal_count_by_model_size{model_size=\"768\"}", 
+            "legendFormat": "768-dim"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "short"
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          },
+          "pieType": "pie",
+          "tooltip": {
+            "mode": "single"
+          },
+          "legend": {
+            "displayMode": "table",
+            "placement": "right",
+            "values": ["value", "percent"]
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 8,
+          "y": 20
+        }
+      },
+      {
+        "id": 6,
+        "title": "Pareto Frontier Stability",
+        "description": "Convergence metrics and frontier stability over time",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "pareto_frontier_stability_index",
+            "legendFormat": "Stability Index"
+          },
+          {
+            "expr": "pareto_convergence_rate",
+            "legendFormat": "Convergence Rate"
+          },
+          {
+            "expr": "pareto_optimality_gap",
+            "legendFormat": "Optimality Gap"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 0.8
+                },
+                {
+                  "color": "green", 
+                  "value": 0.95
+                }
+              ]
+            },
+            "unit": "percentunit"
+          }
+        },
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "center",
+          "orientation": "vertical"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 16,
+          "y": 20
+        }
+      },
+      {
+        "id": 7,
+        "title": "Real-time Data Stream",
+        "description": "Live incoming data points and their Pareto classification",
+        "type": "logs",
+        "targets": [
+          {
+            "expr": "{job=\"determinism-service\"} |= \"pareto\" | json",
+            "legendFormat": ""
+          }
+        ],
+        "options": {
+          "showTime": true,
+          "showLabels": true,
+          "sortOrder": "Descending",
+          "wrapLogMessage": true,
+          "enableLogDetails": true
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 28
+        }
+      },
+      {
+        "id": 8,
+        "title": "Performance Impact Metrics",
+        "description": "V2 features impact on Pareto frontier performance",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "v2_feature_extraction_impact_on_pareto",
+            "legendFormat": "V2 Feature Extraction Impact"
+          },
+          {
+            "expr": "difficulty_gate_pareto_improvement",
+            "legendFormat": "Difficulty Gate Improvement" 
+          },
+          {
+            "expr": "learning_loop_pareto_optimization",
+            "legendFormat": "Learning Loop Optimization"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "percent"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 36
+        }
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "name": "Pareto Frontier Updates",
+          "datasource": "prometheus",
+          "enable": true,
+          "expr": "changes(pareto_frontier_update_count[5m]) > 0",
+          "iconColor": "green",
+          "titleFormat": "Frontier Updated"
+        },
+        {
+          "name": "Configuration Changes",
+          "datasource": "prometheus", 
+          "enable": true,
+          "expr": "changes(pareto_config_version[1h]) > 0",
+          "iconColor": "blue",
+          "titleFormat": "Config Changed"
+        }
+      ]
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "provider",
+          "type": "query",
+          "query": "label_values(pareto_efficiency_by_provider, provider)",
+          "current": {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          "includeAll": true,
+          "multi": true
+        },
+        {
+          "name": "model_size",
+          "type": "query", 
+          "query": "label_values(pareto_optimal_count_by_model_size, model_size)",
+          "current": {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          "includeAll": true,
+          "multi": true
+        },
+        {
+          "name": "scenario",
+          "type": "custom",
+          "options": [
+            {
+              "selected": true,
+              "text": "All",
+              "value": "$__all"
+            },
+            {
+              "selected": false,
+              "text": "Simple",
+              "value": "simple"
+            },
+            {
+              "selected": false,
+              "text": "Moderate", 
+              "value": "moderate"
+            },
+            {
+              "selected": false,
+              "text": "Complex",
+              "value": "complex"
+            },
+            {
+              "selected": false,
+              "text": "Extreme",
+              "value": "extreme"
+            }
+          ],
+          "current": {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          "includeAll": true,
+          "multi": true
+        }
+      ]
+    }
+  },
+  "folderId": 0,
+  "overwrite": true
+}

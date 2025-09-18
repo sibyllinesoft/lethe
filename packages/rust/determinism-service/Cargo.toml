@@ -1,0 +1,55 @@
+[package]
+name = "determinism-service"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.35", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = ["preserve_order"] }
+uuid = { version = "1.6", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+axum = "0.7"
+tower = { version = "0.4", features = ["full"] }
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+anyhow = "1.0"
+clap = { version = "4.0", features = ["derive"] }
+config = "0.14"
+dashmap = "5.5"
+arc-swap = "1.6"
+metrics = "0.22"
+metrics-exporter-prometheus = "0.13"
+unicode-normalization = "0.1.22"
+sha2 = "0.10"
+hex = "0.4"
+futures = "0.3"
+reqwest = { version = "0.11", features = ["json"] }
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid", "json"] }
+rand = "0.8"
+nalgebra = { version = "0.32", features = ["serde-serialize"] }
+
+[dev-dependencies]
+tokio-test = "0.4"
+criterion = { version = "0.5", features = ["html_reports"] }
+tempfile = "3.8"
+mockall = "0.12"
+proptest = "1.4"
+
+[[bin]]
+name = "determinism-service"
+path = "src/main.rs"
+
+[[bench]]
+name = "determinism_benchmarks"
+harness = false
+
+[[bench]]
+name = "v2_comprehensive_matrix"
+harness = false
+
+[profile.release]
+lto = true
+codegen-units = 1

@@ -1,0 +1,23 @@
+[package]
+name = "lethe-hotpath"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+napi = { version = "2.2", default-features = false, features = ["napi4"] }
+napi-derive = "2.2"
+log = "0.4"
+rayon = "1.10"           # Parallel iterators
+ahash = "0.8"            # Fast hashing  
+wide = "0.7"             # SIMD operations
+rand = "0.8"
+arrow = "52.0"           # Arrow columnar data layout
+nalgebra = "0.32"        # Linear algebra for DPP
+statrs = "0.16"          # Statistical functions
+priority-queue = "1.3"   # Min-heap for stable selection
+
+[build-dependencies]
+napi-build = "2.0"

@@ -1,0 +1,50 @@
+[package]
+name = "lethe-api"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["database"]
+database = ["lethe-infrastructure/database"]
+
+[dependencies]
+# Shared types and domain/infrastructure
+lethe-shared = { path = "../shared" }
+lethe-domain = { path = "../domain" }
+lethe-infrastructure = { path = "../infrastructure", default-features = false }
+
+# Web framework
+axum.workspace = true
+tower.workspace = true
+tower-http.workspace = true
+hyper = "1.0"
+
+# Database
+sqlx.workspace = true
+
+# Core dependencies from workspace
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+futures.workspace = true
+
+# Async traits
+async-trait = "0.1"
+
+# HTTP utilities
+mime = "0.3"
+headers = "0.4"
+
+# Validation
+validator = { version = "0.18", features = ["derive"] }
+
+# Observability
+tracing.workspace = true
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# Configuration
+config = "0.14"
+clap = { version = "4.4", features = ["derive", "env"] }

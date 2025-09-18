@@ -1,0 +1,78 @@
+[workspace]
+members = [
+    "packages/rust/lethe-core/crates/api",
+    "packages/rust/lethe-core/crates/cli",
+    "packages/rust/lethe-core/crates/domain",
+    "packages/rust/lethe-core/crates/infrastructure",
+    "packages/rust/lethe-core/crates/shared",
+    "packages/rust/determinism-service",
+    "packages/rust/hotpath"
+]
+resolver = "2"
+
+[workspace.dependencies]
+# Async runtime and core
+tokio = { version = "1.35", features = ["full"] }
+futures = "0.3"
+
+# Web framework
+axum = { version = "0.7", features = ["multipart", "ws"] }
+tower = { version = "0.4", features = ["full"] }
+tower-http = { version = "0.5", features = ["fs", "trace", "cors", "compression-gzip"] }
+hyper = { version = "1.0", features = ["full"] }
+
+# Database
+sqlx = { version = "0.7", features = ["postgres", "runtime-tokio-rustls", "chrono", "uuid", "json"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Logging and tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# UUID and time
+uuid = { version = "1.6", features = ["v4", "serde"] }
+chrono = { version = "=0.4.34", features = ["serde"] }
+
+# Configuration
+config = "0.14"
+toml = "0.8"
+serde_yaml = "0.9"
+
+# Validation
+validator = { version = "0.16", features = ["derive"] }
+
+# Embeddings and ML
+candle = "0.3"
+candle-nn = "0.3"
+candle-core = "0.3"
+
+# Vector operations
+ndarray = "0.15"
+
+# HTTP client
+reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
+
+# CLI
+clap = { version = "4.0", features = ["derive"] }
+
+# Utilities
+regex = "1.0"
+sha2 = "0.10"
+hex = "0.4"
+walkdir = "2.4"
+
+[workspace.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"

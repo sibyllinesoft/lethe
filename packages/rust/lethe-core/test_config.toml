@@ -1,0 +1,22 @@
+# Test configuration for repository preloading
+
+[chunking]
+target_tokens = 512
+overlap = 50
+strategy = "semantic"
+
+[embedding]
+provider = "Fallback"
+
+[repository_preloading]
+enabled = true
+max_concurrent_repos = 2
+fail_on_error = false
+file_patterns = ["*.rs", "*.md", "*.txt"]
+exclude_patterns = ["target/**", ".git/**", "*.lock"]
+
+[[repository_preloading.repositories]]
+path = "./crates/shared/src"
+name = "shared_crate"
+enabled = true
+file_patterns = ["*.rs"]
