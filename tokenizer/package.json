@@ -1,0 +1,21 @@
+{
+  "name": "@lethe/tokenizer",
+  "version": "1.0.0",
+  "description": "GPT tokenizer utilities for Lethe",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target bun",
+    "lint": "bunx eslint .",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "natural": "^6.0.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}

@@ -1,9 +1,0 @@
-{
-  "adapter_id": "vector_faiss",
-  "cls": "VectorAdapter",
-  "module": "evaluation.rag_search_adapters",
-  "backend": null,
-  "faiss_index": false,
-  "uses_mmap": false,
-  "files": []
-}

@@ -1,0 +1,24 @@
+# Lethe monorepo workspace configuration
+
+[workspaces]
+packages = [
+  "api-server",
+  "cli", 
+  "core",
+  "llm-analyzer",
+  "tokenizer",
+  "types"
+]
+
+[install]
+# Faster installs with hard linking
+frozenLockfile = false
+exact = false
+
+[run]
+# Shell to use for running scripts  
+shell = "system"
+
+[test]
+# Test configuration
+coverage = true

@@ -1,9 +1,0 @@
-{
-  "mock": false,
-  "endpoint": "http://localhost:11434/v1/chat/completions",
-  "model": "gemma2:9b",
-  "suite": "longbench",
-  "timestamp": "2025-09-12T22:21:59.528438+00:00",
-  "validation_passed": true,
-  "environment_hash": 5539470252730535902
-}

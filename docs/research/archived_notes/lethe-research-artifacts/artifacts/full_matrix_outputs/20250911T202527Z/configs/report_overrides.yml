@@ -1,5 +1,0 @@
-RECALL_METRIC: "score"
-TASK_MODE: "QA over conversations"  
-VECTOR_BACKEND: "faiss"
-CUSTOM_BACKEND_NAME: ""
-LETHE_ENGINE_ADAPTER_ID: "rag:vector_faiss_cosine"

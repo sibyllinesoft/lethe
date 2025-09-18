@@ -1,0 +1,27 @@
+{
+  "name": "@lethe/core",
+  "version": "1.0.0",
+  "description": "Core retrieval pipelines and processing logic for Lethe",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target bun",
+    "dev": "bun build ./src/index.ts --outdir ./dist --target bun --watch", 
+    "test": "bun test",
+    "lint": "bunx eslint src/",
+    "type-check": "bunx tsc --noEmit"
+  },
+  "dependencies": {
+    "@lethe/types": "workspace:*",
+    "@lethe/tokenizer": "workspace:*",
+    "axios": "^1.6.0",
+    "natural": "^6.5.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/natural": "^5.1.5",
+    "@types/uuid": "^9.0.0",
+    "typescript": "^5.4.0"
+  }
+}

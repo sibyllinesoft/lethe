@@ -1,327 +1,66 @@
-# =============================================================================
-# GITIGNORE FOR LETHE PROJECT
-# Generated 2025-08-30 - Safe Repository Cleanup
-# =============================================================================
+# Dependencies
+node_modules/
+**/node_modules/
 
-# OS/IDE Files
-# =============================================================================
+# Build outputs
+dist/
+build/
+**/dist/
+**/build/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.test
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# TypeScript
+*.tsbuildinfo
+
+# OS generated files
 .DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Desktop.ini
 Thumbs.db
 
-# IDE configurations
+# IDE files
 .vscode/
-.vscode/ipch/
-!.vscode/extensions.json
-!.vscode/settings.json
 .idea/
 *.swp
 *.swo
-*~
-*.sublime-*
-.editorconfig
 
-# Logs & Temporary Files
-# =============================================================================
-*.log
-*.log.*
-logs/
+# Temporary files
 *.tmp
 *.temp
-*.bak
-*.orig
-temp/
-tmp/
-*.swp~
-service.log
 
-# Node.js/TypeScript/JavaScript
-# =============================================================================
-# Dependencies
-node_modules/
-.pnp
-.pnp.js
-jspm_packages/
+# Test databases
+*.db-wal
+*.db-shm
+test_*.db
 
-# Production builds
-dist/
-build/
-lib/
-out/
-.next/
-.nuxt
-.turbo/
-.parcel-cache/
-.vite/
-.cache/
-
-# Testing & Coverage
-coverage/
-*.lcov
-.nyc_output
-.jest/
-
-# Package manager files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-.pnpm-debug.log*
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
-
-# TypeScript
-*.tsbuildinfo
-.tsbuildinfo
-
-# ESLint & Prettier
-.eslintcache
-.stylelintcache
-
-# Optional caches
-.npm
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
-
-# Runtime files
-pids
-*.pid
-*.seed
-*.pid.lock
-.node_repl_history
-
-# Serverless & Cloud Functions
-.serverless/
-.fusebox/
-.dynamodb/
-.tern-port
-
-# Python
-# =============================================================================
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# Virtual environments
-.env
-.env.*
-.venv/
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-.venv*/
-venv_stats/
-
-# Environment & Configuration
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Python package managers
-Pipfile.lock
-poetry.lock
-.pdm.toml
-__pypackages__/
-
-# Python tools
-.mypy_cache/
-.dmypy.json
-dmypy.json
-.pyre/
-.pytype/
-cython_debug/
-
-# Jupyter Notebooks
-.ipynb_checkpoints
-profile_default/
-ipython_config.py
-
-# Documentation
-docs/_build/
-docs/api/
-docs/generated/
-/site
-
-# Django/Flask
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-instance/
-.webassets-cache
-
-# Scrapy
-.scrapy
-
-# Research & Data Files
-# =============================================================================
-# Large data files
-*.csv
-*.json.large
-*.data
-*.bin
-*.model
-*.pkl
-*.pickle
-*.tar.gz
-*.zip
-
-# Research artifacts (should not be in public repo)
-*-checksums.txt
-lethe-neurips2025-artifact/
-lethe-neurips2025-artifact.tar.gz
-lethe-neurips2025-artifact.zip
-lethe-neurips2025-artifact-checksums.txt
-
-# Research data directories
-data/large/
-data/*.csv
-data/*.json
-results/raw/
-results/large/
-benchmark-results/
-performance-data/
-smoke-test-results/
-
-# MLflow & ML Tools
-mlruns/
-mlartifacts/
-
-# AI & Development Tools
-# =============================================================================
-# Claude MCP and AI tools
-.serena/
-.mcp/
-.claude/
-
-# Docker
-.docker/
-
-# Secrets and Sensitive Data
-# =============================================================================
-secrets/
-api-keys.txt
-credentials/
-
-# Archive & Package Files
-# =============================================================================
-*.tgz
-
-# Build Tools & Misc
-# =============================================================================
-.yarn-integrity
-.grunt
-bower_components
-web_modules/
-.lock-wscript
-.microbundle-cache
-.vscode-test
-.docusaurus
-
-# Keep Example/Template Files
-# =============================================================================
-!*.example
-!*.template
-!*.sample
-
-# Development Reports
-# =============================================================================
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
-# Rust Build Artifacts
-# =============================================================================
-target/
-Cargo.lock
-
-# Large Research Data & Benchmarks
-# =============================================================================
-*.jsonl
-data.zip
-benchmarks/*/data/
-benchmarks/longbench/
-benchmarks/infinitebench/
-benchmarks/ruler/
-benchmarks/l-eval/
-benchmarks/loogle/
-benchmarks/loong/
-
-# Benchmark Runner Apps (Large Datasets)
-# =============================================================================
-apps/benchmark-runner/infinitebench/
-apps/benchmark-runner/l-eval/
-apps/benchmark-runner/longbench/
-apps/benchmark-runner/loogle/
-apps/benchmark-runner/loong/
-apps/benchmark-runner/ruler/
-
-# Package-Specific Build Artifacts
-# =============================================================================
-packages/*/target/
-packages/*/node_modules/
-packages/*/dist/
-packages/*/build/
-
-# Research Results & Artifacts  
-# =============================================================================
-artifacts/retro_*/
-results/archive/
-results/checkpoints/
-research_consolidated/
-
-# Application Builds
-# =============================================================================
-apps/*/dist/
-apps/*/build/
-apps/*/.next/
+# Bun
+.bun/
+bun.lockb

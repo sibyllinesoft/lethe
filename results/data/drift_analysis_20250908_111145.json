@@ -1,8 +1,0 @@
-{
-  "lambda_drift": 0.08,
-  "mu_drift": 0.05,
-  "curvature_drift": 0.12,
-  "ece_delta": 0.008,
-  "recalibration_time_sec": 45.0,
-  "stability_score": 0.92
-}

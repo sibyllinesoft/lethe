@@ -1,1 +1,0 @@
-# Mutation Testing Framework for Lethe Research
