@@ -9,7 +9,8 @@ use crate::{
 };
 use async_trait::async_trait;
 use lethe_shared::{
-    utils::TextProcessor, Candidate, Citation, ContextChunk, ContextPack, LetheError, Result,
+    utils::TextProcessor, Candidate, Citation, ContextChunk, ContextPack, LetheError,
+    ResolvedLetheConfig, Result,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
@@ -38,6 +39,19 @@ impl Default for PipelineConfig {
             rerank_top_k: 20,
             timeout_seconds: 30,
         }
+    }
+}
+
+impl PipelineConfig {
+    /// Build a pipeline configuration using the resolved application settings.
+    pub fn from_resolved_config(config: &ResolvedLetheConfig) -> Self {
+        let mut resolved = Self::default();
+        resolved.enable_hyde = config.features.enable_hyde;
+        resolved.enable_query_understanding = config.query_understanding.enabled;
+        resolved.enable_ml_prediction = config.ml.enabled;
+        resolved.rerank_enabled = config.features.enable_state_tracking;
+        resolved.timeout_seconds = (config.timeouts.hyde_ms.value() / 1000).max(1);
+        resolved
     }
 }
 
@@ -78,6 +92,89 @@ pub struct EnhancedQueryResult {
     pub total_candidates_found: usize,
 }
 
+#[async_trait]
+pub trait PairwiseScoringModel: Send + Sync {
+    async fn score_batch(&self, query: &str, candidates: &[Candidate]) -> Result<Vec<f64>>;
+}
+
+struct EmbeddingSimilarityModel {
+    embedding_service: Arc<dyn EmbeddingService>,
+}
+
+impl EmbeddingSimilarityModel {
+    fn new(embedding_service: Arc<dyn EmbeddingService>) -> Self {
+        Self { embedding_service }
+    }
+}
+
+#[async_trait]
+impl PairwiseScoringModel for EmbeddingSimilarityModel {
+    async fn score_batch(&self, query: &str, candidates: &[Candidate]) -> Result<Vec<f64>> {
+        if candidates.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        let query_embedding = self
+            .embedding_service
+            .embed(&[query.to_string()])
+            .await?
+            .into_iter()
+            .next()
+            .ok_or_else(|| {
+                LetheError::embedding("Embedding service returned no vector for reranker query")
+            })?;
+
+        let mut scores = vec![0.0; candidates.len()];
+        let mut texts = Vec::new();
+        let mut indices = Vec::new();
+
+        for (idx, candidate) in candidates.iter().enumerate() {
+            if let Some(text) = candidate.text.as_ref() {
+                if !text.trim().is_empty() {
+                    texts.push(text.clone());
+                    indices.push(idx);
+                }
+            }
+        }
+
+        if texts.is_empty() {
+            return Ok(scores);
+        }
+
+        let embeddings = self.embedding_service.embed(&texts).await?;
+        for (embedding_idx, &candidate_idx) in indices.iter().enumerate() {
+            if let Some(candidate_embedding) = embeddings.get(embedding_idx) {
+                let similarity =
+                    cosine_similarity_vec(&query_embedding.data, &candidate_embedding.data);
+                scores[candidate_idx] = (similarity + 1.0) / 2.0;
+            }
+        }
+
+        Ok(scores)
+    }
+}
+
+fn cosine_similarity_vec(a: &[f32], b: &[f32]) -> f64 {
+    if a.is_empty() || b.is_empty() || a.len() != b.len() {
+        return 0.0;
+    }
+
+    let dot: f64 = a
+        .iter()
+        .zip(b.iter())
+        .map(|(x, y)| (*x as f64) * (*y as f64))
+        .sum();
+
+    let norm_a = a.iter().map(|v| (*v as f64).powi(2)).sum::<f64>().sqrt();
+    let norm_b = b.iter().map(|v| (*v as f64).powi(2)).sum::<f64>().sqrt();
+
+    if norm_a == 0.0 || norm_b == 0.0 {
+        0.0
+    } else {
+        (dot / (norm_a * norm_b)).clamp(-1.0, 1.0)
+    }
+}
+
 /// Trait for reranking services
 #[async_trait]
 pub trait RerankingService: Send + Sync {
@@ -86,7 +183,7 @@ pub trait RerankingService: Send + Sync {
 
 /// Reranking implementation that refines scores using embedding similarity
 pub struct EmbeddingRerankingService {
-    embedding_service: Arc<dyn EmbeddingService>,
+    model: Arc<dyn PairwiseScoringModel>,
     weight_original: f64,
     weight_similarity: f64,
 }
@@ -103,6 +200,15 @@ impl EmbeddingRerankingService {
         weight_original: f64,
         weight_similarity: f64,
     ) -> Self {
+        let model = Arc::new(EmbeddingSimilarityModel::new(embedding_service));
+        Self::with_model(model, weight_original, weight_similarity)
+    }
+
+    pub fn with_model(
+        model: Arc<dyn PairwiseScoringModel>,
+        weight_original: f64,
+        weight_similarity: f64,
+    ) -> Self {
         let total = weight_original + weight_similarity;
         let (weight_original, weight_similarity) = if total > 0.0 {
             (weight_original / total, weight_similarity / total)
@@ -111,38 +217,9 @@ impl EmbeddingRerankingService {
         };
 
         Self {
-            embedding_service,
+            model,
             weight_original,
             weight_similarity,
-        }
-    }
-
-    fn cosine_similarity(query: &[f32], document: &[f32]) -> f64 {
-        if query.is_empty() || document.is_empty() {
-            return 0.0;
-        }
-
-        let dot: f64 = query
-            .iter()
-            .zip(document.iter())
-            .map(|(a, b)| (*a as f64) * (*b as f64))
-            .sum();
-
-        let norm_query: f64 = query
-            .iter()
-            .map(|v| (*v as f64).powi(2))
-            .sum::<f64>()
-            .sqrt();
-        let norm_doc: f64 = document
-            .iter()
-            .map(|v| (*v as f64).powi(2))
-            .sum::<f64>()
-            .sqrt();
-
-        if norm_query == 0.0 || norm_doc == 0.0 {
-            0.0
-        } else {
-            (dot / (norm_query * norm_doc)).clamp(-1.0, 1.0)
         }
     }
 }
@@ -154,34 +231,6 @@ impl RerankingService for EmbeddingRerankingService {
             return Ok(Vec::new());
         }
 
-        let query_embedding = self
-            .embedding_service
-            .embed(&[query.to_string()])
-            .await?
-            .into_iter()
-            .next()
-            .ok_or_else(|| {
-                LetheError::embedding("Embedding service returned no vector for query reranking")
-            })?;
-
-        let mut candidate_texts = Vec::new();
-        let mut index_map = Vec::new();
-
-        for (idx, candidate) in candidates.iter().enumerate() {
-            if let Some(text) = &candidate.text {
-                if !text.trim().is_empty() {
-                    candidate_texts.push(text.clone());
-                    index_map.push(idx);
-                }
-            }
-        }
-
-        if candidate_texts.is_empty() {
-            return Ok(candidates.to_vec());
-        }
-
-        let candidate_embeddings = self.embedding_service.embed(&candidate_texts).await?;
-
         let max_original_score = candidates
             .iter()
             .map(|c| c.score.abs())
@@ -189,21 +238,14 @@ impl RerankingService for EmbeddingRerankingService {
             .max(1e-6);
 
         let mut reranked = candidates.to_vec();
+        let model_scores = self.model.score_batch(query, &reranked).await?;
 
-        for (embedding_idx, candidate_idx) in index_map.iter().enumerate() {
-            if let Some(candidate_embedding) = candidate_embeddings.get(embedding_idx) {
-                let similarity =
-                    Self::cosine_similarity(&query_embedding.data, &candidate_embedding.data);
-                let similarity = (similarity + 1.0) / 2.0; // Map from [-1,1] to [0,1]
-
-                let original_normalised =
-                    (reranked[*candidate_idx].score / max_original_score).clamp(0.0, 1.0);
-
-                let combined = self.weight_similarity * similarity
-                    + self.weight_original * original_normalised;
-
-                reranked[*candidate_idx].score = combined * max_original_score;
-            }
+        for (candidate, similarity) in reranked.iter_mut().zip(model_scores.into_iter()) {
+            let similarity = similarity.clamp(0.0, 1.0);
+            let original_normalised = (candidate.score / max_original_score).clamp(0.0, 1.0);
+            let combined =
+                self.weight_similarity * similarity + self.weight_original * original_normalised;
+            candidate.score = combined * max_original_score;
         }
 
         reranked.sort_by(|a, b| {
@@ -236,6 +278,7 @@ impl EnhancedQueryPipeline {
         embedding_service: Arc<dyn EmbeddingService>,
         llm_service: Option<Arc<dyn LlmService>>,
         reranking_service: Option<Arc<dyn RerankingService>>,
+        ml_prediction: Option<MLPredictionService>,
     ) -> Self {
         let hybrid_config = HybridRetrievalConfig::default();
         let hybrid_retrieval =
@@ -261,7 +304,7 @@ impl EnhancedQueryPipeline {
             hybrid_retrieval,
             hyde_service,
             query_understanding: QueryUnderstandingService::new(),
-            ml_prediction: MLPredictionService::default(),
+            ml_prediction: ml_prediction.unwrap_or_else(MLPredictionService::default),
             reranking_service,
         }
     }
@@ -459,8 +502,13 @@ impl EnhancedQueryPipeline {
             RetrievalStrategy::VectorOnly => {
                 let query_embedding = self.embedding_service.embed(&[query.to_string()]).await?;
                 let query_embedding = query_embedding.into_iter().next().unwrap();
-                self.document_repository
-                    .vector_search(&query_embedding, self.config.max_candidates as i32)
+                self.hybrid_retrieval
+                    .vector_search_with_embedding(
+                        &*self.document_repository,
+                        &options.session_id,
+                        &query_embedding,
+                        self.config.max_candidates as i32,
+                    )
                     .await
             }
             RetrievalStrategy::Hybrid => {
@@ -474,7 +522,8 @@ impl EnhancedQueryPipeline {
             }
             RetrievalStrategy::HydeEnhanced => {
                 if let Some(expansion) = hyde_expansion {
-                    self.execute_hyde_enhanced_search(query, expansion).await
+                    self.execute_hyde_enhanced_search(query, &options.session_id, expansion)
+                        .await
                 } else {
                     // Fallback to hybrid if HyDE is not available
                     self.hybrid_retrieval
@@ -495,45 +544,47 @@ impl EnhancedQueryPipeline {
     async fn execute_hyde_enhanced_search(
         &self,
         query: &str,
+        session_id: &str,
         expansion: &HydeExpansion,
     ) -> Result<Vec<Candidate>> {
         if let Some(ref combined_embedding) = expansion.combined_embedding {
-            // Use combined embedding for search
-            self.document_repository
-                .vector_search(combined_embedding, self.config.max_candidates as i32)
-                .await
-        } else {
-            // Use individual hypothetical documents
-            let mut all_candidates = Vec::new();
-
-            for hyp_doc in &expansion.hypothetical_documents {
-                if let Some(ref embedding) = hyp_doc.embedding {
-                    let candidates = self
-                        .document_repository
-                        .vector_search(
-                            embedding,
-                            (self.config.max_candidates / expansion.hypothetical_documents.len())
-                                as i32,
-                        )
-                        .await?;
-                    all_candidates.extend(candidates);
-                }
-            }
-
-            // Also include results from original query
-            let original_candidates = self
+            return self
                 .hybrid_retrieval
-                .retrieve(
+                .vector_search_with_embedding(
                     &*self.document_repository,
-                    &[query.to_string()],
-                    "default", // This should be passed from context
+                    session_id,
+                    combined_embedding,
+                    self.config.max_candidates as i32,
                 )
-                .await?;
-            all_candidates.extend(original_candidates);
-
-            // Deduplicate and sort by score
-            self.deduplicate_and_sort_candidates(all_candidates)
+                .await;
         }
+
+        let mut all_candidates = Vec::new();
+        let docs_len = expansion.hypothetical_documents.len().max(1);
+        let per_doc_k = (self.config.max_candidates / docs_len).max(1) as i32;
+
+        for hyp_doc in &expansion.hypothetical_documents {
+            if let Some(ref embedding) = hyp_doc.embedding {
+                let candidates = self
+                    .hybrid_retrieval
+                    .vector_search_with_embedding(
+                        &*self.document_repository,
+                        session_id,
+                        embedding,
+                        per_doc_k,
+                    )
+                    .await?;
+                all_candidates.extend(candidates);
+            }
+        }
+
+        let original_candidates = self
+            .hybrid_retrieval
+            .retrieve(&*self.document_repository, &[query.to_string()], session_id)
+            .await?;
+        all_candidates.extend(original_candidates);
+
+        self.deduplicate_and_sort_candidates(all_candidates)
     }
 
     /// Execute multi-step retrieval
@@ -557,8 +608,13 @@ impl EnhancedQueryPipeline {
             // If few results, try vector-only search
             let query_embedding = self.embedding_service.embed(&[query.to_string()]).await?;
             let query_embedding = query_embedding.into_iter().next().unwrap();
-            self.document_repository
-                .vector_search(&query_embedding, self.config.max_candidates as i32)
+            self.hybrid_retrieval
+                .vector_search_with_embedding(
+                    &*self.document_repository,
+                    &options.session_id,
+                    &query_embedding,
+                    self.config.max_candidates as i32,
+                )
                 .await
         } else {
             // Take top candidates from initial search
@@ -590,8 +646,13 @@ impl EnhancedQueryPipeline {
             // Low results, try vector-only
             let query_embedding = self.embedding_service.embed(&[query.to_string()]).await?;
             let query_embedding = query_embedding.into_iter().next().unwrap();
-            self.document_repository
-                .vector_search(&query_embedding, self.config.max_candidates as i32)
+            self.hybrid_retrieval
+                .vector_search_with_embedding(
+                    &*self.document_repository,
+                    &options.session_id,
+                    &query_embedding,
+                    self.config.max_candidates as i32,
+                )
                 .await
         } else if hybrid_candidates.iter().all(|c| c.score < 0.5) {
             // Low scores, try BM25-only
@@ -1041,6 +1102,7 @@ impl PipelineFactory {
         embedding_service: Arc<dyn EmbeddingService>,
         llm_service: Option<Arc<dyn LlmService>>,
         reranking_service: Option<Arc<dyn RerankingService>>,
+        ml_prediction: Option<MLPredictionService>,
     ) -> EnhancedQueryPipeline {
         EnhancedQueryPipeline::new(
             config,
@@ -1048,6 +1110,7 @@ impl PipelineFactory {
             embedding_service,
             llm_service,
             reranking_service,
+            ml_prediction,
         )
     }
 
@@ -1061,6 +1124,7 @@ impl PipelineFactory {
             embedding_service,
             None,
             None,
+            None,
         )
     }
 }
@@ -1068,24 +1132,72 @@ impl PipelineFactory {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use lethe_shared::EmbeddingVector;
-    use lethe_shared::{Chunk, DfIdf};
+    use lethe_shared::{Candidate, Chunk, DfIdf, EmbeddingVector};
     use std::sync::Arc;
+    use uuid::Uuid;
+
+    fn mock_chunks(session_id: &str) -> Vec<Chunk> {
+        vec![
+            Chunk {
+                id: format!("{}::alpha", session_id),
+                message_id: Uuid::nil(),
+                session_id: session_id.to_string(),
+                offset_start: 0,
+                offset_end: 50,
+                kind: "text".to_string(),
+                text: "Alpha topic detailed explanation".to_string(),
+                tokens: 5,
+            },
+            Chunk {
+                id: format!("{}::beta", session_id),
+                message_id: Uuid::nil(),
+                session_id: session_id.to_string(),
+                offset_start: 51,
+                offset_end: 120,
+                kind: "text".to_string(),
+                text: "Beta topic overview with examples".to_string(),
+                tokens: 6,
+            },
+        ]
+    }
+
+    fn chunk_by_id(chunk_id: &str) -> Option<Chunk> {
+        if let Some((session_id, _)) = chunk_id.split_once("::") {
+            mock_chunks(session_id)
+                .into_iter()
+                .find(|chunk| chunk.id == chunk_id)
+        } else {
+            None
+        }
+    }
 
     struct MockDocumentRepository;
 
     #[async_trait]
     impl DocumentRepository for MockDocumentRepository {
-        async fn get_chunks_by_session(&self, _session_id: &str) -> Result<Vec<Chunk>> {
-            Ok(vec![])
+        async fn get_chunks_by_session(&self, session_id: &str) -> Result<Vec<Chunk>> {
+            Ok(mock_chunks(session_id))
         }
 
-        async fn get_dfidf_by_session(&self, _session_id: &str) -> Result<Vec<DfIdf>> {
-            Ok(vec![])
+        async fn get_dfidf_by_session(&self, session_id: &str) -> Result<Vec<DfIdf>> {
+            Ok(vec![
+                DfIdf {
+                    term: "alpha".to_string(),
+                    session_id: session_id.to_string(),
+                    df: 1,
+                    idf: 1.2,
+                },
+                DfIdf {
+                    term: "beta".to_string(),
+                    session_id: session_id.to_string(),
+                    df: 1,
+                    idf: 1.0,
+                },
+            ])
         }
 
-        async fn get_chunk_by_id(&self, _chunk_id: &str) -> Result<Option<Chunk>> {
-            Ok(None)
+        async fn get_chunk_by_id(&self, chunk_id: &str) -> Result<Option<Chunk>> {
+            Ok(chunk_by_id(chunk_id))
         }
 
         async fn vector_search(
@@ -1093,19 +1205,22 @@ mod tests {
             _query_vector: &EmbeddingVector,
             _k: i32,
         ) -> Result<Vec<Candidate>> {
-            Ok(vec![Candidate {
-                doc_id: "test-1".to_string(),
-                score: 0.9,
-                text: Some("Test document 1".to_string()),
-                kind: Some("text".to_string()),
-            }])
+            Ok(mock_chunks("default")
+                .into_iter()
+                .map(|chunk| Candidate {
+                    doc_id: chunk.id,
+                    score: 0.5,
+                    text: Some(chunk.text),
+                    kind: Some(chunk.kind),
+                })
+                .collect())
         }
     }
 
     #[tokio::test]
     async fn test_pipeline_creation() {
         let doc_repo = Arc::new(MockDocumentRepository);
-        let embedding_service = Arc::new(crate::embeddings::FallbackEmbeddingService::new(384));
+        let embedding_service = Arc::new(StubEmbeddingService);
 
         let pipeline = PipelineFactory::create_default_pipeline(doc_repo, embedding_service);
 
@@ -1117,7 +1232,7 @@ mod tests {
     #[tokio::test]
     async fn test_basic_query_processing() {
         let doc_repo = Arc::new(MockDocumentRepository);
-        let embedding_service = Arc::new(crate::embeddings::FallbackEmbeddingService::new(384));
+        let embedding_service = Arc::new(StubEmbeddingService);
 
         let pipeline = PipelineFactory::create_default_pipeline(doc_repo, embedding_service);
         let options = EnhancedQueryOptions::default();
@@ -1202,7 +1317,7 @@ mod tests {
     #[tokio::test]
     async fn test_strategy_override() {
         let doc_repo = Arc::new(MockDocumentRepository);
-        let embedding_service = Arc::new(crate::embeddings::FallbackEmbeddingService::new(384));
+        let embedding_service = Arc::new(StubEmbeddingService);
 
         let pipeline = PipelineFactory::create_default_pipeline(doc_repo, embedding_service);
         let mut options = EnhancedQueryOptions::default();
@@ -1219,7 +1334,7 @@ mod tests {
     #[tokio::test]
     async fn test_pipeline_different_strategies() {
         let doc_repo = Arc::new(MockDocumentRepository);
-        let embedding_service = Arc::new(crate::embeddings::FallbackEmbeddingService::new(384));
+        let embedding_service = Arc::new(StubEmbeddingService);
 
         let pipeline = PipelineFactory::create_default_pipeline(doc_repo, embedding_service);
 
@@ -1263,7 +1378,7 @@ mod tests {
     #[tokio::test]
     async fn test_query_options_limits() {
         let doc_repo = Arc::new(MockDocumentRepository);
-        let embedding_service = Arc::new(crate::embeddings::FallbackEmbeddingService::new(384));
+        let embedding_service = Arc::new(StubEmbeddingService);
 
         let pipeline = PipelineFactory::create_default_pipeline(doc_repo, embedding_service);
 
@@ -1283,7 +1398,7 @@ mod tests {
     #[tokio::test]
     async fn test_query_understanding_integration() {
         let doc_repo = Arc::new(MockDocumentRepository);
-        let embedding_service = Arc::new(crate::embeddings::FallbackEmbeddingService::new(384));
+        let embedding_service = Arc::new(StubEmbeddingService);
 
         let pipeline = PipelineFactory::create_default_pipeline(doc_repo, embedding_service);
         let options = EnhancedQueryOptions::default();
@@ -1311,7 +1426,7 @@ mod tests {
     #[tokio::test]
     async fn test_ml_prediction_integration() {
         let doc_repo = Arc::new(MockDocumentRepository);
-        let embedding_service = Arc::new(crate::embeddings::FallbackEmbeddingService::new(384));
+        let embedding_service = Arc::new(StubEmbeddingService);
 
         let pipeline = PipelineFactory::create_default_pipeline(doc_repo, embedding_service);
         let options = EnhancedQueryOptions::default();
@@ -1335,7 +1450,7 @@ mod tests {
     async fn test_error_handling() {
         // Test with empty repository (should not fail but return empty results)
         let doc_repo = Arc::new(MockDocumentRepository);
-        let embedding_service = Arc::new(crate::embeddings::FallbackEmbeddingService::new(384));
+        let embedding_service = Arc::new(StubEmbeddingService);
 
         let pipeline = PipelineFactory::create_default_pipeline(doc_repo, embedding_service);
         let options = EnhancedQueryOptions::default();
@@ -1401,7 +1516,7 @@ mod tests {
     #[tokio::test]
     async fn test_query_result_completeness() {
         let doc_repo = Arc::new(MockDocumentRepository);
-        let embedding_service = Arc::new(crate::embeddings::FallbackEmbeddingService::new(384));
+        let embedding_service = Arc::new(StubEmbeddingService);
 
         let pipeline = PipelineFactory::create_default_pipeline(doc_repo, embedding_service);
         let options = EnhancedQueryOptions::default();
@@ -1448,7 +1563,7 @@ mod tests {
             Ok(vec![
                 Chunk {
                     id: "chunk1".to_string(),
-                    message_id: uuid::Uuid::new_v4(),
+                    message_id: Uuid::new_v4(),
                     session_id: "session1".to_string(),
                     offset_start: 0,
                     offset_end: 100,
@@ -1458,7 +1573,7 @@ mod tests {
                 },
                 Chunk {
                     id: "chunk2".to_string(),
-                    message_id: uuid::Uuid::new_v4(),
+                    message_id: Uuid::new_v4(),
                     session_id: "session1".to_string(),
                     offset_start: 100,
                     offset_end: 200,
@@ -1521,7 +1636,7 @@ mod tests {
     #[tokio::test]
     async fn test_pipeline_with_real_data() {
         let doc_repo = Arc::new(MockDocumentRepositoryWithData);
-        let embedding_service = Arc::new(crate::embeddings::FallbackEmbeddingService::new(384));
+        let embedding_service = Arc::new(StubEmbeddingService);
 
         let pipeline = PipelineFactory::create_default_pipeline(doc_repo, embedding_service);
         let options = EnhancedQueryOptions::default();

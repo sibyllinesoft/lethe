@@ -1,7 +1,11 @@
 use async_trait::async_trait;
-use lethe_shared::{EmbeddingVector, LetheError, Result};
+use lethe_shared::{
+    config::EmbeddingCacheConfig as SharedEmbeddingCacheConfig, EmbeddingVector, LetheError, Result,
+};
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
+use serde_json::Value;
+use std::collections::HashMap;
+use std::sync::{Arc, OnceLock, RwLock};
 
 /// Configuration for embedding providers
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -11,26 +15,60 @@ pub struct EmbeddingConfig {
     pub dimension: usize,
     pub batch_size: usize,
     pub timeout_ms: u64,
+    pub cache: SharedEmbeddingCacheConfig,
+}
+
+impl EmbeddingConfig {
+    pub fn from_shared(shared: &lethe_shared::config::EmbeddingConfig) -> Self {
+        let provider = match &shared.provider {
+            lethe_shared::config::EmbeddingProvider::Ollama { base_url, model } => {
+                EmbeddingProvider::Ollama {
+                    base_url: base_url.clone(),
+                    model: model.clone(),
+                }
+            }
+            lethe_shared::config::EmbeddingProvider::Fallback => EmbeddingProvider::Fallback,
+        };
+
+        let model_name = match &shared.provider {
+            lethe_shared::config::EmbeddingProvider::Ollama { model, .. } => model.clone(),
+            lethe_shared::config::EmbeddingProvider::Fallback => "fallback".to_string(),
+        };
+
+        Self {
+            provider,
+            model_name,
+            dimension: shared.dimension,
+            batch_size: 32,
+            timeout_ms: shared.timeout_ms,
+            cache: shared.cache.clone(),
+        }
+    }
 }
 
 /// Available embedding providers
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum EmbeddingProvider {
-    TransformersJs { model_id: String },
-    Ollama { base_url: String, model: String },
+    Ollama {
+        base_url: String,
+        model: String,
+    },
     Fallback,
+    Custom {
+        name: String,
+        settings: Option<Value>,
+    },
 }
 
 impl Default for EmbeddingConfig {
     fn default() -> Self {
         Self {
-            provider: EmbeddingProvider::TransformersJs {
-                model_id: "Xenova/bge-small-en-v1.5".to_string(),
-            },
-            model_name: "bge-small-en-v1.5".to_string(),
+            provider: EmbeddingProvider::Fallback,
+            model_name: "fallback".to_string(),
             dimension: 384,
             batch_size: 32,
             timeout_ms: 30000,
+            cache: SharedEmbeddingCacheConfig::default(),
         }
     }
 }
@@ -54,6 +92,38 @@ pub trait EmbeddingService: Send + Sync {
             .into_iter()
             .next()
             .ok_or_else(|| LetheError::embedding("No embedding returned for single text"))
+    }
+}
+
+#[async_trait]
+pub trait EmbeddingProviderBuilder: Send + Sync {
+    fn id(&self) -> &'static str;
+    fn matches(&self, provider: &EmbeddingProvider) -> bool;
+    async fn build(
+        &self,
+        config: &EmbeddingConfig,
+        provider: &EmbeddingProvider,
+    ) -> Result<Arc<dyn EmbeddingService>>;
+}
+
+fn embedding_provider_registry(
+) -> &'static RwLock<HashMap<&'static str, Arc<dyn EmbeddingProviderBuilder>>> {
+    static REGISTRY: OnceLock<RwLock<HashMap<&'static str, Arc<dyn EmbeddingProviderBuilder>>>> =
+        OnceLock::new();
+
+    REGISTRY.get_or_init(|| {
+        let mut providers: HashMap<&'static str, Arc<dyn EmbeddingProviderBuilder>> =
+            HashMap::new();
+        providers.insert("ollama", Arc::new(OllamaEmbeddingProvider));
+        providers.insert("fallback", Arc::new(FallbackEmbeddingProvider));
+        RwLock::new(providers)
+    })
+}
+
+pub fn register_embedding_provider(builder: Arc<dyn EmbeddingProviderBuilder>) {
+    let registry = embedding_provider_registry();
+    if let Ok(mut guard) = registry.write() {
+        guard.insert(builder.id(), builder);
     }
 }
 
@@ -156,6 +226,42 @@ impl EmbeddingService for OllamaEmbeddingService {
     }
 }
 
+struct OllamaEmbeddingProvider;
+
+#[async_trait]
+impl EmbeddingProviderBuilder for OllamaEmbeddingProvider {
+    fn id(&self) -> &'static str {
+        "ollama"
+    }
+
+    fn matches(&self, provider: &EmbeddingProvider) -> bool {
+        matches!(provider, EmbeddingProvider::Ollama { .. })
+    }
+
+    async fn build(
+        &self,
+        config: &EmbeddingConfig,
+        provider: &EmbeddingProvider,
+    ) -> Result<Arc<dyn EmbeddingService>> {
+        if let EmbeddingProvider::Ollama { base_url, model } = provider {
+            let service =
+                OllamaEmbeddingService::new(base_url.clone(), model.clone(), config.dimension);
+
+            if service.test_connectivity().await? {
+                tracing::info!("Using Ollama embeddings with model: {}", model);
+                Ok(Arc::new(service))
+            } else {
+                tracing::warn!("Ollama not available, falling back to zero vectors");
+                Ok(Arc::new(FallbackEmbeddingService::new(config.dimension)))
+            }
+        } else {
+            Err(LetheError::config(
+                "Ollama embedding provider received incompatible configuration",
+            ))
+        }
+    }
+}
+
 /// Fallback embedding service that returns zero vectors
 pub struct FallbackEmbeddingService {
     dimension: usize,
@@ -195,34 +301,45 @@ impl EmbeddingService for FallbackEmbeddingService {
     }
 }
 
+struct FallbackEmbeddingProvider;
+
+#[async_trait]
+impl EmbeddingProviderBuilder for FallbackEmbeddingProvider {
+    fn id(&self) -> &'static str {
+        "fallback"
+    }
+
+    fn matches(&self, provider: &EmbeddingProvider) -> bool {
+        matches!(provider, EmbeddingProvider::Fallback)
+    }
+
+    async fn build(
+        &self,
+        config: &EmbeddingConfig,
+        _provider: &EmbeddingProvider,
+    ) -> Result<Arc<dyn EmbeddingService>> {
+        Ok(Arc::new(FallbackEmbeddingService::new(config.dimension)))
+    }
+}
+
 /// Factory for creating embedding services
 pub struct EmbeddingServiceFactory;
 
 impl EmbeddingServiceFactory {
     /// Create an embedding service based on configuration
     pub async fn create(config: &EmbeddingConfig) -> Result<Arc<dyn EmbeddingService>> {
-        match &config.provider {
-            EmbeddingProvider::Ollama { base_url, model } => {
-                let service =
-                    OllamaEmbeddingService::new(base_url.clone(), model.clone(), config.dimension);
+        if let Some(result) = Self::build_from_registry(config, &config.provider).await {
+            return result;
+        }
 
-                // Test connectivity
-                if service.test_connectivity().await? {
-                    tracing::info!("Using Ollama embeddings with model: {}", model);
-                    Ok(Arc::new(service))
-                } else {
-                    tracing::warn!("Ollama not available, falling back to zero vectors");
-                    Ok(Arc::new(FallbackEmbeddingService::new(config.dimension)))
-                }
-            }
-            EmbeddingProvider::TransformersJs { model_id: _ } => {
-                tracing::info!("TransformersJS embeddings not implemented in Rust, using fallback");
-                Ok(Arc::new(FallbackEmbeddingService::new(config.dimension)))
-            }
-            EmbeddingProvider::Fallback => {
-                tracing::info!("Using fallback embedding service");
-                Ok(Arc::new(FallbackEmbeddingService::new(config.dimension)))
-            }
+        match &config.provider {
+            EmbeddingProvider::Custom { name, .. } => Err(LetheError::config(format!(
+                "No embedding provider registered for '{}'",
+                name
+            ))),
+            _ => Err(LetheError::config(
+                "No embedding provider available for requested configuration",
+            )),
         }
     }
 
@@ -240,10 +357,36 @@ impl EmbeddingServiceFactory {
                 dimension: 768,
                 ..Default::default()
             },
-            Some("transformersjs") | _ => EmbeddingConfig::default(),
+            Some("transformersjs") => {
+                tracing::warn!(
+                    "Transformers.js embedding preference is no longer supported; using fallback embeddings"
+                );
+                EmbeddingConfig::default()
+            }
+            _ => EmbeddingConfig::default(),
         };
 
         Self::create(&config).await
+    }
+
+    async fn build_from_registry(
+        config: &EmbeddingConfig,
+        provider: &EmbeddingProvider,
+    ) -> Option<Result<Arc<dyn EmbeddingService>>> {
+        let builder = {
+            let registry = embedding_provider_registry();
+            let guard = registry.read().ok()?;
+
+            match provider {
+                EmbeddingProvider::Custom { name, .. } => guard.get(name.as_str()).cloned(),
+                _ => guard
+                    .values()
+                    .find(|builder| builder.matches(provider))
+                    .cloned(),
+            }
+        }?;
+
+        Some(builder.build(config, provider).await)
     }
 }
 
@@ -355,22 +498,16 @@ mod tests {
         assert_eq!(config.dimension, 384);
         assert_eq!(config.batch_size, 32);
         assert_eq!(config.timeout_ms, 30000);
-        assert_eq!(config.model_name, "bge-small-en-v1.5");
+        assert_eq!(config.model_name, "fallback");
 
         match config.provider {
-            EmbeddingProvider::TransformersJs { model_id } => {
-                assert_eq!(model_id, "Xenova/bge-small-en-v1.5");
-            }
-            _ => panic!("Expected TransformersJs provider"),
+            EmbeddingProvider::Fallback => {}
+            _ => panic!("Expected fallback provider"),
         }
     }
 
     #[test]
     fn test_embedding_provider_variants() {
-        let transformers_provider = EmbeddingProvider::TransformersJs {
-            model_id: "test-model".to_string(),
-        };
-
         let ollama_provider = EmbeddingProvider::Ollama {
             base_url: "http://localhost:11434".to_string(),
             model: "embeddings".to_string(),
@@ -378,12 +515,12 @@ mod tests {
 
         let fallback_provider = EmbeddingProvider::Fallback;
 
-        // Test that all variants can be created
-        match transformers_provider {
-            EmbeddingProvider::TransformersJs { model_id } => assert_eq!(model_id, "test-model"),
-            _ => panic!("Expected TransformersJs variant"),
-        }
+        let custom_provider = EmbeddingProvider::Custom {
+            name: "custom".to_string(),
+            settings: None,
+        };
 
+        // Test that all variants can be created
         match ollama_provider {
             EmbeddingProvider::Ollama { base_url, model } => {
                 assert_eq!(base_url, "http://localhost:11434");
@@ -395,6 +532,14 @@ mod tests {
         match fallback_provider {
             EmbeddingProvider::Fallback => {}
             _ => panic!("Expected Fallback variant"),
+        }
+
+        match custom_provider {
+            EmbeddingProvider::Custom { name, settings } => {
+                assert_eq!(name, "custom");
+                assert!(settings.is_none());
+            }
+            _ => panic!("Expected Custom variant"),
         }
     }
 

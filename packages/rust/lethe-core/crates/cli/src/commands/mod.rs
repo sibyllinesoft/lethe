@@ -47,11 +47,12 @@ pub fn to_domain_embedding_config(shared: &SharedEmbeddingConfig) -> DomainEmbed
     let default_model = config.model_name.clone();
     config.model_name = match &config.provider {
         DomainEmbeddingProvider::Ollama { model, .. } => model.clone(),
-        DomainEmbeddingProvider::TransformersJs { model_id } => model_id.clone(),
         DomainEmbeddingProvider::Fallback => default_model,
+        DomainEmbeddingProvider::Custom { .. } => default_model,
     };
 
     config.dimension = shared.dimension;
     config.timeout_ms = shared.timeout_ms;
+    config.cache = shared.cache.clone();
     config
 }

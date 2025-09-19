@@ -1,11 +1,5 @@
 use lethe_api::{create_app, AppState};
-use lethe_domain::{
-    corpus::ParquetCorpus, EmbeddingConfig as DomainEmbeddingConfig,
-    EmbeddingProvider as DomainEmbeddingProvider, EmbeddingRerankingService,
-    EmbeddingServiceFactory, LlmServiceConfig, LlmServiceFactory, PipelineConfig, PipelineFactory,
-    RerankingService,
-};
-use lethe_shared::{EmbeddingProvider as SharedEmbeddingProvider, LetheConfig};
+use lethe_shared::LetheConfig;
 use std::{net::SocketAddr, path::PathBuf, sync::Arc};
 use tokio::net::TcpListener;
 use tower::ServiceBuilder;
@@ -55,100 +49,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing::info!("Starting Lethe API server...");
 
     // Load configuration
-    let config = load_configuration(args.config.as_deref()).await?;
+    let raw_config = load_configuration(args.config.as_deref()).await?;
+    let resolved_config = Arc::new(
+        raw_config
+            .resolve()
+            .map_err(|err| -> Box<dyn std::error::Error> { Box::new(err) })?,
+    );
 
-    let domain_embedding_config = DomainEmbeddingConfig {
-        provider: match &config.embedding.provider {
-            SharedEmbeddingProvider::Ollama { base_url, model } => {
-                DomainEmbeddingProvider::Ollama {
-                    base_url: base_url.clone(),
-                    model: model.clone(),
-                }
-            }
-            SharedEmbeddingProvider::Fallback => DomainEmbeddingProvider::Fallback,
-        },
-        model_name: match &config.embedding.provider {
-            SharedEmbeddingProvider::Ollama { model, .. } => model.clone(),
-            SharedEmbeddingProvider::Fallback => "fallback".to_string(),
-        },
-        dimension: config.embedding.dimension,
-        batch_size: 32,
-        timeout_ms: config.embedding.timeout_ms,
-    };
-
-    let config = Arc::new(config);
-
-    let storage_root = PathBuf::from(&config.storage.index_root);
+    let storage_root = PathBuf::from(&resolved_config.storage.index_root);
     tracing::info!(root = %storage_root.display(), "Using parquet storage root");
-    let corpus = Arc::new(ParquetCorpus::new(&storage_root));
-    corpus.health_check().await?;
-
-    // Create embedding service
-    let embedding_service = EmbeddingServiceFactory::create(&domain_embedding_config).await?;
-
-    // Construct optional LLM service (used by HyDE and reranking layers)
-    let llm_service = match config.llm.as_ref() {
-        Some(llm_cfg) => {
-            let domain_llm_config = LlmServiceConfig::from_shared(llm_cfg);
-            let model_name = match &llm_cfg.provider {
-                lethe_shared::LlmProvider::Ollama { model, .. } => model.as_str(),
-            };
-            match LlmServiceFactory::create(&domain_llm_config).await {
-                Ok(service) => {
-                    tracing::info!(model = %model_name, "LLM service initialised for HyDE");
-                    Some(service)
-                }
-                Err(err) => {
-                    tracing::warn!(
-                        error = %err,
-                        "LLM service initialisation failed; HyDE will run in fallback mode"
-                    );
-                    None
-                }
-            }
-        }
-        None => {
-            tracing::info!("LLM service disabled in configuration");
-            None
-        }
-    };
-
-    // Create query pipeline
-    let mut pipeline_config = PipelineConfig::default();
-    if let Some(features) = &config.features {
-        pipeline_config.enable_hyde = features.enable_hyde;
-        pipeline_config.enable_query_understanding = features.enable_query_understanding;
-        pipeline_config.enable_ml_prediction = features.enable_ml_prediction;
-        pipeline_config.rerank_enabled = features.enable_state_tracking;
-    }
-    pipeline_config.timeout_seconds = (config.timeouts.hyde_ms.value() / 1000).max(1);
-
-    let reranking_service: Option<Arc<dyn RerankingService>> = if pipeline_config.rerank_enabled {
-        let service: Arc<dyn RerankingService> =
-            Arc::new(EmbeddingRerankingService::new(embedding_service.clone()));
-        Some(service)
-    } else {
-        None
-    };
-
-    let doc_repo: Arc<dyn lethe_domain::retrieval::DocumentRepository> = corpus.clone();
-    let query_pipeline = Arc::new(PipelineFactory::create_pipeline(
-        pipeline_config,
-        doc_repo,
-        embedding_service.clone(),
-        llm_service.clone(),
-        reranking_service.clone(),
-    ));
-
-    let app_state = AppState::new(
-        config.clone(),
-        corpus,
-        embedding_service,
-        llm_service,
-        reranking_service,
-        query_pipeline,
-    )
-    .map_err(|err| -> Box<dyn std::error::Error> { Box::new(err) })?;
+    let app_state = AppState::initialise(resolved_config.clone(), &storage_root)
+        .await
+        .map_err(|err| -> Box<dyn std::error::Error> { Box::new(err) })?;
 
     // Perform health check
     match app_state.health_check().await {

@@ -95,7 +95,8 @@ impl Command for DiagnoseCommand {
         // Embedding service test
         if self.test_embeddings || self.test_all {
             print!("🧠 Embedding service: ");
-            let embedding_config = super::to_domain_embedding_config(&context.config.embedding);
+            let embedding_config =
+                super::to_domain_embedding_config(&context.resolved_config.embedding);
             match EmbeddingServiceFactory::create(&embedding_config).await {
                 Ok(service) => match service.embed_single("test").await {
                     Ok(vector) => {
@@ -116,45 +117,42 @@ impl Command for DiagnoseCommand {
         // LLM service test
         if self.test_llm || self.test_all {
             print!("🗣️  LLM service: ");
-            match context.config.llm.as_ref() {
-                Some(llm_cfg) => {
-                    let domain_config = LlmServiceConfig::from_shared(llm_cfg);
-                    match LlmServiceFactory::create(&domain_config).await {
-                        Ok(service) => {
-                            let prompt = "Summarise the health of the Lethe system";
-                            match service
-                                .generate_text(prompt, &lethe_domain::HydeConfig::default())
-                                .await
-                            {
-                                Ok(outputs) => {
-                                    let preview = outputs
-                                        .get(0)
-                                        .map(|s| {
-                                            let mut snippet =
-                                                s.chars().take(48).collect::<String>();
-                                            if s.len() > 48 {
-                                                snippet.push_str("…");
-                                            }
-                                            snippet
-                                        })
-                                        .unwrap_or_else(|| "(empty response)".to_string());
-                                    println!("✅ Responded ({})", preview);
-                                }
-                                Err(e) => {
-                                    println!("❌ Generation failed - {}", e);
-                                    all_good = false;
-                                }
+            if context.resolved_config.llm.enabled {
+                let domain_config =
+                    LlmServiceConfig::from_shared(&context.resolved_config.llm.settings);
+                match LlmServiceFactory::create(&domain_config).await {
+                    Ok(service) => {
+                        let prompt = "Summarise the health of the Lethe system";
+                        match service
+                            .generate_text(prompt, &lethe_domain::HydeConfig::default())
+                            .await
+                        {
+                            Ok(outputs) => {
+                                let preview = outputs
+                                    .get(0)
+                                    .map(|s| {
+                                        let mut snippet = s.chars().take(48).collect::<String>();
+                                        if s.len() > 48 {
+                                            snippet.push_str("…");
+                                        }
+                                        snippet
+                                    })
+                                    .unwrap_or_else(|| "(empty response)".to_string());
+                                println!("✅ Responded ({})", preview);
+                            }
+                            Err(e) => {
+                                println!("❌ Generation failed - {}", e);
+                                all_good = false;
                             }
                         }
-                        Err(e) => {
-                            println!("❌ Initialisation failed - {}", e);
-                            all_good = false;
-                        }
+                    }
+                    Err(e) => {
+                        println!("❌ Initialisation failed - {}", e);
+                        all_good = false;
                     }
                 }
-                None => {
-                    println!("⚠️  Disabled in configuration");
-                }
+            } else {
+                println!("⚠️  Disabled in configuration");
             }
         }
 

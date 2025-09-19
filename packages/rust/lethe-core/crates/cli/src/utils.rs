@@ -1,4 +1,4 @@
-use lethe_shared::LetheConfig;
+use lethe_shared::{LetheConfig, ResolvedLetheConfig};
 use std::path::PathBuf;
 
 /// Application context shared across all CLI commands
@@ -6,6 +6,8 @@ use std::path::PathBuf;
 pub struct AppContext {
     /// Loaded configuration
     pub config: LetheConfig,
+    /// Fully resolved configuration with defaults applied
+    pub resolved_config: ResolvedLetheConfig,
     /// Path to the configuration file (if it exists)
     pub config_path: Option<PathBuf>,
     /// Root directory for storage/index assets

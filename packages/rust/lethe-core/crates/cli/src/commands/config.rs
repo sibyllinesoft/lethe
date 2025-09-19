@@ -63,15 +63,22 @@ impl ConfigCommand {
                     "   Embedding Provider: {:?}",
                     context.config.embedding.provider
                 );
-                if let Some(features) = &context.config.features {
-                    println!("   Features:");
-                    println!("     HyDE: {}", features.enable_hyde);
-                    println!(
-                        "     Query understanding: {}",
-                        features.enable_query_understanding
-                    );
-                    println!("     ML prediction: {}", features.enable_ml_prediction);
-                    println!("     State tracking: {}", features.enable_state_tracking);
+                let features = context
+                    .config
+                    .features
+                    .clone()
+                    .unwrap_or_else(|| context.resolved_config.features.clone());
+                println!("   Features:");
+                println!("     HyDE: {}", features.enable_hyde);
+                println!(
+                    "     Query understanding: {}",
+                    features.enable_query_understanding
+                );
+                println!("     ML prediction: {}", features.enable_ml_prediction);
+                println!("     State tracking: {}", features.enable_state_tracking);
+                match &context.resolved_config.ml.static_rules.path {
+                    Some(path) => println!("   ML rules file: {}", path),
+                    None => println!("   ML rules file: (bundled defaults)"),
                 }
                 println!(
                     "   Retrieval alpha: {:.2}",

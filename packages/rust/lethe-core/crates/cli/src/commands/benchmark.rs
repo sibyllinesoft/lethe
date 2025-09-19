@@ -2,7 +2,11 @@ use super::Command;
 use crate::utils::AppContext;
 use async_trait::async_trait;
 use clap::{Args, Subcommand};
+use futures::stream::{self, StreamExt};
 use lethe_shared::{LetheError, Result};
+use std::path::PathBuf;
+use std::sync::Arc;
+use std::time::{Duration, Instant};
 
 #[derive(Debug, Args)]
 pub struct BenchmarkCommand {
@@ -87,17 +91,230 @@ impl BenchmarkCommand {
     async fn benchmark_queries(
         &self,
         count: usize,
-        _query: Option<String>,
-        _concurrent: bool,
+        query: Option<String>,
+        concurrent: bool,
         context: &AppContext,
     ) -> Result<()> {
-        let _ = (count, context);
+        use lethe_domain::{
+            EmbeddingRerankingService, EmbeddingServiceFactory, EnhancedQueryOptions,
+            MLPredictionConfig, MLPredictionService, PipelineConfig, PipelineFactory,
+        };
+        use lethe_storage::ParquetCorpus;
 
-        Err(LetheError::internal(
-            "Query benchmarking requires real pipeline execution and is not implemented yet. \
-             Run the API server with `lethe-cli serve` and use an external load-testing tool such as \
-             wrk or bombardier against /api/v1/query instead.",
-        ))
+        if count == 0 {
+            return Err(LetheError::validation(
+                "benchmark.count",
+                "Query benchmark count must be greater than zero",
+            ));
+        }
+
+        if !context.quiet {
+            println!("🚀 Running query benchmark ({} requests)...", count);
+        }
+
+        let corpus = Arc::new(ParquetCorpus::new(&context.storage_root));
+        corpus.health_check().await?;
+
+        let embedding_config =
+            super::to_domain_embedding_config(&context.resolved_config.embedding);
+        let embedding_service = EmbeddingServiceFactory::create(&embedding_config).await?;
+
+        let pipeline_config = PipelineConfig::from_resolved_config(&context.resolved_config);
+        let enable_hyde_default = pipeline_config.enable_hyde;
+        let rerank_enabled = pipeline_config.rerank_enabled;
+
+        let ml_rules_path = context
+            .resolved_config
+            .ml
+            .static_rules
+            .path
+            .as_ref()
+            .map(|path| PathBuf::from(path));
+        let ml_prediction_service = match MLPredictionService::from_rules_path(
+            MLPredictionConfig::default(),
+            ml_rules_path.as_deref(),
+        ) {
+            Ok(service) => service,
+            Err(err) => {
+                if !context.quiet {
+                    eprintln!(
+                        "⚠️  Failed to load ML strategy rules ({}). Using bundled defaults.",
+                        err
+                    );
+                }
+                MLPredictionService::default()
+            }
+        };
+
+        let reranking_service = if rerank_enabled {
+            Some(Arc::new(EmbeddingRerankingService::new(Arc::clone(
+                &embedding_service,
+            ))) as Arc<dyn lethe_domain::RerankingService>)
+        } else {
+            None
+        };
+
+        let document_repository: Arc<dyn lethe_domain::retrieval::DocumentRepository> =
+            corpus.clone();
+        let pipeline = Arc::new(PipelineFactory::create_pipeline(
+            pipeline_config,
+            document_repository,
+            Arc::clone(&embedding_service),
+            None,
+            reranking_service,
+            Some(ml_prediction_service),
+        ));
+
+        let sample_queries = vec![
+            "Explain how vector search differs from keyword search.",
+            "How does a bloom filter prevent false negatives?",
+            "Walk me through indexing a repository with Lethe.",
+            "What is HyDE query expansion and when should I use it?",
+            "How can I improve retrieval quality for code snippets?",
+        ];
+
+        let queries: Vec<String> = (0..count)
+            .map(|idx| match &query {
+                Some(text) => text.clone(),
+                None => sample_queries[idx % sample_queries.len()].to_string(),
+            })
+            .collect();
+
+        let concurrency_level = if concurrent {
+            std::thread::available_parallelism()
+                .map(|n| n.get())
+                .unwrap_or(4)
+        } else {
+            1
+        };
+
+        if concurrent && !context.quiet {
+            println!(
+                "⚙️  Executing with concurrency level {} (approximate)",
+                concurrency_level
+            );
+        }
+
+        let start_overall = Instant::now();
+        let results = stream::iter(queries.into_iter().enumerate())
+            .map(|(idx, text)| {
+                let pipeline = Arc::clone(&pipeline);
+                let session_id = format!("benchmark-{}", idx);
+                async move {
+                    let options = EnhancedQueryOptions {
+                        session_id,
+                        k: 5,
+                        include_metadata: false,
+                        enable_hyde: Some(enable_hyde_default),
+                        override_strategy: None,
+                        context: None,
+                    };
+
+                    let start = Instant::now();
+                    match pipeline.process_query(&text, &options).await {
+                        Ok(result) => {
+                            let duration = start.elapsed();
+                            Ok((duration, result.strategy_used))
+                        }
+                        Err(err) => Err((text, err.to_string())),
+                    }
+                }
+            })
+            .buffer_unordered(concurrency_level)
+            .collect::<Vec<_>>()
+            .await;
+
+        let total_duration = start_overall.elapsed();
+
+        let mut latencies = Vec::new();
+        let mut strategies = Vec::new();
+        let mut failures = Vec::new();
+
+        for result in results {
+            match result {
+                Ok((duration, strategy)) => {
+                    latencies.push(duration);
+                    strategies.push(strategy);
+                }
+                Err((text, error)) => failures.push((text, error)),
+            }
+        }
+
+        if latencies.is_empty() {
+            return Err(LetheError::internal(
+                "Query benchmark did not execute successfully; all attempts failed",
+            ));
+        }
+
+        let avg_latency = average_duration(&latencies);
+        let p95_latency = percentile_duration(&latencies, 0.95);
+        let min_latency = latencies.iter().min().copied().unwrap_or_default();
+        let max_latency = latencies.iter().max().copied().unwrap_or_default();
+        let throughput = if total_duration.as_secs_f64() > 0.0 {
+            latencies.len() as f64 / total_duration.as_secs_f64()
+        } else {
+            latencies.len() as f64
+        };
+
+        println!("📈 Query Benchmark Results:");
+        println!(
+            "   Total queries: {} (success: {}, failed: {})",
+            count,
+            latencies.len(),
+            failures.len()
+        );
+        println!(
+            "   Mode: {} (concurrency {})",
+            if concurrent {
+                "concurrent"
+            } else {
+                "sequential"
+            },
+            concurrency_level
+        );
+        println!("   Total time: {:?}", total_duration);
+        println!(
+            "   Avg latency: {:.2} ms",
+            avg_latency.as_secs_f64() * 1000.0
+        );
+        println!(
+            "   P95 latency: {:.2} ms",
+            p95_latency.as_secs_f64() * 1000.0
+        );
+        println!(
+            "   Min latency: {:.2} ms",
+            min_latency.as_secs_f64() * 1000.0
+        );
+        println!(
+            "   Max latency: {:.2} ms",
+            max_latency.as_secs_f64() * 1000.0
+        );
+        println!("   Throughput: {:.2} req/s", throughput);
+
+        if !strategies.is_empty() {
+            let mut counts = std::collections::HashMap::new();
+            for strategy in strategies {
+                *counts.entry(strategy).or_insert(0usize) += 1;
+            }
+            println!("   Strategy usage:");
+            for (strategy, occurrences) in counts {
+                println!("     - {:?}: {}", strategy, occurrences);
+            }
+        }
+
+        if !failures.is_empty() {
+            println!("⚠️  {} queries failed during benchmarking", failures.len());
+            if !context.quiet {
+                for (idx, (text, error)) in failures.iter().take(3).enumerate() {
+                    println!("     {}. '{}' → {}", idx + 1, text, error);
+                }
+                if failures.len() > 3 {
+                    println!("     ... additional failures omitted ...");
+                }
+            }
+        }
+
+        Ok(())
     }
 
     async fn benchmark_embeddings(
@@ -113,7 +330,8 @@ impl BenchmarkCommand {
             count
         );
 
-        let embedding_config = super::to_domain_embedding_config(&context.config.embedding);
+        let embedding_config =
+            super::to_domain_embedding_config(&context.resolved_config.embedding);
         let embedding_service = EmbeddingServiceFactory::create(&embedding_config).await?;
         let test_text = "x".repeat(text_length);
 
@@ -188,4 +406,26 @@ impl BenchmarkCommand {
 
         Ok(())
     }
+}
+
+fn average_duration(samples: &[Duration]) -> Duration {
+    if samples.is_empty() {
+        return Duration::from_secs(0);
+    }
+
+    let total: f64 = samples.iter().map(|d| d.as_secs_f64()).sum();
+    Duration::from_secs_f64(total / samples.len() as f64)
+}
+
+fn percentile_duration(samples: &[Duration], percentile: f64) -> Duration {
+    if samples.is_empty() {
+        return Duration::from_secs(0);
+    }
+
+    let mut values: Vec<f64> = samples.iter().map(|d| d.as_secs_f64()).collect();
+    values.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
+
+    let clamped = percentile.clamp(0.0, 1.0);
+    let idx = ((values.len() - 1) as f64 * clamped).round() as usize;
+    Duration::from_secs_f64(values[idx])
 }

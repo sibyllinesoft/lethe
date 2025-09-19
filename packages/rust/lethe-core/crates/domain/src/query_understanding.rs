@@ -189,7 +189,7 @@ pub enum QueryType {
 }
 
 /// Intent classification for the query
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum QueryIntent {
     /// User wants to find specific information
     Search,
@@ -210,7 +210,7 @@ pub enum QueryIntent {
 }
 
 /// Complexity level of the query
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum QueryComplexity {
     Simple,
     Medium,

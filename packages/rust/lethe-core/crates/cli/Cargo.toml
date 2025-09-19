@@ -11,6 +11,7 @@ path = "src/main.rs"
 # Shared types and domain
 lethe-shared = { path = "../shared" }
 lethe-domain = { path = "../domain" }
+lethe-storage = { path = "../storage" }
 
 # HTTP server & routing
 axum.workspace = true
@@ -58,10 +59,6 @@ toml = "0.8"
 terminal_size = "0.3"
 tempfile = "3.8"
 tantivy = { version = "0.25", default-features = false, features = ["mmap"] }
-bloomfilter.workspace = true
-bincode.workspace = true
-parquet.workspace = true
-xxhash-rust.workspace = true
 
 # API dependencies
 lethe-api = { path = "../api" }

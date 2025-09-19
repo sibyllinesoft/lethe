@@ -1,0 +1,102 @@
+feature_weights:
+  query_length: 0.15
+  query_complexity_score: 0.25
+  technical_term_count: 0.2
+  domain_specificity: 0.15
+  semantic_complexity: 0.25
+
+strategy_weights:
+  bm25_only: 1.0
+  vector_only: 1.0
+  hybrid: 1.2
+  hyde_enhanced: 0.8
+  multi_step: 0.9
+  adaptive: 1.1
+
+feature_names:
+  - query_length
+  - query_complexity_score
+  - technical_term_count
+  - question_word_presence
+  - domain_specificity
+  - has_code
+  - has_numbers
+  - intent_score
+  - semantic_complexity
+
+strategy_labels:
+  bm25_only: "BM25-only"
+  vector_only: "Vector-only"
+  hybrid: "Hybrid"
+  hyde_enhanced: "HyDE-enhanced"
+  multi_step: "Multi-step"
+  adaptive: "Adaptive"
+
+complexity_scores:
+  simple: 0.2
+  medium: 0.5
+  complex: 0.8
+  very_complex: 1.0
+
+intent_scores:
+  search: 0.8
+  explain: 0.6
+  code: 1.0
+  debug: 0.9
+  compare: 0.7
+  guide: 0.5
+  assist: 0.4
+  chat: 0.2
+
+rules:
+  - id: high_semantic_vector
+    strategy: vector_only
+    score: 0.3
+    mode: all
+    conditions:
+      - feature: semantic_complexity
+        operator: ">="
+        threshold: 0.7
+  - id: high_semantic_hyde
+    strategy: hyde_enhanced
+    score: 0.2
+    mode: all
+    conditions:
+      - feature: semantic_complexity
+        operator: ">="
+        threshold: 0.7
+  - id: technical_terms_bm25
+    strategy: bm25_only
+    score: 0.3
+    mode: any
+    conditions:
+      - feature: technical_term_count
+        operator: ">="
+        threshold: 0.5
+      - feature: has_code
+        operator: ">="
+        threshold: 0.5
+  - id: high_complexity_hybrid
+    strategy: hybrid
+    score: 0.4
+    mode: all
+    conditions:
+      - feature: query_complexity_score
+        operator: ">="
+        threshold: 0.6
+  - id: high_complexity_multi_step
+    strategy: multi_step
+    score: 0.2
+    mode: all
+    conditions:
+      - feature: query_complexity_score
+        operator: ">="
+        threshold: 0.6
+  - id: low_domain_adaptive
+    strategy: adaptive
+    score: 0.2
+    mode: all
+    conditions:
+      - feature: domain_specificity
+        operator: "<"
+        threshold: 0.5

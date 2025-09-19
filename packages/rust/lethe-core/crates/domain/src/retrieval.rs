@@ -1,7 +1,8 @@
 use crate::embeddings::EmbeddingService;
 use async_trait::async_trait;
+use hnsw_rs::prelude::*;
 use lethe_shared::utils::{QueryFeatures, TextProcessor};
-use lethe_shared::{Candidate, Chunk, DfIdf, EmbeddingVector, Result};
+use lethe_shared::{Candidate, Chunk, DfIdf, EmbeddingVector, LetheError, Result};
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 
@@ -14,6 +15,7 @@ pub struct HybridRetrievalConfig {
     pub rerank: bool,                           // Enable reranking
     pub diversify: bool,                        // Enable diversification
     pub diversify_method: String,               // Diversification method
+    pub diversify_lambda: f64,                  // Trade-off parameter for diversification
     pub k_initial: i32,                         // Initial retrieval size
     pub k_final: i32,                           // Final result size
     pub fusion_dynamic: bool,                   // Enable dynamic fusion
@@ -34,12 +36,18 @@ impl Default for HybridRetrievalConfig {
             rerank: true,
             diversify: true,
             diversify_method: "entity".to_string(),
+            diversify_lambda: 0.7,
             k_initial: 50,
             k_final: 20,
             fusion_dynamic: false,
         }
     }
 }
+
+const EPHEMERAL_HNSW_MAX_CONNECTIONS: usize = 16;
+const EPHEMERAL_HNSW_MAX_LAYER: usize = 8;
+const EPHEMERAL_HNSW_EF_CONSTRUCTION: usize = 64;
+const EPHEMERAL_HNSW_BASE_EF_SEARCH: usize = 64;
 
 /// Trait for document repositories
 #[async_trait]
@@ -219,15 +227,77 @@ impl VectorSearchService {
         Self { embedding_service }
     }
 
+    pub fn embedding_service(&self) -> Arc<dyn EmbeddingService> {
+        Arc::clone(&self.embedding_service)
+    }
+
     /// Search documents using vector similarity
     pub async fn search<R: DocumentRepository + ?Sized>(
         &self,
         repository: &R,
+        session_id: &str,
         query: &str,
         k: i32,
     ) -> Result<Vec<Candidate>> {
         let query_embedding = self.embedding_service.embed_single(query).await?;
-        repository.vector_search(&query_embedding, k).await
+        self.search_with_embedding(repository, session_id, &query_embedding, k)
+            .await
+    }
+
+    pub async fn search_with_embedding<R: DocumentRepository + ?Sized>(
+        &self,
+        repository: &R,
+        session_id: &str,
+        query_embedding: &EmbeddingVector,
+        k: i32,
+    ) -> Result<Vec<Candidate>> {
+        if k <= 0 {
+            return Ok(Vec::new());
+        }
+
+        let chunks = repository.get_chunks_by_session(session_id).await?;
+        if chunks.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        let texts: Vec<String> = chunks.iter().map(|chunk| chunk.text.clone()).collect();
+        let chunk_embeddings = self.embedding_service.embed(&texts).await?;
+        if chunk_embeddings.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        let k = k.max(0) as usize;
+        let query_vector = query_embedding.data.clone();
+        let embeddings_for_index = chunk_embeddings.clone();
+
+        let search_results = tokio::task::spawn_blocking(move || {
+            hnsw_search(&embeddings_for_index, &query_vector, k)
+        })
+        .await
+        .map_err(|err| LetheError::internal(format!("Vector search task failed: {}", err)))??;
+
+        let mut dedup = HashSet::new();
+        let mut candidates = Vec::with_capacity(search_results.len());
+
+        for (idx, score) in search_results {
+            if idx >= chunks.len() {
+                continue;
+            }
+
+            let chunk = &chunks[idx];
+            if !dedup.insert(chunk.id.clone()) {
+                continue;
+            }
+
+            candidates.push(Candidate {
+                doc_id: chunk.id.clone(),
+                score,
+                text: Some(chunk.text.clone()),
+                kind: Some(chunk.kind.clone()),
+            });
+        }
+
+        Ok(candidates)
     }
 }
 
@@ -262,8 +332,12 @@ impl HybridRetrievalService {
         // Run BM25 and vector search in parallel
         let (lexical_results, vector_results) = tokio::try_join!(
             Bm25SearchService::search(repository, queries, session_id, self.config.k_initial),
-            self.vector_service
-                .search(repository, &combined_query, self.config.k_initial)
+            self.vector_service.search(
+                repository,
+                session_id,
+                &combined_query,
+                self.config.k_initial
+            )
         )?;
 
         tracing::debug!(
@@ -278,10 +352,34 @@ impl HybridRetrievalService {
         tracing::info!("Hybrid scoring produced {} candidates", candidates.len());
 
         // Apply post-processing (reranking, diversification)
-        let final_candidates = self.post_process(candidates).await?;
+        let final_candidates = self.post_process(repository, candidates).await?;
 
         tracing::info!("Final result: {} candidates", final_candidates.len());
         Ok(final_candidates)
+    }
+
+    pub async fn vector_search<R: DocumentRepository + ?Sized>(
+        &self,
+        repository: &R,
+        session_id: &str,
+        query: &str,
+        k: i32,
+    ) -> Result<Vec<Candidate>> {
+        self.vector_service
+            .search(repository, session_id, query, k)
+            .await
+    }
+
+    pub async fn vector_search_with_embedding<R: DocumentRepository + ?Sized>(
+        &self,
+        repository: &R,
+        session_id: &str,
+        query_embedding: &EmbeddingVector,
+        k: i32,
+    ) -> Result<Vec<Candidate>> {
+        self.vector_service
+            .search_with_embedding(repository, session_id, query_embedding, k)
+            .await
     }
 
     /// Combine lexical and vector results using hybrid scoring
@@ -385,22 +483,260 @@ impl HybridRetrievalService {
     }
 
     /// Apply post-processing (reranking, diversification)
-    async fn post_process(&self, mut candidates: Vec<Candidate>) -> Result<Vec<Candidate>> {
-        // Apply reranking if enabled
-        if self.config.rerank {
-            tracing::debug!("Reranking not implemented in basic version");
+    async fn post_process<R: DocumentRepository + ?Sized>(
+        &self,
+        repository: &R,
+        candidates: Vec<Candidate>,
+    ) -> Result<Vec<Candidate>> {
+        if candidates.is_empty() {
+            return Ok(candidates);
         }
 
-        // Apply diversification if enabled
-        if self.config.diversify && candidates.len() > self.config.k_final as usize {
-            tracing::debug!("Diversification not implemented in basic version");
+        let mut processed = candidates;
+
+        if self.config.diversify && processed.len() > self.config.k_final as usize {
+            let fallback = processed.clone();
+            let diversification_result = self.diversify_candidates(repository, processed).await;
+            processed = match diversification_result {
+                Ok(diversified) => diversified,
+                Err(err) => {
+                    tracing::warn!("Diversification failed: {}", err);
+                    fallback
+                }
+            };
         }
 
-        // Take top k final results
-        candidates.truncate(self.config.k_final as usize);
+        processed.truncate(self.config.k_final as usize);
+        Ok(processed)
+    }
 
+    async fn enrich_candidates<R: DocumentRepository + ?Sized>(
+        &self,
+        repository: &R,
+        mut candidates: Vec<Candidate>,
+    ) -> Result<Vec<Candidate>> {
+        for candidate in candidates.iter_mut() {
+            if candidate.text.is_none() {
+                if let Some(chunk) = repository.get_chunk_by_id(&candidate.doc_id).await? {
+                    candidate.text = Some(chunk.text);
+                    if candidate.kind.is_none() {
+                        candidate.kind = Some(chunk.kind);
+                    }
+                }
+            }
+        }
         Ok(candidates)
     }
+
+    async fn diversify_candidates<R: DocumentRepository + ?Sized>(
+        &self,
+        repository: &R,
+        candidates: Vec<Candidate>,
+    ) -> Result<Vec<Candidate>> {
+        let target_k = self.config.k_final.max(1) as usize;
+        if candidates.len() <= target_k {
+            return Ok(candidates);
+        }
+
+        let mut pool = self
+            .enrich_candidates(repository, candidates)
+            .await?
+            .into_iter()
+            .take(self.config.k_initial.max(self.config.k_final) as usize)
+            .collect::<Vec<_>>();
+
+        if pool.len() <= target_k {
+            pool.truncate(target_k);
+            return Ok(pool);
+        }
+
+        let embedding_service = self.vector_service.embedding_service();
+        if embedding_service.dimension() == 0 {
+            pool.truncate(target_k);
+            return Ok(pool);
+        }
+
+        let texts: Vec<String> = pool
+            .iter()
+            .map(|candidate| candidate.text.clone().unwrap_or_default())
+            .collect();
+
+        if texts.iter().all(|text| text.trim().is_empty()) {
+            pool.truncate(target_k);
+            return Ok(pool);
+        }
+
+        let embeddings = embedding_service.embed(&texts).await?;
+        if embeddings.len() != pool.len() {
+            tracing::warn!(
+                "Embedding service returned mismatched vector count (expected {}, got {})",
+                pool.len(),
+                embeddings.len()
+            );
+            pool.truncate(target_k);
+            return Ok(pool);
+        }
+
+        let normalised_embeddings: Vec<Vec<f32>> = embeddings
+            .into_iter()
+            .map(|embedding| normalise_vector(&embedding.data))
+            .collect();
+
+        let normalised_scores = normalise_scores(&pool);
+        let lambda = self.config.diversify_lambda.clamp(0.0, 1.0);
+
+        let mut selected_indices = Vec::with_capacity(target_k);
+        let mut remaining: Vec<usize> = (0..pool.len()).collect();
+
+        if let Some((best_idx, _)) = remaining
+            .iter()
+            .map(|&idx| (idx, normalised_scores[idx]))
+            .max_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal))
+        {
+            selected_indices.push(best_idx);
+            remaining.retain(|&idx| idx != best_idx);
+        }
+
+        while selected_indices.len() < target_k && !remaining.is_empty() {
+            let mut best_candidate = remaining[0];
+            let mut best_score = f64::MIN;
+
+            for &candidate_idx in &remaining {
+                let relevance = normalised_scores[candidate_idx];
+                let max_similarity = selected_indices
+                    .iter()
+                    .map(|&selected_idx| {
+                        cosine_similarity(
+                            normalised_embeddings[candidate_idx].as_slice(),
+                            normalised_embeddings[selected_idx].as_slice(),
+                        )
+                    })
+                    .fold(0.0_f64, f64::max);
+
+                let mmr_score = lambda * relevance - (1.0 - lambda) * max_similarity;
+                if mmr_score > best_score {
+                    best_score = mmr_score;
+                    best_candidate = candidate_idx;
+                }
+            }
+
+            selected_indices.push(best_candidate);
+            remaining.retain(|&idx| idx != best_candidate);
+        }
+
+        let mut diversified = Vec::with_capacity(selected_indices.len());
+        for idx in selected_indices {
+            if let Some(candidate) = pool.get(idx) {
+                diversified.push(candidate.clone());
+            }
+        }
+
+        Ok(diversified)
+    }
+}
+
+fn effective_search_ef(k: usize, dimension: usize) -> usize {
+    let base = EPHEMERAL_HNSW_BASE_EF_SEARCH.max(dimension.saturating_mul(2));
+    base.max(k.saturating_mul(4)).max(32)
+}
+
+fn hnsw_search(
+    embeddings: &[EmbeddingVector],
+    query: &[f32],
+    k: usize,
+) -> Result<Vec<(usize, f64)>> {
+    if embeddings.is_empty() || k == 0 {
+        return Ok(Vec::new());
+    }
+
+    let dimension = query.len();
+    if dimension == 0 {
+        return Err(LetheError::embedding(
+            "Cannot perform vector search with zero-dimensional query",
+        ));
+    }
+
+    let mut hnsw = Hnsw::new(
+        EPHEMERAL_HNSW_MAX_CONNECTIONS,
+        embeddings.len().max(1),
+        EPHEMERAL_HNSW_MAX_LAYER,
+        EPHEMERAL_HNSW_EF_CONSTRUCTION,
+        DistCosine::default(),
+    );
+    hnsw.set_keeping_pruned(true);
+
+    for (idx, embedding) in embeddings.iter().enumerate() {
+        if embedding.data.len() != dimension {
+            return Err(LetheError::embedding(format!(
+                "Embedding dimension mismatch for chunk index {} (expected {}, found {})",
+                idx,
+                dimension,
+                embedding.data.len()
+            )));
+        }
+
+        hnsw.insert((&embedding.data, idx));
+    }
+
+    hnsw.set_searching_mode(true);
+
+    let neighbours = hnsw.search(query, k, effective_search_ef(k, dimension));
+    let mut results = Vec::with_capacity(neighbours.len());
+    for neighbour in neighbours {
+        let idx = neighbour.get_origin_id();
+        let similarity = (1.0f32 - neighbour.distance).clamp(0.0, 1.0) as f64;
+        results.push((idx, similarity));
+    }
+
+    Ok(results)
+}
+
+fn normalise_vector(vector: &[f32]) -> Vec<f32> {
+    let norm = vector
+        .iter()
+        .map(|value| (*value as f64).powi(2))
+        .sum::<f64>()
+        .sqrt();
+
+    if norm == 0.0 {
+        vec![0.0; vector.len()]
+    } else {
+        let inv = 1.0f64 / norm;
+        vector
+            .iter()
+            .map(|value| (*value as f64 * inv) as f32)
+            .collect()
+    }
+}
+
+fn cosine_similarity(a: &[f32], b: &[f32]) -> f64 {
+    if a.len() != b.len() || a.is_empty() {
+        return 0.0;
+    }
+
+    a.iter()
+        .zip(b.iter())
+        .map(|(x, y)| (*x as f64) * (*y as f64))
+        .sum::<f64>()
+        .clamp(-1.0, 1.0)
+}
+
+fn normalise_scores(candidates: &[Candidate]) -> Vec<f64> {
+    if candidates.is_empty() {
+        return Vec::new();
+    }
+
+    let (min_score, max_score) = candidates.iter().fold(
+        (f64::INFINITY, f64::NEG_INFINITY),
+        |(min_s, max_s), candidate| (min_s.min(candidate.score), max_s.max(candidate.score)),
+    );
+
+    let range = (max_score - min_score).abs().max(1e-6);
+
+    candidates
+        .iter()
+        .map(|candidate| ((candidate.score - min_score) / range).clamp(0.0, 1.0))
+        .collect()
 }
 
 #[cfg(test)]
@@ -680,6 +1016,7 @@ mod tests {
             rerank: true,
             diversify: false,
             diversify_method: "simple".to_string(),
+            diversify_lambda: 0.65,
             k_initial: 50,
             k_final: 10,
             fusion_dynamic: false,

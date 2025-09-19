@@ -395,6 +395,8 @@ pub struct MlConfig {
     pub prediction_service: Option<PredictionServiceConfig>,
     #[serde(default)]
     pub models: Option<ModelsConfig>,
+    #[serde(default)]
+    pub static_rules: Option<StaticMlRulesConfig>,
 }
 
 impl Default for MlConfig {
@@ -402,7 +404,21 @@ impl Default for MlConfig {
         Self {
             prediction_service: Some(PredictionServiceConfig::default()),
             models: Some(ModelsConfig::default()),
+            static_rules: Some(StaticMlRulesConfig::default()),
         }
+    }
+}
+
+/// Configuration for static ML rules used when external services are unavailable
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StaticMlRulesConfig {
+    #[serde(default)]
+    pub path: Option<String>,
+}
+
+impl Default for StaticMlRulesConfig {
+    fn default() -> Self {
+        Self { path: None }
     }
 }
 
@@ -770,6 +786,8 @@ pub struct EmbeddingConfig {
     pub dimension: usize,
     #[serde(default = "default_embedding_timeout")]
     pub timeout_ms: u64,
+    #[serde(default)]
+    pub cache: EmbeddingCacheConfig,
 }
 
 fn default_embedding_dimension() -> usize {
@@ -785,6 +803,33 @@ impl Default for EmbeddingConfig {
             provider: EmbeddingProvider::default(),
             dimension: default_embedding_dimension(),
             timeout_ms: default_embedding_timeout(),
+            cache: EmbeddingCacheConfig::default(),
+        }
+    }
+}
+
+/// Embedding cache configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EmbeddingCacheConfig {
+    #[serde(default = "default_embedding_cache_max_entries")]
+    pub max_entries: u64,
+    #[serde(default = "default_embedding_cache_ttl_secs")]
+    pub ttl_secs: u64,
+}
+
+fn default_embedding_cache_max_entries() -> u64 {
+    100_000
+}
+
+fn default_embedding_cache_ttl_secs() -> u64 {
+    3600
+}
+
+impl Default for EmbeddingCacheConfig {
+    fn default() -> Self {
+        Self {
+            max_entries: default_embedding_cache_max_entries(),
+            ttl_secs: default_embedding_cache_ttl_secs(),
         }
     }
 }
@@ -1037,5 +1082,141 @@ impl LetheConfigBuilder {
         let config = self.config;
         config.validate()?;
         Ok(config)
+    }
+}
+
+/// Fully-resolved configuration with all optional sections populated.
+#[derive(Debug, Clone)]
+pub struct ResolvedLetheConfig {
+    pub version: String,
+    pub description: Option<String>,
+    pub retrieval: RetrievalConfig,
+    pub chunking: ChunkingConfig,
+    pub timeouts: TimeoutsConfig,
+    pub features: FeaturesConfig,
+    pub llm: LlmRuntimeConfig,
+    pub query_understanding: QueryUnderstandingRuntimeConfig,
+    pub ml: MlRuntimeConfig,
+    pub development: DevelopmentConfig,
+    pub security: SecurityConfig,
+    pub lens: LensConfig,
+    pub storage: StorageConfig,
+    pub embedding: EmbeddingConfig,
+    pub repository_preloading: RepositoryPreloadingConfig,
+}
+
+/// Runtime representation of the LLM configuration.
+#[derive(Debug, Clone)]
+pub struct LlmRuntimeConfig {
+    pub enabled: bool,
+    pub settings: LlmConfig,
+}
+
+/// Runtime representation of query understanding settings.
+#[derive(Debug, Clone)]
+pub struct QueryUnderstandingRuntimeConfig {
+    pub enabled: bool,
+    pub settings: QueryUnderstandingConfig,
+}
+
+/// Runtime representation of ML prediction settings.
+#[derive(Debug, Clone)]
+pub struct MlRuntimeConfig {
+    pub enabled: bool,
+    pub prediction_service: PredictionServiceConfig,
+    pub models: ModelsConfig,
+    pub static_rules: StaticMlRulesRuntimeConfig,
+}
+
+#[derive(Debug, Clone)]
+pub struct StaticMlRulesRuntimeConfig {
+    pub path: Option<String>,
+}
+
+impl LetheConfig {
+    /// Resolve configuration options and defaults into a concrete runtime representation.
+    pub fn resolve(&self) -> Result<ResolvedLetheConfig> {
+        self.validate()?;
+
+        let features = self.features.clone().unwrap_or_default();
+
+        let (llm_enabled, llm_settings) = match self.llm.clone() {
+            Some(config) => (true, config),
+            None => (false, LlmConfig::default()),
+        };
+
+        let query_understanding_settings = self.query_understanding.clone().unwrap_or_default();
+
+        let ml_section = self.ml.clone().unwrap_or_default();
+        let prediction_service = ml_section
+            .prediction_service
+            .clone()
+            .unwrap_or_else(PredictionServiceConfig::default);
+        let models = ml_section
+            .models
+            .clone()
+            .unwrap_or_else(ModelsConfig::default);
+        let static_rules = ml_section
+            .static_rules
+            .clone()
+            .unwrap_or_else(StaticMlRulesConfig::default);
+
+        Ok(ResolvedLetheConfig {
+            version: self.version.clone(),
+            description: self.description.clone(),
+            retrieval: self.retrieval.clone(),
+            chunking: self.chunking.clone(),
+            timeouts: self.timeouts.clone(),
+            features: features.clone(),
+            llm: LlmRuntimeConfig {
+                enabled: llm_enabled,
+                settings: llm_settings,
+            },
+            query_understanding: QueryUnderstandingRuntimeConfig {
+                enabled: features.enable_query_understanding,
+                settings: query_understanding_settings,
+            },
+            ml: MlRuntimeConfig {
+                enabled: features.enable_ml_prediction,
+                prediction_service,
+                models,
+                static_rules: StaticMlRulesRuntimeConfig {
+                    path: static_rules.path,
+                },
+            },
+            development: self.development.clone().unwrap_or_default(),
+            security: self.security.clone(),
+            lens: self.lens.clone().unwrap_or_default(),
+            storage: self.storage.clone(),
+            embedding: self.embedding.clone(),
+            repository_preloading: self.repository_preloading.clone().unwrap_or_default(),
+        })
+    }
+}
+
+#[cfg(test)]
+mod resolved_tests {
+    use super::*;
+
+    #[test]
+    fn resolve_populates_defaults() {
+        let mut config = LetheConfig::default();
+        config.features = None;
+        config.llm = None;
+        config.query_understanding = None;
+        config.ml = None;
+        config.development = None;
+        config.lens = None;
+        config.repository_preloading = None;
+
+        let resolved = config.resolve().expect("resolve should succeed");
+
+        assert!(!resolved.llm.enabled);
+        assert_eq!(resolved.features.enable_hyde, true);
+        assert!(resolved.query_understanding.enabled);
+        assert!(!resolved.ml.enabled);
+        assert!(resolved.ml.static_rules.path.is_none());
+        assert!(!resolved.lens.enabled);
+        assert!(!resolved.repository_preloading.enabled);
     }
 }

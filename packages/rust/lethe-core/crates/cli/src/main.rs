@@ -93,15 +93,20 @@ async fn main() -> Result<()> {
         .init();
 
     // Load configuration
-    let config::LoadedConfig { config, path } = config::load_config(cli.config.as_deref()).await?;
+    let config::LoadedConfig {
+        raw: config,
+        resolved,
+        path,
+    } = config::load_config(cli.config.as_deref()).await?;
 
     // Create application context
     let storage_root = cli
         .storage_root
-        .unwrap_or_else(|| PathBuf::from(config.storage.index_root.clone()));
+        .unwrap_or_else(|| PathBuf::from(resolved.storage.index_root.clone()));
 
     let app_context = utils::AppContext {
         config,
+        resolved_config: resolved,
         config_path: path,
         storage_root,
         output_format: cli.format.into(),

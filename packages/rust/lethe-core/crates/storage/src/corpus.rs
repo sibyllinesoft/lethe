@@ -1,5 +1,7 @@
-use crate::{bloom::SimpleBloom, retrieval::DocumentRepository};
+use crate::bloom::SimpleBloom;
 use async_trait::async_trait;
+use hnsw_rs::prelude::*;
+use lethe_domain::DocumentRepository;
 use lethe_shared::{Candidate, Chunk, DfIdf, EmbeddingVector, LetheError, Result};
 use parquet::file::reader::{FileReader, SerializedFileReader};
 use parquet::record::RowAccessor;
@@ -8,6 +10,7 @@ use std::{
     collections::{HashMap, HashSet},
     fs::File,
     path::{Path, PathBuf},
+    sync::Arc,
 };
 use tokio::sync::RwLock;
 use uuid::Uuid;
@@ -30,6 +33,38 @@ struct CorpusCaches {
     chunk_map: HashMap<String, Chunk>,
     bloom: HashMap<String, SimpleBloom>,
     embeddings: Option<HashMap<String, EmbeddingVector>>,
+    vector_index: Option<Arc<VectorIndex>>,
+}
+
+type HnswIndex = Hnsw<'static, f32, DistCosine>;
+
+const HNSW_MAX_CONNECTIONS: usize = 32;
+const HNSW_MAX_LAYER: usize = 16;
+const HNSW_EF_CONSTRUCTION: usize = 200;
+const HNSW_DEFAULT_EF_SEARCH: usize = 128;
+
+#[derive(Clone)]
+struct VectorIndex {
+    hnsw: Arc<HnswIndex>,
+    chunk_ids: Arc<Vec<String>>,
+    dimension: usize,
+    ef_search: usize,
+}
+
+impl VectorIndex {
+    fn effective_ef(&self, k: usize) -> usize {
+        let base = self.ef_search.max(self.dimension.saturating_mul(2));
+        base.max(k.saturating_mul(4)).max(32)
+    }
+
+    fn search(&self, query: &[f32], k: usize) -> Vec<Neighbour> {
+        let ef = self.effective_ef(k);
+        self.hnsw.search(query, k, ef)
+    }
+
+    fn chunk_id(&self, data_id: usize) -> Option<&str> {
+        self.chunk_ids.get(data_id).map(|s| s.as_str())
+    }
 }
 
 /// Parquet-backed corpus for retrieval and vector search
@@ -281,6 +316,31 @@ impl ParquetCorpus {
         Ok(combined)
     }
 
+    async fn ensure_vector_index(&self) -> Result<Option<Arc<VectorIndex>>> {
+        {
+            let cache = self.caches.read().await;
+            if let Some(index) = cache.vector_index.clone() {
+                return Ok(Some(index));
+            }
+        }
+
+        let embeddings_map = self.load_embeddings().await?;
+        if embeddings_map.is_empty() {
+            return Ok(None);
+        }
+
+        let embeddings_vec: Vec<(String, EmbeddingVector)> = embeddings_map.into_iter().collect();
+
+        let index = tokio::task::spawn_blocking(move || build_vector_index(embeddings_vec))
+            .await
+            .map_err(|e| LetheError::internal(format!("Failed to build vector index: {}", e)))??;
+
+        let index = Arc::new(index);
+        let mut cache = self.caches.write().await;
+        cache.vector_index = Some(index.clone());
+        Ok(Some(index))
+    }
+
     pub async fn stats(&self) -> Result<CorpusStats> {
         let root = self.root.clone();
         tokio::task::spawn_blocking(move || collect_stats(&root))
@@ -299,21 +359,6 @@ impl ParquetCorpus {
             })?;
         }
         Ok(())
-    }
-
-    fn cosine_similarity(a: &[f32], b: &[f32]) -> f64 {
-        let dot: f64 = a
-            .iter()
-            .zip(b.iter())
-            .map(|(x, y)| (*x as f64) * (*y as f64))
-            .sum();
-        let norm_a: f64 = a.iter().map(|v| (*v as f64).powi(2)).sum::<f64>().sqrt();
-        let norm_b: f64 = b.iter().map(|v| (*v as f64).powi(2)).sum::<f64>().sqrt();
-        if norm_a == 0.0 || norm_b == 0.0 {
-            0.0
-        } else {
-            dot / (norm_a * norm_b)
-        }
     }
 }
 
@@ -411,6 +456,60 @@ fn collect_stats(root: &Path) -> Result<CorpusStats> {
     Ok(stats)
 }
 
+fn build_vector_index(mut embeddings: Vec<(String, EmbeddingVector)>) -> Result<VectorIndex> {
+    if embeddings.is_empty() {
+        return Err(LetheError::internal(
+            "Cannot build vector index without embeddings",
+        ));
+    }
+
+    embeddings.sort_by(|a, b| a.0.cmp(&b.0));
+    let dimension = embeddings
+        .first()
+        .map(|(_, embedding)| embedding.dimension)
+        .unwrap_or_default();
+
+    if dimension == 0 {
+        return Err(LetheError::internal(
+            "Cannot build vector index with zero-dimensional embeddings",
+        ));
+    }
+
+    let mut hnsw = Hnsw::new(
+        HNSW_MAX_CONNECTIONS,
+        embeddings.len().max(1),
+        HNSW_MAX_LAYER,
+        HNSW_EF_CONSTRUCTION,
+        DistCosine::default(),
+    );
+    hnsw.set_keeping_pruned(true);
+
+    let mut chunk_ids = Vec::with_capacity(embeddings.len());
+
+    for (idx, (chunk_id, embedding)) in embeddings.into_iter().enumerate() {
+        if embedding.data.len() != dimension {
+            return Err(LetheError::internal(format!(
+                "Embedding dimension mismatch for chunk {} (expected {}, found {})",
+                chunk_id,
+                dimension,
+                embedding.data.len()
+            )));
+        }
+
+        hnsw.insert((&embedding.data, idx));
+        chunk_ids.push(chunk_id);
+    }
+
+    hnsw.set_searching_mode(true);
+
+    Ok(VectorIndex {
+        hnsw: Arc::new(hnsw),
+        chunk_ids: Arc::new(chunk_ids),
+        dimension,
+        ef_search: HNSW_DEFAULT_EF_SEARCH,
+    })
+}
+
 #[async_trait]
 impl DocumentRepository for ParquetCorpus {
     async fn get_chunks_by_session(&self, session_id: &str) -> Result<Vec<Chunk>> {
@@ -434,26 +533,46 @@ impl DocumentRepository for ParquetCorpus {
         query_vector: &EmbeddingVector,
         k: i32,
     ) -> Result<Vec<Candidate>> {
-        let embeddings = self.load_embeddings().await?;
-        if embeddings.is_empty() {
+        if k <= 0 {
             return Ok(Vec::new());
         }
+
+        let index = match self.ensure_vector_index().await? {
+            Some(index) => index,
+            None => return Ok(Vec::new()),
+        };
+
+        if index.dimension != query_vector.data.len() {
+            return Err(LetheError::embedding(format!(
+                "Vector dimension mismatch: index expects {}, query provided {}",
+                index.dimension,
+                query_vector.data.len()
+            )));
+        }
+
+        let query = query_vector.data.clone();
+        let index_for_task = index.clone();
+        let neighbours =
+            tokio::task::spawn_blocking(move || index_for_task.search(&query, k.max(0) as usize))
+                .await
+                .map_err(|e| LetheError::internal(format!("Vector search task failed: {}", e)))?;
 
         let chunk_snapshot = {
             let cache = self.caches.read().await;
             cache.chunk_map.clone()
         };
 
-        let mut scored = Vec::new();
-        for (chunk_id, vector) in embeddings {
-            if vector.data.len() != query_vector.data.len() {
+        let mut scored = Vec::with_capacity(neighbours.len());
+        for neighbour in neighbours {
+            let data_id = neighbour.get_origin_id();
+            let Some(chunk_id) = index.chunk_id(data_id) else {
                 continue;
-            }
-            let score = Self::cosine_similarity(&query_vector.data, &vector.data);
-            if let Some(chunk) = chunk_snapshot.get(&chunk_id) {
+            };
+            if let Some(chunk) = chunk_snapshot.get(chunk_id) {
+                let similarity = (1.0f32 - neighbour.distance).clamp(0.0, 1.0) as f64;
                 scored.push(Candidate {
                     doc_id: chunk.id.clone(),
-                    score,
+                    score: similarity,
                     text: Some(chunk.text.clone()),
                     kind: Some(chunk.kind.clone()),
                 });

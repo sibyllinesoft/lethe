@@ -92,20 +92,18 @@ pub async fn auth_middleware(
     mut request: Request,
     next: Next,
 ) -> Result<Response, ApiError> {
-    if !security.authentication_required() {
-        return Ok(next.run(request).await);
+    let identity = authenticate_request(&security, request.headers())?;
+
+    if let Some(identity) = identity.clone() {
+        request.extensions_mut().insert(identity);
     }
 
-    match authenticate_request(&security, request.headers())? {
-        Some(identity) => {
-            request.extensions_mut().insert(identity);
-            Ok(next.run(request).await)
-        }
-        None => {
-            tracing::warn!("Authentication failed for incoming request");
-            Err(ApiError::Authentication)
-        }
+    if security.authentication_required() && identity.is_none() {
+        tracing::warn!("Authentication failed for incoming request");
+        return Err(ApiError::Authentication);
     }
+
+    Ok(next.run(request).await)
 }
 
 /// CORS configuration

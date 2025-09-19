@@ -1,9 +1,10 @@
 use crate::{
     error::{ApiError, ApiResult},
+    security::AuthenticatedIdentity,
     state::AppState,
 };
 use axum::{
-    extract::{Path, Query as QueryParams, State},
+    extract::{Extension, Path, Query as QueryParams, State},
     http::StatusCode,
     response::IntoResponse,
     Json,
@@ -42,6 +43,23 @@ pub struct QueryResponse {
     pub timestamp: chrono::DateTime<chrono::Utc>,
 }
 
+fn ensure_api_permission(
+    state: &AppState,
+    identity: Option<&AuthenticatedIdentity>,
+    permission: &str,
+) -> std::result::Result<(), ApiError> {
+    if !state.security.authentication_required() {
+        return Ok(());
+    }
+
+    let identity = identity.ok_or(ApiError::Authentication)?;
+    if identity.has_permission(permission) || identity.has_role("admin") {
+        Ok(())
+    } else {
+        Err(ApiError::Forbidden)
+    }
+}
+
 /// Query parameters for GET requests
 #[derive(Debug, Deserialize)]
 pub struct QueryQuery {
@@ -54,8 +72,12 @@ pub struct QueryQuery {
 /// Enhanced query endpoint (POST)
 pub async fn query_enhanced(
     State(state): State<AppState>,
+    identity: Option<Extension<AuthenticatedIdentity>>,
     Json(request): Json<QueryRequest>,
 ) -> ApiResult<impl IntoResponse> {
+    let identity_ref = identity.as_ref().map(|Extension(identity)| identity);
+    ensure_api_permission(&state, identity_ref, "query:execute")?;
+
     // Validate request
     request.validate().map_err(ApiError::from)?;
 
@@ -96,8 +118,12 @@ pub async fn query_enhanced(
 /// Simple query endpoint (GET)
 pub async fn query_simple(
     State(state): State<AppState>,
+    identity: Option<Extension<AuthenticatedIdentity>>,
     params: QueryParams<QueryQuery>,
 ) -> ApiResult<impl IntoResponse> {
+    let identity_ref = identity.as_ref().map(|Extension(identity)| identity);
+    ensure_api_permission(&state, identity_ref, "query:execute")?;
+
     let QueryQuery {
         q,
         session_id,
@@ -141,8 +167,12 @@ pub async fn query_simple(
 pub async fn query_by_session(
     State(state): State<AppState>,
     Path(session_id): Path<String>,
+    identity: Option<Extension<AuthenticatedIdentity>>,
     Json(request): Json<QueryRequest>,
 ) -> ApiResult<impl IntoResponse> {
+    let identity_ref = identity.as_ref().map(|Extension(identity)| identity);
+    ensure_api_permission(&state, identity_ref, "query:execute")?;
+
     // Validate request
     request.validate().map_err(ApiError::from)?;
 
@@ -198,8 +228,12 @@ pub struct BatchQueryResponse {
 
 pub async fn batch_query(
     State(state): State<AppState>,
+    identity: Option<Extension<AuthenticatedIdentity>>,
     Json(request): Json<BatchQueryRequest>,
 ) -> ApiResult<impl IntoResponse> {
+    let identity_ref = identity.as_ref().map(|Extension(identity)| identity);
+    ensure_api_permission(&state, identity_ref, "query:execute")?;
+
     // Validate request
     request.validate().map_err(ApiError::from)?;
 

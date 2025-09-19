@@ -1,9 +1,10 @@
-use lethe_shared::{LetheConfig, Result};
+use lethe_shared::{LetheConfig, ResolvedLetheConfig, Result};
 use std::path::{Path, PathBuf};
 
 /// Loaded configuration alongside its source path (if any)
 pub struct LoadedConfig {
-    pub config: LetheConfig,
+    pub raw: LetheConfig,
+    pub resolved: ResolvedLetheConfig,
     pub path: Option<PathBuf>,
 }
 
@@ -65,14 +66,21 @@ pub async fn load_config(config_path: Option<&Path>) -> Result<LoadedConfig> {
             }
         };
 
+        let resolved = config.resolve()?;
+
         Ok(LoadedConfig {
-            config,
+            raw: config,
+            resolved,
             path: Some(path),
         })
     } else {
         tracing::info!("No configuration file found, using defaults");
+        let config = LetheConfig::default();
+        let resolved = config.resolve()?;
+
         Ok(LoadedConfig {
-            config: LetheConfig::default(),
+            raw: config,
+            resolved,
             path: None,
         })
     }
@@ -94,7 +102,8 @@ mod tests {
         write!(temp_file, "{}", json).unwrap();
 
         let loaded = load_config(Some(temp_file.path())).await.unwrap();
-        assert_eq!(loaded.config.storage.index_root, "./storage-test");
+        assert_eq!(loaded.raw.storage.index_root, "./storage-test");
+        assert_eq!(loaded.resolved.storage.index_root, "./storage-test");
         assert!(loaded.path.is_some());
     }
 
@@ -108,7 +117,8 @@ mod tests {
         write!(temp_file, "{}", yaml).unwrap();
 
         let loaded = load_config(Some(temp_file.path())).await.unwrap();
-        assert_eq!(loaded.config.storage.index_root, "./storage-test");
+        assert_eq!(loaded.raw.storage.index_root, "./storage-test");
+        assert_eq!(loaded.resolved.storage.index_root, "./storage-test");
         assert!(loaded.path.is_some());
     }
 
@@ -116,7 +126,11 @@ mod tests {
     async fn test_load_default_config() {
         let loaded = load_config(None).await.unwrap();
         assert!(loaded.path.is_none());
-        assert!(!loaded.config.storage.index_root.is_empty());
+        assert!(!loaded.raw.storage.index_root.is_empty());
+        assert_eq!(
+            loaded.raw.storage.index_root,
+            loaded.resolved.storage.index_root
+        );
     }
 
     #[tokio::test]

@@ -5,6 +5,7 @@ use axum::{
 };
 use lethe_shared::LetheError;
 use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
 use thiserror::Error;
 
 /// API-specific errors
@@ -117,6 +118,44 @@ impl ApiError {
             ApiError::Internal { .. } => "internal_error",
         }
     }
+
+    fn details_value(&self) -> Option<Value> {
+        match self {
+            ApiError::Domain(domain_error) => match domain_error {
+                LetheError::Validation { field, reason } => {
+                    Some(json!({"field": field, "reason": reason}))
+                }
+                LetheError::NotFound { resource_type, id } => {
+                    Some(json!({"resource_type": resource_type, "id": id}))
+                }
+                LetheError::ExternalService { service, message } => {
+                    Some(json!({"service": service, "message": message}))
+                }
+                LetheError::Timeout {
+                    operation,
+                    timeout_ms,
+                } => Some(json!({"operation": operation, "timeout_ms": timeout_ms})),
+                LetheError::Authentication { message }
+                | LetheError::Authorization { message }
+                | LetheError::Embedding { message }
+                | LetheError::Config { message }
+                | LetheError::Vector { message }
+                | LetheError::MathOptimization { message }
+                | LetheError::Internal { message }
+                | LetheError::Pipeline { message, .. }
+                | LetheError::Database { message } => Some(json!({"message": message})),
+                _ => None,
+            },
+            ApiError::Validation { message }
+            | ApiError::BadRequest { message }
+            | ApiError::Internal { message }
+            | ApiError::ServiceUnavailable { message } => Some(json!({"message": message})),
+            ApiError::NotFound { resource } => Some(json!({"resource": resource})),
+            ApiError::Authentication => Some(json!({"reason": "authentication_required"})),
+            ApiError::Forbidden => Some(json!({"reason": "forbidden"})),
+            _ => None,
+        }
+    }
 }
 
 impl IntoResponse for ApiError {
@@ -125,7 +164,7 @@ impl IntoResponse for ApiError {
         let error_response = ErrorResponse {
             error: self.error_type().to_string(),
             message: self.to_string(),
-            details: None, // Could be expanded to include more details
+            details: self.details_value(),
             timestamp: chrono::Utc::now(),
             request_id: None, // Could be populated by middleware
         };

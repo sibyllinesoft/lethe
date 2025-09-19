@@ -130,16 +130,24 @@ impl HydeService {
     /// Build the prompt for generating hypothetical documents
     fn build_hyde_prompt(&self, query: &str) -> String {
         format!(
-            r#"Given the following query, write {} high-quality, detailed document passages that would contain the answer to this query. Each passage should be informative, well-structured, and directly relevant to the query.
+            r#"You are generating hypothetical supporting documents for a retrieval system.
+Produce {num_docs} high-quality passages that could plausibly answer the user's request.
+
+Return your answer as valid JSON matching this example:
+{{
+  "documents": [
+    {{ "id": "doc-1", "text": "First document text..." }},
+    {{ "id": "doc-2", "text": "Second document text..." }}
+  ]
+}}
+
+Each document MUST be at least three sentences, factual, and specific to the query.
+Do not include any explanations outside of the JSON object.
 
 Query: {query}
-
-Generate {num_docs} hypothetical document passages:
-
-1."#,
-            self.config.num_documents,
-            query = query,
-            num_docs = self.config.num_documents
+"#,
+            num_docs = self.config.num_documents,
+            query = query
         )
     }
 

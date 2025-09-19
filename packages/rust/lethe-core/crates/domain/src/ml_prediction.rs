@@ -1,109 +1,267 @@
 use crate::query_understanding::{QueryComplexity, QueryIntent, QueryType, QueryUnderstanding};
-use lethe_shared::Result;
+use lethe_shared::{LetheError, Result};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::fs;
+use std::path::Path;
 
-/// Static feature weight configurations to avoid HashMap initialization
-static FEATURE_WEIGHTS: &[(&str, f32)] = &[
-    ("query_length", 0.15),
-    ("complexity", 0.25),
-    ("technical_terms", 0.20),
-    ("domain_specificity", 0.15),
-    ("semantic_complexity", 0.25),
-];
+const BUNDLED_RULES_YAML: &str = include_str!("../../../config/ml_strategy_rules.yaml");
 
-/// Static strategy weight configurations
-static STRATEGY_WEIGHTS: &[(RetrievalStrategy, f32)] = &[
-    (RetrievalStrategy::BM25Only, 1.0),
-    (RetrievalStrategy::VectorOnly, 1.0),
-    (RetrievalStrategy::Hybrid, 1.2),
-    (RetrievalStrategy::HydeEnhanced, 0.8),
-    (RetrievalStrategy::MultiStep, 0.9),
-    (RetrievalStrategy::Adaptive, 1.1),
-];
-
-/// Static feature scoring rules to replace complex if-statements
-struct FeatureScoringRule {
-    condition: fn(&MLFeatures) -> bool,
-    strategy: RetrievalStrategy,
-    score: f32,
+#[derive(Debug, Clone)]
+struct MlStaticRules {
+    feature_weights: HashMap<String, f32>,
+    strategy_weights: HashMap<RetrievalStrategy, f32>,
+    feature_names: Vec<String>,
+    strategy_labels: HashMap<RetrievalStrategy, String>,
+    complexity_scores: HashMap<QueryComplexity, f32>,
+    intent_scores: HashMap<QueryIntent, f32>,
+    feature_rules: Vec<FeatureRule>,
 }
 
-static FEATURE_SCORING_RULES: &[FeatureScoringRule] = &[
-    FeatureScoringRule {
-        condition: |f| f.semantic_complexity > 0.7,
-        strategy: RetrievalStrategy::VectorOnly,
-        score: 0.3,
-    },
-    FeatureScoringRule {
-        condition: |f| f.semantic_complexity > 0.7,
-        strategy: RetrievalStrategy::HydeEnhanced,
-        score: 0.2,
-    },
-    FeatureScoringRule {
-        condition: |f| f.technical_term_count > 0.5 || f.has_code > 0.5,
-        strategy: RetrievalStrategy::BM25Only,
-        score: 0.3,
-    },
-    FeatureScoringRule {
-        condition: |f| f.query_complexity_score > 0.6,
-        strategy: RetrievalStrategy::Hybrid,
-        score: 0.4,
-    },
-    FeatureScoringRule {
-        condition: |f| f.query_complexity_score > 0.6,
-        strategy: RetrievalStrategy::MultiStep,
-        score: 0.2,
-    },
-    FeatureScoringRule {
-        condition: |f| f.domain_specificity < 0.5,
-        strategy: RetrievalStrategy::Adaptive,
-        score: 0.2,
-    },
-];
+impl MlStaticRules {
+    fn from_yaml_str(yaml: &str) -> Result<Self> {
+        let raw: MlStaticRulesRaw = serde_yaml::from_str(yaml).map_err(|err| {
+            LetheError::config(format!("Failed to parse ML strategy rules: {err}"))
+        })?;
+        Self::try_from(raw)
+    }
 
-/// Static feature names to avoid vector allocation
-static FEATURE_NAMES: &[&str] = &[
-    "query_length",
-    "query_complexity_score",
-    "technical_term_count",
-    "question_word_presence",
-    "domain_specificity",
-    "has_code",
-    "has_numbers",
-    "intent_score",
-    "semantic_complexity",
-];
+    fn load_from_path<P: AsRef<Path>>(path: P) -> Result<Self> {
+        let contents = fs::read_to_string(&path).map_err(|err| {
+            LetheError::config(format!(
+                "Failed to read ML strategy rules from {}: {}",
+                path.as_ref().display(),
+                err
+            ))
+        })?;
+        Self::from_yaml_str(&contents)
+    }
 
-/// Static strategy name mappings
-static STRATEGY_NAMES: &[(RetrievalStrategy, &str)] = &[
-    (RetrievalStrategy::BM25Only, "BM25-only"),
-    (RetrievalStrategy::VectorOnly, "Vector-only"),
-    (RetrievalStrategy::Hybrid, "Hybrid"),
-    (RetrievalStrategy::HydeEnhanced, "HyDE-enhanced"),
-    (RetrievalStrategy::MultiStep, "Multi-step"),
-    (RetrievalStrategy::Adaptive, "Adaptive"),
-];
+    fn bundled() -> Result<Self> {
+        Self::from_yaml_str(BUNDLED_RULES_YAML)
+    }
+}
 
-/// Static complexity scoring patterns
-static COMPLEXITY_SCORES: &[(QueryComplexity, f32)] = &[
-    (QueryComplexity::Simple, 0.2),
-    (QueryComplexity::Medium, 0.5),
-    (QueryComplexity::Complex, 0.8),
-    (QueryComplexity::VeryComplex, 1.0),
-];
+impl TryFrom<MlStaticRulesRaw> for MlStaticRules {
+    type Error = LetheError;
 
-/// Static intent scoring patterns
-static INTENT_SCORES: &[(QueryIntent, f32)] = &[
-    (QueryIntent::Search, 0.8),
-    (QueryIntent::Explain, 0.6),
-    (QueryIntent::Code, 1.0),
-    (QueryIntent::Debug, 0.9),
-    (QueryIntent::Compare, 0.7),
-    (QueryIntent::Guide, 0.5),
-    (QueryIntent::Assist, 0.4),
-    (QueryIntent::Chat, 0.2),
-];
+    fn try_from(value: MlStaticRulesRaw) -> Result<Self> {
+        let feature_weights = value.feature_weights;
+
+        let strategy_weights = value
+            .strategy_weights
+            .into_iter()
+            .map(|(name, weight)| {
+                parse_strategy(&name)
+                    .map(|strategy| (strategy, weight))
+                    .map_err(|err| {
+                        LetheError::config(format!(
+                            "Unknown strategy '{name}' in strategy_weights: {err}"
+                        ))
+                    })
+            })
+            .collect::<Result<HashMap<_, _>>>()?;
+
+        let strategy_labels = value
+            .strategy_labels
+            .into_iter()
+            .map(|(name, label)| {
+                parse_strategy(&name)
+                    .map(|strategy| (strategy, label))
+                    .map_err(|err| {
+                        LetheError::config(format!(
+                            "Unknown strategy '{name}' in strategy_labels: {err}"
+                        ))
+                    })
+            })
+            .collect::<Result<HashMap<_, _>>>()?;
+
+        let complexity_scores = value
+            .complexity_scores
+            .into_iter()
+            .map(|(name, score)| {
+                parse_complexity(&name)
+                    .map(|complexity| (complexity, score))
+                    .map_err(|err| {
+                        LetheError::config(format!(
+                            "Unknown complexity '{name}' in complexity_scores: {err}"
+                        ))
+                    })
+            })
+            .collect::<Result<HashMap<_, _>>>()?;
+
+        let intent_scores = value
+            .intent_scores
+            .into_iter()
+            .map(|(name, score)| {
+                parse_intent(&name)
+                    .map(|intent| (intent, score))
+                    .map_err(|err| {
+                        LetheError::config(format!(
+                            "Unknown intent '{name}' in intent_scores: {err}"
+                        ))
+                    })
+            })
+            .collect::<Result<HashMap<_, _>>>()?;
+
+        let feature_rules = value
+            .rules
+            .into_iter()
+            .map(|raw| FeatureRule::try_from(raw))
+            .collect::<Result<Vec<_>>>()?;
+
+        Ok(Self {
+            feature_weights,
+            strategy_weights,
+            feature_names: value.feature_names,
+            strategy_labels,
+            complexity_scores,
+            intent_scores,
+            feature_rules,
+        })
+    }
+}
+
+#[derive(Debug, Deserialize)]
+struct MlStaticRulesRaw {
+    feature_weights: HashMap<String, f32>,
+    strategy_weights: HashMap<String, f32>,
+    feature_names: Vec<String>,
+    strategy_labels: HashMap<String, String>,
+    complexity_scores: HashMap<String, f32>,
+    intent_scores: HashMap<String, f32>,
+    rules: Vec<FeatureRuleRaw>,
+}
+
+#[derive(Debug, Deserialize)]
+struct FeatureRuleRaw {
+    #[serde(default)]
+    id: Option<String>,
+    strategy: String,
+    score: f32,
+    #[serde(default)]
+    mode: ConditionMode,
+    conditions: Vec<FeatureConditionRaw>,
+}
+
+#[derive(Debug, Deserialize)]
+struct FeatureConditionRaw {
+    feature: String,
+    operator: ComparisonOperator,
+    threshold: f32,
+}
+
+#[derive(Debug, Clone)]
+struct FeatureRule {
+    _id: Option<String>,
+    strategy: RetrievalStrategy,
+    score: f32,
+    mode: ConditionMode,
+    conditions: Vec<FeatureCondition>,
+}
+
+impl TryFrom<FeatureRuleRaw> for FeatureRule {
+    type Error = LetheError;
+
+    fn try_from(raw: FeatureRuleRaw) -> Result<Self> {
+        let strategy = parse_strategy(&raw.strategy).map_err(|err| {
+            LetheError::config(format!(
+                "Unknown strategy '{}' in feature rule: {err}",
+                raw.strategy
+            ))
+        })?;
+
+        let conditions = raw
+            .conditions
+            .into_iter()
+            .map(|condition| FeatureCondition::try_from(condition))
+            .collect::<Result<Vec<_>>>()?;
+
+        Ok(Self {
+            _id: raw.id,
+            strategy,
+            score: raw.score,
+            mode: raw.mode,
+            conditions,
+        })
+    }
+}
+
+impl FeatureRule {
+    fn matches(&self, features: &MLFeatures) -> bool {
+        if self.conditions.is_empty() {
+            return false;
+        }
+        let evaluations = self
+            .conditions
+            .iter()
+            .map(|condition| condition.evaluate(features))
+            .collect::<Vec<bool>>();
+
+        match self.mode {
+            ConditionMode::All => evaluations.into_iter().all(|result| result),
+            ConditionMode::Any => evaluations.into_iter().any(|result| result),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+struct FeatureCondition {
+    feature: String,
+    operator: ComparisonOperator,
+    threshold: f32,
+}
+
+impl FeatureCondition {
+    fn evaluate(&self, features: &MLFeatures) -> bool {
+        let value = features.value_by_name(&self.feature).unwrap_or(0.0);
+        self.operator.evaluate(value, self.threshold)
+    }
+
+    fn try_from(raw: FeatureConditionRaw) -> Result<Self> {
+        Ok(Self {
+            feature: raw.feature,
+            operator: raw.operator,
+            threshold: raw.threshold,
+        })
+    }
+}
+
+#[derive(Debug, Clone, Copy, Deserialize)]
+#[serde(rename_all = "lowercase")]
+enum ConditionMode {
+    Any,
+    All,
+}
+
+impl Default for ConditionMode {
+    fn default() -> Self {
+        ConditionMode::All
+    }
+}
+
+#[derive(Debug, Clone, Copy, Deserialize)]
+enum ComparisonOperator {
+    #[serde(rename = ">")]
+    GreaterThan,
+    #[serde(rename = ">=")]
+    GreaterOrEqual,
+    #[serde(rename = "<")]
+    LessThan,
+    #[serde(rename = "<=")]
+    LessOrEqual,
+}
+
+impl ComparisonOperator {
+    fn evaluate(self, value: f32, threshold: f32) -> bool {
+        match self {
+            ComparisonOperator::GreaterThan => value > threshold,
+            ComparisonOperator::GreaterOrEqual => value >= threshold,
+            ComparisonOperator::LessThan => value < threshold,
+            ComparisonOperator::LessOrEqual => value <= threshold,
+        }
+    }
+}
 
 /// ML model prediction for retrieval strategy selection
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -159,27 +317,13 @@ pub struct MLPredictionResult {
 pub struct MLPredictionConfig {
     pub enable_hybrid_fallback: bool,
     pub confidence_threshold: f32,
-    pub feature_weights: HashMap<String, f32>,
-    pub strategy_weights: HashMap<RetrievalStrategy, f32>,
 }
 
 impl Default for MLPredictionConfig {
     fn default() -> Self {
-        let feature_weights = FEATURE_WEIGHTS
-            .iter()
-            .map(|(k, v)| (k.to_string(), *v))
-            .collect();
-
-        let strategy_weights = STRATEGY_WEIGHTS
-            .iter()
-            .map(|(k, v)| (k.clone(), *v))
-            .collect();
-
         Self {
             enable_hybrid_fallback: true,
             confidence_threshold: 0.7,
-            feature_weights,
-            strategy_weights,
         }
     }
 }
@@ -188,17 +332,39 @@ impl Default for MLPredictionConfig {
 pub struct MLPredictionService {
     _config: MLPredictionConfig,
     strategy_rules: Vec<Box<dyn StrategyRule>>,
+    feature_rules: Vec<FeatureRule>,
+    feature_weights: HashMap<String, f32>,
+    strategy_weights: HashMap<RetrievalStrategy, f32>,
+    feature_names: Vec<String>,
+    strategy_labels: HashMap<RetrievalStrategy, String>,
+    complexity_scores: HashMap<QueryComplexity, f32>,
+    intent_scores: HashMap<QueryIntent, f32>,
 }
 
 impl MLPredictionService {
-    pub fn new(config: MLPredictionConfig) -> Self {
+    fn with_rules(config: MLPredictionConfig, rules: MlStaticRules) -> Self {
         let mut service = Self {
             _config: config,
             strategy_rules: Vec::new(),
+            feature_rules: rules.feature_rules,
+            feature_weights: rules.feature_weights,
+            strategy_weights: rules.strategy_weights,
+            feature_names: rules.feature_names,
+            strategy_labels: rules.strategy_labels,
+            complexity_scores: rules.complexity_scores,
+            intent_scores: rules.intent_scores,
         };
 
         service.initialize_rules();
         service
+    }
+
+    pub fn from_rules_path(config: MLPredictionConfig, path: Option<&Path>) -> Result<Self> {
+        let rules = match path {
+            Some(p) => MlStaticRules::load_from_path(p)?,
+            None => MlStaticRules::bundled()?,
+        };
+        Ok(Self::with_rules(config, rules))
     }
 
     /// Predict the best retrieval strategy for a given query understanding
@@ -209,7 +375,7 @@ impl MLPredictionService {
         let features = self.extract_features(understanding);
         let (strategy_scores, explanations) =
             self.collect_strategy_scores(understanding, &features);
-        let prediction = self.create_prediction_from_scores(strategy_scores, &features);
+        let prediction = self.create_prediction_from_scores(strategy_scores);
         let explanation = self.generate_explanation(&prediction, understanding, &explanations);
         let feature_importance = self.calculate_feature_importance(&features);
         let confidence = prediction.confidence;
@@ -244,6 +410,12 @@ impl MLPredictionService {
         // Apply feature-based scoring
         self.apply_feature_scoring(features, &mut strategy_scores);
 
+        for (strategy, weight) in &self.strategy_weights {
+            if let Some(score) = strategy_scores.get_mut(strategy) {
+                *score *= *weight;
+            }
+        }
+
         (strategy_scores, explanations)
     }
 
@@ -251,7 +423,6 @@ impl MLPredictionService {
     fn create_prediction_from_scores(
         &self,
         strategy_scores: HashMap<RetrievalStrategy, f32>,
-        features: &MLFeatures,
     ) -> RetrievalStrategyPrediction {
         let (best_strategy, best_score) = self.select_best_strategy(&strategy_scores);
         let total_score: f32 = strategy_scores.values().sum();
@@ -260,7 +431,7 @@ impl MLPredictionService {
         RetrievalStrategyPrediction {
             strategy: best_strategy,
             confidence: (best_score / total_score).min(1.0),
-            features_used: features.get_feature_names(),
+            features_used: self.feature_names.clone(),
             alternatives,
         }
     }
@@ -298,10 +469,10 @@ impl MLPredictionService {
     fn extract_features(&self, understanding: &QueryUnderstanding) -> MLFeatures {
         let query_length = (understanding.original_query.len() as f32 / 100.0).min(2.0);
 
-        let query_complexity_score = COMPLEXITY_SCORES
-            .iter()
-            .find(|(complexity, _)| *complexity == understanding.complexity)
-            .map(|(_, score)| *score)
+        let query_complexity_score = self
+            .complexity_scores
+            .get(&understanding.complexity)
+            .copied()
             .unwrap_or(0.5);
 
         let technical_term_count =
@@ -326,10 +497,10 @@ impl MLPredictionService {
             0.0
         };
 
-        let intent_score = INTENT_SCORES
-            .iter()
-            .find(|(intent, _)| *intent == understanding.intent)
-            .map(|(_, score)| *score)
+        let intent_score = self
+            .intent_scores
+            .get(&understanding.intent)
+            .copied()
             .unwrap_or(0.5);
 
         let semantic_complexity = self.calculate_semantic_complexity(understanding);
@@ -353,8 +524,8 @@ impl MLPredictionService {
         features: &MLFeatures,
         strategy_scores: &mut HashMap<RetrievalStrategy, f32>,
     ) {
-        for rule in FEATURE_SCORING_RULES {
-            if (rule.condition)(features) {
+        for rule in &self.feature_rules {
+            if rule.matches(features) {
                 *strategy_scores.entry(rule.strategy.clone()).or_insert(0.0) += rule.score;
             }
         }
@@ -384,6 +555,13 @@ impl MLPredictionService {
         complexity.min(1.0)
     }
 
+    fn strategy_label(&self, strategy: &RetrievalStrategy) -> &str {
+        self.strategy_labels
+            .get(strategy)
+            .map(|s| s.as_str())
+            .unwrap_or_else(|| default_strategy_label(strategy))
+    }
+
     /// Generate human-readable explanation for the prediction
     fn generate_explanation(
         &self,
@@ -393,7 +571,7 @@ impl MLPredictionService {
     ) -> String {
         let mut explanation = format!(
             "Selected {} strategy with {:.1}% confidence. ",
-            strategy_to_string(&prediction.strategy),
+            self.strategy_label(&prediction.strategy),
             prediction.confidence * 100.0
         );
 
@@ -436,23 +614,10 @@ impl MLPredictionService {
     fn calculate_feature_importance(&self, features: &MLFeatures) -> HashMap<String, f32> {
         let mut importance = HashMap::new();
 
-        importance.insert("query_length".to_string(), features.query_length * 0.15);
-        importance.insert(
-            "complexity".to_string(),
-            features.query_complexity_score * 0.25,
-        );
-        importance.insert(
-            "technical_terms".to_string(),
-            features.technical_term_count * 0.20,
-        );
-        importance.insert(
-            "domain_specificity".to_string(),
-            features.domain_specificity * 0.15,
-        );
-        importance.insert(
-            "semantic_complexity".to_string(),
-            features.semantic_complexity * 0.25,
-        );
+        for (feature, weight) in &self.feature_weights {
+            let value = features.value_by_name(feature).unwrap_or(0.0);
+            importance.insert(feature.clone(), value * *weight);
+        }
 
         importance
     }
@@ -469,7 +634,10 @@ impl MLPredictionService {
 
 impl Default for MLPredictionService {
     fn default() -> Self {
-        Self::new(MLPredictionConfig::default())
+        Self::with_rules(
+            MLPredictionConfig::default(),
+            MlStaticRules::bundled().expect("Bundled ML strategy rules must be valid"),
+        )
     }
 }
 
@@ -604,17 +772,79 @@ impl StrategyRule for ComparisonQueryRule {
 }
 
 impl MLFeatures {
-    fn get_feature_names(&self) -> Vec<String> {
-        FEATURE_NAMES.iter().map(|s| s.to_string()).collect()
+    fn value_by_name(&self, name: &str) -> Option<f32> {
+        match name {
+            "query_length" => Some(self.query_length),
+            "query_complexity_score" => Some(self.query_complexity_score),
+            "technical_term_count" => Some(self.technical_term_count),
+            "question_word_presence" => Some(self.question_word_presence),
+            "domain_specificity" => Some(self.domain_specificity),
+            "has_code" => Some(self.has_code),
+            "has_numbers" => Some(self.has_numbers),
+            "intent_score" => Some(self.intent_score),
+            "semantic_complexity" => Some(self.semantic_complexity),
+            _ => None,
+        }
     }
 }
 
-fn strategy_to_string(strategy: &RetrievalStrategy) -> &'static str {
-    STRATEGY_NAMES
-        .iter()
-        .find(|(s, _)| s == strategy)
-        .map(|(_, name)| *name)
-        .unwrap_or("Unknown")
+fn default_strategy_label(strategy: &RetrievalStrategy) -> &'static str {
+    match strategy {
+        RetrievalStrategy::BM25Only => "BM25-only",
+        RetrievalStrategy::VectorOnly => "Vector-only",
+        RetrievalStrategy::Hybrid => "Hybrid",
+        RetrievalStrategy::HydeEnhanced => "HyDE-enhanced",
+        RetrievalStrategy::MultiStep => "Multi-step",
+        RetrievalStrategy::Adaptive => "Adaptive",
+    }
+}
+
+fn parse_strategy(name: &str) -> std::result::Result<RetrievalStrategy, String> {
+    match normalise_token(name).as_str() {
+        "bm25only" | "bm25_only" => Ok(RetrievalStrategy::BM25Only),
+        "vectoronly" | "vector_only" => Ok(RetrievalStrategy::VectorOnly),
+        "hybrid" => Ok(RetrievalStrategy::Hybrid),
+        "hyde" | "hyde_enhanced" => Ok(RetrievalStrategy::HydeEnhanced),
+        "multi_step" | "multistep" => Ok(RetrievalStrategy::MultiStep),
+        "adaptive" => Ok(RetrievalStrategy::Adaptive),
+        other => Err(format!("{other}")),
+    }
+}
+
+fn parse_complexity(name: &str) -> std::result::Result<QueryComplexity, String> {
+    match normalise_token(name).as_str() {
+        "simple" => Ok(QueryComplexity::Simple),
+        "medium" => Ok(QueryComplexity::Medium),
+        "complex" => Ok(QueryComplexity::Complex),
+        "very_complex" | "verycomplex" => Ok(QueryComplexity::VeryComplex),
+        other => Err(format!("{other}")),
+    }
+}
+
+fn parse_intent(name: &str) -> std::result::Result<QueryIntent, String> {
+    match normalise_token(name).as_str() {
+        "search" => Ok(QueryIntent::Search),
+        "explain" => Ok(QueryIntent::Explain),
+        "code" => Ok(QueryIntent::Code),
+        "debug" => Ok(QueryIntent::Debug),
+        "compare" => Ok(QueryIntent::Compare),
+        "guide" => Ok(QueryIntent::Guide),
+        "assist" => Ok(QueryIntent::Assist),
+        "chat" => Ok(QueryIntent::Chat),
+        other => Err(format!("{other}")),
+    }
+}
+
+fn normalise_token(input: &str) -> String {
+    let mut token = input
+        .trim()
+        .to_lowercase()
+        .replace('-', "_")
+        .replace(' ', "_");
+    while token.contains("__") {
+        token = token.replace("__", "_");
+    }
+    token
 }
 
 #[cfg(test)]

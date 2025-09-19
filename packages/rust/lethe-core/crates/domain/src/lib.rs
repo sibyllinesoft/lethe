@@ -1,6 +1,5 @@
-pub mod bloom;
+pub mod cached_embeddings;
 pub mod chunker;
-pub mod corpus;
 pub mod embeddings;
 pub mod hyde;
 pub mod llm;
@@ -11,7 +10,7 @@ pub mod repository_indexer;
 pub mod retrieval;
 
 // Re-export all domain services
-pub use bloom::*;
+pub use cached_embeddings::*;
 pub use chunker::*;
 pub use embeddings::*;
 pub use hyde::*;

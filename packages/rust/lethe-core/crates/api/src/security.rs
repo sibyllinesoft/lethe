@@ -24,6 +24,20 @@ pub enum AuthMethod {
 pub struct AuthenticatedIdentity {
     pub method: AuthMethod,
     pub subject: Option<String>,
+    pub roles: Vec<String>,
+    pub permissions: Vec<String>,
+}
+
+impl AuthenticatedIdentity {
+    pub fn has_role(&self, role: &str) -> bool {
+        self.roles.iter().any(|candidate| candidate == role)
+    }
+
+    pub fn has_permission(&self, permission: &str) -> bool {
+        self.permissions
+            .iter()
+            .any(|candidate| candidate == permission)
+    }
 }
 
 /// Security context shared by middleware for auth and rate limiting.
@@ -92,19 +106,23 @@ impl SecurityContext {
         self.api_keys
             .iter()
             .find(|key| key.matches(token))
-            .map(|_| AuthenticatedIdentity {
+            .map(|key| AuthenticatedIdentity {
                 method: AuthMethod::ApiKey,
                 subject: None,
+                roles: key.roles.clone(),
+                permissions: key.permissions.clone(),
             })
     }
 
     pub fn try_jwt(&self, token: &str) -> Result<Option<AuthenticatedIdentity>, ApiError> {
         match &self.jwt {
             Some(validator) => {
-                let claims = validator.validate(token)?;
+                let auth = validator.validate(token)?;
                 Ok(Some(AuthenticatedIdentity {
                     method: AuthMethod::Jwt,
-                    subject: claims.subject,
+                    subject: auth.subject,
+                    roles: auth.roles,
+                    permissions: auth.permissions,
                 }))
             }
             None => Ok(None),
@@ -148,12 +166,40 @@ impl SecurityContext {
 #[derive(Clone)]
 struct ApiKey {
     value: Vec<u8>,
+    roles: Vec<String>,
+    permissions: Vec<String>,
 }
 
 impl ApiKey {
     fn new(raw: &str) -> Self {
+        let mut parts = raw.split('|');
+        let value_part = parts.next().unwrap_or("").trim();
+
+        let parse_list = |input: Option<&str>, defaults: &[&str]| -> Vec<String> {
+            input
+                .map(|s| {
+                    s.split(',')
+                        .filter_map(|item| {
+                            let trimmed = item.trim();
+                            if trimmed.is_empty() {
+                                None
+                            } else {
+                                Some(trimmed.to_string())
+                            }
+                        })
+                        .collect::<Vec<_>>()
+                })
+                .filter(|list: &Vec<String>| !list.is_empty())
+                .unwrap_or_else(|| defaults.iter().map(|item| (*item).to_string()).collect())
+        };
+
+        let roles = parse_list(parts.next(), &["api_key"]);
+        let permissions = parse_list(parts.next(), &["query:execute"]);
+
         Self {
-            value: raw.trim().as_bytes().to_vec(),
+            value: value_part.as_bytes().to_vec(),
+            roles,
+            permissions,
         }
     }
 
@@ -176,6 +222,12 @@ struct Claims {
     aud: Option<Vec<String>>,
     exp: Option<u64>,
     iat: Option<u64>,
+    #[serde(default)]
+    roles: Option<Vec<String>>,
+    #[serde(default)]
+    permissions: Option<Vec<String>>,
+    #[serde(default)]
+    scope: Option<String>,
 }
 
 impl JwtValidator {
@@ -211,15 +263,62 @@ impl JwtValidator {
                 ApiError::Authentication
             })?;
 
+        let claims = data.claims;
+        let roles = claims.resolve_roles();
+        let permissions = claims.resolve_permissions();
         Ok(JwtAuthResult {
-            subject: data.claims.sub,
+            subject: claims.sub,
+            roles,
+            permissions,
         })
     }
+}
+
+impl Claims {
+    fn resolve_roles(&self) -> Vec<String> {
+        let mut roles = self.roles.clone().unwrap_or_default();
+        if roles.is_empty() {
+            roles.push("jwt_user".to_string());
+        }
+        dedup_string_list(&mut roles);
+        roles
+    }
+
+    fn resolve_permissions(&self) -> Vec<String> {
+        let mut permissions = self.permissions.clone().unwrap_or_default();
+        if let Some(scope) = &self.scope {
+            permissions.extend(
+                scope
+                    .split_whitespace()
+                    .filter(|value| !value.trim().is_empty())
+                    .map(|value| value.trim().to_string()),
+            );
+        }
+        if permissions.is_empty() {
+            permissions.push("query:execute".to_string());
+        }
+        dedup_string_list(&mut permissions);
+        permissions
+    }
+}
+
+fn dedup_string_list(list: &mut Vec<String>) {
+    for item in list.iter_mut() {
+        let trimmed = item.trim();
+        if trimmed.len() != item.len() {
+            *item = trimmed.to_string();
+        }
+    }
+    list.retain(|item| !item.is_empty());
+    list.sort();
+    list.dedup();
 }
 
 #[derive(Debug)]
 struct JwtAuthResult {
     subject: Option<String>,
+    roles: Vec<String>,
+    permissions: Vec<String>,
 }
 
 /// Simple token bucket rate limiter shared between requests.

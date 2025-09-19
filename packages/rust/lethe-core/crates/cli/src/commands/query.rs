@@ -55,9 +55,11 @@ enum SearchStrategy {
 impl Command for QueryCommand {
     async fn execute(&self, context: &AppContext) -> Result<()> {
         use lethe_domain::{
-            corpus::ParquetCorpus, EmbeddingServiceFactory, EnhancedQueryOptions,
-            EnhancedQueryResult, PipelineConfig, PipelineFactory, RetrievalStrategy,
+            EmbeddingServiceFactory, EnhancedQueryOptions, EnhancedQueryResult, MLPredictionConfig,
+            MLPredictionService, PipelineConfig, PipelineFactory, RetrievalStrategy,
         };
+        use lethe_storage::ParquetCorpus;
+        use std::path::PathBuf;
         use std::sync::Arc;
 
         if !context.quiet {
@@ -65,28 +67,52 @@ impl Command for QueryCommand {
         }
         let corpus = Arc::new(ParquetCorpus::new(&context.storage_root));
         corpus.health_check().await?;
-        let embedding_config = super::to_domain_embedding_config(&context.config.embedding);
+        let embedding_config =
+            super::to_domain_embedding_config(&context.resolved_config.embedding);
         let embedding_service = EmbeddingServiceFactory::create(&embedding_config).await?;
 
-        let features = context
-            .config
-            .features
+        let mut pipeline_config = PipelineConfig::from_resolved_config(&context.resolved_config);
+        pipeline_config.enable_hyde = self.enable_hyde || pipeline_config.enable_hyde;
+        pipeline_config.max_candidates = self.limit.max(10);
+        pipeline_config.rerank_enabled = self.enable_rerank;
+        pipeline_config.rerank_top_k = self.limit.min(20);
+        let ml_rules_path = context
+            .resolved_config
+            .ml
+            .static_rules
+            .path
             .as_ref()
-            .cloned()
-            .unwrap_or_default();
-
-        let pipeline_config = PipelineConfig {
-            enable_hyde: self.enable_hyde || features.enable_hyde,
-            enable_query_understanding: features.enable_query_understanding,
-            enable_ml_prediction: features.enable_ml_prediction,
-            max_candidates: self.limit.max(10),
-            rerank_enabled: self.enable_rerank,
-            rerank_top_k: self.limit.min(20),
-            timeout_seconds: 30,
+            .map(|path| PathBuf::from(path));
+        let ml_prediction_service = match MLPredictionService::from_rules_path(
+            MLPredictionConfig::default(),
+            ml_rules_path.as_deref(),
+        ) {
+            Ok(service) => {
+                if let Some(path) = &ml_rules_path {
+                    tracing::info!(rules = %path.display(), "Loaded ML strategy rules for CLI query");
+                }
+                service
+            }
+            Err(err) => {
+                if !context.quiet {
+                    eprintln!(
+                        "⚠️  Failed to load ML strategy rules: {}. Using bundled defaults.",
+                        err
+                    );
+                }
+                tracing::warn!(error = %err, "Using bundled ML strategy rules for CLI query");
+                MLPredictionService::default()
+            }
         };
         let repo: Arc<dyn lethe_domain::retrieval::DocumentRepository> = corpus.clone();
-        let pipeline =
-            PipelineFactory::create_pipeline(pipeline_config, repo, embedding_service, None, None);
+        let pipeline = PipelineFactory::create_pipeline(
+            pipeline_config,
+            repo,
+            embedding_service,
+            None,
+            None,
+            Some(ml_prediction_service),
+        );
 
         let options = EnhancedQueryOptions {
             session_id: self

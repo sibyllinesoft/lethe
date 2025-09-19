@@ -3,7 +3,8 @@ members = [
     "packages/rust/lethe-core/crates/api",
     "packages/rust/lethe-core/crates/cli",
     "packages/rust/lethe-core/crates/domain",
-    "packages/rust/lethe-core/crates/shared"
+    "packages/rust/lethe-core/crates/shared",
+    "packages/rust/lethe-core/crates/storage",
 ]
 resolver = "2"
 

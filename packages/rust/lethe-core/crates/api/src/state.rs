@@ -1,15 +1,25 @@
 use crate::security::SecurityContext;
 use lethe_domain::{
-    corpus::ParquetCorpus, EmbeddingService, EnhancedQueryPipeline, LlmService, RerankingService,
+    CachedEmbeddingService, EmbeddingCache, EmbeddingConfig as DomainEmbeddingConfig,
+    EmbeddingRerankingService, EmbeddingService, EmbeddingServiceFactory, EnhancedQueryPipeline,
+    LlmService, LlmServiceConfig, LlmServiceFactory, MLPredictionConfig, MLPredictionService,
+    PipelineConfig, PipelineFactory, RerankingService,
 };
-use lethe_shared::LetheConfig;
-use std::{sync::Arc, time::Instant};
+use lethe_shared::ResolvedLetheConfig;
+use lethe_storage::ParquetCorpus;
+use moka::future::Cache;
+use std::{
+    path::Path,
+    sync::Arc,
+    time::{Duration, Instant},
+};
 
 /// Application state containing all services and repositories
 #[derive(Clone)]
 pub struct AppState {
-    pub config: Arc<LetheConfig>,
+    pub config: Arc<ResolvedLetheConfig>,
     pub corpus: Arc<ParquetCorpus>,
+    pub embedding_cache: EmbeddingCache,
     pub embedding_service: Arc<dyn EmbeddingService>,
     pub llm_service: Option<Arc<dyn LlmService>>,
     pub reranking_service: Option<Arc<dyn RerankingService>>,
@@ -21,8 +31,9 @@ pub struct AppState {
 impl AppState {
     #[allow(clippy::too_many_arguments)]
     pub fn new(
-        config: Arc<LetheConfig>,
+        config: Arc<ResolvedLetheConfig>,
         corpus: Arc<ParquetCorpus>,
+        embedding_cache: EmbeddingCache,
         embedding_service: Arc<dyn EmbeddingService>,
         llm_service: Option<Arc<dyn LlmService>>,
         reranking_service: Option<Arc<dyn RerankingService>>,
@@ -33,6 +44,7 @@ impl AppState {
         Ok(Self {
             config,
             corpus,
+            embedding_cache,
             embedding_service,
             llm_service,
             reranking_service,
@@ -40,6 +52,109 @@ impl AppState {
             security,
             server_started_at: Instant::now(),
         })
+    }
+
+    pub async fn initialise<P: AsRef<Path>>(
+        config: Arc<ResolvedLetheConfig>,
+        storage_root: P,
+    ) -> crate::error::ApiResult<Self> {
+        let domain_embedding_config = DomainEmbeddingConfig::from_shared(&config.embedding);
+
+        let corpus = Arc::new(ParquetCorpus::new(storage_root.as_ref()));
+        corpus.health_check().await.map_err(|err| {
+            crate::error::ApiError::internal(format!(
+                "Failed to initialise corpus storage: {}",
+                err
+            ))
+        })?;
+
+        let base_embedding_service =
+            EmbeddingServiceFactory::create(&domain_embedding_config).await?;
+
+        let cache_settings = &config.embedding.cache;
+        let mut cache_builder = Cache::builder().max_capacity(cache_settings.max_entries.max(1));
+        if cache_settings.ttl_secs > 0 {
+            cache_builder =
+                cache_builder.time_to_live(Duration::from_secs(cache_settings.ttl_secs));
+        }
+        let embedding_cache: EmbeddingCache = cache_builder.build();
+
+        let embedding_service: Arc<dyn EmbeddingService> = Arc::new(CachedEmbeddingService::new(
+            base_embedding_service,
+            embedding_cache.clone(),
+        ));
+
+        let llm_service = if config.llm.enabled {
+            let domain_llm_config = LlmServiceConfig::from_shared(&config.llm.settings);
+            match LlmServiceFactory::create(&domain_llm_config).await {
+                Ok(service) => Some(service),
+                Err(err) => {
+                    tracing::warn!(
+                        error = %err,
+                        "LLM service initialisation failed; HyDE will run in fallback mode"
+                    );
+                    None
+                }
+            }
+        } else {
+            None
+        };
+
+        let pipeline_config = PipelineConfig::from_resolved_config(&config);
+
+        let reranking_service: Option<Arc<dyn RerankingService>> = if pipeline_config.rerank_enabled
+        {
+            Some(Arc::new(EmbeddingRerankingService::new(
+                embedding_service.clone(),
+            )))
+        } else {
+            None
+        };
+
+        let ml_prediction_service = match config.ml.static_rules.path.as_ref() {
+            Some(path) => {
+                let path_ref = Path::new(path);
+                match MLPredictionService::from_rules_path(
+                    MLPredictionConfig::default(),
+                    Some(path_ref),
+                ) {
+                    Ok(service) => {
+                        tracing::info!(rules = %path_ref.display(), "Loaded ML strategy rules from configuration");
+                        service
+                    }
+                    Err(err) => {
+                        tracing::warn!(
+                            error = %err,
+                            path = %path_ref.display(),
+                            "Failed to load ML strategy rules; using bundled defaults"
+                        );
+                        MLPredictionService::default()
+                    }
+                }
+            }
+            None => MLPredictionService::default(),
+        };
+
+        let document_repository: Arc<dyn lethe_domain::retrieval::DocumentRepository> =
+            corpus.clone();
+        let query_pipeline = Arc::new(PipelineFactory::create_pipeline(
+            pipeline_config,
+            document_repository,
+            embedding_service.clone(),
+            llm_service.clone(),
+            reranking_service.clone(),
+            Some(ml_prediction_service),
+        ));
+
+        Self::new(
+            config,
+            corpus,
+            embedding_cache,
+            embedding_service,
+            llm_service,
+            reranking_service,
+            query_pipeline,
+        )
     }
 
     pub async fn health_check(&self) -> crate::error::ApiResult<HealthStatus> {

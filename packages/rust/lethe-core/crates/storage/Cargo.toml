@@ -1,0 +1,18 @@
+[package]
+name = "lethe-storage"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+lethe-shared = { path = "../shared" }
+lethe-domain = { path = "../domain" }
+async-trait = "0.1"
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+parquet.workspace = true
+bincode.workspace = true
+uuid.workspace = true
+tantivy = { version = "0.25", default-features = false, features = ["mmap"] }
+xxhash-rust = { workspace = true, features = ["xxh3"] }
+hnsw_rs = "0.3"
