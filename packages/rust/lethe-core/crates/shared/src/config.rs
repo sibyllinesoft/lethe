@@ -107,11 +107,15 @@ pub struct LetheConfig {
     pub chunking: ChunkingConfig,
     pub timeouts: TimeoutsConfig,
     pub features: Option<FeaturesConfig>,
+    #[serde(default = "default_llm_config_option")]
+    pub llm: Option<LlmConfig>,
     pub query_understanding: Option<QueryUnderstandingConfig>,
     pub ml: Option<MlConfig>,
     pub development: Option<DevelopmentConfig>,
+    #[serde(default)]
+    pub security: SecurityConfig,
     pub lens: Option<LensConfig>,
-    pub database: DatabaseConfig,
+    pub storage: StorageConfig,
     pub embedding: EmbeddingConfig,
     pub repository_preloading: Option<RepositoryPreloadingConfig>,
 }
@@ -146,6 +150,10 @@ impl Default for RetrievalConfig {
             llm_rerank: Some(LlmRerankConfig::default()),
         }
     }
+}
+
+fn default_llm_config_option() -> Option<LlmConfig> {
+    Some(LlmConfig::default())
 }
 
 /// Fusion configuration for dynamic parameter adjustment
@@ -328,6 +336,58 @@ impl Default for QueryUnderstandingConfig {
     }
 }
 
+/// Large language model configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LlmConfig {
+    #[serde(default)]
+    pub provider: LlmProvider,
+    #[serde(default = "default_llm_temperature")]
+    pub temperature: f32,
+    #[serde(default = "default_llm_max_tokens")]
+    pub max_tokens: usize,
+    #[serde(default = "default_llm_timeout")]
+    pub timeout_ms: u64,
+}
+
+fn default_llm_temperature() -> f32 {
+    0.7
+}
+
+fn default_llm_max_tokens() -> usize {
+    512
+}
+
+fn default_llm_timeout() -> u64 {
+    15000
+}
+
+impl Default for LlmConfig {
+    fn default() -> Self {
+        Self {
+            provider: LlmProvider::default(),
+            temperature: default_llm_temperature(),
+            max_tokens: default_llm_max_tokens(),
+            timeout_ms: default_llm_timeout(),
+        }
+    }
+}
+
+/// Supported LLM providers
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "lowercase")]
+pub enum LlmProvider {
+    Ollama { base_url: String, model: String },
+}
+
+impl Default for LlmProvider {
+    fn default() -> Self {
+        Self::Ollama {
+            base_url: "http://localhost:11434".to_string(),
+            model: default_llm_model(),
+        }
+    }
+}
+
 /// Machine learning configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MlConfig {
@@ -459,6 +519,89 @@ impl Default for DevelopmentConfig {
     }
 }
 
+/// API security configuration (authentication & rate limiting)
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SecurityConfig {
+    /// Require clients to authenticate before accessing the API
+    #[serde(default)]
+    pub require_authentication: bool,
+    /// List of pre-shared API keys that are allowed to access the service
+    #[serde(default)]
+    pub api_keys: Vec<String>,
+    /// Optional name of a header that carries the API key (defaults to `authorization`)
+    #[serde(default)]
+    pub api_key_header: Option<String>,
+    /// Configuration for validating bearer JWTs
+    #[serde(default)]
+    pub jwt: Option<JwtConfig>,
+    /// Optional rate-limiting configuration
+    #[serde(default)]
+    pub rate_limit: Option<RateLimitConfig>,
+    /// Optional header that contains the real client IP when behind a proxy
+    #[serde(default)]
+    pub client_ip_header: Option<String>,
+}
+
+impl Default for SecurityConfig {
+    fn default() -> Self {
+        Self {
+            require_authentication: false,
+            api_keys: Vec::new(),
+            api_key_header: None,
+            jwt: None,
+            rate_limit: Some(RateLimitConfig::default()),
+            client_ip_header: None,
+        }
+    }
+}
+
+/// JWT authentication options
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct JwtConfig {
+    /// HMAC secret used to validate tokens
+    pub secret: String,
+    /// Expected issuer (optional)
+    #[serde(default)]
+    pub issuer: Option<String>,
+    /// Expected audience (optional)
+    #[serde(default)]
+    pub audience: Option<String>,
+    /// Allowed leeway when validating expiry (seconds)
+    #[serde(default = "default_jwt_leeway")]
+    pub leeway_seconds: u64,
+}
+
+fn default_jwt_leeway() -> u64 {
+    60
+}
+
+/// Rate limiting configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RateLimitConfig {
+    /// Maximum number of requests per minute
+    pub requests_per_minute: u32,
+    /// Maximum burst size allowed before throttling
+    #[serde(default = "default_rate_limit_burst")]
+    pub burst: u32,
+    /// Header to trust for client identity (defaults to IP detection)
+    #[serde(default)]
+    pub identifier_header: Option<String>,
+}
+
+fn default_rate_limit_burst() -> u32 {
+    60
+}
+
+impl Default for RateLimitConfig {
+    fn default() -> Self {
+        Self {
+            requests_per_minute: 120,
+            burst: default_rate_limit_burst(),
+            identifier_header: None,
+        }
+    }
+}
+
 /// Lens integration configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LensConfig {
@@ -579,40 +722,24 @@ impl Default for LensConfig {
     }
 }
 
-/// Database configuration
+/// Storage configuration for file-backed repositories
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DatabaseConfig {
-    #[serde(default = "default_database_url")]
-    pub url: String,
-    #[serde(default = "default_max_connections")]
-    pub max_connections: u32,
-    #[serde(default = "default_min_connections")]
-    pub min_connections: u32,
+pub struct StorageConfig {
+    #[serde(default = "default_storage_index_root")]
+    pub index_root: String,
+    #[serde(default)]
+    pub persist_embeddings: bool,
 }
 
-fn default_database_url() -> String {
-    "postgresql://lethe:lethe@localhost/lethe".to_string()
+fn default_storage_index_root() -> String {
+    "./data/index".to_string()
 }
 
-fn default_max_connections() -> u32 {
-    20
-}
-fn default_min_connections() -> u32 {
-    5
-}
-
-impl DatabaseConfig {
-    pub fn connection_url(&self) -> String {
-        self.url.clone()
-    }
-}
-
-impl Default for DatabaseConfig {
+impl Default for StorageConfig {
     fn default() -> Self {
         Self {
-            url: default_database_url(),
-            max_connections: default_max_connections(),
-            min_connections: default_min_connections(),
+            index_root: default_storage_index_root(),
+            persist_embeddings: true,
         }
     }
 }
@@ -762,11 +889,13 @@ impl Default for LetheConfig {
             chunking: ChunkingConfig::default(),
             timeouts: TimeoutsConfig::default(),
             features: Some(FeaturesConfig::default()),
+            llm: default_llm_config_option(),
             query_understanding: Some(QueryUnderstandingConfig::default()),
             ml: Some(MlConfig::default()),
             development: Some(DevelopmentConfig::default()),
+            security: SecurityConfig::default(),
             lens: Some(LensConfig::default()),
-            database: DatabaseConfig::default(),
+            storage: StorageConfig::default(),
             embedding: EmbeddingConfig::default(),
             repository_preloading: Some(RepositoryPreloadingConfig::default()),
         }
@@ -839,9 +968,12 @@ impl LetheConfig {
         self.retrieval = other.retrieval.clone();
         self.chunking = other.chunking.clone();
         self.timeouts = other.timeouts.clone();
+        self.storage = other.storage.clone();
+        self.embedding = other.embedding.clone();
 
         // Use or_else for optional configs to maintain existing values when other is None
         self.features = other.features.clone().or_else(|| self.features.clone());
+        self.llm = other.llm.clone().or_else(|| self.llm.clone());
         self.query_understanding = other
             .query_understanding
             .clone()
@@ -852,6 +984,10 @@ impl LetheConfig {
             .clone()
             .or_else(|| self.development.clone());
         self.lens = other.lens.clone().or_else(|| self.lens.clone());
+        self.repository_preloading = other
+            .repository_preloading
+            .clone()
+            .or_else(|| self.repository_preloading.clone());
     }
 
     /// Builder pattern for creating configurations
@@ -889,6 +1025,11 @@ impl LetheConfigBuilder {
 
     pub fn features(mut self, features: FeaturesConfig) -> Self {
         self.config.features = Some(features);
+        self
+    }
+
+    pub fn llm(mut self, llm: Option<LlmConfig>) -> Self {
+        self.config.llm = llm;
         self
     }
 

@@ -1,6 +1,6 @@
 use crate::{
     embeddings::EmbeddingService,
-    hyde::{HydeExpansion, HydeService, LlmService},
+    hyde::{HydeConfig, HydeExpansion, HydeService, LlmService},
     ml_prediction::{MLPredictionResult, MLPredictionService, RetrievalStrategy},
     query_understanding::{QueryUnderstanding, QueryUnderstandingService},
     retrieval::{
@@ -8,9 +8,11 @@ use crate::{
     },
 };
 use async_trait::async_trait;
-use lethe_shared::{Candidate, ContextPack, Result};
+use lethe_shared::{
+    utils::TextProcessor, Candidate, Citation, ContextChunk, ContextPack, LetheError, Result,
+};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 
 /// Configuration for the enhanced query pipeline
@@ -82,11 +84,144 @@ pub trait RerankingService: Send + Sync {
     async fn rerank(&self, query: &str, candidates: &[Candidate]) -> Result<Vec<Candidate>>;
 }
 
+/// Reranking implementation that refines scores using embedding similarity
+pub struct EmbeddingRerankingService {
+    embedding_service: Arc<dyn EmbeddingService>,
+    weight_original: f64,
+    weight_similarity: f64,
+}
+
+impl EmbeddingRerankingService {
+    /// Create a reranker with default weighting (70% similarity, 30% original score)
+    pub fn new(embedding_service: Arc<dyn EmbeddingService>) -> Self {
+        Self::with_weights(embedding_service, 0.3, 0.7)
+    }
+
+    /// Create a reranker with custom weighting
+    pub fn with_weights(
+        embedding_service: Arc<dyn EmbeddingService>,
+        weight_original: f64,
+        weight_similarity: f64,
+    ) -> Self {
+        let total = weight_original + weight_similarity;
+        let (weight_original, weight_similarity) = if total > 0.0 {
+            (weight_original / total, weight_similarity / total)
+        } else {
+            (0.5, 0.5)
+        };
+
+        Self {
+            embedding_service,
+            weight_original,
+            weight_similarity,
+        }
+    }
+
+    fn cosine_similarity(query: &[f32], document: &[f32]) -> f64 {
+        if query.is_empty() || document.is_empty() {
+            return 0.0;
+        }
+
+        let dot: f64 = query
+            .iter()
+            .zip(document.iter())
+            .map(|(a, b)| (*a as f64) * (*b as f64))
+            .sum();
+
+        let norm_query: f64 = query
+            .iter()
+            .map(|v| (*v as f64).powi(2))
+            .sum::<f64>()
+            .sqrt();
+        let norm_doc: f64 = document
+            .iter()
+            .map(|v| (*v as f64).powi(2))
+            .sum::<f64>()
+            .sqrt();
+
+        if norm_query == 0.0 || norm_doc == 0.0 {
+            0.0
+        } else {
+            (dot / (norm_query * norm_doc)).clamp(-1.0, 1.0)
+        }
+    }
+}
+
+#[async_trait]
+impl RerankingService for EmbeddingRerankingService {
+    async fn rerank(&self, query: &str, candidates: &[Candidate]) -> Result<Vec<Candidate>> {
+        if candidates.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        let query_embedding = self
+            .embedding_service
+            .embed(&[query.to_string()])
+            .await?
+            .into_iter()
+            .next()
+            .ok_or_else(|| {
+                LetheError::embedding("Embedding service returned no vector for query reranking")
+            })?;
+
+        let mut candidate_texts = Vec::new();
+        let mut index_map = Vec::new();
+
+        for (idx, candidate) in candidates.iter().enumerate() {
+            if let Some(text) = &candidate.text {
+                if !text.trim().is_empty() {
+                    candidate_texts.push(text.clone());
+                    index_map.push(idx);
+                }
+            }
+        }
+
+        if candidate_texts.is_empty() {
+            return Ok(candidates.to_vec());
+        }
+
+        let candidate_embeddings = self.embedding_service.embed(&candidate_texts).await?;
+
+        let max_original_score = candidates
+            .iter()
+            .map(|c| c.score.abs())
+            .fold(0.0_f64, f64::max)
+            .max(1e-6);
+
+        let mut reranked = candidates.to_vec();
+
+        for (embedding_idx, candidate_idx) in index_map.iter().enumerate() {
+            if let Some(candidate_embedding) = candidate_embeddings.get(embedding_idx) {
+                let similarity =
+                    Self::cosine_similarity(&query_embedding.data, &candidate_embedding.data);
+                let similarity = (similarity + 1.0) / 2.0; // Map from [-1,1] to [0,1]
+
+                let original_normalised =
+                    (reranked[*candidate_idx].score / max_original_score).clamp(0.0, 1.0);
+
+                let combined = self.weight_similarity * similarity
+                    + self.weight_original * original_normalised;
+
+                reranked[*candidate_idx].score = combined * max_original_score;
+            }
+        }
+
+        reranked.sort_by(|a, b| {
+            b.score
+                .partial_cmp(&a.score)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
+
+        Ok(reranked)
+    }
+}
+
 /// Enhanced query pipeline that orchestrates all components
 pub struct EnhancedQueryPipeline {
     config: PipelineConfig,
     document_repository: Arc<dyn DocumentRepository>,
     embedding_service: Arc<dyn EmbeddingService>,
+    llm_service: Option<Arc<dyn LlmService>>,
     hybrid_retrieval: HybridRetrievalService,
     hyde_service: Option<Arc<HydeService>>,
     query_understanding: QueryUnderstandingService,
@@ -107,9 +242,9 @@ impl EnhancedQueryPipeline {
             HybridRetrievalService::new(embedding_service.clone(), hybrid_config);
 
         let hyde_service = if config.enable_hyde {
-            llm_service.map(|llm| {
+            llm_service.as_ref().map(|llm| {
                 Arc::new(HydeService::new(
-                    llm,
+                    Arc::clone(llm),
                     embedding_service.clone(),
                     Default::default(),
                 ))
@@ -122,6 +257,7 @@ impl EnhancedQueryPipeline {
             config,
             document_repository,
             embedding_service,
+            llm_service,
             hybrid_retrieval,
             hyde_service,
             query_understanding: QueryUnderstandingService::new(),
@@ -148,7 +284,7 @@ impl EnhancedQueryPipeline {
         let reranked_candidates = self.phase_reranking(query, candidates).await?;
         let final_candidates = self.phase_result_limiting(reranked_candidates, options.k);
         let context_pack = self
-            .phase_context_creation(&final_candidates, options)
+            .phase_context_creation(query, &final_candidates, options)
             .await?;
 
         self.create_final_result(
@@ -241,12 +377,18 @@ impl EnhancedQueryPipeline {
     ) -> Result<Vec<Candidate>> {
         if self.config.rerank_enabled && candidates.len() > 1 {
             if let Some(ref reranker) = self.reranking_service {
-                let top_candidates = candidates
-                    .iter()
-                    .take(self.config.rerank_top_k)
-                    .cloned()
-                    .collect::<Vec<_>>();
-                reranker.rerank(query, &top_candidates).await
+                let mut iter = candidates.into_iter();
+                let top_candidates: Vec<Candidate> =
+                    iter.by_ref().take(self.config.rerank_top_k).collect();
+                let remainder: Vec<Candidate> = iter.collect();
+
+                if top_candidates.is_empty() {
+                    Ok(remainder)
+                } else {
+                    let mut reranked = reranker.rerank(query, &top_candidates).await?;
+                    reranked.extend(remainder);
+                    Ok(reranked)
+                }
             } else {
                 Ok(candidates)
             }
@@ -263,10 +405,11 @@ impl EnhancedQueryPipeline {
     /// Phase 8: Context Pack Creation
     async fn phase_context_creation(
         &self,
+        query: &str,
         candidates: &[Candidate],
         options: &EnhancedQueryOptions,
     ) -> Result<ContextPack> {
-        self.create_context_pack(candidates, options).await
+        self.create_context_pack(query, candidates, options).await
     }
 
     /// Create final result structure
@@ -482,13 +625,13 @@ impl EnhancedQueryPipeline {
     /// Create context pack from candidates
     async fn create_context_pack(
         &self,
+        query: &str,
         candidates: &[Candidate],
         options: &EnhancedQueryOptions,
     ) -> Result<ContextPack> {
-        // Convert candidates to context chunks
-        let chunks: Vec<lethe_shared::ContextChunk> = candidates
+        let chunks: Vec<ContextChunk> = candidates
             .iter()
-            .map(|candidate| lethe_shared::ContextChunk {
+            .map(|candidate| ContextChunk {
                 id: candidate.doc_id.clone(),
                 score: candidate.score,
                 kind: candidate.kind.clone().unwrap_or_else(|| "text".to_string()),
@@ -496,20 +639,348 @@ impl EnhancedQueryPipeline {
             })
             .collect();
 
-        let context_pack = ContextPack {
+        let llm_analysis = self.analyse_context_with_llm(query, &chunks).await;
+
+        let summary = llm_analysis
+            .as_ref()
+            .map(|analysis| analysis.summary.clone())
+            .filter(|value| !value.trim().is_empty())
+            .unwrap_or_else(|| self.build_summary(query, &chunks));
+
+        let key_entities = llm_analysis
+            .as_ref()
+            .map(|analysis| analysis.key_entities.clone())
+            .filter(|items| !items.is_empty())
+            .unwrap_or_else(|| self.extract_key_entities(&chunks));
+        let key_entities = Self::clean_string_list_with_limit(key_entities, 8);
+
+        let claims = llm_analysis
+            .as_ref()
+            .map(|analysis| analysis.claims.clone())
+            .filter(|items| !items.is_empty())
+            .unwrap_or_else(|| self.extract_claims(&chunks));
+        let claims = Self::clean_string_list_with_limit(claims, 5);
+
+        let contradictions = llm_analysis
+            .as_ref()
+            .map(|analysis| analysis.contradictions.clone())
+            .filter(|items| !items.is_empty())
+            .unwrap_or_else(|| self.extract_contradictions(&chunks));
+        let contradictions = Self::clean_string_list_with_limit(contradictions, 3);
+
+        let citations = self.build_citations(&chunks);
+
+        Ok(ContextPack {
             id: uuid::Uuid::new_v4().to_string(),
             session_id: options.session_id.clone(),
-            query: "query_placeholder".to_string(), // Would need to be passed in
+            query: query.to_string(),
             created_at: chrono::Utc::now(),
-            summary: "Generated context pack".to_string(), // Would be generated properly
-            key_entities: Vec::new(),                      // Would be extracted from results
-            claims: Vec::new(),                            // Would be extracted from results
-            contradictions: Vec::new(),                    // Would be extracted from results
+            summary: summary.trim().to_string(),
+            key_entities,
+            claims,
+            contradictions,
             chunks,
-            citations: Vec::new(), // Would be generated based on chunks
+            citations,
+        })
+    }
+
+    fn build_summary(&self, query: &str, chunks: &[ContextChunk]) -> String {
+        if chunks.is_empty() {
+            return String::new();
+        }
+
+        let mut sentences: Vec<(String, f64)> = Vec::new();
+        for chunk in chunks.iter().take(5) {
+            if chunk.text.trim().is_empty() {
+                continue;
+            }
+            for sentence in TextProcessor::split_sentences(&chunk.text) {
+                let trimmed = sentence.trim();
+                if trimmed.is_empty() {
+                    continue;
+                }
+                sentences.push((trimmed.to_string(), chunk.score));
+            }
+        }
+
+        sentences.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+        sentences.truncate(3);
+
+        if sentences.is_empty() {
+            let fallback = chunks
+                .iter()
+                .max_by(|a, b| {
+                    a.score
+                        .partial_cmp(&b.score)
+                        .unwrap_or(std::cmp::Ordering::Equal)
+                })
+                .map(|chunk| chunk.text.trim().chars().take(280).collect::<String>())
+                .filter(|text| !text.is_empty())
+                .unwrap_or_default();
+
+            return if fallback.is_empty() {
+                format!("Context for query: {}", query)
+            } else {
+                fallback
+            };
+        }
+
+        sentences
+            .into_iter()
+            .map(|(sentence, _)| sentence)
+            .collect::<Vec<_>>()
+            .join(" ")
+    }
+
+    fn extract_key_entities(&self, chunks: &[ContextChunk]) -> Vec<String> {
+        let mut entities = Vec::new();
+        let mut seen = HashSet::new();
+
+        for chunk in chunks.iter().take(5) {
+            for token in chunk.text.split_whitespace() {
+                let cleaned = token
+                    .trim_matches(|c: char| !c.is_alphanumeric() && c != '-' && c != '_')
+                    .trim_matches('"');
+                if cleaned.len() < 3 {
+                    continue;
+                }
+
+                let mut chars = cleaned.chars();
+                let first = match chars.next() {
+                    Some(ch) => ch,
+                    None => continue,
+                };
+
+                if !first.is_uppercase() {
+                    continue;
+                }
+
+                if cleaned.chars().any(char::is_lowercase)
+                    || cleaned.chars().all(char::is_uppercase)
+                {
+                    let candidate = cleaned.to_string();
+                    if seen.insert(candidate.clone()) {
+                        entities.push(candidate);
+                    }
+                }
+
+                if entities.len() >= 8 {
+                    return entities;
+                }
+            }
+        }
+
+        entities
+    }
+
+    fn extract_claims(&self, chunks: &[ContextChunk]) -> Vec<String> {
+        self.collect_sentences(chunks, &|sentence: &str| {
+            let lower = sentence.to_lowercase();
+            lower.contains("should")
+                || lower.contains("must")
+                || lower.contains("need to")
+                || lower.contains("recommended")
+                || lower.contains("best practice")
+        })
+    }
+
+    fn extract_contradictions(&self, chunks: &[ContextChunk]) -> Vec<String> {
+        self.collect_sentences(chunks, &|sentence: &str| {
+            let lower = sentence.to_lowercase();
+            (lower.contains("however") || lower.contains("but ") || lower.contains("in contrast"))
+                && lower.contains("not")
+        })
+    }
+
+    fn collect_sentences(
+        &self,
+        chunks: &[ContextChunk],
+        predicate: &dyn Fn(&str) -> bool,
+    ) -> Vec<String> {
+        let mut matches = Vec::new();
+        let mut seen = HashSet::new();
+
+        for chunk in chunks.iter().take(6) {
+            for sentence in TextProcessor::split_sentences(&chunk.text) {
+                let normalized = sentence.trim();
+                if normalized.is_empty() {
+                    continue;
+                }
+
+                if predicate(normalized) {
+                    let key = normalized.to_lowercase();
+                    if seen.insert(key) {
+                        matches.push(normalized.to_string());
+                    }
+                }
+
+                if matches.len() >= 5 {
+                    return matches;
+                }
+            }
+        }
+
+        matches
+    }
+
+    fn build_citations(&self, chunks: &[ContextChunk]) -> Vec<Citation> {
+        chunks
+            .iter()
+            .enumerate()
+            .map(|(idx, chunk)| Citation {
+                id: idx as i32,
+                chunk_id: chunk.id.clone(),
+                relevance: chunk.score,
+            })
+            .collect()
+    }
+
+    async fn analyse_context_with_llm(
+        &self,
+        query: &str,
+        chunks: &[ContextChunk],
+    ) -> Option<LlmContextAnalysisResult> {
+        let llm = Arc::clone(self.llm_service.as_ref()?);
+
+        let prompt = self.build_context_summary_prompt(query, chunks)?;
+        let config = HydeConfig {
+            num_documents: 1,
+            temperature: 0.2,
+            max_tokens: 512,
+            combine_with_query: false,
         };
 
-        Ok(context_pack)
+        let responses = match llm.generate_text(&prompt, &config).await {
+            Ok(value) => value,
+            Err(err) => {
+                tracing::warn!(error = %err, "LLM context analysis request failed");
+                return None;
+            }
+        };
+
+        let raw_response = responses.into_iter().find(|r| !r.trim().is_empty())?;
+        let json_candidate =
+            Self::extract_json_payload(&raw_response).unwrap_or_else(|| raw_response.clone());
+
+        let payload: LlmContextAnalysisPayload = match serde_json::from_str(&json_candidate) {
+            Ok(payload) => payload,
+            Err(err) => {
+                tracing::warn!(error = %err, "Failed to parse LLM context analysis JSON");
+                return None;
+            }
+        };
+
+        let result = Self::transform_llm_payload(payload);
+        if result.is_meaningful() {
+            Some(result)
+        } else {
+            None
+        }
+    }
+
+    fn build_context_summary_prompt(&self, query: &str, chunks: &[ContextChunk]) -> Option<String> {
+        let mut sections = Vec::new();
+
+        for (idx, chunk) in chunks.iter().take(6).enumerate() {
+            let text = chunk.text.trim();
+            if text.is_empty() {
+                continue;
+            }
+
+            let snippet: String = text.chars().take(800).collect();
+            let kind = chunk.kind.as_str();
+            sections.push(format!(
+                "Chunk {idx} (score {score:.3}, kind {kind}):\n{snippet}",
+                idx = idx + 1,
+                score = chunk.score,
+                kind = kind,
+                snippet = snippet
+            ));
+        }
+
+        if sections.is_empty() {
+            return None;
+        }
+
+        let evidence = sections.join("\n\n");
+        let prompt = format!(
+            "You are assisting a retrieval-augmented generation system.\n\nSummary task:\n- Provide a concise paragraph summary (max 4 sentences).\n- Extract up to 6 key entities or proper nouns.\n- List up to 5 actionable claims or recommendations.\n- Note up to 3 contradictions, caveats, or disagreements.\n\nRespond *only* with JSON using this schema:\n{{\"summary\": string, \"key_entities\": [string], \"claims\": [string], \"contradictions\": [string]}}.\nUse double quotes for every string and keep list items short.\n\nUser query: {query}\n\nEvidence:\n{evidence}",
+        );
+
+        Some(prompt)
+    }
+
+    fn extract_json_payload(response: &str) -> Option<String> {
+        let trimmed = response.trim();
+        let trimmed = if let Some(stripped) = trimmed.strip_prefix("```json") {
+            stripped.trim_start()
+        } else if let Some(stripped) = trimmed.strip_prefix("```") {
+            stripped.trim_start()
+        } else {
+            trimmed
+        };
+
+        let trimmed = if let Some(stripped) = trimmed.strip_suffix("```") {
+            stripped.trim_end()
+        } else {
+            trimmed
+        };
+
+        let start = trimmed.find('{')?;
+        let end = trimmed.rfind('}')?;
+        if end <= start {
+            return None;
+        }
+
+        Some(trimmed[start..=end].to_string())
+    }
+
+    fn clean_string_list_with_limit(raw: Vec<String>, limit: usize) -> Vec<String> {
+        let mut cleaned = Vec::new();
+        let mut seen = HashSet::new();
+
+        for item in raw {
+            let trimmed = item
+                .trim()
+                .trim_matches(|c: char| c == '"' || c == '\'' || c == '`')
+                .trim();
+            if trimmed.is_empty() {
+                continue;
+            }
+
+            let canonical = trimmed.to_ascii_lowercase();
+            if seen.insert(canonical) {
+                cleaned.push(trimmed.to_string());
+            }
+            if cleaned.len() >= limit {
+                break;
+            }
+        }
+
+        cleaned
+    }
+
+    fn transform_llm_payload(payload: LlmContextAnalysisPayload) -> LlmContextAnalysisResult {
+        let summary = payload
+            .summary
+            .unwrap_or_default()
+            .trim()
+            .chars()
+            .take(600)
+            .collect::<String>();
+
+        let key_entities =
+            Self::clean_string_list_with_limit(payload.key_entities.unwrap_or_default(), 8);
+        let claims = Self::clean_string_list_with_limit(payload.claims.unwrap_or_default(), 5);
+        let contradictions =
+            Self::clean_string_list_with_limit(payload.contradictions.unwrap_or_default(), 3);
+
+        LlmContextAnalysisResult {
+            summary,
+            key_entities,
+            claims,
+            contradictions,
+        }
     }
 
     /// Deduplicate and sort candidates by score
@@ -532,6 +1003,31 @@ impl EnhancedQueryPipeline {
         candidates.truncate(self.config.max_candidates);
 
         Ok(candidates)
+    }
+}
+
+#[derive(Debug, Deserialize)]
+struct LlmContextAnalysisPayload {
+    summary: Option<String>,
+    key_entities: Option<Vec<String>>,
+    claims: Option<Vec<String>>,
+    contradictions: Option<Vec<String>>,
+}
+
+#[derive(Debug)]
+struct LlmContextAnalysisResult {
+    summary: String,
+    key_entities: Vec<String>,
+    claims: Vec<String>,
+    contradictions: Vec<String>,
+}
+
+impl LlmContextAnalysisResult {
+    fn is_meaningful(&self) -> bool {
+        !self.summary.trim().is_empty()
+            || !self.key_entities.is_empty()
+            || !self.claims.is_empty()
+            || !self.contradictions.is_empty()
     }
 }
 
@@ -574,6 +1070,7 @@ mod tests {
     use super::*;
     use lethe_shared::EmbeddingVector;
     use lethe_shared::{Chunk, DfIdf};
+    use std::sync::Arc;
 
     struct MockDocumentRepository;
 
@@ -594,7 +1091,7 @@ mod tests {
         async fn vector_search(
             &self,
             _query_vector: &EmbeddingVector,
-            k: i32,
+            _k: i32,
         ) -> Result<Vec<Candidate>> {
             Ok(vec![Candidate {
                 doc_id: "test-1".to_string(),
@@ -634,6 +1131,72 @@ mod tests {
         assert!(result.query_understanding.is_some());
         assert!(result.ml_prediction.is_some());
         assert!(result.processing_time_ms > 0);
+    }
+
+    struct StubEmbeddingService;
+
+    #[async_trait]
+    impl EmbeddingService for StubEmbeddingService {
+        fn name(&self) -> &str {
+            "stub"
+        }
+
+        fn dimension(&self) -> usize {
+            2
+        }
+
+        async fn embed(&self, texts: &[String]) -> Result<Vec<EmbeddingVector>> {
+            let vectors = texts
+                .iter()
+                .map(|text| {
+                    if text.to_lowercase().contains("alpha") {
+                        EmbeddingVector {
+                            data: vec![1.0, 0.0],
+                            dimension: 2,
+                        }
+                    } else if text.to_lowercase().contains("beta") {
+                        EmbeddingVector {
+                            data: vec![0.0, 1.0],
+                            dimension: 2,
+                        }
+                    } else {
+                        EmbeddingVector {
+                            data: vec![0.5, 0.5],
+                            dimension: 2,
+                        }
+                    }
+                })
+                .collect();
+
+            Ok(vectors)
+        }
+    }
+
+    #[tokio::test]
+    async fn test_embedding_reranker_prioritises_semantically_relevant_results() {
+        let embedding_service = Arc::new(StubEmbeddingService);
+        let reranker = EmbeddingRerankingService::new(embedding_service);
+
+        let query = "alpha topic";
+        let candidates = vec![
+            Candidate {
+                doc_id: "doc-alpha".to_string(),
+                score: 0.2,
+                text: Some("Detailed alpha description".to_string()),
+                kind: None,
+            },
+            Candidate {
+                doc_id: "doc-beta".to_string(),
+                score: 0.9,
+                text: Some("Unrelated beta content".to_string()),
+                kind: None,
+            },
+        ];
+
+        let reranked = reranker.rerank(query, &candidates).await.unwrap();
+
+        assert_eq!(reranked.len(), 2);
+        assert_eq!(reranked[0].doc_id, "doc-alpha");
     }
 
     #[tokio::test]
@@ -714,7 +1277,7 @@ mod tests {
             .unwrap();
 
         assert!(result.candidates.len() <= 5);
-        assert!(result.processing_time_ms >= 0);
+        assert!(result.processing_time_ms <= pipeline.config.timeout_seconds * 1_000);
     }
 
     #[tokio::test]
@@ -779,16 +1342,16 @@ mod tests {
 
         // These should not fail even with mock repository
         let empty_result = pipeline.process_query("", &options).await.unwrap();
-        assert!(empty_result.candidates.len() >= 0); // Mock may return candidates
+        assert!(empty_result.candidates.len() <= pipeline.config.max_candidates);
 
         let whitespace_result = pipeline.process_query("   ", &options).await.unwrap();
-        assert!(whitespace_result.candidates.len() >= 0);
+        assert!(whitespace_result.candidates.len() <= pipeline.config.max_candidates);
 
         let unicode_result = pipeline
             .process_query("测试 🚀 тест", &options)
             .await
             .unwrap();
-        assert!(unicode_result.processing_time_ms >= 0);
+        assert!(unicode_result.candidates.len() <= pipeline.config.max_candidates);
     }
 
     #[test]
@@ -859,8 +1422,8 @@ mod tests {
                 | RetrievalStrategy::MultiStep
                 | RetrievalStrategy::Adaptive
         ));
-        assert!(result.candidates.len() >= 0); // Can be 0 with mock repository
-        assert!(result.processing_time_ms >= 0);
+        assert!(result.candidates.len() <= pipeline.config.max_candidates);
+        assert!(result.processing_time_ms <= pipeline.config.timeout_seconds * 1_000);
         assert!(result.query_understanding.is_some());
         assert!(result.ml_prediction.is_some());
 

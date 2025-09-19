@@ -1,47 +1,48 @@
 # -----------------------------------------------------------------------------
 # Lethe Monorepo Makefile
-# Provides a thin layer around Bun workspace commands so that contributors
-# have a single entry point for common actions.
+# Convenience wrappers around common Cargo workflows for the Rust workspace.
 # -----------------------------------------------------------------------------
 
-WORKSPACES := api-server cli core llm-analyzer tokenizer types
-
-.PHONY: help install build test lint ci-local clean
+.PHONY: help install build lint fmt clippy test ci-local clean
 
 help:
-	@echo "Lethe Monorepo"
+	@echo "Lethe (Rust workspace)"
 	@echo "Commands:"
-	@echo "  make install   Install dependencies for all workspaces"
-	@echo "  make build     Build every package"
-	@echo "  make test      Run the Bun test suite"
-	@echo "  make lint      Type-check all packages"
-	@echo "  make ci-local  Execute the GitHub Actions workflow via act"
-	@echo "  make clean     Remove generated artifacts"
+	@echo "  make install   Fetch workspace dependencies"
+	@echo "  make build     Build all crates"
+	@echo "  make lint      Run fmt + clippy"
+	@echo "  make test      Execute the full test suite"
+	@echo "  make ci-local  Run lint and tests"
+	@echo "  make clean     Remove build artifacts"
 
 install:
-	@echo "📦 Installing workspace dependencies"
-	@bun install
+	@echo "📦 Fetching Cargo dependencies"
+	@cargo fetch
 
 build:
-	@for dir in $(WORKSPACES); do \
-		printf "🏗️  Building %s\\n" $$dir; \
-		(cd $$dir && bun run build); \
-	done
+	@echo "🏗️  Building workspace"
+	@cargo build --workspace --all-targets
 
-lint:
-	@echo "🔍 Type-checking workspace"
-	@bunx tsc --noEmit
+fmt:
+	@echo "🧹 Formatting workspace"
+	@cargo fmt --all
+
+clippy:
+	@echo "🔍 Running clippy"
+	@cargo clippy --workspace --all-targets --all-features
+
+lint: fmt
+	@cargo fmt --all -- --check
+	@cargo clippy --workspace --all-targets --all-features -- -D warnings
 
 test:
-	@echo "🧪 Running tests" 
-	@bun test ./tests
+	@echo "🧪 Running tests"
+	@cargo test --workspace
 
 ci-local:
-	@echo "🤖 Running GitHub Actions workflow locally"
-	@act push --container-architecture linux/amd64
+	@$(MAKE) lint
+	@$(MAKE) test
 
 clean:
-	@echo "🧹 Cleaning workspace"
-	@find . -name 'node_modules' -type d -prune -exec rm -rf {} +
-	@find . -name 'dist' -type d -prune -exec rm -rf {} +
-	@rm -rf ./**/bun.lockb
+	@echo "🧽 Cleaning build artifacts"
+	@cargo clean

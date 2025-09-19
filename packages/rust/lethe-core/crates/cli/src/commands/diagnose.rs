@@ -10,13 +10,17 @@ pub struct DiagnoseCommand {
     #[arg(long)]
     detailed: bool,
 
-    /// Test database connectivity
+    /// Verify storage availability and basic health
     #[arg(long)]
-    test_db: bool,
+    test_storage: bool,
 
     /// Test embedding service
     #[arg(long)]
     test_embeddings: bool,
+
+    /// Test LLM connectivity (if configured)
+    #[arg(long)]
+    test_llm: bool,
 
     /// Test all components
     #[arg(long)]
@@ -26,8 +30,7 @@ pub struct DiagnoseCommand {
 #[async_trait]
 impl Command for DiagnoseCommand {
     async fn execute(&self, context: &AppContext) -> Result<()> {
-        use lethe_domain::EmbeddingServiceFactory;
-        use lethe_infrastructure::DatabaseManager;
+        use lethe_domain::{EmbeddingServiceFactory, LlmServiceConfig, LlmServiceFactory};
         use std::process::Command;
 
         if !context.quiet {
@@ -59,32 +62,33 @@ impl Command for DiagnoseCommand {
             }
             _ => {
                 println!(
-                    "   Database URL: {}",
-                    context.database_url.as_deref().unwrap_or("Not configured")
-                );
-                println!(
                     "   Embedding provider: {:?}",
                     context.config.embedding.provider
                 );
+                println!("   Storage root: {}", context.storage_root.display());
             }
         }
         println!();
 
-        // Database connectivity test
-        if self.test_db || self.test_all {
-            print!("🗄️  Database connectivity: ");
-            match context.database_url.as_ref() {
-                Some(db_url) => match DatabaseManager::new(db_url).await {
-                    Ok(_) => println!("✅ Connected"),
-                    Err(e) => {
-                        println!("❌ Failed - {}", e);
-                        all_good = false;
-                    }
-                },
-                None => {
-                    println!("❌ No database URL configured");
+        // Storage health check
+        if self.test_storage || self.test_all {
+            print!("💾 Storage root: ");
+            let storage_path = &context.storage_root;
+            if !storage_path.exists() {
+                if let Err(e) = std::fs::create_dir_all(storage_path) {
+                    println!("❌ Failed to create {} ({})", storage_path.display(), e);
                     all_good = false;
+                } else {
+                    println!("⚠️  Created missing directory {}", storage_path.display());
                 }
+            } else if !storage_path.is_dir() {
+                println!("❌ {} is not a directory", storage_path.display());
+                all_good = false;
+            } else if std::fs::read_dir(storage_path).is_err() {
+                println!("❌ Unable to read directory {}", storage_path.display());
+                all_good = false;
+            } else {
+                println!("✅ Accessible");
             }
         }
 
@@ -105,6 +109,51 @@ impl Command for DiagnoseCommand {
                 Err(e) => {
                     println!("❌ Creation failed - {}", e);
                     all_good = false;
+                }
+            }
+        }
+
+        // LLM service test
+        if self.test_llm || self.test_all {
+            print!("🗣️  LLM service: ");
+            match context.config.llm.as_ref() {
+                Some(llm_cfg) => {
+                    let domain_config = LlmServiceConfig::from_shared(llm_cfg);
+                    match LlmServiceFactory::create(&domain_config).await {
+                        Ok(service) => {
+                            let prompt = "Summarise the health of the Lethe system";
+                            match service
+                                .generate_text(prompt, &lethe_domain::HydeConfig::default())
+                                .await
+                            {
+                                Ok(outputs) => {
+                                    let preview = outputs
+                                        .get(0)
+                                        .map(|s| {
+                                            let mut snippet =
+                                                s.chars().take(48).collect::<String>();
+                                            if s.len() > 48 {
+                                                snippet.push_str("…");
+                                            }
+                                            snippet
+                                        })
+                                        .unwrap_or_else(|| "(empty response)".to_string());
+                                    println!("✅ Responded ({})", preview);
+                                }
+                                Err(e) => {
+                                    println!("❌ Generation failed - {}", e);
+                                    all_good = false;
+                                }
+                            }
+                        }
+                        Err(e) => {
+                            println!("❌ Initialisation failed - {}", e);
+                            all_good = false;
+                        }
+                    }
+                }
+                None => {
+                    println!("⚠️  Disabled in configuration");
                 }
             }
         }

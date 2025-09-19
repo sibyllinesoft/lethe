@@ -2,7 +2,7 @@ use super::Command;
 use crate::utils::AppContext;
 use async_trait::async_trait;
 use clap::{Args, Subcommand};
-use lethe_shared::Result;
+use lethe_shared::{LetheError, Result};
 
 #[derive(Debug, Args)]
 pub struct BenchmarkCommand {
@@ -91,28 +91,13 @@ impl BenchmarkCommand {
         _concurrent: bool,
         context: &AppContext,
     ) -> Result<()> {
-        println!("🔍 Benchmarking query performance ({} queries)...", count);
+        let _ = (count, context);
 
-        // TODO: Implement query benchmarking
-        let start_time = std::time::Instant::now();
-
-        // Simulate query execution times
-        for i in 0..count {
-            if i % 10 == 0 && !context.quiet {
-                println!("   Progress: {}/{}", i, count);
-            }
-            tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
-        }
-
-        let duration = start_time.elapsed();
-        let avg_time = duration.as_millis() as f64 / count as f64;
-
-        println!("📊 Query Benchmark Results:");
-        println!("   Total time: {:?}", duration);
-        println!("   Average time per query: {:.2}ms", avg_time);
-        println!("   Queries per second: {:.2}", 1000.0 / avg_time);
-
-        Ok(())
+        Err(LetheError::internal(
+            "Query benchmarking requires real pipeline execution and is not implemented yet. \
+             Run the API server with `lethe-cli serve` and use an external load-testing tool such as \
+             wrk or bombardier against /api/v1/query instead.",
+        ))
     }
 
     async fn benchmark_embeddings(

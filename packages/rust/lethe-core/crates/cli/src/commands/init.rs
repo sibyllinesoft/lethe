@@ -15,10 +15,6 @@ pub struct InitCommand {
     #[arg(long)]
     force: bool,
 
-    /// Database URL to use in configuration
-    #[arg(long)]
-    database_url: Option<String>,
-
     /// Embedding service provider
     #[arg(long, value_enum, default_value = "fallback")]
     embedding_provider: EmbeddingProviderArg,
@@ -30,6 +26,10 @@ pub struct InitCommand {
     /// Ollama model name (if using Ollama provider)
     #[arg(long)]
     ollama_model: Option<String>,
+
+    /// Storage root for parquet/tantivy assets
+    #[arg(long)]
+    storage_root: Option<PathBuf>,
 }
 
 #[derive(Debug, Clone, clap::ValueEnum)]
@@ -41,7 +41,7 @@ enum EmbeddingProviderArg {
 #[async_trait]
 impl Command for InitCommand {
     async fn execute(&self, context: &AppContext) -> Result<()> {
-        use lethe_shared::{DatabaseConfig, EmbeddingConfig, EmbeddingProvider};
+        use lethe_shared::{EmbeddingConfig, EmbeddingProvider};
         use std::io::Write;
 
         // Check if file exists and not forcing
@@ -68,21 +68,16 @@ impl Command for InitCommand {
             EmbeddingProviderArg::Fallback => EmbeddingProvider::Fallback,
         };
 
-        let mut database = DatabaseConfig::default();
-        database.url = self
-            .database_url
-            .clone()
-            .or_else(|| context.database_url.clone())
-            .unwrap_or_else(|| "postgresql://localhost/lethe".to_string());
-
         let mut embedding = EmbeddingConfig::default();
         embedding.provider = embedding_provider;
 
-        let config = LetheConfig {
-            database,
-            embedding,
-            ..Default::default()
-        };
+        let mut config = LetheConfig::default();
+        config.embedding = embedding;
+        if let Some(root) = self.storage_root.as_ref() {
+            config.storage.index_root = root.display().to_string();
+        } else {
+            config.storage.index_root = context.storage_root.display().to_string();
+        }
 
         // Serialize and write configuration
         let config_json = serde_json::to_string_pretty(&config)?;

@@ -1,0 +1,40 @@
+[package]
+name = "lethe-infrastructure"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["database"]
+database = []
+
+[dependencies]
+# Shared types and domain
+lethe-shared = { path = "../shared" }
+lethe-domain = { path = "../domain" }
+
+# Database
+sqlx = { workspace = true }
+
+# Core dependencies from workspace
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+futures.workspace = true
+
+# Async traits
+async-trait = "0.1"
+
+# Utilities
+regex.workspace = true
+
+# Logging
+tracing.workspace = true
+
+# HTTP client for external services
+reqwest.workspace = true
+
+# Serialization for embeddings
+bincode = "1.3"

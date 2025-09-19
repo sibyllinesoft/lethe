@@ -148,12 +148,6 @@ impl LetheError {
     }
 }
 
-impl From<sqlx::Error> for LetheError {
-    fn from(err: sqlx::Error) -> Self {
-        Self::database(err.to_string())
-    }
-}
-
 impl From<validator::ValidationErrors> for LetheError {
     fn from(err: validator::ValidationErrors) -> Self {
         Self::validation("validation", err.to_string())

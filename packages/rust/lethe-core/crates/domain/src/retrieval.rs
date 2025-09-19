@@ -56,6 +56,15 @@ pub trait DocumentRepository: Send + Sync {
     /// Search vectors by similarity
     async fn vector_search(&self, query_vector: &EmbeddingVector, k: i32)
         -> Result<Vec<Candidate>>;
+
+    /// Optional prefiltering hook (e.g., bloom filters)
+    async fn prefilter_chunks(
+        &self,
+        _session_id: &str,
+        _terms: &[String],
+    ) -> Result<Option<Vec<Chunk>>> {
+        Ok(None)
+    }
 }
 
 /// BM25 search service
@@ -69,7 +78,7 @@ impl Bm25SearchService {
         session_id: &str,
         k: i32,
     ) -> Result<Vec<Candidate>> {
-        let chunks = repository.get_chunks_by_session(session_id).await?;
+        let mut chunks = repository.get_chunks_by_session(session_id).await?;
         if chunks.is_empty() {
             return Ok(vec![]);
         }
@@ -96,6 +105,14 @@ impl Bm25SearchService {
             .iter()
             .flat_map(|query| Self::tokenize(query))
             .collect();
+
+        let term_vec: Vec<String> = all_query_terms.iter().cloned().collect();
+        if let Some(prefiltered) = repository.prefilter_chunks(session_id, &term_vec).await? {
+            chunks = prefiltered;
+            if chunks.is_empty() {
+                return Ok(vec![]);
+            }
+        }
 
         // Score each chunk
         let mut candidates = Vec::new();
@@ -678,7 +695,7 @@ mod tests {
 
     #[test]
     fn test_bm25_service_properties() {
-        let mut service = Bm25SearchService;
+        let service = Bm25SearchService;
 
         // Test that service has expected behavior
         // Since Bm25SearchService doesn't have these methods, test what's available

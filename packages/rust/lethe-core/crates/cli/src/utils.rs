@@ -1,12 +1,15 @@
 use lethe_shared::LetheConfig;
+use std::path::PathBuf;
 
 /// Application context shared across all CLI commands
 #[derive(Debug, Clone)]
 pub struct AppContext {
     /// Loaded configuration
     pub config: LetheConfig,
-    /// Database URL from command line or environment
-    pub database_url: Option<String>,
+    /// Path to the configuration file (if it exists)
+    pub config_path: Option<PathBuf>,
+    /// Root directory for storage/index assets
+    pub storage_root: PathBuf,
     /// Output format for command results
     pub output_format: OutputFormat,
     /// Whether to suppress non-essential output

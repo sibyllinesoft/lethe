@@ -55,22 +55,16 @@ enum SearchStrategy {
 impl Command for QueryCommand {
     async fn execute(&self, context: &AppContext) -> Result<()> {
         use lethe_domain::{
-            EmbeddingServiceFactory, EnhancedQueryOptions, EnhancedQueryResult, PipelineConfig,
-            PipelineFactory, RetrievalStrategy,
+            corpus::ParquetCorpus, EmbeddingServiceFactory, EnhancedQueryOptions,
+            EnhancedQueryResult, PipelineConfig, PipelineFactory, RetrievalStrategy,
         };
-        use lethe_infrastructure::{DatabaseManager, PgChunkRepository};
         use std::sync::Arc;
 
         if !context.quiet {
             println!("🔍 Executing query: \"{}\"", self.query);
         }
-
-        let db_url = context.database_url.as_ref().ok_or_else(|| {
-            lethe_shared::LetheError::config("Database URL is required for querying")
-        })?;
-
-        let db_manager = Arc::new(DatabaseManager::new(db_url).await?);
-        let chunk_repo = Arc::new(PgChunkRepository::new(db_manager.pool().clone()));
+        let corpus = Arc::new(ParquetCorpus::new(&context.storage_root));
+        corpus.health_check().await?;
         let embedding_config = super::to_domain_embedding_config(&context.config.embedding);
         let embedding_service = EmbeddingServiceFactory::create(&embedding_config).await?;
 
@@ -90,14 +84,9 @@ impl Command for QueryCommand {
             rerank_top_k: self.limit.min(20),
             timeout_seconds: 30,
         };
-
-        let pipeline = PipelineFactory::create_pipeline(
-            pipeline_config,
-            chunk_repo,
-            embedding_service,
-            None,
-            None,
-        );
+        let repo: Arc<dyn lethe_domain::retrieval::DocumentRepository> = corpus.clone();
+        let pipeline =
+            PipelineFactory::create_pipeline(pipeline_config, repo, embedding_service, None, None);
 
         let options = EnhancedQueryOptions {
             session_id: self

@@ -10,33 +10,21 @@ use lethe_shared::{
 
 // Re-export all command types
 pub use benchmark::BenchmarkCommand;
-pub use chunk::ChunkCommand;
 pub use config::ConfigCommand;
-pub use database::DatabaseCommand;
 pub use diagnose::DiagnoseCommand;
-pub use embedding::EmbeddingCommand;
 pub use index::IndexCommand;
-pub use ingest::IngestCommand;
 pub use init::InitCommand;
-pub use message::MessageCommand;
 pub use query::QueryCommand;
 pub use serve::ServeCommand;
-pub use session::SessionCommand;
 
 // Command modules
 pub mod benchmark;
-pub mod chunk;
 pub mod config;
-pub mod database;
 pub mod diagnose;
-pub mod embedding;
 pub mod index;
-pub mod ingest;
 pub mod init;
-pub mod message;
 pub mod query;
 pub mod serve;
-pub mod session;
 
 /// Common trait for all CLI commands
 #[async_trait]

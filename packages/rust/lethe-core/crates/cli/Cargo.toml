@@ -8,10 +8,9 @@ name = "lethe"
 path = "src/main.rs"
 
 [dependencies]
-# Shared types and domain/infrastructure
+# Shared types and domain
 lethe-shared = { path = "../shared" }
 lethe-domain = { path = "../domain" }
-lethe-infrastructure = { path = "../infrastructure", default-features = false, features = ["database"] }
 
 # HTTP server & routing
 axum.workspace = true
@@ -21,9 +20,6 @@ clap.workspace = true
 # HTTP tooling for local server launch
 tower.workspace = true
 tower-http.workspace = true
-
-# Database
-sqlx.workspace = true
 
 # Core dependencies from workspace
 serde.workspace = true
@@ -56,14 +52,16 @@ dialoguer = "0.11"
 tabled = "0.15"
 serde_yaml = "0.9"
 
-# HTTP client for API testing
-reqwest.workspace = true
-
 # Additional dependencies
 glob = "0.3"
 toml = "0.8"
 terminal_size = "0.3"
 tempfile = "3.8"
+tantivy = { version = "0.25", default-features = false, features = ["mmap"] }
+bloomfilter.workspace = true
+bincode.workspace = true
+parquet.workspace = true
+xxhash-rust.workspace = true
 
 # API dependencies
 lethe-api = { path = "../api" }

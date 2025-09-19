@@ -1,60 +1,49 @@
-use lethe_domain::{EmbeddingService, EnhancedQueryPipeline, LlmService, RerankingService};
-use lethe_infrastructure::{
-    ChunkRepository, DatabaseManager, EmbeddingRepository, MessageRepository, SessionRepository,
+use crate::security::SecurityContext;
+use lethe_domain::{
+    corpus::ParquetCorpus, EmbeddingService, EnhancedQueryPipeline, LlmService, RerankingService,
 };
 use lethe_shared::LetheConfig;
-use std::sync::Arc;
+use std::{sync::Arc, time::Instant};
 
 /// Application state containing all services and repositories
 #[derive(Clone)]
 pub struct AppState {
     pub config: Arc<LetheConfig>,
-    pub db_manager: Arc<DatabaseManager>,
-    pub message_repository: Arc<dyn MessageRepository>,
-    pub chunk_repository: Arc<dyn ChunkRepository>,
-    pub embedding_repository: Arc<dyn EmbeddingRepository>,
-    pub session_repository: Arc<dyn SessionRepository>,
+    pub corpus: Arc<ParquetCorpus>,
     pub embedding_service: Arc<dyn EmbeddingService>,
     pub llm_service: Option<Arc<dyn LlmService>>,
     pub reranking_service: Option<Arc<dyn RerankingService>>,
     pub query_pipeline: Arc<EnhancedQueryPipeline>,
+    pub security: Arc<SecurityContext>,
+    pub server_started_at: Instant,
 }
 
 impl AppState {
-    /// Create a new AppState instance
     #[allow(clippy::too_many_arguments)]
     pub fn new(
         config: Arc<LetheConfig>,
-        db_manager: Arc<DatabaseManager>,
-        message_repository: Arc<dyn MessageRepository>,
-        chunk_repository: Arc<dyn ChunkRepository>,
-        embedding_repository: Arc<dyn EmbeddingRepository>,
-        session_repository: Arc<dyn SessionRepository>,
+        corpus: Arc<ParquetCorpus>,
         embedding_service: Arc<dyn EmbeddingService>,
         llm_service: Option<Arc<dyn LlmService>>,
         reranking_service: Option<Arc<dyn RerankingService>>,
         query_pipeline: Arc<EnhancedQueryPipeline>,
-    ) -> Self {
-        Self {
+    ) -> crate::error::ApiResult<Self> {
+        let security = Arc::new(SecurityContext::from_config(&config.security)?);
+
+        Ok(Self {
             config,
-            db_manager,
-            message_repository,
-            chunk_repository,
-            embedding_repository,
-            session_repository,
+            corpus,
             embedding_service,
             llm_service,
             reranking_service,
             query_pipeline,
-        }
+            security,
+            server_started_at: Instant::now(),
+        })
     }
 
-    /// Health check for the application state
     pub async fn health_check(&self) -> crate::error::ApiResult<HealthStatus> {
-        let db_healthy = self.db_manager.health_check().await.is_ok();
-
-        // Lightweight embedding check to ensure the service responds. We keep
-        // the string short to minimise overhead.
+        let storage_healthy = self.corpus.health_check().await.is_ok();
         let embedding_healthy = self
             .embedding_service
             .embed(&["ping".to_string()])
@@ -62,7 +51,7 @@ impl AppState {
             .map(|vectors| !vectors.is_empty())
             .unwrap_or(false);
 
-        let overall_healthy = db_healthy && embedding_healthy;
+        let overall_healthy = storage_healthy && embedding_healthy;
         let status = if overall_healthy {
             ServiceStatus::Healthy
         } else {
@@ -71,8 +60,8 @@ impl AppState {
 
         let mut components = vec![
             ComponentHealth {
-                name: "embedding_service".to_string(),
-                status: if embedding_healthy {
+                name: "storage".to_string(),
+                status: if storage_healthy {
                     ServiceStatus::Healthy
                 } else {
                     ServiceStatus::Unhealthy
@@ -80,8 +69,8 @@ impl AppState {
                 details: None,
             },
             ComponentHealth {
-                name: "database".to_string(),
-                status: if db_healthy {
+                name: "embedding_service".to_string(),
+                status: if embedding_healthy {
                     ServiceStatus::Healthy
                 } else {
                     ServiceStatus::Unhealthy
@@ -117,25 +106,23 @@ impl AppState {
         })
     }
 
-    /// Get application statistics
     pub async fn get_stats(&self) -> crate::error::ApiResult<AppStats> {
-        let db_stats = self.db_manager.get_stats().await.map_err(|e| {
-            crate::error::ApiError::internal(format!("Failed to get database stats: {}", e))
+        let stats = self.corpus.stats().await.map_err(|e| {
+            crate::error::ApiError::internal(format!("Failed to read storage stats: {}", e))
         })?;
 
         Ok(AppStats {
-            messages_count: db_stats.message_count as usize,
-            chunks_count: db_stats.chunk_count as usize,
-            embeddings_count: db_stats.embedding_count as usize,
-            sessions_count: db_stats.session_count as usize,
-            uptime_seconds: 0, // TODO: track real uptime
+            messages_count: stats.message_count,
+            chunks_count: stats.chunk_count,
+            embeddings_count: stats.embedding_count,
+            sessions_count: stats.session_count,
+            uptime_seconds: self.server_started_at.elapsed().as_secs() as usize,
             version: env!("CARGO_PKG_VERSION").to_string(),
             timestamp: chrono::Utc::now(),
         })
     }
 }
 
-/// Health status response
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct HealthStatus {
     pub status: ServiceStatus,
@@ -143,7 +130,6 @@ pub struct HealthStatus {
     pub timestamp: chrono::DateTime<chrono::Utc>,
 }
 
-/// Individual component health
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ComponentHealth {
     pub name: String,
@@ -151,7 +137,6 @@ pub struct ComponentHealth {
     pub details: Option<serde_json::Value>,
 }
 
-/// Service status enumeration
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum ServiceStatus {
@@ -160,7 +145,6 @@ pub enum ServiceStatus {
     Disabled,
 }
 
-/// Application statistics
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct AppStats {
     pub messages_count: usize,

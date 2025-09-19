@@ -17,12 +17,12 @@ use commands::*;
 #[command(author = "Lethe Contributors")]
 struct Cli {
     /// Configuration file path
-    #[arg(long, short, global = true)]
+    #[arg(long, short = 'C', global = true)]
     config: Option<PathBuf>,
 
-    /// Database URL
-    #[arg(long, global = true, env = "DATABASE_URL")]
-    database_url: Option<String>,
+    /// Storage root override
+    #[arg(long, global = true)]
+    storage_root: Option<PathBuf>,
 
     /// Verbose logging
     #[arg(long, short, global = true, action = clap::ArgAction::Count)]
@@ -45,35 +45,17 @@ enum Commands {
     /// Initialize a new Lethe configuration
     Init(InitCommand),
 
-    /// Ingest documents into the system
-    Ingest(IngestCommand),
-
     /// Build search indices
     Index(IndexCommand),
 
     /// Query the RAG system
     Query(QueryCommand),
 
-    /// Manage sessions
-    Session(SessionCommand),
-
-    /// Manage messages
-    Message(MessageCommand),
-
-    /// Manage chunks
-    Chunk(ChunkCommand),
-
-    /// Manage embeddings
-    Embedding(EmbeddingCommand),
-
     /// Server management
     Serve(ServeCommand),
 
     /// System diagnostics
     Diagnose(DiagnoseCommand),
-
-    /// Database operations
-    Database(DatabaseCommand),
 
     /// Configuration management
     Config(ConfigCommand),
@@ -111,12 +93,17 @@ async fn main() -> Result<()> {
         .init();
 
     // Load configuration
-    let config = config::load_config(cli.config.as_deref()).await?;
+    let config::LoadedConfig { config, path } = config::load_config(cli.config.as_deref()).await?;
 
     // Create application context
+    let storage_root = cli
+        .storage_root
+        .unwrap_or_else(|| PathBuf::from(config.storage.index_root.clone()));
+
     let app_context = utils::AppContext {
         config,
-        database_url: cli.database_url,
+        config_path: path,
+        storage_root,
         output_format: cli.format.into(),
         quiet: cli.quiet,
     };
@@ -124,16 +111,10 @@ async fn main() -> Result<()> {
     // Execute command
     match cli.command {
         Commands::Init(cmd) => cmd.execute(&app_context).await,
-        Commands::Ingest(cmd) => cmd.execute(&app_context).await,
         Commands::Index(cmd) => cmd.execute(&app_context).await,
         Commands::Query(cmd) => cmd.execute(&app_context).await,
-        Commands::Session(cmd) => cmd.execute(&app_context).await,
-        Commands::Message(cmd) => cmd.execute(&app_context).await,
-        Commands::Chunk(cmd) => cmd.execute(&app_context).await,
-        Commands::Embedding(cmd) => cmd.execute(&app_context).await,
         Commands::Serve(cmd) => cmd.execute(&app_context).await,
         Commands::Diagnose(cmd) => cmd.execute(&app_context).await,
-        Commands::Database(cmd) => cmd.execute(&app_context).await,
         Commands::Config(cmd) => cmd.execute(&app_context).await,
         Commands::Benchmark(cmd) => cmd.execute(&app_context).await,
     }

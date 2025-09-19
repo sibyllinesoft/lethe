@@ -23,4 +23,3 @@ serde_yaml.workspace = true
 
 # Additional dependencies needed by error types
 reqwest.workspace = true
-sqlx.workspace = true

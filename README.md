@@ -1,97 +1,92 @@
 # Lethe Monorepo
 
-Lethe is a feature-oriented monorepo for context-aware developer tooling. It contains:
+Lethe is a retrieval-augmented generation (RAG) platform that now ships as a
+Rust-first workspace. The repository contains the production API, CLI, domain
+logic, and high-performance search components that power the system end to end.
 
-- `@lethe/core` – the orchestration engine that builds conversation-aware context packs.
-- `@lethe/cli` – a Bun-powered CLI for initializing workspaces, ingesting transcripts, querying context, and launching the API.
-- `@lethe/api-server` – a minimal HTTP API that powers the web-based analyzer experience.
-- `@lethe/llm-analyzer` – a React UI for exploring LLM call history and comparing prompts.
-- `@lethe/tokenizer` and `@lethe/types` – shared utilities that keep implementations consistent.
+## Project Structure
+
+- `packages/rust/lethe-core/` – primary workspace with the API, CLI, shared
+  application state, and persistence layer.
+- (removed) `packages/rust/hotpath/` – legacy placeholder bindings retired in favour of the Rust core pipeline.
+- `archive/typescript-stack/` – frozen Bun/TypeScript implementation kept for
+  historical reference. It is no longer maintained or included in the build.
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) 1.1+
-- `make` (installed by default on most UNIX-like systems)
-- Docker (only required when running `make ci-local` with `act`)
+- Rust toolchain 1.75+ with `cargo`, `rustfmt`, and `clippy` components
+- PostgreSQL 15+ if you plan to run the API end to end
+- `make` (optional; convenience wrapper around common Cargo commands)
 
 ## Getting Started
 
 ```bash
-# Install all workspace dependencies
-bun install
-# (or run `make install`, which simply wraps the same command)
+# Fetch dependencies and ensure toolchain is ready
+cargo fetch
 
-# Run the full lint/build/test pipeline
-make lint
-make build
-make test
+# Validate the codebase compiles
+cargo check --workspace
 
-# Launch the API server and analyzer UI during development
-bun run --cwd api-server src/dev.ts
-bun run --cwd llm-analyzer dev
+# Run the full test suite
+cargo test --workspace
+
+# Start the API server (see --help for configuration flags)
+cargo run -p lethe-api -- --host 0.0.0.0 --port 3000
+
+# Use the CLI to ingest data or query the pipeline
+cargo run -p lethe-cli -- ingest --file ./docs.json --session demo
+cargo run -p lethe-cli -- query demo "latency metrics"
 ```
 
-The CLI can bootstrap a local workspace and experiment with the core orchestration pipeline:
+Configuration lives in `lethe.json` (or the path supplied via
+`--config`). Secrets such as database URLs or LLM tokens should be provided via
+environment variables.
+
+## Tests & Quality Gates
+
+The Rust workspace relies on standard tooling:
 
 ```bash
-# Create a workspace in the current directory
-bun run --cwd cli src/index.ts init
+# Style checks
+cargo fmt --all -- --check
 
-# Ingest a JSON transcript (array of { role, text })
-bun run --cwd cli src/index.ts ingest --file ./transcript.json --session demo
+# Linting
+cargo clippy --workspace --all-targets --all-features -- -D warnings
 
-# Ask for a context pack
-bun run --cwd cli src/index.ts query demo "latency metrics"
-
-# Start the API server through the CLI wrapper
-bun run --cwd cli src/index.ts serve --port 3001
+# Unit + integration tests
+cargo test --workspace
 ```
 
-## Tests & Quality
-
-The repository uses Bun's built-in test runner. Tests live under the top-level `tests/` directory and cover:
-
-- Context orchestration behaviour (`tests/unit/core`)
-- Tokenizer utilities (`tests/unit/tokenizer`)
-- Workspace helpers and CLI entry points (`tests/unit/cli`)
-- HTTP endpoints exposed by the API server (`tests/unit/api-server`)
-- Shape checks for the shared `@lethe/types` package (`tests/unit/types`)
-
-Run everything with:
-
-```bash
-make test
-```
+Make targets mirror the same commands for convenience (`make lint`, `make
+build`, `make test`).
 
 ## Repository Layout
 
 ```
 .
-├── api-server/         # Bun + Elysia API serving the analyzer
-├── cli/                # CLI for local workflows
-├── core/               # Retrieval, scoring, and summarisation logic
-├── llm-analyzer/       # React UI powered by the API server
-├── tokenizer/          # Shared tokenizer utilities
-├── types/              # Shared TypeScript interfaces
-├── tests/              # Centralised test suites
-├── deployment/         # Deployment assets (e.g. canary configs)
-├── bunfig.toml         # Bun workspace configuration
-└── Makefile            # Project automation entry points
+├── packages/
+│   ├── rust/
+│   │   ├── lethe-core/        # API, CLI, domain, infrastructure crates
+├── deployment/                # Infrastructure manifests and scripts
+├── archive/
+│   └── typescript-stack/      # Legacy Bun/TypeScript implementation (read-only)
+├── Cargo.toml                 # Rust workspace definition
+├── Makefile                   # Convenience wrappers for Cargo commands
+└── README.md
 ```
 
-## Continuous Integration
+## Legacy TypeScript Stack
 
-GitHub Actions runs the same steps as `make lint`, `make build`, and `make test`. You can execute the workflow locally with:
-
-```bash
-make ci-local
-```
+The former Bun/TypeScript implementation has been moved to
+`archive/typescript-stack/` and excluded from the active build. It remains
+available for reference or archaeological purposes only. New work should target
+the Rust crates described above.
 
 ## Contributing
 
-1. Fork the repository and create a feature branch.
-2. Install dependencies via `make install`.
-3. Add or update tests in `tests/` for any behaviour change.
-4. Run `make build` and `make test` before opening a pull request.
+1. Create a feature branch from `main`.
+2. Run `cargo fmt`, `cargo clippy`, and `cargo test` before opening a PR.
+3. Include tests for any behavioural change when practical.
+4. Update documentation when you introduce new commands or configuration.
 
-See `CONTRIBUTING.md` for additional guidance.
+See `CONTRIBUTING.md` for additional guidelines.

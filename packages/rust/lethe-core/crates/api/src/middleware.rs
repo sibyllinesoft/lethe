@@ -1,10 +1,15 @@
+use std::{sync::Arc, time::Instant};
+
+use crate::{
+    error::ApiError,
+    security::{AuthenticatedIdentity, RateLimitOutcome, SecurityContext},
+};
 use axum::{
-    extract::Request,
-    http::{HeaderMap, HeaderValue, StatusCode},
+    extract::{Request, State},
+    http::{header, HeaderMap, HeaderName, HeaderValue},
     middleware::Next,
     response::{IntoResponse, Response},
 };
-use std::time::Instant;
 use tower_http::cors::CorsLayer;
 use uuid::Uuid;
 
@@ -51,46 +56,56 @@ pub async fn timing_middleware(request: Request, next: Next) -> Response {
     response
 }
 
-/// Rate limiting middleware (simple implementation)
-pub async fn rate_limit_middleware(request: Request, next: Next) -> Result<Response, StatusCode> {
-    // Simple rate limiting based on IP address
-    // In production, you'd use a more sophisticated rate limiter like Redis
-    let client_ip = request
-        .headers()
-        .get("x-forwarded-for")
-        .or_else(|| request.headers().get("x-real-ip"))
-        .and_then(|h| h.to_str().ok())
-        .unwrap_or("unknown");
-
-    // For now, just log the client IP and proceed
-    tracing::debug!(client_ip = %client_ip, "Rate limit check");
-
-    Ok(next.run(request).await)
-}
-
-/// Authentication middleware
-pub async fn auth_middleware(
-    headers: HeaderMap,
+/// Rate limiting middleware using the configured security context.
+pub async fn rate_limit_middleware(
+    State(security): State<Arc<SecurityContext>>,
     request: Request,
     next: Next,
-) -> Result<Response, StatusCode> {
-    // Check for API key or JWT token
-    if let Some(auth_header) = headers.get("authorization") {
-        if let Ok(auth_value) = auth_header.to_str() {
-            if auth_value.starts_with("Bearer ") || auth_value.starts_with("ApiKey ") {
-                // In a real implementation, validate the token/key
-                tracing::debug!("Authentication header found");
-                return Ok(next.run(request).await);
+) -> Result<Response, ApiError> {
+    if let Some(limiter) = security.rate_limiter() {
+        let client_key = security.extract_client_identifier(request.headers());
+
+        match limiter.check(&client_key) {
+            RateLimitOutcome::Allow => {
+                tracing::trace!(client = %client_key, "rate limit passed");
+            }
+            RateLimitOutcome::Deny { retry_after } => {
+                tracing::warn!(client = %client_key, ?retry_after, "rate limit exceeded");
+                let mut response = ApiError::RateLimit.into_response();
+                let retry_after_value = retry_after.as_secs().max(1);
+                if let Ok(header_value) = HeaderValue::from_str(&retry_after_value.to_string()) {
+                    response
+                        .headers_mut()
+                        .insert(header::RETRY_AFTER, header_value);
+                }
+                return Ok(response);
             }
         }
     }
 
-    // For development, we can make auth optional
-    // In production, uncomment the line below to enforce authentication
-    // return Err(StatusCode::UNAUTHORIZED);
-
-    tracing::debug!("No authentication header found, proceeding without auth");
     Ok(next.run(request).await)
+}
+
+/// Enforce authentication based on security configuration.
+pub async fn auth_middleware(
+    State(security): State<Arc<SecurityContext>>,
+    mut request: Request,
+    next: Next,
+) -> Result<Response, ApiError> {
+    if !security.authentication_required() {
+        return Ok(next.run(request).await);
+    }
+
+    match authenticate_request(&security, request.headers())? {
+        Some(identity) => {
+            request.extensions_mut().insert(identity);
+            Ok(next.run(request).await)
+        }
+        None => {
+            tracing::warn!("Authentication failed for incoming request");
+            Err(ApiError::Authentication)
+        }
+    }
 }
 
 /// CORS configuration
@@ -183,19 +198,78 @@ pub async fn middleware_health_check() -> impl IntoResponse {
     })
 }
 
+fn authenticate_request(
+    security: &SecurityContext,
+    headers: &HeaderMap,
+) -> Result<Option<AuthenticatedIdentity>, ApiError> {
+    if let Some(custom_header) = security.api_key_header() {
+        if let Some(value) = headers.get(custom_header) {
+            if let Ok(token) = value.to_str() {
+                if let Some(identity) = security.try_api_key(token.trim()) {
+                    return Ok(Some(identity));
+                }
+            } else {
+                tracing::warn!(header = %custom_header, "Invalid characters in configured API key header");
+            }
+        }
+    }
+
+    if let Some(value) = headers.get(HeaderName::from_static("x-api-key")) {
+        if let Ok(token) = value.to_str() {
+            if let Some(identity) = security.try_api_key(token.trim()) {
+                return Ok(Some(identity));
+            }
+        }
+    }
+
+    if let Some(value) = headers.get(header::AUTHORIZATION) {
+        match value.to_str() {
+            Ok(raw) => {
+                let mut parts = raw.trim().splitn(2, |c: char| c.is_whitespace());
+                let scheme = parts
+                    .next()
+                    .map(|s| s.to_ascii_lowercase())
+                    .unwrap_or_default();
+                let credential = parts.next().unwrap_or("").trim();
+
+                match scheme.as_str() {
+                    "apikey" => {
+                        if credential.is_empty() {
+                            tracing::warn!("ApiKey authorization header missing credential");
+                        } else if let Some(identity) = security.try_api_key(credential) {
+                            return Ok(Some(identity));
+                        }
+                    }
+                    "bearer" => {
+                        if credential.is_empty() {
+                            tracing::warn!("Bearer token missing in Authorization header");
+                        } else if let Some(identity) = security.try_jwt(credential)? {
+                            return Ok(Some(identity));
+                        }
+                    }
+                    _ => {
+                        if !scheme.is_empty() {
+                            tracing::debug!(scheme, "Unsupported authorization scheme");
+                        }
+                    }
+                }
+            }
+            Err(err) => {
+                tracing::warn!(error = %err, "Authorization header is not valid UTF-8");
+            }
+        }
+    }
+
+    Ok(None)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use axum::{
-        body::Body,
-        http::{Method, Request as HttpRequest},
-    };
 
     #[tokio::test]
     async fn test_cors_layer_creation() {
-        let cors = create_cors_layer();
-        // CORS layer creation should not panic
-        assert!(true);
+        let _ = create_cors_layer();
     }
 
     #[test]
@@ -203,7 +277,7 @@ mod tests {
         let rt = tokio::runtime::Runtime::new().unwrap();
         rt.block_on(async {
             let response = middleware_health_check().await.into_response();
-            assert_eq!(response.status(), StatusCode::OK);
+            assert_eq!(response.status(), axum::http::StatusCode::OK);
         });
     }
 }

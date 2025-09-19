@@ -31,10 +31,9 @@ pub struct ServeCommand {
 impl Command for ServeCommand {
     async fn execute(&self, context: &AppContext) -> Result<()> {
         use lethe_api::{create_app, AppState};
-        use lethe_domain::{EmbeddingServiceFactory, PipelineConfig, PipelineFactory};
-        use lethe_infrastructure::{
-            DatabaseManager, PgChunkRepository, PgEmbeddingRepository, PgMessageRepository,
-            PgSessionRepository,
+        use lethe_domain::{
+            corpus::ParquetCorpus, EmbeddingRerankingService, EmbeddingServiceFactory,
+            LlmServiceConfig, LlmServiceFactory, PipelineConfig, PipelineFactory, RerankingService,
         };
         use std::{net::SocketAddr, sync::Arc};
         use tokio::net::TcpListener;
@@ -47,21 +46,10 @@ impl Command for ServeCommand {
             println!("   🔌 Port: {}", self.port);
         }
 
-        // Initialize database
-        let database_url = context.database_url.as_ref().ok_or_else(|| {
-            lethe_shared::LetheError::config("Database URL is required for server")
-        })?;
-
-        if !context.quiet {
-            println!("   🗄️  Connecting to database...");
-        }
-        let db_manager = Arc::new(DatabaseManager::new(database_url).await?);
-
-        // Create repositories
-        let message_repository = Arc::new(PgMessageRepository::new(db_manager.pool().clone()));
-        let chunk_repository = Arc::new(PgChunkRepository::new(db_manager.pool().clone()));
-        let embedding_repository = Arc::new(PgEmbeddingRepository::new(db_manager.pool().clone()));
-        let session_repository = Arc::new(PgSessionRepository::new(db_manager.pool().clone()));
+        // Prepare storage-backed corpus
+        let storage_root = context.storage_root.clone();
+        let corpus = Arc::new(ParquetCorpus::new(&storage_root));
+        corpus.health_check().await?;
 
         // Create embedding service
         if !context.quiet {
@@ -70,7 +58,25 @@ impl Command for ServeCommand {
         let embedding_config = super::to_domain_embedding_config(&context.config.embedding);
         let embedding_service = EmbeddingServiceFactory::create(&embedding_config).await?;
 
-        // Create query pipeline
+        // Optional LLM service (for HyDE / reranking)
+        let llm_service = match context.config.llm.as_ref() {
+            Some(cfg) => {
+                if !context.quiet {
+                    println!("   🧾 Initializing LLM service...");
+                }
+                let domain_cfg = LlmServiceConfig::from_shared(cfg);
+                match LlmServiceFactory::create(&domain_cfg).await {
+                    Ok(service) => Some(service),
+                    Err(err) => {
+                        eprintln!("   ⚠️  LLM unavailable: {}", err);
+                        None
+                    }
+                }
+            }
+            None => None,
+        };
+
+        // Configure pipeline based on feature toggles
         let features = context
             .config
             .features
@@ -78,39 +84,41 @@ impl Command for ServeCommand {
             .cloned()
             .unwrap_or_default();
 
-        let timeout_seconds = (context.config.timeouts.hyde_ms.value() / 1000).max(1);
+        let mut pipeline_config = PipelineConfig::default();
+        pipeline_config.enable_hyde = features.enable_hyde;
+        pipeline_config.enable_query_understanding = features.enable_query_understanding;
+        pipeline_config.enable_ml_prediction = features.enable_ml_prediction;
+        pipeline_config.rerank_enabled = features.enable_state_tracking;
+        pipeline_config.timeout_seconds = (context.config.timeouts.hyde_ms.value() / 1000).max(1);
 
-        let pipeline_config = PipelineConfig {
-            enable_hyde: features.enable_hyde,
-            enable_query_understanding: features.enable_query_understanding,
-            enable_ml_prediction: features.enable_ml_prediction,
-            max_candidates: 50,
-            rerank_enabled: features.enable_plan_selection,
-            rerank_top_k: 20,
-            timeout_seconds,
+        let reranking_service: Option<Arc<dyn RerankingService>> = if pipeline_config.rerank_enabled
+        {
+            Some(Arc::new(EmbeddingRerankingService::new(embedding_service.clone())) as Arc<_>)
+        } else {
+            None
         };
 
+        let doc_repo: Arc<dyn lethe_domain::retrieval::DocumentRepository> = corpus.clone();
         let query_pipeline = Arc::new(PipelineFactory::create_pipeline(
             pipeline_config,
-            chunk_repository.clone(),
+            doc_repo,
             embedding_service.clone(),
-            None, // No LLM service for now
-            None, // No reranking service for now
+            llm_service.clone(),
+            reranking_service.clone(),
         ));
 
         // Create application state
         let app_state = AppState::new(
             Arc::new(context.config.clone()),
-            db_manager.clone(),
-            message_repository,
-            chunk_repository,
-            embedding_repository,
-            session_repository,
-            embedding_service,
-            None, // No LLM service
-            None, // No reranking service
-            query_pipeline,
-        );
+            corpus.clone(),
+            embedding_service.clone(),
+            llm_service.clone(),
+            reranking_service.clone(),
+            query_pipeline.clone(),
+        )
+        .map_err(|err| {
+            lethe_shared::LetheError::internal(format!("Failed to initialise API state: {}", err))
+        })?;
 
         // Perform health check
         if !context.quiet {
@@ -138,7 +146,21 @@ impl Command for ServeCommand {
             create_app(app_state).layer(ServiceBuilder::new().layer(TraceLayer::new_for_http()));
 
         // Start server
-        let addr = SocketAddr::from(([0, 0, 0, 0], self.port));
+        let addr: SocketAddr = format!("{}:{}", self.host, self.port)
+            .parse()
+            .map_err(|e| {
+                lethe_shared::LetheError::config(format!(
+                    "Invalid listen address {}:{} ({})",
+                    self.host, self.port, e
+                ))
+            })?;
+
+        let listener = TcpListener::bind(addr).await.map_err(|e| {
+            lethe_shared::LetheError::internal(format!(
+                "Failed to bind to {}:{} - {}",
+                self.host, self.port, e
+            ))
+        })?;
 
         if !context.quiet {
             println!("🎯 Server ready!");
@@ -149,13 +171,6 @@ impl Command for ServeCommand {
             );
             println!("   📖 Press Ctrl+C to stop");
         }
-
-        let listener = TcpListener::bind(addr).await.map_err(|e| {
-            lethe_shared::LetheError::internal(format!(
-                "Failed to bind to {}:{} - {}",
-                self.host, self.port, e
-            ))
-        })?;
 
         // Setup graceful shutdown
         let quiet = context.quiet;

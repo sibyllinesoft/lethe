@@ -81,8 +81,15 @@ impl HydeService {
         let mut hypothetical_documents = Vec::new();
         for (i, text) in hypothetical_texts.into_iter().enumerate() {
             let id = format!("hyde_{}", i);
-            let embedding = self.embedding_service.embed(&[text.clone()]).await?;
-            let embedding = embedding.into_iter().next().unwrap();
+            let embedding = self
+                .embedding_service
+                .embed(&[text.clone()])
+                .await?
+                .into_iter()
+                .next()
+                .ok_or_else(|| {
+                    LetheError::embedding("Embedding service returned no vector for HyDE document")
+                })?;
             let confidence = self.calculate_confidence(&text, query);
 
             hypothetical_documents.push(HypotheticalDocument {

@@ -183,14 +183,6 @@ impl From<serde_json::Error> for ApiError {
     }
 }
 
-impl From<sqlx::Error> for ApiError {
-    fn from(err: sqlx::Error) -> Self {
-        // Don't expose database errors to clients
-        tracing::error!(error = %err, "Database error occurred");
-        ApiError::internal("Database operation failed".to_string())
-    }
-}
-
 /// Result type alias for API operations
 pub type ApiResult<T> = Result<T, ApiError>;
 

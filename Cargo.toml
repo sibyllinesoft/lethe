@@ -3,10 +3,7 @@ members = [
     "packages/rust/lethe-core/crates/api",
     "packages/rust/lethe-core/crates/cli",
     "packages/rust/lethe-core/crates/domain",
-    "packages/rust/lethe-core/crates/infrastructure",
-    "packages/rust/lethe-core/crates/shared",
-    "packages/rust/determinism-service",
-    "packages/rust/hotpath"
+    "packages/rust/lethe-core/crates/shared"
 ]
 resolver = "2"
 
@@ -21,12 +18,15 @@ tower = { version = "0.4", features = ["full"] }
 tower-http = { version = "0.5", features = ["fs", "trace", "cors", "compression-gzip"] }
 hyper = { version = "1.0", features = ["full"] }
 
-# Database
-sqlx = { version = "0.7", features = ["postgres", "runtime-tokio-rustls", "chrono", "uuid", "json"] }
-
 # Serialization
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+
+# Storage and indexing
+parquet = "50"
+bloomfilter = "3.0"
+bincode = "1.3"
+xxhash-rust = "0.8"
 
 # Error handling
 thiserror = "1.0"
