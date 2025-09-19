@@ -960,6 +960,8 @@ mod tests {
 
         let result = service.predict_strategy(&understanding).unwrap();
         assert!(!result.feature_importance.is_empty());
-        assert!(result.feature_importance.contains_key("complexity"));
+        assert!(result
+            .feature_importance
+            .contains_key("query_complexity_score"));
     }
 }

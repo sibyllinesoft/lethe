@@ -2,8 +2,6 @@ use crate::embeddings::EmbeddingService;
 use async_trait::async_trait;
 use lethe_shared::{utils::HashUtils, EmbeddingVector, LetheError, Result};
 use moka::future::Cache;
-#[cfg(test)]
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 
 pub type EmbeddingCache = Cache<String, Arc<EmbeddingVector>>;

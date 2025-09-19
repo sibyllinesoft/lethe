@@ -240,7 +240,7 @@ pub struct ConversationTurn {
 }
 
 /// Embedding vector
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct EmbeddingVector {
     pub data: Vec<f32>,
     pub dimension: usize,
